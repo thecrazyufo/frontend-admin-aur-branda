@@ -7,7 +7,8 @@ import {
   AdminBlogAPI, 
   AdminFaqAPI, 
   AdminCategoryAPI,
-  AdminSettingsAPI
+  AdminSettingsAPI,
+  API_BASE
 } from "@/services/api";
 import { Product } from "@/types/product";
 import { BlogPost } from "@/types/blog";
@@ -103,7 +104,7 @@ function HTMLToolbar({
         headers["Authorization"] = `Bearer ${token}`;
       }
 
-      const response = await fetch("http://localhost:8080/api/upload", {
+      const response = await fetch(`${API_BASE}/upload`, {
         method: "POST",
         headers: headers,
         body: formData
@@ -1907,7 +1908,7 @@ export default function ContentCreatorPage() {
                 { label: "User Guide Page", url: `${siteUrl}/products/${quickLinksModal.slug}/guide` },
                 { label: "Support Page", url: `${siteUrl}/support` },
                 { label: "Upgrade Page", url: `${siteUrl}/upgrade` },
-                { label: "License Activation API", url: `http://localhost:8080/api/license/activate` },
+                { label: "License Activation API", url: `${API_BASE}/license/activate` },
                 { label: "FAQ Section Anchor", url: `${siteUrl}/products/${quickLinksModal.slug}#faq` },
                 { label: "Privacy Policy", url: `${siteUrl}/privacy-policy` },
                 { label: "Terms of Service", url: `${siteUrl}/terms-of-service` },

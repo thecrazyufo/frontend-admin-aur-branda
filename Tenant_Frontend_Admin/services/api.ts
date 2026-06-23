@@ -15,8 +15,28 @@ export interface Category {
   siteId: string;
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 
-  (typeof window === "undefined" ? "http://tenant-backend:8080/api" : "http://localhost:8080/api");
+export const API_BASE = (() => {
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+  
+  if (typeof window === "undefined") {
+    return "http://tenant-backend:8080/api";
+  }
+
+  const hostname = window.location.hostname;
+  const protocol = window.location.protocol;
+
+  if (hostname === "localhost" || hostname === "127.0.0.1") {
+    return "http://localhost:8080/api";
+  }
+
+  if (hostname.startsWith("admin.")) {
+    return `${protocol}//${hostname.replace(/^admin\./, "api.")}/api`;
+  }
+
+  return `${protocol}//api.${hostname}/api`;
+})();
 
 // Helper to generate a correlation ID
 function getCorrelationId(): string {
