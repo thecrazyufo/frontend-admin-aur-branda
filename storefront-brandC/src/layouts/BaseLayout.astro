@@ -1,0 +1,136 @@
+---
+import "../styles/globals.css";
+import Navbar from "../components/layout/Navbar";
+import Footer from "../components/layout/Footer";
+import { SettingsAPI, BrandAPI } from "../services/api";
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  ogImage?: string;
+  noindex?: boolean;
+}
+
+const settings = await SettingsAPI.get().catch(() => null);
+const brandConfig = await BrandAPI.getCurrentBrand().catch(() => null);
+const layoutTemplate = brandConfig?.layoutTemplate || "classic";
+
+const siteName = settings?.name || "";
+const siteTagline = settings?.tagline || "";
+const siteDescription = settings?.description || "";
+
+// Theme config from API — used for dynamic CSS custom properties
+const themeConfig = settings?.theme || {};
+const fontFamily = themeConfig.fontFamily || "Inter";
+const primaryColor = themeConfig.primaryColor || "#2563eb";
+const accentColor = themeConfig.accentColor || "#f59e0b";
+const faviconUrl = themeConfig.faviconUrl || "/favicon.ico";
+const logoUrl = themeConfig.logoUrl || "";
+
+// Navigation from API — falls back to empty (Navbar has its own defaults)
+const mainNavigation = settings?.mainNavigation || [];
+
+// Footer config from API
+const footerConfig = settings?.footerConfig || undefined;
+
+// SEO defaults from API
+const seoDefaults = settings?.seoDefaults || {};
+const titleTemplate = seoDefaults.titleTemplate || "{page} — {siteName}";
+const defaultOgImage = seoDefaults.defaultOgImage || "";
+
+const {
+  title = `${siteName} — ${siteTagline}`,
+  description = siteDescription,
+  canonical = Astro.props.canonical || new URL(Astro.url.pathname, Astro.site || Astro.url.origin).toString(),
+  ogImage = defaultOgImage,
+  noindex = false,
+} = Astro.props;
+
+// Google Fonts URL — dynamically load the font selected in admin
+const fontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/ /g, "+")}:wght@300;400;500;600;700;800;900&display=swap`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta property="og:site_name" content={siteName} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {ogImage && <meta name="twitter:image" content={ogImage} />}
+
+    <!-- Google Verification -->
+    {seoDefaults.googleVerification && (
+      <meta name="google-site-verification" content={seoDefaults.googleVerification} />
+    )}
+
+    <!-- Favicon (dynamic from admin panel) -->
+    <link rel="icon" href={faviconUrl} />
+
+    <!-- Fonts (dynamic from admin panel) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href={fontUrl} rel="stylesheet" />
+
+    <!-- Dynamic Theme CSS Custom Properties -->
+    <style define:vars={{ primaryColor, accentColor, fontFamily }}>
+      :root {
+        --brand-primary: var(--primaryColor);
+        --brand-accent: var(--accentColor);
+        --brand-font: var(--fontFamily), system-ui, sans-serif;
+      }
+    </style>
+  </head>
+  <body class={`min-h-screen flex flex-col antialiased layout-${layoutTemplate}`} style={`font-family: '${fontFamily}', system-ui, sans-serif;`}>
+    <!-- Announcement Bar (if enabled) -->
+    {settings?.announcement?.enabled && settings.announcement.text && (
+      <div
+        style={`background: ${settings.announcement.bgColor || '#6366f1'}; color: ${settings.announcement.textColor || '#fff'}; text-align: center; padding: 8px 16px; font-size: 13px; font-weight: 600;`}
+      >
+        {settings.announcement.link ? (
+          <a href={settings.announcement.link} style="color: inherit; text-decoration: underline;">
+            {settings.announcement.text}
+          </a>
+        ) : (
+          settings.announcement.text
+        )}
+      </div>
+    )}
+
+    <Navbar
+      client:load
+      siteName={siteName}
+      phone={settings?.phone}
+      navigation={mainNavigation}
+      logoUrl={logoUrl}
+    />
+    <main class="flex-1">
+      <slot />
+    </main>
+    <Footer
+      siteName={siteName}
+      description={siteDescription}
+      phone={settings?.phone}
+      email={settings?.email}
+      address={settings?.address}
+      socials={settings?.socials}
+      footerConfig={footerConfig}
+    />
+  </body>
+</html>

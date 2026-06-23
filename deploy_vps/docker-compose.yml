@@ -1,0 +1,55 @@
+services:
+
+  # PostgreSQL Database
+  db-postgres:
+    image: postgres:16
+    container_name: db_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: UfoCrazySecurePass2026!
+      POSTGRES_DB: software_platform
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d software_platform"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Spring Boot Backend API
+  tenant-backend:
+    image: tenant-backend:latest
+    container_name: software_tenant_backend
+    restart: always
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      JWT_SECRET: 7a3f8c2d1e6b9a4f0e5c8b2d7a1e4f9c3b6a0d8e2f5c9b4a7e1d6c3f0b8a5e2
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-postgres:5432/software_platform
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: UfoCrazySecurePass2026!
+    depends_on:
+      db-postgres:
+        condition: service_healthy
+
+  # Caddy Reverse Proxy (Exposes API over HTTPS)
+  caddy:
+    image: caddy:2.7-alpine
+    container_name: software_caddy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - tenant-backend
+
+volumes:
+  db_postgres_data:
+  caddy_data:
+  caddy_config:

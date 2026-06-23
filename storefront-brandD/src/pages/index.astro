@@ -1,0 +1,58 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { ProductAPI, CategoryAPI, SettingsAPI, BrandAPI } from "@/services/api";
+
+import LuxuryHome from "@/components/templates/luxury/Home.astro";
+import TechBoldHome from "@/components/templates/tech-bold/Home.astro";
+import PlayfulHome from "@/components/templates/playful/Home.astro";
+import CorporateHome from "@/components/templates/corporate/Home.astro";
+import EcommDarkHome from "@/components/templates/ecomm-dark/Home.astro";
+import ClassicHome from "@/components/templates/classic/Home.astro";
+
+// Server-side data fetch (Astro magic - zero JS shipped to client!)
+let products = [];
+let categories = [];
+let settings = null;
+let brandConfig = null;
+
+try {
+  [products, categories, settings, brandConfig] = await Promise.all([
+    ProductAPI.getAll(),
+    CategoryAPI.getAll(),
+    SettingsAPI.get().catch(() => null),
+    BrandAPI.getCurrentBrand()
+  ]);
+} catch (e) {
+  // Backend missing
+}
+
+const featured = products.filter(p => p.enabled !== false).slice(0, 6);
+const testimonials = products
+  .flatMap((p) =>
+    (p.reviews || []).map((r) => ({
+      author: r.author,
+      role: r.role || "IT Professional",
+      company: r.company || "Verified User",
+      rating: r.rating || 5,
+      content: r.content,
+    }))
+  )
+  .slice(0, 6);
+
+const templateProps = { products, categories, settings, featured, testimonials };
+const layoutTemplate = brandConfig?.layoutTemplate || "classic";
+const siteName = settings?.name || "";
+const siteTagline = settings?.tagline || "";
+const siteDescription = settings?.description || "";
+---
+
+<BaseLayout title={`${siteName} — ${siteTagline}`} description={siteDescription}>
+  {layoutTemplate === 'luxury' && <LuxuryHome {...templateProps} />}
+  {layoutTemplate === 'tech-bold' && <TechBoldHome {...templateProps} />}
+  {layoutTemplate === 'playful' && <PlayfulHome {...templateProps} />}
+  {layoutTemplate === 'corporate' && <CorporateHome {...templateProps} />}
+  {layoutTemplate === 'ecomm-dark' && <EcommDarkHome {...templateProps} />}
+  
+  {/* Fallbacks for older DB entries that weren't migrated */}
+  {['classic', 'modern', 'minimal'].includes(layoutTemplate) && <ClassicHome {...templateProps} />}
+</BaseLayout>

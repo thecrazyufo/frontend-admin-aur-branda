@@ -1,0 +1,147 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { ProductAPI, SettingsAPI } from "@/services/api";
+import PricingCard from "@/components/common/PricingCard";
+import SectionHeader from "@/components/common/SectionHeader";
+import { generateFAQSchema } from "@/lib/seo";
+import { Check, X } from "lucide-react";
+
+const settings = await SettingsAPI.get().catch(() => null);
+
+const dynamicFaqs = settings?.pricingFaqs || [
+  { question: "Do I need a subscription?", answer: "No. All our tools use a one-time payment model. Pay once, use forever." },
+  { question: "Is there a free trial?", answer: "Yes! Every product has a free trial that lets you migrate/convert up to 50 items." },
+  { question: "What if I'm not satisfied?", answer: "We offer a 30-day money-back guarantee. No questions asked." },
+  { question: "Do I get free updates?", answer: "Standard plans include 1 year of free updates. Enterprise/Business plans include lifetime updates." },
+];
+
+const dynamicComparison = settings?.pricingComparison || [
+  { feature: "Email Migration", trial: "50 emails", standard: "Unlimited", enterprise: "Unlimited" },
+  { feature: "Contacts & Calendar", trial: true, standard: true, enterprise: true },
+  { feature: "Folder Structure", trial: true, standard: true, enterprise: true },
+  { feature: "Batch Migration", trial: false, standard: false, enterprise: true },
+  { feature: "Delta Migration", trial: false, standard: true, enterprise: true },
+  { feature: "Number of Licenses", trial: "1", standard: "1", enterprise: "25" },
+  { feature: "Free Updates", trial: false, standard: "1 Year", enterprise: "Lifetime" },
+  { feature: "Technical Support", trial: "Email", standard: "Priority Email", enterprise: "24/7 Phone & Chat" },
+  { feature: "Price", trial: "Free", standard: "$49", enterprise: "$199" },
+];
+
+let flagship = null;
+
+try {
+  const productsList = await ProductAPI.getAll();
+  if (productsList.length > 0) {
+    flagship = productsList[0];
+  }
+} catch (e) {
+  console.error("Error loading products for pricing:", e);
+}
+---
+
+<BaseLayout
+  title={`Pricing Plans — ${settings?.name || ""}`}
+  description="Transparent pricing for all our software tools. Free trial available. One-time payment, lifetime license. 30-day money-back guarantee."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(generateFAQSchema(dynamicFaqs))} />
+
+  {/* Header */}
+  <section class="hero-gradient py-16 text-center">
+    <div class="container-custom">
+      <span class="inline-block text-xs font-bold uppercase tracking-widest mb-4 px-3 py-1 rounded-full text-blue-300 bg-white/10">
+        Simple Pricing
+      </span>
+      <h1 class="text-white font-bold mb-4 font-bold">One-Time Payment. Use Forever.</h1>
+      <p class="text-gray-300 max-w-xl mx-auto leading-relaxed">
+        No subscriptions. No hidden fees. Choose your plan and own the software.
+        All plans include free technical support.
+      </p>
+    </div>
+  </section>
+
+  {/* Flagship Pricing */}
+  {flagship && (
+    <section class="section bg-gray-50">
+      <div class="container-custom">
+        <SectionHeader
+          eyebrow="Example — Flagship Tool Migration"
+          title="Choose Your License"
+          subtitle="All plans include free trial, email support, and 30-day money-back guarantee."
+          centered
+          class="mb-14"
+        />
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto items-start">
+          {(flagship.pricing || []).map((tier) => (
+            <PricingCard tier={tier} productSlug={flagship.slug} />
+          ))}
+        </div>
+
+        {/* Guarantees */}
+        <div class="mt-12 flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500">
+          {["30-Day Money-Back Guarantee", "No Subscription Required", "Free Technical Support", "Secure Payment"].map((g) => (
+            <div class="flex items-center gap-2">
+              <Check size={15} class="text-green-500" />
+              {g}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {/* Feature Comparison Table */}
+  <section class="section bg-white">
+    <div class="container-custom">
+      <SectionHeader eyebrow="Compare" title="Plan Comparison" centered class="mb-10" />
+      <div class="overflow-x-auto">
+        <table class="w-full max-w-4xl mx-auto text-sm border-collapse">
+          <thead>
+            <tr class="border-b border-gray-200">
+              <th class="text-left py-4 pr-6 font-semibold text-gray-900 w-1/2">Feature</th>
+              <th class="py-4 px-4 font-semibold text-gray-600">Free Trial</th>
+              <th class="py-4 px-4 font-semibold text-blue-700 bg-blue-50 rounded-t-xl">Standard</th>
+              <th class="py-4 px-4 font-semibold text-gray-600">Enterprise</th>
+            </tr>
+          </thead>
+          <tbody>
+            {dynamicComparison.map((row, i) => (
+              <tr class={`border-b border-gray-100 ${i % 2 === 0 ? "bg-gray-50/50" : ""}`}>
+                <td class="py-3.5 pr-6 font-medium text-gray-700">{row.feature}</td>
+                <td class="py-3.5 px-4 text-center text-gray-500">
+                  {typeof row.trial === "boolean"
+                    ? row.trial ? <Check size={16} class="text-green-500 mx-auto" /> : <X size={16} class="text-gray-300 mx-auto" />
+                    : row.trial}
+                </td>
+                <td class="py-3.5 px-4 text-center text-gray-700 bg-blue-50/50 font-medium">
+                  {typeof row.standard === "boolean"
+                    ? row.standard ? <Check size={16} class="text-blue-600 mx-auto" /> : <X size={16} class="text-gray-300 mx-auto" />
+                    : row.standard}
+                </td>
+                <td class="py-3.5 px-4 text-center text-gray-500">
+                  {typeof row.enterprise === "boolean"
+                    ? row.enterprise ? <Check size={16} class="text-green-500 mx-auto" /> : <X size={16} class="text-gray-300 mx-auto" />
+                    : row.enterprise}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  {/* Pricing FAQ */}
+  <section class="section bg-gray-50">
+    <div class="container-custom max-w-3xl">
+      <SectionHeader eyebrow="FAQ" title="Pricing Questions" centered class="mb-10" />
+      <div class="space-y-4">
+        {dynamicFaqs.map((faq) => (
+          <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+            <h3 class="font-bold text-gray-900 mb-2">{faq.question}</h3>
+            <p class="text-sm text-gray-600">{faq.answer}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

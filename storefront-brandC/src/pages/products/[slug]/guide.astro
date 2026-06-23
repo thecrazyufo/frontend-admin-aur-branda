@@ -1,0 +1,173 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { ProductAPI } from "@/services/api";
+import { Play, Download, ShoppingCart, HelpCircle, Monitor, BookOpen } from "lucide-react";
+import { generateBreadcrumbSchema, generateFAQSchema } from "@/lib/seo";
+
+const { slug } = Astro.params;
+
+let product = null;
+
+try {
+  if (slug) {
+    product = await ProductAPI.getBySlug(slug);
+  }
+} catch (e) {
+  console.error("Error fetching product on guide page:", e);
+}
+
+if (!product || product.enabled === false) {
+  return new Response("Product Not Found", { status: 404 });
+}
+
+const steps = product.howItWorks && product.howItWorks.length > 0 ? product.howItWorks : [
+  { step: 1, title: "Download & Install", description: "Download the executable file from our website and launch the installer wizard." },
+  { step: 2, title: "Select Source Files", description: "Open the software and click Add Files to select mailbox files or data folders." },
+  { step: 3, title: "Choose Output Folder", description: "Select your target destination path and file formats." },
+  { step: 4, title: "Process & Verify", description: "Click Convert to run the process and check final log reports." }
+];
+
+const reqs = product.systemRequirements || { os: "Windows 11/10/8/7 (32/64 bit)", processor: "1 GHz Intel/AMD CPU", ram: "2 GB", disk: "100 MB free space" };
+---
+
+<BaseLayout
+  title={`Step-by-Step User Guide: How to Use ${product.name}`}
+  description={`Learn how to configure and use ${product.name} with our detailed step-by-step guide. Review system requirements, features, and FAQs.`}
+>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(generateBreadcrumbSchema([{ label: "Home", href: "/" }, { label: "Products", href: "/products" }, { label: product.name, href: `/products/${product.slug}` }, { label: "Guide", href: `/products/${product.slug}/guide` }]))} />
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(generateFAQSchema(product.faqs || []))} />
+
+  {/* Hero Header */}
+  <section class="hero-gradient py-16 text-white">
+    <div class="container-custom">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+        <div>
+          <span class="inline-flex items-center gap-1.5 text-xs bg-blue-500/20 text-blue-300 font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-4 border border-blue-500/30">
+            <BookOpen size={12} /> Product Guide
+          </span>
+          <h1 class="text-3xl md:text-5xl font-extrabold mb-4">{product.name} Guide</h1>
+          <p class="text-gray-300 text-lg max-w-xl">Learn how to install, configure, and execute data operations with our step-by-step documentation.</p>
+        </div>
+        
+        <div class="flex flex-wrap gap-4 shrink-0">
+          <a href={product.trialDownloadUrl || `/download?product=${product.slug}`} class="btn btn-ghost-white py-3 px-6 flex items-center gap-2">
+            <Download size={18} /> Download Trial
+          </a>
+          <a href={`/products/${product.slug}/buy`} class="btn btn-accent py-3 px-6 flex items-center gap-2">
+            <ShoppingCart size={18} /> Buy License
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-white">
+    <div class="container-custom">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        {/* Main Content Area */}
+        <div class="lg:col-span-2 space-y-12">
+          {/* Step by Step Guide */}
+          <div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+              <span class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-sm"><Play size={16} className="text-blue-600" /></span>
+              Step-by-Step Instructions
+            </h2>
+            
+            <div class="relative pl-8 border-l border-gray-100 space-y-10 ml-4">
+              {steps.map((s, idx) => (
+                <div class="relative">
+                  {/* Step bubble */}
+                  <span class="absolute -left-12 top-0.5 w-8 h-8 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-sm shadow">
+                    {s.step || (idx + 1)}
+                  </span>
+                  
+                  <h3 class="text-lg font-bold text-gray-900 mb-2">{s.title}</h3>
+                  <p class="text-sm text-gray-600 leading-relaxed" set:html={s.description}></p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Product FAQs */}
+          {product.faqs && product.faqs.length > 0 && (
+            <div class="pt-8 border-t border-gray-100">
+              <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                <span class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-sm"><HelpCircle size={16} className="text-blue-600" /></span>
+                Frequently Asked Questions
+              </h2>
+              
+              <div class="space-y-4">
+                {product.faqs.map((faq) => (
+                  <div class="bg-gray-50 rounded-xl p-5 border border-gray-100/50">
+                    <h4 class="font-bold text-gray-900 mb-2 flex items-start gap-2 text-sm md:text-base">
+                      <span class="text-blue-600 font-extrabold">Q:</span>
+                      {faq.question}
+                    </h4>
+                    <p class="text-sm text-gray-600 pl-5 leading-relaxed">{faq.answer}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Sidebar Column */}
+        <div class="space-y-8">
+          {/* Compatibility Specs */}
+          <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100 shadow-sm">
+            <h3 class="font-bold text-gray-900 mb-4 pb-4 border-b border-gray-200 flex items-center gap-2">
+              <Monitor size={16} className="text-blue-600" />
+              System Requirements
+            </h3>
+            
+            <div class="space-y-4">
+              <div class="flex gap-2">
+                <span class="text-xs font-semibold text-gray-400 w-20 shrink-0">OS:</span>
+                <span class="text-xs text-gray-700">{reqs.os}</span>
+              </div>
+              <div class="flex gap-2">
+                <span class="text-xs font-semibold text-gray-400 w-20 shrink-0">Processor:</span>
+                <span class="text-xs text-gray-700">{reqs.processor}</span>
+              </div>
+              <div class="flex gap-2">
+                <span class="text-xs font-semibold text-gray-400 w-20 shrink-0">RAM:</span>
+                <span class="text-xs text-gray-700">{reqs.ram}</span>
+              </div>
+              <div class="flex gap-2">
+                <span class="text-xs font-semibold text-gray-400 w-20 shrink-0">Disk:</span>
+                <span class="text-xs text-gray-700">{reqs.disk}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Supported Formats */}
+          {product.supportedFormats && product.supportedFormats.length > 0 && (
+            <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+              <h3 class="font-bold text-gray-900 mb-4 pb-4 border-b border-gray-100">Compatibility</h3>
+              <div class="flex flex-wrap gap-2">
+                {product.supportedFormats.map((fmt) => (
+                  <span class="px-2.5 py-1 bg-blue-50 text-blue-600 text-xs rounded font-mono font-bold">
+                    {fmt}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* CTA Box */}
+          <div class="bg-gradient-to-br from-blue-500 to-blue-700 text-white rounded-2xl p-6 shadow-lg text-center relative overflow-hidden">
+            <div class="relative z-10">
+              <h3 class="font-bold text-lg mb-2">Convert Without Limits</h3>
+              <p class="text-xs text-blue-100 mb-6 leading-relaxed">Unlock the full version to convert unlimited files with complete technical support.</p>
+              
+              <a href={`/products/${product.slug}/buy`} class="btn btn-accent w-full py-2.5">
+                Get Lifetime Key
+              </a>
+            </div>
+            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

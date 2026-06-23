@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="008-brand-dev-port" author="system">
+        <addColumn tableName="brand_configs">
+            <column name="dev_port" type="VARCHAR(255)"/>
+        </addColumn>
+
+        <update tableName="brand_configs">
+            <column name="dev_port" value="3001"/>
+            <where>id = 'brandA'</where>
+        </update>
+        <update tableName="brand_configs">
+            <column name="dev_port" value="3002"/>
+            <where>id = 'brandB'</where>
+        </update>
+        <update tableName="brand_configs">
+            <column name="dev_port" value="3003"/>
+            <where>id = 'brandC'</where>
+        </update>
+        <update tableName="brand_configs">
+            <column name="dev_port" value="3004"/>
+            <where>id = 'brandD'</where>
+        </update>
+        <update tableName="brand_configs">
+            <column name="dev_port" value="3005"/>
+            <where>id = 'brandE'</where>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>

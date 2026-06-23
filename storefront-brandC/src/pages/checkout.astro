@@ -1,0 +1,44 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { ProductAPI, SettingsAPI } from "@/services/api";
+import CheckoutForm from "@/components/common/CheckoutForm";
+
+const settings = await SettingsAPI.get().catch(() => null);
+const siteName = settings?.name || "Software Platform";
+
+const url = new URL(Astro.request.url);
+const productSlug = url.searchParams.get("product") || "";
+const tierName = url.searchParams.get("tier") || "Standard";
+
+let product = null;
+try {
+  if (productSlug) {
+    product = await ProductAPI.getBySlug(productSlug);
+  }
+} catch (e) {
+  console.error("Error fetching product for checkout:", e);
+}
+
+if (!product) {
+  return Astro.redirect("/products");
+}
+
+const siteId = import.meta.env.PUBLIC_SITE_ID || "";
+---
+
+<BaseLayout
+  title={`Secure Checkout — ${product.name} | ${siteName}`}
+  description={`Secure checkout page for ${product.name}. Complete your purchase to generate your license key.`}
+  noindex={true}
+>
+  <div class="bg-gray-50 py-12 min-h-screen">
+    <div class="container-custom">
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 font-bold">Secure Checkout</h1>
+        <p class="text-gray-500 mt-2">Complete your purchase to activate your product license instantly.</p>
+      </div>
+
+      <CheckoutForm client:load product={product} selectedTierName={tierName} siteId={siteId} />
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         Changeset 002 — Admin Users (credentials store)
+         Applies to: ALL databases via LiquibaseMigrationConfig
+         Only systemdb will actually use this table. Brand DBs will have the
+         table but it will remain empty — a deliberate isolation boundary.
+         ═══════════════════════════════════════════════════════════════════════ -->
+
+    <changeSet id="002-admin-users" author="platform">
+        <createTable tableName="admin_users">
+            <column name="username" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="brand_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="full_name" type="VARCHAR(255)"/>
+            <column name="email" type="VARCHAR(255)"/>
+        </createTable>
+        <createIndex tableName="admin_users" indexName="idx_admin_users_role">
+            <column name="role"/>
+        </createIndex>
+        <createIndex tableName="admin_users" indexName="idx_admin_users_brand_id">
+            <column name="brand_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="007-brand-configs" author="system">
+        <createTable tableName="brand_configs">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="domain" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="admin_domain" type="VARCHAR(255)"/>
+            <column name="theme_colors" type="TEXT"/>
+            <column name="features" type="TEXT"/>
+            <column name="is_active" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <insert tableName="brand_configs">
+            <column name="id" value="brandA"/>
+            <column name="name" value="Brand A"/>
+            <column name="domain" value="branda.local"/>
+            <column name="theme_colors" value="{&quot;primary&quot;:&quot;#6366f1&quot;,&quot;accent&quot;:&quot;indigo&quot;}"/>
+            <column name="is_active" valueBoolean="true"/>
+        </insert>
+        <insert tableName="brand_configs">
+            <column name="id" value="brandB"/>
+            <column name="name" value="Brand B"/>
+            <column name="domain" value="brandb.local"/>
+            <column name="theme_colors" value="{&quot;primary&quot;:&quot;#8b5cf6&quot;,&quot;accent&quot;:&quot;violet&quot;}"/>
+            <column name="is_active" valueBoolean="true"/>
+        </insert>
+        <insert tableName="brand_configs">
+            <column name="id" value="brandC"/>
+            <column name="name" value="Brand C"/>
+            <column name="domain" value="brandc.local"/>
+            <column name="theme_colors" value="{&quot;primary&quot;:&quot;#06b6d4&quot;,&quot;accent&quot;:&quot;cyan&quot;}"/>
+            <column name="is_active" valueBoolean="true"/>
+        </insert>
+        <insert tableName="brand_configs">
+            <column name="id" value="brandD"/>
+            <column name="name" value="Brand D"/>
+            <column name="domain" value="brandd.local"/>
+            <column name="theme_colors" value="{&quot;primary&quot;:&quot;#10b981&quot;,&quot;accent&quot;:&quot;emerald&quot;}"/>
+            <column name="is_active" valueBoolean="true"/>
+        </insert>
+        <insert tableName="brand_configs">
+            <column name="id" value="brandE"/>
+            <column name="name" value="Brand E"/>
+            <column name="domain" value="brande.local"/>
+            <column name="theme_colors" value="{&quot;primary&quot;:&quot;#f59e0b&quot;,&quot;accent&quot;:&quot;amber&quot;}"/>
+            <column name="is_active" valueBoolean="true"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- Brand tenant databases: all tables except admin_users -->
+    <include file="db/changelog/001-initial-schema.xml" relativeToChangelogFile="false"/>
+
+    <!-- System database: credentials store -->
+    <include file="db/changelog/002-admin-users.xml" relativeToChangelogFile="false"/>
+
+    <!-- Product Enabled/Active Toggle Support -->
+    <include file="db/changelog/003-add-enabled-product.xml" relativeToChangelogFile="false"/>
+
+    <!-- Expand site_settings for full admin customizability -->
+    <include file="db/changelog/004-expand-site-settings.xml" relativeToChangelogFile="false"/>
+
+    <!-- Database Indexing Optimizations for Page Speed (LCP / INP SEO factor) -->
+    <include file="db/changelog/005-seo-database-indexes.xml" relativeToChangelogFile="false"/>
+
+    <!-- URL Redirects Table Schema for dynamic 301/302 SEO Redirects -->
+    <include file="db/changelog/006-url-redirects.xml" relativeToChangelogFile="false"/>
+    <!-- Dynamic Brand Configurations -->
+    <include file="db/changelog/007-brand-configs.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/008-brand-dev-port.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/009-brand-templates.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/010-brand-logo.xml" relativeToChangelogFile="false"/>
+
+</databaseChangeLog>

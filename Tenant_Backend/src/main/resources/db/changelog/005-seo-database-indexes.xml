@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         Changeset 005 — Database Indexing Optimizations for Page Speed (LCP / INP SEO factor)
+         Ensures multi-tenant lookups on slugs and categories are highly performant.
+         ═══════════════════════════════════════════════════════════════════════ -->
+
+    <changeSet id="005-products-seo-index" author="platform">
+        <createIndex tableName="products" indexName="idx_products_seo_lookup">
+            <column name="site_id"/>
+            <column name="slug"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="005-blog-posts-seo-index" author="platform">
+        <createIndex tableName="blog_posts" indexName="idx_blog_posts_seo_lookup">
+            <column name="site_id"/>
+            <column name="slug"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="005-categories-seo-index" author="platform">
+        <createIndex tableName="categories" indexName="idx_categories_seo_lookup">
+            <column name="site_id"/>
+            <column name="slug"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="005-help-articles-seo-index" author="platform">
+        <createIndex tableName="help_articles" indexName="idx_help_articles_seo_lookup">
+            <column name="site_id"/>
+            <column name="slug"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

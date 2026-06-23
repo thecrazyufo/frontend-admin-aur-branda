@@ -1,0 +1,217 @@
+---
+import ProductCard from "@/components/common/ProductCard";
+import SectionHeader from "@/components/common/SectionHeader";
+
+const { products, categories, settings, featured, testimonials } = Astro.props;
+
+const iconMap: Record<string, string> = {
+  mail: "✉️", shield: "🛡️", "refresh-cw": "🔄", cloud: "☁️", "hard-drive": "💾", download: "⬇️",
+};
+
+const colorMap: Record<string, { bg: string; icon: string; border: string }> = {
+  blue: { bg: "bg-blue-50", icon: "text-blue-600", border: "border-blue-100 hover:border-blue-300" },
+  green: { bg: "bg-green-50", icon: "text-green-600", border: "border-green-100 hover:border-green-300" },
+  purple: { bg: "bg-purple-50", icon: "text-purple-600", border: "border-purple-100 hover:border-purple-300" },
+  cyan: { bg: "bg-cyan-50", icon: "text-cyan-600", border: "border-cyan-100 hover:border-cyan-300" },
+  orange: { bg: "bg-orange-50", icon: "text-orange-600", border: "border-orange-100 hover:border-orange-300" },
+  red: { bg: "bg-red-50", icon: "text-red-600", border: "border-red-100 hover:border-red-300" },
+};
+
+const siteName = settings?.name || "";
+const siteTagline = settings?.tagline || "";
+const siteDescription = settings?.description || "";
+const siteStats = settings?.stats || [];
+const siteBadges = settings?.trustBadges || [];
+---
+
+  <!-- Hero Banner -->
+  <section class="hero-gradient relative overflow-hidden">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-20 right-10 w-72 h-72 rounded-full bg-blue-500/10 blur-3xl"></div>
+      <div class="absolute bottom-20 left-10 w-96 h-96 rounded-full bg-blue-700/10 blur-3xl"></div>
+    </div>
+
+    <div class="container-custom relative py-20 md:py-28">
+      <div class="max-w-4xl mx-auto text-center">
+        <div class="inline-flex items-center gap-2 text-sm text-blue-300 font-medium mb-6 px-4 py-2 rounded-full glass border border-white/10">
+          🛡️ Trusted by IT Professionals & Enterprises Worldwide
+        </div>
+
+        <h1 class="text-white font-bold mb-6 text-4xl md:text-5xl leading-tight">
+          {siteTagline}
+        </h1>
+
+        <p class="text-lg text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+          {siteDescription}
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+          <a href="/products" class="btn btn-accent text-base py-3.5 px-8 shadow-lg">
+            Explore All Tools →
+          </a>
+          <a href="/download" class="btn btn-ghost-white text-base py-3.5 px-8">
+            ⬇️ Free Trial — No Credit Card
+          </a>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
+          {siteStats.map((stat) => (
+            <div class="glass rounded-2xl p-4 text-center border border-white/10">
+              <div class="text-2xl font-bold text-white mb-1">{stat.value}</div>
+              <div class="text-xs text-gray-400">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust Badges -->
+  <section class="section-sm bg-white border-t border-b border-gray-100">
+    <div class="container-custom">
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        {siteBadges.map((badge) => (
+          <div class="flex flex-col items-center text-center p-4 rounded-xl hover:bg-gray-50 transition-colors group">
+            <div class={`w-11 h-11 rounded-xl ${badge.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform text-xl`}>
+              {badge.emoji}
+            </div>
+            <h4 class="text-sm font-semibold text-gray-900 mb-1">{badge.title}</h4>
+            <p class="text-xs text-gray-500 leading-snug">{badge.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Products -->
+  <section class="section bg-white">
+    <div class="container-custom">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <SectionHeader
+          eyebrow="Top Products"
+          title="Our Best-Selling Tools"
+          subtitle="Trusted by IT professionals and enterprises across 150+ countries."
+        />
+        <a href="/products" class="btn btn-outline shrink-0 text-sm py-2.5 px-5">
+          View All Products →
+        </a>
+      </div>
+
+      {featured.length > 0 ? (
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featured.map((product) => (
+            <ProductCard product={product} />
+          ))}
+        </div>
+      ) : (
+        <div class="text-center py-20 text-gray-400">
+          <p class="text-lg">Products loading... Make sure the backend is running.</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- Category Section -->
+  {categories.length > 0 && (
+    <section class="section bg-gray-50">
+      <div class="container-custom">
+        <div class="text-center mb-12">
+          <span class="inline-block text-xs font-bold uppercase tracking-widest mb-3 px-3 py-1 rounded-full text-blue-600 bg-blue-50">
+            Product Categories
+          </span>
+          <h2 class="font-bold text-gray-900 mb-3">Browse by Category</h2>
+          <div class="divider mx-auto"></div>
+          <p class="text-gray-500 max-w-xl mx-auto mt-4">Find the right tool for your specific data management needs.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {categories.map((cat) => {
+            const colors = colorMap[cat.color] || colorMap.blue;
+            return (
+              <a
+                href={`/products?category=${cat.id}`}
+                class={`group bg-white rounded-2xl border-2 ${colors.border} p-6 transition-all duration-300 card-hover`}
+              >
+                <div class="flex items-start justify-between mb-4">
+                  <div class={`w-12 h-12 rounded-xl ${colors.bg} flex items-center justify-center ${colors.icon} group-hover:scale-110 transition-transform duration-300 text-2xl`}>
+                    {iconMap[cat.icon] || "📦"}
+                  </div>
+                  <span class="text-xs text-gray-400 bg-gray-50 px-2 py-1 rounded-full font-medium">{cat.count} tools</span>
+                </div>
+                <h3 class={`font-bold text-gray-900 mb-2 group-hover:${colors.icon} transition-colors`}>{cat.label}</h3>
+                <p class="text-sm text-gray-500 line-clamp-2">{cat.description}</p>
+                <div class={`flex items-center gap-1 mt-4 text-sm font-medium ${colors.icon}`}>
+                  View Tools →
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Testimonials -->
+  <section class="section bg-gray-50">
+    <div class="container-custom">
+      <SectionHeader
+        eyebrow="Customer Reviews"
+        title="Loved by IT Professionals"
+        subtitle="Join over 1 million users who trust our tools for their critical data operations."
+        centered
+        className="mb-12"
+      />
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {testimonials.map((t) => (
+          <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+            <div class="flex text-amber-400 text-sm mb-3">{"★".repeat(t.rating)}</div>
+            <p class="text-sm text-gray-600 leading-relaxed mb-4">"{t.content}"</p>
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white text-sm font-bold">
+                {t.author.charAt(0)}
+              </div>
+              <div>
+                <div class="text-sm font-semibold text-gray-900">{t.author}</div>
+                <div class="text-xs text-gray-500">{t.role}, {t.company}</div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Overall Rating -->
+      <div class="mt-12 flex flex-col sm:flex-row items-center justify-center gap-8 py-8 bg-white rounded-2xl border border-gray-100 shadow-sm">
+        <div class="text-center">
+          <div class="text-5xl font-bold text-gray-900">4.8</div>
+          <div class="flex justify-center text-amber-400 mt-2 text-xl">★★★★★</div>
+          <div class="text-sm text-gray-500 mt-1">Average Rating</div>
+        </div>
+        <div class="w-px h-16 bg-gray-200 hidden sm:block"></div>
+        <div class="text-center">
+          <div class="text-5xl font-bold text-gray-900">8,600+</div>
+          <div class="text-sm text-gray-500 mt-3">Verified Reviews</div>
+        </div>
+        <div class="w-px h-16 bg-gray-200 hidden sm:block"></div>
+        <div class="text-center">
+          <div class="text-5xl font-bold text-gray-900">150+</div>
+          <div class="text-sm text-gray-500 mt-3">Countries</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Strip -->
+  <section class="hero-gradient py-16">
+    <div class="container-custom text-center">
+      <h2 class="text-white font-bold mb-4">Ready to Migrate Your Data?</h2>
+      <p class="text-gray-300 mb-8 max-w-xl mx-auto">
+        Try any tool free. No credit card required. Migrate up to 50 items in trial mode.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/download" class="btn btn-accent text-base py-3.5 px-8">⬇️ Download Free Trial</a>
+        <a href="/products" class="btn btn-ghost-white text-base py-3.5 px-8">Browse All Products →</a>
+      </div>
+    </div>
+  </section>

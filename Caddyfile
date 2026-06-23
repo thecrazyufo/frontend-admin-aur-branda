@@ -1,0 +1,45 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Caddy Reverse Proxy & SSL Configuration
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Admin Frontend Dashboard
+admin.{$DOMAIN} {
+    reverse_proxy tenant_frontend_admin:3000
+    encode gzip
+}
+
+# Storefront Brand A
+branda.{$DOMAIN} {
+    reverse_proxy brandA:4321
+    encode gzip
+}
+
+# Storefront Brand B
+brandb.{$DOMAIN} {
+    reverse_proxy brandB:4321
+    encode gzip
+}
+
+# Storefront Brand C
+brandc.{$DOMAIN} {
+    reverse_proxy brandC:4321
+    encode gzip
+}
+
+# Storefront Brand D
+brandd.{$DOMAIN} {
+    reverse_proxy brandD:4321
+    encode gzip
+}
+
+# Storefront Brand E
+brande.{$DOMAIN} {
+    reverse_proxy brandE:4321
+    encode gzip
+}
+
+# Backend Spring Boot API
+api.{$DOMAIN} {
+    reverse_proxy tenant-backend:8080
+    encode gzip
+}

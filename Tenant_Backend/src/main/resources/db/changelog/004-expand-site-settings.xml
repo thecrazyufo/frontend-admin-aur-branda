@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         Changeset 004 — Expand site_settings for full admin customizability
+         Adds JSONB columns for: theme, navigation, hero, home sections,
+         legal pages, about page, coupons, announcements, and SEO defaults.
+         ═══════════════════════════════════════════════════════════════════════ -->
+
+    <changeSet id="004-site-settings-theme" author="platform">
+        <addColumn tableName="site_settings">
+            <column name="theme" type="JSONB"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="004-site-settings-navigation" author="platform">
+        <addColumn tableName="site_settings">
+            <column name="main_navigation" type="JSONB"/>
+            <column name="footer_config" type="JSONB"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="004-site-settings-home-page" author="platform">
+        <addColumn tableName="site_settings">
+            <column name="hero" type="JSONB"/>
+            <column name="home_sections" type="JSONB"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="004-site-settings-legal" author="platform">
+        <addColumn tableName="site_settings">
+            <column name="legal_pages" type="JSONB"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="004-site-settings-about" author="platform">
+        <addColumn tableName="site_settings">
+            <column name="about_page" type="JSONB"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="004-site-settings-offers" author="platform">
+        <addColumn tableName="site_settings">
+            <column name="coupons" type="JSONB"/>
+            <column name="announcement" type="JSONB"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="004-site-settings-seo-defaults" author="platform">
+        <addColumn tableName="site_settings">
+            <column name="seo_defaults" type="JSONB"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

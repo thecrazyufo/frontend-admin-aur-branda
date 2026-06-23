@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         Changeset 001 — Initial Brand Tenant Schema
+         Applies to: brandA, brandB, brandC, brandD, brandE databases
+         Each brand database has a fully isolated copy of this schema.
+         ═══════════════════════════════════════════════════════════════════════ -->
+
+    <changeSet id="001-categories" author="platform">
+        <createTable tableName="categories">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="slug" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="icon" type="VARCHAR(255)"/>
+            <column name="count" type="INTEGER"/>
+            <column name="color" type="VARCHAR(255)"/>
+            <column name="site_id" type="VARCHAR(255)" defaultValue="default">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="001-faqs" author="platform">
+        <createTable tableName="faqs">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="question" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="answer" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="site_id" type="VARCHAR(255)" defaultValue="default">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="001-help-articles" author="platform">
+        <createTable tableName="help_articles">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="slug" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="excerpt" type="TEXT"/>
+            <column name="content" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tags" type="JSONB"/>
+            <column name="published_at" type="VARCHAR(255)"/>
+            <column name="helpful" type="INTEGER"/>
+            <column name="not_helpful" type="INTEGER"/>
+            <column name="site_id" type="VARCHAR(255)" defaultValue="default">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="001-inquiries" author="platform">
+        <createTable tableName="inquiries">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subject" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="message" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP"/>
+            <column name="site_id" type="VARCHAR(255)" defaultValue="default">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="001-license-keys" author="platform">
+        <createTable tableName="license_keys">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="activation_key" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="order_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="pricing_tier_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="customer_email" type="VARCHAR(255)"/>
+            <column name="status" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="max_devices" type="INTEGER" defaultValueNumeric="3">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP"/>
+            <column name="expires_at" type="TIMESTAMP"/>
+            <column name="site_id" type="VARCHAR(255)" defaultValue="brandA">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="001-legacy-license-activations" author="platform">
+        <createTable tableName="legacy_license_activations">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="license_key_id" type="VARCHAR(255)"/>
+            <column name="hardware_fingerprint" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="device_name" type="VARCHAR(255)"/>
+            <column name="activated_at" type="TIMESTAMP"/>
+            <column name="last_check_in" type="TIMESTAMP"/>
+        </createTable>
+        <addForeignKeyConstraint
+            baseTableName="legacy_license_activations"
+            baseColumnNames="license_key_id"
+            constraintName="fk_legacy_activation_license_key"
+            referencedTableName="license_keys"
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="001-licenses" author="platform">
+        <createTable tableName="licenses">
+            <column name="id" type="INTEGER" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="license_key" type="VARCHAR(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="status" type="VARCHAR(20)" defaultValue="ACTIVE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="license_type" type="VARCHAR(30)" defaultValue="STANDARD">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expires_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="max_activations" type="INTEGER" defaultValueNumeric="3"/>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="site_id" type="VARCHAR(255)" defaultValue="brandA">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="001-activations" author="platform">
+        <createTable tableName="activations">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="license_id" type="INTEGER"/>
+            <column name="machine_id" type="VARCHAR(255)"/>
+            <column name="status" type="VARCHAR(50)"/>
+            <column name="activated_at" type="TIMESTAMP"/>
+        </createTable>
+        <addForeignKeyConstraint
+            baseTableName="activations"
+            baseColumnNames="license_id"
+            constraintName="fk_activation_license"
+            referencedTableName="licenses"
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="001-products" author="platform">
+        <createTable tableName="products">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="slug" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="short_description" type="TEXT"/>
+            <column name="description" type="TEXT"/>
+            <column name="category" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tags" type="JSONB"/>
+            <column name="rating" type="DOUBLE PRECISION" defaultValueNumeric="0"/>
+            <column name="review_count" type="INTEGER" defaultValueNumeric="0"/>
+            <column name="downloads" type="VARCHAR(255)"/>
+            <column name="badge" type="VARCHAR(255)"/>
+            <column name="version" type="VARCHAR(255)"/>
+            <column name="last_updated" type="VARCHAR(255)"/>
+            <column name="trial_download_url" type="VARCHAR(255)"/>
+            <column name="features" type="JSONB"/>
+            <column name="platforms" type="JSONB"/>
+            <column name="supported_formats" type="JSONB"/>
+            <column name="screenshots" type="JSONB"/>
+            <column name="pricing_tiers" type="JSONB"/>
+            <column name="seo" type="JSONB"/>
+            <column name="system_requirements" type="JSONB"/>
+            <column name="how_it_works" type="JSONB"/>
+            <column name="reviews" type="JSONB"/>
+            <column name="faqs" type="JSONB"/>
+            <column name="site_id" type="VARCHAR(255)" defaultValue="default">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="001-blog-posts" author="platform">
+        <createTable tableName="blog_posts">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="slug" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="excerpt" type="TEXT"/>
+            <column name="content" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category" type="VARCHAR(255)"/>
+            <column name="tags" type="JSONB"/>
+            <column name="published_at" type="VARCHAR(255)"/>
+            <column name="reading_time" type="INTEGER"/>
+            <column name="image_url" type="VARCHAR(255)"/>
+            <column name="author" type="JSONB"/>
+            <column name="seo" type="JSONB"/>
+            <column name="site_id" type="VARCHAR(255)" defaultValue="default">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="001-site-settings" author="platform">
+        <createTable tableName="site_settings">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="site_id" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tagline" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="url" type="VARCHAR(255)"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="phone" type="VARCHAR(255)"/>
+            <column name="address" type="TEXT"/>
+            <column name="socials" type="JSONB"/>
+            <column name="stats" type="JSONB"/>
+            <column name="trust_badges" type="JSONB"/>
+            <column name="team_members" type="JSONB"/>
+            <column name="pricing_comparison" type="JSONB"/>
+            <column name="pricing_faqs" type="JSONB"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="001-trial-downloads" author="platform">
+        <createTable tableName="trial_downloads">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_slug" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="downloaded_at" type="TIMESTAMP"/>
+            <column name="site_id" type="VARCHAR(255)" defaultValue="default">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

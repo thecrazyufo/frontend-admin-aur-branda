@@ -1,0 +1,269 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { ProductAPI , SettingsAPI } from "@/services/api";
+const settings = await SettingsAPI.get().catch(() => null);
+import { Star, Download, ShoppingCart, Check, Monitor, ChevronRight } from "lucide-react";
+import { generateProductSchema, generateBreadcrumbSchema, generateFAQSchema } from "@/lib/seo";
+import PricingCard from "@/components/common/PricingCard";
+import ProductCard from "@/components/common/ProductCard";
+import SectionHeader from "@/components/common/SectionHeader";
+import Breadcrumb from "@/components/layout/Breadcrumb";
+
+import type { Product } from "@/types/product";
+
+const { slug } = Astro.params;
+
+let product: Product | null = null;
+let relatedProducts: Product[] = [];
+
+try {
+  if (slug) {
+    product = await ProductAPI.getBySlug(slug);
+    if (product) {
+      relatedProducts = await ProductAPI.getRelated(product.id);
+    }
+  }
+} catch (e) {
+  console.error("Error fetching product detail:", e);
+}
+
+if (!product || product.enabled === false) {
+  return new Response("Product Not Found", { status: 404 });
+}
+
+const productUrl = `${settings?.url || ""}/products/${product.slug}`;
+const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
+---
+
+<BaseLayout
+  title={`${product.seo?.title || product.name} — ${settings?.name || ""}`}
+  description={product.seo?.description || product.shortDescription}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(generateProductSchema({ name: product.name, description: product.description, price: lowestPaidPrice?.price || 0, rating: product.rating || 0, reviewCount: product.reviewCount || 0, url: productUrl }))} />
+  <script type="application/ld+json" set:html={JSON.stringify(generateBreadcrumbSchema([{ label: "Home", href: "/" }, { label: "Products", href: "/products" }, { label: product.name, href: `/products/${product.slug}` }]))} />
+  <script type="application/ld+json" set:html={JSON.stringify(generateFAQSchema(product.faqs || []))} />
+
+  <Breadcrumb items={[{ label: "Products", href: "/products" }, { label: product.name }]} />
+
+  {/* Product Hero */}
+  <section class="bg-white border-b border-gray-100 py-12">
+    <div class="container-custom">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          {product.badge && (
+            <span class="badge badge-blue mb-4 inline-block">
+              {product.badge === "bestseller" ? "🏆 Best Seller" : product.badge === "popular" ? "🔥 Popular" : product.badge === "new" ? "✨ New" : "🔄 Updated"}
+            </span>
+          )}
+          <h1 class="font-bold text-gray-900 mb-4">{product.name}</h1>
+          <p class="text-lg text-gray-600 mb-6">{product.shortDescription}</p>
+
+          {/* Rating */}
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex text-amber-400">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star size={18} fill={i < Math.floor(product.rating || 0) ? "currentColor" : "none"} strokeWidth={1.5} />
+              ))}
+            </div>
+            <span class="font-semibold text-gray-900">{product.rating || 0}</span>
+            <span class="text-gray-400">({(product.reviewCount || 0).toLocaleString()} reviews)</span>
+            <span class="text-gray-300">•</span>
+            <span class="text-blue-600 font-medium">{product.downloads || "0"} downloads</span>
+          </div>
+
+          {/* Top Features */}
+          <ul class="space-y-2 mb-8">
+            {(product.features || []).slice(0, 5).map((f) => (
+              <li class="flex items-center gap-2 text-sm text-gray-600">
+                <Check size={15} class="text-green-500 shrink-0" />
+                {f}
+              </li>
+            ))}
+          </ul>
+
+          {/* CTAs */}
+          <div class="flex flex-wrap gap-3">
+            <a href={`/checkout?product=${product.slug}&tier=${encodeURIComponent(lowestPaidPrice?.name || "Standard")}`} class="btn btn-accent text-base py-3 px-7 flex items-center gap-2">
+              <ShoppingCart size={18} />
+              Buy Now — ${lowestPaidPrice?.price}
+            </a>
+            <a href={`/download?product=${product.slug}`} class="btn btn-outline text-base py-3 px-6 flex items-center gap-2">
+              <Download size={18} />
+              Free Trial
+            </a>
+          </div>
+
+          {/* Platforms */}
+          <div class="flex items-center gap-2 mt-5 flex-wrap">
+            <Monitor size={14} class="text-gray-400" />
+            {(product.platforms || []).map((p) => (
+              <span class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">{p}</span>
+            ))}
+          </div>
+        </div>
+
+        {/* Product Visual */}
+        <div class="relative">
+          <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-12 flex items-center justify-center min-h-72">
+            <div class="text-center">
+              <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mx-auto mb-4 shadow-xl">
+                <Download size={40} class="text-white" />
+              </div>
+              <p class="font-bold text-gray-900 text-lg">{product.name}</p>
+              <p class="text-sm text-gray-500 mt-1">v{product.version}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* Description / HTML Overview Section */}
+  {product.description && (
+    <section class="section bg-white border-b border-gray-100" id="overview">
+      <div class="container-custom max-w-4xl">
+        <div class="prose max-w-none text-gray-700 leading-relaxed space-y-4">
+          <h2 class="font-bold text-gray-900 text-2xl mb-6">Product Overview</h2>
+          <div set:html={product.description} />
+        </div>
+      </div>
+    </section>
+  )}
+
+  {/* Features Section */}
+  <section class="section bg-gray-50" id="features">
+    <div class="container-custom">
+      <SectionHeader eyebrow="Features" title="Everything You Need" subtitle="Powerful features designed for professionals." class="mb-10" />
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {(product.features || []).map((feature) => (
+          <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-gray-100">
+            <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0 mt-0.5">
+              <Check size={14} class="text-blue-600" />
+            </div>
+            <span class="text-sm text-gray-700">{feature}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* How It Works */}
+  <section class="section bg-white" id="how-it-works">
+    <div class="container-custom">
+      <SectionHeader eyebrow="Process" title="How It Works" subtitle="Get started in 4 simple steps." centered class="mb-12" />
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {(product.howItWorks || []).map((step) => (
+          <div class="text-center">
+            <div class="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center mx-auto mb-4 text-xl font-bold shadow-lg">
+              {step.step}
+            </div>
+            <h3 class="font-bold text-gray-900 mb-2">{step.title}</h3>
+            <p class="text-sm text-gray-500">{step.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* Pricing */}
+  <section class="section bg-gray-50" id="pricing">
+    <div class="container-custom">
+      <SectionHeader eyebrow="Pricing" title="Choose Your Plan" subtitle="One-time payment. No subscriptions. Free trial available." centered class="mb-12" />
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto items-start">
+        {(product.pricing || []).map((tier) => (
+          <PricingCard tier={tier} productSlug={product.slug} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* Supported Formats */}
+  <section class="section bg-white">
+    <div class="container-custom">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div>
+          <SectionHeader eyebrow="Compatibility" title="Supported Formats" class="mb-6" />
+          <div class="flex flex-wrap gap-2">
+            {(product.supportedFormats || []).map((fmt) => (
+              <span class="px-3 py-1.5 bg-gray-100 text-gray-700 text-sm rounded-lg font-mono font-medium">
+                {fmt}
+              </span>
+            ))}
+          </div>
+        </div>
+        <div>
+          <SectionHeader eyebrow="Requirements" title="System Requirements" class="mb-6" />
+          <div class="bg-gray-50 rounded-2xl p-6 space-y-3">
+            <div class="flex gap-3"><span class="text-xs font-semibold text-gray-500 w-24 shrink-0 pt-0.5">OS</span><span class="text-sm text-gray-700">{product.systemRequirements?.os || "N/A"}</span></div>
+            <div class="flex gap-3"><span class="text-xs font-semibold text-gray-500 w-24 shrink-0 pt-0.5">Processor</span><span class="text-sm text-gray-700">{product.systemRequirements?.processor || "N/A"}</span></div>
+            <div class="flex gap-3"><span class="text-xs font-semibold text-gray-500 w-24 shrink-0 pt-0.5">RAM</span><span class="text-sm text-gray-700">{product.systemRequirements?.ram || "N/A"}</span></div>
+            <div class="flex gap-3"><span class="text-xs font-semibold text-gray-500 w-24 shrink-0 pt-0.5">Disk</span><span class="text-sm text-gray-700">{product.systemRequirements?.disk || "N/A"}</span></div>
+            {product.systemRequirements?.other?.map((req) => (
+              <div class="flex gap-3"><span class="text-xs font-semibold text-gray-500 w-24 shrink-0 pt-0.5">Other</span><span class="text-sm text-gray-700">{req}</span></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* FAQ */}
+  <section class="section bg-gray-50" id="faq">
+    <div class="container-custom max-w-3xl">
+      <SectionHeader eyebrow="FAQ" title="Frequently Asked Questions" centered class="mb-10" />
+      <div class="space-y-4">
+        {(product.faqs || []).map((faq) => (
+          <details class="group bg-white rounded-2xl border border-gray-100 shadow-sm">
+            <summary class="flex items-center justify-between px-6 py-4 cursor-pointer list-none">
+              <span class="font-semibold text-gray-900 pr-4">{faq.question}</span>
+              <ChevronRight size={18} class="text-gray-400 shrink-0 group-open:rotate-90 transition-transform" />
+            </summary>
+            <div class="px-6 pb-5">
+              <p class="text-sm text-gray-600 leading-relaxed">{faq.answer}</p>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* Reviews */}
+  <section class="section bg-white" id="reviews">
+    <div class="container-custom">
+      <SectionHeader eyebrow="Reviews" title={`Customer Reviews (${(product.reviewCount || 0).toLocaleString()})`} class="mb-10" />
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {(product.reviews || []).map((review) => (
+          <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+            <div class="flex text-amber-400 mb-3">
+              {Array.from({ length: review.rating || 0 }).map((_) => <Star size={14} fill="currentColor" />)}
+            </div>
+            <p class="text-sm text-gray-600 italic mb-4">&ldquo;{review.content}&rdquo;</p>
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white font-bold text-sm">
+                {review.author?.charAt(0) || "U"}
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-gray-900">{review.author}</p>
+                {(review.role || review.company) && (
+                  <p class="text-xs text-gray-400">{review.role}{review.role && review.company ? " · " : ""}{review.company}</p>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* Related Products */}
+  {relatedProducts.length > 0 && (
+    <section class="section bg-gray-50">
+      <div class="container-custom">
+        <SectionHeader eyebrow="You May Also Like" title="Related Products" class="mb-10" />
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {relatedProducts.map((p) => <ProductCard product={p} />)}
+        </div>
+      </div>
+    </section>
+  )}
+</BaseLayout>

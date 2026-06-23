@@ -1,0 +1,4 @@
+api.thecrazyufo.in {
+    reverse_proxy tenant-backend:8080
+    encode gzip
+}

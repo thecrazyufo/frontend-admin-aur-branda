@@ -1,0 +1,164 @@
+services:
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # PostgreSQL Databases — one per brand + one system DB
+  # ─────────────────────────────────────────────────────────────────────────────
+
+  db-postgres:
+    image: postgres:16
+    container_name: db_postgres
+    restart: always
+    command: ["postgres", "-c", "log_statement=all", "-c", "log_min_duration_statement=0"]
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: software_platform
+    ports:
+      - "5433:5432"
+    volumes:
+      - db_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d software_platform"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Backend API — Spring Boot (prod profile)
+  # ─────────────────────────────────────────────────────────────────────────────
+
+  tenant-backend:
+    build:
+      context: ./Tenant_Backend
+    image: tenant-backend
+    container_name: software_tenant_backend
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      JWT_SECRET: ${JWT_SECRET:-7a3f8c2d1e6b9a4f0e5c8b2d7a1e4f9c3b6a0d8e2f5c9b4a7e1d6c3f0b8a5e2}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-postgres:5432/software_platform
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin123
+    depends_on:
+      db-postgres:
+        condition: service_healthy
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Storefronts — Astro SSR (one per brand)
+  # ─────────────────────────────────────────────────────────────────────────────
+
+  brandA:
+    build:
+      context: ./storefront-brandA
+    image: branda
+    container_name: software_brandA
+    restart: always
+    ports:
+      - "3001:4321"
+    environment:
+      - PUBLIC_SITE_ID=brandA
+      - PUBLIC_API_URL=${PUBLIC_API_URL}
+    depends_on:
+      - tenant-backend
+
+  brandB:
+    build:
+      context: ./storefront-brandB
+    image: brandb
+    container_name: software_brandB
+    restart: always
+    ports:
+      - "3002:4321"
+    environment:
+      - PUBLIC_SITE_ID=brandB
+    depends_on:
+      - tenant-backend
+
+  brandC:
+    build:
+      context: ./storefront-brandC
+    image: brandc
+    container_name: software_brandC
+    restart: always
+    ports:
+      - "3003:4321"
+    environment:
+      - PUBLIC_SITE_ID=brandC
+    depends_on:
+      - tenant-backend
+
+  brandD:
+    build:
+      context: ./storefront-brandD
+    image: brandd
+    container_name: software_brandD
+    restart: always
+    ports:
+      - "3004:4321"
+    environment:
+      - PUBLIC_SITE_ID=brandD
+    depends_on:
+      - tenant-backend
+
+  brandE:
+    build:
+      context: ./storefront-brandE
+    image: brande
+    container_name: software_brandE
+    restart: always
+    ports:
+      - "3005:4321"
+    environment:
+      - PUBLIC_SITE_ID=brandE
+    depends_on:
+      - tenant-backend
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Admin Panel — Next.js
+  # ─────────────────────────────────────────────────────────────────────────────
+
+  tenant_frontend_admin:
+    build:
+      context: ./Tenant_Frontend_Admin
+    image: tenant-frontend-admin
+    container_name: software_tenant_frontend_admin
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - HOSTNAME=0.0.0.0
+    depends_on:
+      - tenant-backend
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Caddy Reverse Proxy Gateway
+  # ─────────────────────────────────────────────────────────────────────────────
+
+  caddy:
+    image: caddy:2.7-alpine
+    container_name: software_caddy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - DOMAIN=${DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - tenant_frontend_admin
+      - brandA
+      - brandB
+      - brandC
+      - brandD
+      - brandE
+
+volumes:
+  db_postgres_data:
+  caddy_data:
+  caddy_config:
+

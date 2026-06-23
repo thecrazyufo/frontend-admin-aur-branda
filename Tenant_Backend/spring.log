@@ -1,0 +1,1619 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------< com.datamigratepro:backend-api >-------------------
+[INFO] Building backend-api 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.4.3:run (default-cli) > test-compile @ backend-api >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ backend-api ---
+[INFO] Copying 2 resources from src/main/resources to target/classes
+[INFO] Copying 0 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ backend-api ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ backend-api ---
+[INFO] skip non existing resourceDirectory /Users/akashsahu.blue/Documents/Akas/software-selling-platform/Tenant_Backend/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ backend-api ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< spring-boot:3.4.3:run (default-cli) < test-compile @ backend-api <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.4.3:run (default-cli) @ backend-api ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.3)
+
+2026-06-18T02:40:23.813+05:30  INFO 68461 --- [           main] com.datamigratepro.Application           : Starting Application using Java 21.0.11 with PID 68461 (/Users/akashsahu.blue/Documents/Akas/software-selling-platform/Tenant_Backend/target/classes started by akashsahu.blue in /Users/akashsahu.blue/Documents/Akas/software-selling-platform/Tenant_Backend)
+2026-06-18T02:40:23.814+05:30  INFO 68461 --- [           main] com.datamigratepro.Application           : The following 1 profile is active: "test"
+2026-06-18T02:40:24.088+05:30  INFO 68461 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-18T02:40:24.120+05:30  INFO 68461 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 28 ms. Found 12 JPA repository interfaces.
+2026-06-18T02:40:24.327+05:30  INFO 68461 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-06-18T02:40:24.332+05:30  INFO 68461 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-18T02:40:24.333+05:30  INFO 68461 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.36]
+2026-06-18T02:40:24.351+05:30  INFO 68461 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-18T02:40:24.351+05:30  INFO 68461 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 521 ms
+2026-06-18T02:40:24.413+05:30  INFO 68461 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-18T02:40:24.431+05:30  INFO 68461 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.8.Final
+2026-06-18T02:40:24.441+05:30  INFO 68461 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-18T02:40:24.542+05:30  INFO 68461 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-18T02:40:24.552+05:30  INFO 68461 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-18T02:40:24.623+05:30  INFO 68461 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:testdb user=SA
+2026-06-18T02:40:24.624+05:30  INFO 68461 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-18T02:40:24.636+05:30  WARN 68461 --- [           main] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-18T02:40:24.644+05:30  INFO 68461 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-06-18T02:40:25.104+05:30  INFO 68461 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: 
+    drop table if exists blog_posts cascade 
+Hibernate: 
+    drop table if exists categories cascade 
+Hibernate: 
+    drop table if exists faqs cascade 
+Hibernate: 
+    drop table if exists help_articles cascade 
+Hibernate: 
+    drop table if exists inquiries cascade 
+Hibernate: 
+    drop table if exists legacy_license_activations cascade 
+Hibernate: 
+    drop table if exists license_activations cascade 
+Hibernate: 
+    drop table if exists license_keys cascade 
+Hibernate: 
+    drop table if exists licenses cascade 
+Hibernate: 
+    drop table if exists products cascade 
+Hibernate: 
+    drop table if exists site_settings cascade 
+Hibernate: 
+    drop table if exists trial_downloads cascade 
+Hibernate: 
+    create table blog_posts (
+        read_time integer,
+        category varchar(255) not null,
+        content TEXT not null,
+        cover_image varchar(255),
+        excerpt TEXT,
+        id varchar(255) not null,
+        published_at varchar(255),
+        site_id varchar(255) not null,
+        slug varchar(255) not null unique,
+        title varchar(255) not null,
+        author jsonb,
+        seo jsonb,
+        tags jsonb,
+        primary key (id)
+    )
+Hibernate: 
+    create table categories (
+        count integer,
+        color varchar(255),
+        description TEXT,
+        icon varchar(255),
+        id varchar(255) not null,
+        label varchar(255) not null,
+        site_id varchar(255) not null,
+        primary key (id)
+    )
+Hibernate: 
+    create table faqs (
+        answer TEXT not null,
+        category varchar(255) not null,
+        id varchar(255) not null,
+        question varchar(255) not null,
+        site_id varchar(255) not null,
+        primary key (id)
+    )
+Hibernate: 
+    create table help_articles (
+        helpful integer,
+        not_helpful integer,
+        category varchar(255) not null,
+        content TEXT not null,
+        excerpt TEXT,
+        id varchar(255) not null,
+        published_at varchar(255),
+        site_id varchar(255) not null,
+        slug varchar(255) not null unique,
+        title varchar(255) not null,
+        tags jsonb,
+        primary key (id)
+    )
+Hibernate: 
+    create table inquiries (
+        created_at timestamp(6),
+        id bigint generated by default as identity,
+        email varchar(255) not null,
+        message TEXT not null,
+        name varchar(255) not null,
+        subject varchar(255) not null,
+        primary key (id)
+    )
+Hibernate: 
+    create table legacy_license_activations (
+        activated_at timestamp(6),
+        last_check_in timestamp(6),
+        device_name varchar(255),
+        hardware_fingerprint varchar(255) not null,
+        id varchar(255) not null,
+        license_key_id varchar(255) not null,
+        primary key (id)
+    )
+Hibernate: 
+    create table license_activations (
+        id integer generated by default as identity,
+        license_id integer not null,
+        activated_at timestamp(6) with time zone,
+        last_checked_at timestamp(6) with time zone,
+        ip_address varchar(45),
+        machine_id varchar(100) not null,
+        machine_name varchar(100),
+        os_name varchar(100),
+        primary key (id),
+        unique (license_id, machine_id)
+    )
+Hibernate: 
+    create table license_keys (
+        max_devices integer not null,
+        created_at timestamp(6),
+        expires_at timestamp(6),
+        activation_key varchar(255) not null unique,
+        customer_email varchar(255),
+        id varchar(255) not null,
+        order_id varchar(255) not null,
+        pricing_tier_name varchar(255) not null,
+        product_id varchar(255) not null,
+        status enum ('ACTIVE','EXPIRED','REVOKED') not null,
+        primary key (id)
+    )
+Hibernate: 
+    create table licenses (
+        id integer generated by default as identity,
+        max_activations integer,
+        created_at timestamp(6) with time zone,
+        expires_at timestamp(6) with time zone,
+        status varchar(20) not null,
+        license_type varchar(30) not null,
+        license_key varchar(50) not null unique,
+        primary key (id)
+    )
+Hibernate: 
+    create table products (
+        rating float(53) not null,
+        review_count integer not null,
+        badge varchar(255),
+        category varchar(255) not null,
+        description TEXT,
+        downloads varchar(255),
+        id varchar(255) not null,
+        last_updated varchar(255),
+        name varchar(255) not null,
+        short_description TEXT,
+        site_id varchar(255) not null,
+        slug varchar(255) not null unique,
+        trial_download_url varchar(255),
+        version varchar(255),
+        faqs jsonb,
+        features jsonb,
+        how_it_works jsonb,
+        platforms jsonb,
+        pricing jsonb,
+        related_product_ids jsonb,
+        reviews jsonb,
+        screenshots jsonb,
+        seo jsonb,
+        supported_formats jsonb,
+        system_requirements jsonb,
+        tags jsonb,
+        primary key (id)
+    )
+Hibernate: 
+    create table site_settings (
+        address varchar(255),
+        description TEXT,
+        email varchar(255),
+        id varchar(255) not null,
+        name varchar(255) not null,
+        phone varchar(255),
+        site_id varchar(255) not null unique,
+        tagline varchar(255) not null,
+        url varchar(255),
+        pricing_comparison jsonb,
+        pricing_faqs jsonb,
+        socials jsonb,
+        stats jsonb,
+        team_members jsonb,
+        trust_badges jsonb,
+        primary key (id)
+    )
+Hibernate: 
+    create table trial_downloads (
+        downloaded_at timestamp(6),
+        id bigint generated by default as identity,
+        email varchar(255) not null,
+        product_slug varchar(255) not null,
+        primary key (id)
+    )
+Hibernate: 
+    alter table if exists legacy_license_activations 
+       add constraint FK5c44olnpay2thijw0f9p7sfpa 
+       foreign key (license_key_id) 
+       references license_keys
+Hibernate: 
+    alter table if exists license_activations 
+       add constraint FKd2dhejsthi67qmqdmjkrln85n 
+       foreign key (license_id) 
+       references licenses
+2026-06-18T02:40:25.131+05:30  INFO 68461 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-18T02:40:25.334+05:30  WARN 68461 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-18T02:40:25.341+05:30  WARN 68461 --- [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: a7f31d1b-c720-4859-925b-5f4b3e6f3c6e
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-06-18T02:40:25.344+05:30  INFO 68461 --- [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-06-18T02:40:25.522+05:30  INFO 68461 --- [           main] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
+2026-06-18T02:40:25.552+05:30  INFO 68461 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-06-18T02:40:25.556+05:30  INFO 68461 --- [           main] com.datamigratepro.Application           : Started Application in 1.904 seconds (process running for 2.044)
+Hibernate: 
+    select
+        count(*) 
+    from
+        categories c1_0
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.color,
+        c1_0.count,
+        c1_0.description,
+        c1_0.icon,
+        c1_0.label,
+        c1_0.site_id 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.color,
+        c1_0.count,
+        c1_0.description,
+        c1_0.icon,
+        c1_0.label,
+        c1_0.site_id 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.color,
+        c1_0.count,
+        c1_0.description,
+        c1_0.icon,
+        c1_0.label,
+        c1_0.site_id 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.color,
+        c1_0.count,
+        c1_0.description,
+        c1_0.icon,
+        c1_0.label,
+        c1_0.site_id 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.color,
+        c1_0.count,
+        c1_0.description,
+        c1_0.icon,
+        c1_0.label,
+        c1_0.site_id 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.color,
+        c1_0.count,
+        c1_0.description,
+        c1_0.icon,
+        c1_0.label,
+        c1_0.site_id 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    insert 
+    into
+        categories
+        (color, count, description, icon, label, site_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        categories
+        (color, count, description, icon, label, site_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        categories
+        (color, count, description, icon, label, site_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        categories
+        (color, count, description, icon, label, site_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        categories
+        (color, count, description, icon, label, site_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        categories
+        (color, count, description, icon, label, site_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.answer,
+        f1_0.category,
+        f1_0.question,
+        f1_0.site_id 
+    from
+        faqs f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.answer,
+        f1_0.category,
+        f1_0.question,
+        f1_0.site_id 
+    from
+        faqs f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.answer,
+        f1_0.category,
+        f1_0.question,
+        f1_0.site_id 
+    from
+        faqs f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.answer,
+        f1_0.category,
+        f1_0.question,
+        f1_0.site_id 
+    from
+        faqs f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.answer,
+        f1_0.category,
+        f1_0.question,
+        f1_0.site_id 
+    from
+        faqs f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.answer,
+        f1_0.category,
+        f1_0.question,
+        f1_0.site_id 
+    from
+        faqs f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.answer,
+        f1_0.category,
+        f1_0.question,
+        f1_0.site_id 
+    from
+        faqs f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.answer,
+        f1_0.category,
+        f1_0.question,
+        f1_0.site_id 
+    from
+        faqs f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.answer,
+        f1_0.category,
+        f1_0.question,
+        f1_0.site_id 
+    from
+        faqs f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.answer,
+        f1_0.category,
+        f1_0.question,
+        f1_0.site_id 
+    from
+        faqs f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.answer,
+        f1_0.category,
+        f1_0.question,
+        f1_0.site_id 
+    from
+        faqs f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.answer,
+        f1_0.category,
+        f1_0.question,
+        f1_0.site_id 
+    from
+        faqs f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.answer,
+        f1_0.category,
+        f1_0.question,
+        f1_0.site_id 
+    from
+        faqs f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.answer,
+        f1_0.category,
+        f1_0.question,
+        f1_0.site_id 
+    from
+        faqs f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.answer,
+        f1_0.category,
+        f1_0.question,
+        f1_0.site_id 
+    from
+        faqs f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    insert 
+    into
+        faqs
+        (answer, category, question, site_id, id) 
+    values
+        (?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        faqs
+        (answer, category, question, site_id, id) 
+    values
+        (?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        faqs
+        (answer, category, question, site_id, id) 
+    values
+        (?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        faqs
+        (answer, category, question, site_id, id) 
+    values
+        (?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        faqs
+        (answer, category, question, site_id, id) 
+    values
+        (?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        faqs
+        (answer, category, question, site_id, id) 
+    values
+        (?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        faqs
+        (answer, category, question, site_id, id) 
+    values
+        (?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        faqs
+        (answer, category, question, site_id, id) 
+    values
+        (?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        faqs
+        (answer, category, question, site_id, id) 
+    values
+        (?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        faqs
+        (answer, category, question, site_id, id) 
+    values
+        (?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        faqs
+        (answer, category, question, site_id, id) 
+    values
+        (?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        faqs
+        (answer, category, question, site_id, id) 
+    values
+        (?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        faqs
+        (answer, category, question, site_id, id) 
+    values
+        (?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        faqs
+        (answer, category, question, site_id, id) 
+    values
+        (?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        faqs
+        (answer, category, question, site_id, id) 
+    values
+        (?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        p1_0.id,
+        p1_0.badge,
+        p1_0.category,
+        p1_0.description,
+        p1_0.downloads,
+        p1_0.faqs,
+        p1_0.features,
+        p1_0.how_it_works,
+        p1_0.last_updated,
+        p1_0.name,
+        p1_0.platforms,
+        p1_0.pricing,
+        p1_0.rating,
+        p1_0.related_product_ids,
+        p1_0.review_count,
+        p1_0.reviews,
+        p1_0.screenshots,
+        p1_0.seo,
+        p1_0.short_description,
+        p1_0.site_id,
+        p1_0.slug,
+        p1_0.supported_formats,
+        p1_0.system_requirements,
+        p1_0.tags,
+        p1_0.trial_download_url,
+        p1_0.version 
+    from
+        products p1_0 
+    where
+        p1_0.id=?
+Hibernate: 
+    insert 
+    into
+        products
+        (badge, category, description, downloads, faqs, features, how_it_works, last_updated, name, platforms, pricing, rating, related_product_ids, review_count, reviews, screenshots, seo, short_description, site_id, slug, supported_formats, system_requirements, tags, trial_download_url, version, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        p1_0.id,
+        p1_0.badge,
+        p1_0.category,
+        p1_0.description,
+        p1_0.downloads,
+        p1_0.faqs,
+        p1_0.features,
+        p1_0.how_it_works,
+        p1_0.last_updated,
+        p1_0.name,
+        p1_0.platforms,
+        p1_0.pricing,
+        p1_0.rating,
+        p1_0.related_product_ids,
+        p1_0.review_count,
+        p1_0.reviews,
+        p1_0.screenshots,
+        p1_0.seo,
+        p1_0.short_description,
+        p1_0.site_id,
+        p1_0.slug,
+        p1_0.supported_formats,
+        p1_0.system_requirements,
+        p1_0.tags,
+        p1_0.trial_download_url,
+        p1_0.version 
+    from
+        products p1_0 
+    where
+        p1_0.id=?
+Hibernate: 
+    insert 
+    into
+        products
+        (badge, category, description, downloads, faqs, features, how_it_works, last_updated, name, platforms, pricing, rating, related_product_ids, review_count, reviews, screenshots, seo, short_description, site_id, slug, supported_formats, system_requirements, tags, trial_download_url, version, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        p1_0.id,
+        p1_0.badge,
+        p1_0.category,
+        p1_0.description,
+        p1_0.downloads,
+        p1_0.faqs,
+        p1_0.features,
+        p1_0.how_it_works,
+        p1_0.last_updated,
+        p1_0.name,
+        p1_0.platforms,
+        p1_0.pricing,
+        p1_0.rating,
+        p1_0.related_product_ids,
+        p1_0.review_count,
+        p1_0.reviews,
+        p1_0.screenshots,
+        p1_0.seo,
+        p1_0.short_description,
+        p1_0.site_id,
+        p1_0.slug,
+        p1_0.supported_formats,
+        p1_0.system_requirements,
+        p1_0.tags,
+        p1_0.trial_download_url,
+        p1_0.version 
+    from
+        products p1_0 
+    where
+        p1_0.id=?
+Hibernate: 
+    insert 
+    into
+        products
+        (badge, category, description, downloads, faqs, features, how_it_works, last_updated, name, platforms, pricing, rating, related_product_ids, review_count, reviews, screenshots, seo, short_description, site_id, slug, supported_formats, system_requirements, tags, trial_download_url, version, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        p1_0.id,
+        p1_0.badge,
+        p1_0.category,
+        p1_0.description,
+        p1_0.downloads,
+        p1_0.faqs,
+        p1_0.features,
+        p1_0.how_it_works,
+        p1_0.last_updated,
+        p1_0.name,
+        p1_0.platforms,
+        p1_0.pricing,
+        p1_0.rating,
+        p1_0.related_product_ids,
+        p1_0.review_count,
+        p1_0.reviews,
+        p1_0.screenshots,
+        p1_0.seo,
+        p1_0.short_description,
+        p1_0.site_id,
+        p1_0.slug,
+        p1_0.supported_formats,
+        p1_0.system_requirements,
+        p1_0.tags,
+        p1_0.trial_download_url,
+        p1_0.version 
+    from
+        products p1_0 
+    where
+        p1_0.id=?
+Hibernate: 
+    insert 
+    into
+        products
+        (badge, category, description, downloads, faqs, features, how_it_works, last_updated, name, platforms, pricing, rating, related_product_ids, review_count, reviews, screenshots, seo, short_description, site_id, slug, supported_formats, system_requirements, tags, trial_download_url, version, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        p1_0.id,
+        p1_0.badge,
+        p1_0.category,
+        p1_0.description,
+        p1_0.downloads,
+        p1_0.faqs,
+        p1_0.features,
+        p1_0.how_it_works,
+        p1_0.last_updated,
+        p1_0.name,
+        p1_0.platforms,
+        p1_0.pricing,
+        p1_0.rating,
+        p1_0.related_product_ids,
+        p1_0.review_count,
+        p1_0.reviews,
+        p1_0.screenshots,
+        p1_0.seo,
+        p1_0.short_description,
+        p1_0.site_id,
+        p1_0.slug,
+        p1_0.supported_formats,
+        p1_0.system_requirements,
+        p1_0.tags,
+        p1_0.trial_download_url,
+        p1_0.version 
+    from
+        products p1_0 
+    where
+        p1_0.id=?
+Hibernate: 
+    insert 
+    into
+        products
+        (badge, category, description, downloads, faqs, features, how_it_works, last_updated, name, platforms, pricing, rating, related_product_ids, review_count, reviews, screenshots, seo, short_description, site_id, slug, supported_formats, system_requirements, tags, trial_download_url, version, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        p1_0.id,
+        p1_0.badge,
+        p1_0.category,
+        p1_0.description,
+        p1_0.downloads,
+        p1_0.faqs,
+        p1_0.features,
+        p1_0.how_it_works,
+        p1_0.last_updated,
+        p1_0.name,
+        p1_0.platforms,
+        p1_0.pricing,
+        p1_0.rating,
+        p1_0.related_product_ids,
+        p1_0.review_count,
+        p1_0.reviews,
+        p1_0.screenshots,
+        p1_0.seo,
+        p1_0.short_description,
+        p1_0.site_id,
+        p1_0.slug,
+        p1_0.supported_formats,
+        p1_0.system_requirements,
+        p1_0.tags,
+        p1_0.trial_download_url,
+        p1_0.version 
+    from
+        products p1_0 
+    where
+        p1_0.id=?
+Hibernate: 
+    insert 
+    into
+        products
+        (badge, category, description, downloads, faqs, features, how_it_works, last_updated, name, platforms, pricing, rating, related_product_ids, review_count, reviews, screenshots, seo, short_description, site_id, slug, supported_formats, system_requirements, tags, trial_download_url, version, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        bp1_0.id,
+        bp1_0.author,
+        bp1_0.category,
+        bp1_0.content,
+        bp1_0.cover_image,
+        bp1_0.excerpt,
+        bp1_0.published_at,
+        bp1_0.read_time,
+        bp1_0.seo,
+        bp1_0.site_id,
+        bp1_0.slug,
+        bp1_0.tags,
+        bp1_0.title 
+    from
+        blog_posts bp1_0 
+    where
+        bp1_0.id=?
+Hibernate: 
+    insert 
+    into
+        blog_posts
+        (author, category, content, cover_image, excerpt, published_at, read_time, seo, site_id, slug, tags, title, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        bp1_0.id,
+        bp1_0.author,
+        bp1_0.category,
+        bp1_0.content,
+        bp1_0.cover_image,
+        bp1_0.excerpt,
+        bp1_0.published_at,
+        bp1_0.read_time,
+        bp1_0.seo,
+        bp1_0.site_id,
+        bp1_0.slug,
+        bp1_0.tags,
+        bp1_0.title 
+    from
+        blog_posts bp1_0 
+    where
+        bp1_0.id=?
+Hibernate: 
+    insert 
+    into
+        blog_posts
+        (author, category, content, cover_image, excerpt, published_at, read_time, seo, site_id, slug, tags, title, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        bp1_0.id,
+        bp1_0.author,
+        bp1_0.category,
+        bp1_0.content,
+        bp1_0.cover_image,
+        bp1_0.excerpt,
+        bp1_0.published_at,
+        bp1_0.read_time,
+        bp1_0.seo,
+        bp1_0.site_id,
+        bp1_0.slug,
+        bp1_0.tags,
+        bp1_0.title 
+    from
+        blog_posts bp1_0 
+    where
+        bp1_0.id=?
+Hibernate: 
+    insert 
+    into
+        blog_posts
+        (author, category, content, cover_image, excerpt, published_at, read_time, seo, site_id, slug, tags, title, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        bp1_0.id,
+        bp1_0.author,
+        bp1_0.category,
+        bp1_0.content,
+        bp1_0.cover_image,
+        bp1_0.excerpt,
+        bp1_0.published_at,
+        bp1_0.read_time,
+        bp1_0.seo,
+        bp1_0.site_id,
+        bp1_0.slug,
+        bp1_0.tags,
+        bp1_0.title 
+    from
+        blog_posts bp1_0 
+    where
+        bp1_0.id=?
+Hibernate: 
+    insert 
+    into
+        blog_posts
+        (author, category, content, cover_image, excerpt, published_at, read_time, seo, site_id, slug, tags, title, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        ha1_0.id,
+        ha1_0.category,
+        ha1_0.content,
+        ha1_0.excerpt,
+        ha1_0.helpful,
+        ha1_0.not_helpful,
+        ha1_0.published_at,
+        ha1_0.site_id,
+        ha1_0.slug,
+        ha1_0.tags,
+        ha1_0.title 
+    from
+        help_articles ha1_0 
+    where
+        ha1_0.id=?
+Hibernate: 
+    insert 
+    into
+        help_articles
+        (category, content, excerpt, helpful, not_helpful, published_at, site_id, slug, tags, title, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        ha1_0.id,
+        ha1_0.category,
+        ha1_0.content,
+        ha1_0.excerpt,
+        ha1_0.helpful,
+        ha1_0.not_helpful,
+        ha1_0.published_at,
+        ha1_0.site_id,
+        ha1_0.slug,
+        ha1_0.tags,
+        ha1_0.title 
+    from
+        help_articles ha1_0 
+    where
+        ha1_0.id=?
+Hibernate: 
+    insert 
+    into
+        help_articles
+        (category, content, excerpt, helpful, not_helpful, published_at, site_id, slug, tags, title, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        ha1_0.id,
+        ha1_0.category,
+        ha1_0.content,
+        ha1_0.excerpt,
+        ha1_0.helpful,
+        ha1_0.not_helpful,
+        ha1_0.published_at,
+        ha1_0.site_id,
+        ha1_0.slug,
+        ha1_0.tags,
+        ha1_0.title 
+    from
+        help_articles ha1_0 
+    where
+        ha1_0.id=?
+Hibernate: 
+    insert 
+    into
+        help_articles
+        (category, content, excerpt, helpful, not_helpful, published_at, site_id, slug, tags, title, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.color,
+        c1_0.count,
+        c1_0.description,
+        c1_0.icon,
+        c1_0.label,
+        c1_0.site_id 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    insert 
+    into
+        categories
+        (color, count, description, icon, label, site_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        p1_0.id,
+        p1_0.badge,
+        p1_0.category,
+        p1_0.description,
+        p1_0.downloads,
+        p1_0.faqs,
+        p1_0.features,
+        p1_0.how_it_works,
+        p1_0.last_updated,
+        p1_0.name,
+        p1_0.platforms,
+        p1_0.pricing,
+        p1_0.rating,
+        p1_0.related_product_ids,
+        p1_0.review_count,
+        p1_0.reviews,
+        p1_0.screenshots,
+        p1_0.seo,
+        p1_0.short_description,
+        p1_0.site_id,
+        p1_0.slug,
+        p1_0.supported_formats,
+        p1_0.system_requirements,
+        p1_0.tags,
+        p1_0.trial_download_url,
+        p1_0.version 
+    from
+        products p1_0 
+    where
+        p1_0.id=?
+Hibernate: 
+    insert 
+    into
+        products
+        (badge, category, description, downloads, faqs, features, how_it_works, last_updated, name, platforms, pricing, rating, related_product_ids, review_count, reviews, screenshots, seo, short_description, site_id, slug, supported_formats, system_requirements, tags, trial_download_url, version, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.answer,
+        f1_0.category,
+        f1_0.question,
+        f1_0.site_id 
+    from
+        faqs f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    insert 
+    into
+        faqs
+        (answer, category, question, site_id, id) 
+    values
+        (?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.color,
+        c1_0.count,
+        c1_0.description,
+        c1_0.icon,
+        c1_0.label,
+        c1_0.site_id 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    insert 
+    into
+        categories
+        (color, count, description, icon, label, site_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        p1_0.id,
+        p1_0.badge,
+        p1_0.category,
+        p1_0.description,
+        p1_0.downloads,
+        p1_0.faqs,
+        p1_0.features,
+        p1_0.how_it_works,
+        p1_0.last_updated,
+        p1_0.name,
+        p1_0.platforms,
+        p1_0.pricing,
+        p1_0.rating,
+        p1_0.related_product_ids,
+        p1_0.review_count,
+        p1_0.reviews,
+        p1_0.screenshots,
+        p1_0.seo,
+        p1_0.short_description,
+        p1_0.site_id,
+        p1_0.slug,
+        p1_0.supported_formats,
+        p1_0.system_requirements,
+        p1_0.tags,
+        p1_0.trial_download_url,
+        p1_0.version 
+    from
+        products p1_0 
+    where
+        p1_0.id=?
+Hibernate: 
+    insert 
+    into
+        products
+        (badge, category, description, downloads, faqs, features, how_it_works, last_updated, name, platforms, pricing, rating, related_product_ids, review_count, reviews, screenshots, seo, short_description, site_id, slug, supported_formats, system_requirements, tags, trial_download_url, version, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.answer,
+        f1_0.category,
+        f1_0.question,
+        f1_0.site_id 
+    from
+        faqs f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    insert 
+    into
+        faqs
+        (answer, category, question, site_id, id) 
+    values
+        (?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.color,
+        c1_0.count,
+        c1_0.description,
+        c1_0.icon,
+        c1_0.label,
+        c1_0.site_id 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    insert 
+    into
+        categories
+        (color, count, description, icon, label, site_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        p1_0.id,
+        p1_0.badge,
+        p1_0.category,
+        p1_0.description,
+        p1_0.downloads,
+        p1_0.faqs,
+        p1_0.features,
+        p1_0.how_it_works,
+        p1_0.last_updated,
+        p1_0.name,
+        p1_0.platforms,
+        p1_0.pricing,
+        p1_0.rating,
+        p1_0.related_product_ids,
+        p1_0.review_count,
+        p1_0.reviews,
+        p1_0.screenshots,
+        p1_0.seo,
+        p1_0.short_description,
+        p1_0.site_id,
+        p1_0.slug,
+        p1_0.supported_formats,
+        p1_0.system_requirements,
+        p1_0.tags,
+        p1_0.trial_download_url,
+        p1_0.version 
+    from
+        products p1_0 
+    where
+        p1_0.id=?
+Hibernate: 
+    insert 
+    into
+        products
+        (badge, category, description, downloads, faqs, features, how_it_works, last_updated, name, platforms, pricing, rating, related_product_ids, review_count, reviews, screenshots, seo, short_description, site_id, slug, supported_formats, system_requirements, tags, trial_download_url, version, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.answer,
+        f1_0.category,
+        f1_0.question,
+        f1_0.site_id 
+    from
+        faqs f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    insert 
+    into
+        faqs
+        (answer, category, question, site_id, id) 
+    values
+        (?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.color,
+        c1_0.count,
+        c1_0.description,
+        c1_0.icon,
+        c1_0.label,
+        c1_0.site_id 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    insert 
+    into
+        categories
+        (color, count, description, icon, label, site_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        p1_0.id,
+        p1_0.badge,
+        p1_0.category,
+        p1_0.description,
+        p1_0.downloads,
+        p1_0.faqs,
+        p1_0.features,
+        p1_0.how_it_works,
+        p1_0.last_updated,
+        p1_0.name,
+        p1_0.platforms,
+        p1_0.pricing,
+        p1_0.rating,
+        p1_0.related_product_ids,
+        p1_0.review_count,
+        p1_0.reviews,
+        p1_0.screenshots,
+        p1_0.seo,
+        p1_0.short_description,
+        p1_0.site_id,
+        p1_0.slug,
+        p1_0.supported_formats,
+        p1_0.system_requirements,
+        p1_0.tags,
+        p1_0.trial_download_url,
+        p1_0.version 
+    from
+        products p1_0 
+    where
+        p1_0.id=?
+Hibernate: 
+    insert 
+    into
+        products
+        (badge, category, description, downloads, faqs, features, how_it_works, last_updated, name, platforms, pricing, rating, related_product_ids, review_count, reviews, screenshots, seo, short_description, site_id, slug, supported_formats, system_requirements, tags, trial_download_url, version, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.answer,
+        f1_0.category,
+        f1_0.question,
+        f1_0.site_id 
+    from
+        faqs f1_0 
+    where
+        f1_0.id=?
+Hibernate: 
+    insert 
+    into
+        faqs
+        (answer, category, question, site_id, id) 
+    values
+        (?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        ss1_0.id,
+        ss1_0.address,
+        ss1_0.description,
+        ss1_0.email,
+        ss1_0.name,
+        ss1_0.phone,
+        ss1_0.pricing_comparison,
+        ss1_0.pricing_faqs,
+        ss1_0.site_id,
+        ss1_0.socials,
+        ss1_0.stats,
+        ss1_0.tagline,
+        ss1_0.team_members,
+        ss1_0.trust_badges,
+        ss1_0.url 
+    from
+        site_settings ss1_0 
+    where
+        ss1_0.id=?
+Hibernate: 
+    insert 
+    into
+        site_settings
+        (address, description, email, name, phone, pricing_comparison, pricing_faqs, site_id, socials, stats, tagline, team_members, trust_badges, url, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        ss1_0.id,
+        ss1_0.address,
+        ss1_0.description,
+        ss1_0.email,
+        ss1_0.name,
+        ss1_0.phone,
+        ss1_0.pricing_comparison,
+        ss1_0.pricing_faqs,
+        ss1_0.site_id,
+        ss1_0.socials,
+        ss1_0.stats,
+        ss1_0.tagline,
+        ss1_0.team_members,
+        ss1_0.trust_badges,
+        ss1_0.url 
+    from
+        site_settings ss1_0 
+    where
+        ss1_0.id=?
+Hibernate: 
+    insert 
+    into
+        site_settings
+        (address, description, email, name, phone, pricing_comparison, pricing_faqs, site_id, socials, stats, tagline, team_members, trust_badges, url, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        ss1_0.id,
+        ss1_0.address,
+        ss1_0.description,
+        ss1_0.email,
+        ss1_0.name,
+        ss1_0.phone,
+        ss1_0.pricing_comparison,
+        ss1_0.pricing_faqs,
+        ss1_0.site_id,
+        ss1_0.socials,
+        ss1_0.stats,
+        ss1_0.tagline,
+        ss1_0.team_members,
+        ss1_0.trust_badges,
+        ss1_0.url 
+    from
+        site_settings ss1_0 
+    where
+        ss1_0.id=?
+Hibernate: 
+    insert 
+    into
+        site_settings
+        (address, description, email, name, phone, pricing_comparison, pricing_faqs, site_id, socials, stats, tagline, team_members, trust_badges, url, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        ss1_0.id,
+        ss1_0.address,
+        ss1_0.description,
+        ss1_0.email,
+        ss1_0.name,
+        ss1_0.phone,
+        ss1_0.pricing_comparison,
+        ss1_0.pricing_faqs,
+        ss1_0.site_id,
+        ss1_0.socials,
+        ss1_0.stats,
+        ss1_0.tagline,
+        ss1_0.team_members,
+        ss1_0.trust_badges,
+        ss1_0.url 
+    from
+        site_settings ss1_0 
+    where
+        ss1_0.id=?
+Hibernate: 
+    insert 
+    into
+        site_settings
+        (address, description, email, name, phone, pricing_comparison, pricing_faqs, site_id, socials, stats, tagline, team_members, trust_badges, url, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        ss1_0.id,
+        ss1_0.address,
+        ss1_0.description,
+        ss1_0.email,
+        ss1_0.name,
+        ss1_0.phone,
+        ss1_0.pricing_comparison,
+        ss1_0.pricing_faqs,
+        ss1_0.site_id,
+        ss1_0.socials,
+        ss1_0.stats,
+        ss1_0.tagline,
+        ss1_0.team_members,
+        ss1_0.trust_badges,
+        ss1_0.url 
+    from
+        site_settings ss1_0 
+    where
+        ss1_0.id=?
+Hibernate: 
+    insert 
+    into
+        site_settings
+        (address, description, email, name, phone, pricing_comparison, pricing_faqs, site_id, socials, stats, tagline, team_members, trust_badges, url, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+🌱 Database successfully seeded with full platform catalog!
+Hibernate: 
+    select
+        count(*) 
+    from
+        license_keys lk1_0
+Hibernate: 
+    insert 
+    into
+        license_keys
+        (activation_key, created_at, customer_email, expires_at, max_devices, order_id, pricing_tier_name, product_id, status, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        license_keys
+        (activation_key, created_at, customer_email, expires_at, max_devices, order_id, pricing_tier_name, product_id, status, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        license_keys
+        (activation_key, created_at, customer_email, expires_at, max_devices, order_id, pricing_tier_name, product_id, status, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+🔑 Seeded initial active and testing license keys!
+Hibernate: 
+    select
+        count(*) 
+    from
+        licenses l1_0
+Hibernate: 
+    insert 
+    into
+        licenses
+        (created_at, expires_at, license_key, license_type, max_activations, status, id) 
+    values
+        (?, ?, ?, ?, ?, ?, default)
+Hibernate: 
+    insert 
+    into
+        licenses
+        (created_at, expires_at, license_key, license_type, max_activations, status, id) 
+    values
+        (?, ?, ?, ?, ?, ?, default)
+Hibernate: 
+    insert 
+    into
+        licenses
+        (created_at, expires_at, license_key, license_type, max_activations, status, id) 
+    values
+        (?, ?, ?, ?, ?, ?, default)
+Hibernate: 
+    insert 
+    into
+        licenses
+        (created_at, expires_at, license_key, license_type, max_activations, status, id) 
+    values
+        (?, ?, ?, ?, ?, ?, default)
+Hibernate: 
+    insert 
+    into
+        licenses
+        (created_at, expires_at, license_key, license_type, max_activations, status, id) 
+    values
+        (?, ?, ?, ?, ?, ?, default)
+Hibernate: 
+    insert 
+    into
+        licenses
+        (created_at, expires_at, license_key, license_type, max_activations, status, id) 
+    values
+        (?, ?, ?, ?, ?, ?, default)
+Hibernate: 
+    insert 
+    into
+        licenses
+        (created_at, expires_at, license_key, license_type, max_activations, status, id) 
+    values
+        (?, ?, ?, ?, ?, ?, default)
+Hibernate: 
+    insert 
+    into
+        licenses
+        (created_at, expires_at, license_key, license_type, max_activations, status, id) 
+    values
+        (?, ?, ?, ?, ?, ?, default)
+🔑 Seeded initial valid licenses for new system!
