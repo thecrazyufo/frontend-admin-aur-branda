@@ -1,45 +1,38 @@
-# Node dependencies
+# Dependency directories
 node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
+jspm_packages/
 
-# Next.js build output
+# Build outputs
 .next/
-out/
-
-# Astro build output
+.astro/
 dist/
-
-# Java/Maven build output
-**/target/
+target/
 *.jar
 *.war
-*.ear
+*.tar
+*.zip
+*.log
 
-# Environment variables & secrets
+# Environment variables and secrets
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
-deploy_vps/tenant-backend.tar
+.env.example.local
 
-# IDEs and editors
-.idea/
+# IDE and System files
+.DS_Store
 .vscode/
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
+*.swp
 
-# OS files
-.DS_Store
-Thumbs.db
-
-# Docker volumes & local db data
-pgdata/
+# Local databases/temp files
+db_postgres_data/
 caddy_data/
 caddy_config/
+tmp/
