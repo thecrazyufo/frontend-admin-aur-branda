@@ -37,4 +37,28 @@
         </createIndex>
     </changeSet>
 
+    <changeSet id="002-admin-users-seed" author="platform">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from admin_users</sqlCheck>
+        </preConditions>
+        <insert tableName="admin_users">
+            <column name="username" value="owner"/>
+            <!-- BCrypt hash of admin123 -->
+            <column name="password" value="$2a$10$WvMRsusv5nfEKqvYobvmDOp9wKuI1mVaD.9hKo4GAi.6Nnu8sodeC"/>
+            <column name="role" value="SUPER_ADMIN"/>
+            <column name="brand_id" value="all"/>
+            <column name="full_name" value="Root Owner"/>
+            <column name="email" value="owner@platform.local"/>
+        </insert>
+        <insert tableName="admin_users">
+            <column name="username" value="adminA"/>
+            <!-- BCrypt hash of admin123 -->
+            <column name="password" value="$2a$10$WvMRsusv5nfEKqvYobvmDOp9wKuI1mVaD.9hKo4GAi.6Nnu8sodeC"/>
+            <column name="role" value="ADMIN"/>
+            <column name="brand_id" value="brandA"/>
+            <column name="full_name" value="Brand A Administrator"/>
+            <column name="email" value="admin@brandA.local"/>
+        </insert>
+    </changeSet>
+
 </databaseChangeLog>
