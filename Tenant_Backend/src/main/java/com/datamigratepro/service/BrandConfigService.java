@@ -42,6 +42,8 @@ public class BrandConfigService {
     }
     
     public List<BrandConfig> getAllActiveBrands() {
-        return List.copyOf(brandCache.values());
+        List<BrandConfig> sortedList = new java.util.ArrayList<>(brandCache.values());
+        sortedList.sort(java.util.Comparator.comparing(BrandConfig::getId));
+        return sortedList;
     }
 }

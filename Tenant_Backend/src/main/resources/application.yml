@@ -3,17 +3,12 @@ server:
 
 spring:
   profiles:
-    active: test
+    active: dev
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/software_platform}
-    username: ${SPRING_DATASOURCE_USERNAME:admin}
-    password: ${SPRING_DATASOURCE_PASSWORD:admin123}
     driver-class-name: org.postgresql.Driver
   jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
     properties:
+    
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
@@ -37,16 +32,8 @@ spring:
           starttls:
             enable: true
 
-# JWT Configuration
+# Base application config
 app:
-  cors:
-    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3003,http://localhost:3004,http://localhost:3005}
-    allowed-origin-patterns: ${CORS_ALLOWED_ORIGIN_PATTERNS:https://*.thecrazyufo.in,https://thecrazyufo.in,https://*.vercel.app}
-  jwt:
-    secret: ${JWT_SECRET:7a3f8c2d1e6b9a4f0e5c8b2d7a1e4f9c3b6a0d8e2f5c9b4a7e1d6c3f0b8a5e2}
-    expiration-ms: 86400000          # 24 hours (dev-friendly; reduce to 900000 for prod)
-    refresh-expiration-ms: 604800000 # 7 days
-
   admin:
     username: admin
     # BCrypt hash of "admin123" - generated with BCryptPasswordEncoder strength 10
@@ -55,13 +42,6 @@ app:
     username: writer
     # BCrypt hash of "writer123"
     password: "$2a$10$hp1V.zV.9YIgVA0VvkmxJ.pc38CF7qbi6rV9xO.NHT/U.zTK6i.Xe"
-
-# Payment Configuration (Single-Channel)
-payment:
-  stripe:
-    secret-key: ${STRIPE_SECRET_KEY:sk_test_mock_secret_key_12345}
-    publishable-key: ${STRIPE_PUBLISHABLE_KEY:pk_test_mock_pub_key_12345}
-  paypal:
-    client-id: ${PAYPAL_CLIENT_ID:mock_paypal_client_id}
-    client-secret: ${PAYPAL_CLIENT_SECRET:mock_paypal_client_secret}
-    mode: ${PAYPAL_MODE:sandbox}
+  super-admin:
+    username: ${SUPER_ADMIN_USERNAME:owner}
+    password: ${SUPER_ADMIN_PASSWORD:owner123}

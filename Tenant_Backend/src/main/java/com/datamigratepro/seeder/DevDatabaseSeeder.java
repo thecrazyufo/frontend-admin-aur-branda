@@ -18,7 +18,7 @@ import java.util.HashMap;
 
 @Component
 @Profile("!prod")
-public class DatabaseSeeder implements CommandLineRunner {
+public class DevDatabaseSeeder implements CommandLineRunner {
 
     @Autowired
     private CategoryRepository categoryRepository;

@@ -27,5 +27,9 @@
     <include file="db/changelog/008-brand-dev-port.xml" relativeToChangelogFile="false"/>
     <include file="db/changelog/009-brand-templates.xml" relativeToChangelogFile="false"/>
     <include file="db/changelog/010-brand-logo.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/011-blog-posts-column-fix.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/012-license-activations-table.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/013-orders-table.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/014-products-column-fix.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>
