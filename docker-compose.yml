@@ -64,59 +64,6 @@ services:
       - PUBLIC_API_URL=${PUBLIC_API_URL:-http://localhost:8080/api}
     depends_on:
       - tenant-backend
-
-  brandB:
-    build:
-      context: ./storefront-brandB
-    image: brandb
-    container_name: software_brandB
-    restart: always
-    ports:
-      - "3002:4321"
-    environment:
-      - PUBLIC_SITE_ID=brandB
-    depends_on:
-      - tenant-backend
-
-  brandC:
-    build:
-      context: ./storefront-brandC
-    image: brandc
-    container_name: software_brandC
-    restart: always
-    ports:
-      - "3003:4321"
-    environment:
-      - PUBLIC_SITE_ID=brandC
-    depends_on:
-      - tenant-backend
-
-  brandD:
-    build:
-      context: ./storefront-brandD
-    image: brandd
-    container_name: software_brandD
-    restart: always
-    ports:
-      - "3004:4321"
-    environment:
-      - PUBLIC_SITE_ID=brandD
-    depends_on:
-      - tenant-backend
-
-  brandE:
-    build:
-      context: ./storefront-brandE
-    image: brande
-    container_name: software_brandE
-    restart: always
-    ports:
-      - "3005:4321"
-    environment:
-      - PUBLIC_SITE_ID=brandE
-    depends_on:
-      - tenant-backend
-
   # ─────────────────────────────────────────────────────────────────────────────
   # Admin Panel — Next.js
   # ─────────────────────────────────────────────────────────────────────────────
@@ -154,10 +101,7 @@ services:
     depends_on:
       - tenant_frontend_admin
       - brandA
-      - brandB
-      - brandC
-      - brandD
-      - brandE
+
 
 volumes:
   db_postgres_data:
