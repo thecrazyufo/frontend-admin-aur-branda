@@ -5,6 +5,7 @@ const settings = await SettingsAPI.get().catch(() => null);
 import { FAQ_CATEGORY_LABELS, type FAQCategory } from "@/types/faq";
 import { generateFAQSchema } from "@/lib/seo";
 import SectionHeader from "@/components/common/SectionHeader";
+import { parseMarkdownToHtml } from "@/lib/utils";
 import { ChevronRight } from "lucide-react";
 
 let faqsList = [];
@@ -54,7 +55,7 @@ try {
                 <ChevronRight size={18} class="text-gray-400 shrink-0 group-open:rotate-90 transition-transform" />
               </summary>
               <div class="px-6 pb-5">
-                <p class="text-sm text-gray-600 leading-relaxed">{faq.answer}</p>
+                <div class="text-sm text-gray-600 leading-relaxed prose-faq" set:html={parseMarkdownToHtml(faq.answer || faq.answer)} />
               </div>
             </details>
           ))}

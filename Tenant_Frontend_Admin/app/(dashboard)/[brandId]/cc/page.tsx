@@ -19,6 +19,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/Table";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
+import { MarkdownEditor } from "@/components/ui/MarkdownEditor";
 import { cn } from "@/lib/utils";
 
 type Tab = "products" | "blogs" | "faqs" | "categories";
@@ -61,126 +62,6 @@ const emptyProduct = (): Partial<Product> => ({
   enabled: true
 });
 
-function HTMLToolbar({ 
-  value, 
-  onChange, 
-  textareaId 
-}: { 
-  value: string; 
-  onChange: (val: string) => void; 
-  textareaId: string; 
-}) {
-  const [uploading, setUploading] = useState(false);
-
-  const insertTag = (tagOpen: string, tagClose: string) => {
-    const textarea = document.getElementById(textareaId) as HTMLTextAreaElement;
-    if (!textarea) return;
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const text = textarea.value;
-    const selected = text.substring(start, end);
-    const replacement = tagOpen + (selected || "") + tagClose;
-    const newValue = text.substring(0, start) + replacement + text.substring(end);
-    onChange(newValue);
-    
-    setTimeout(() => {
-      textarea.focus();
-      textarea.setSelectionRange(start + tagOpen.length, start + tagOpen.length + (selected || "").length);
-    }, 50);
-  };
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    try {
-      setUploading(true);
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const token = localStorage.getItem("admin_jwt");
-      const headers: Record<string, string> = {};
-      if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
-      }
-
-      const response = await fetch(`${API_BASE}/upload`, {
-        method: "POST",
-        headers: headers,
-        body: formData
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to upload image file");
-      }
-
-      const data = await response.json();
-      const imageUrl = data.url;
-
-      const textarea = document.getElementById(textareaId) as HTMLTextAreaElement;
-      if (textarea) {
-        const start = textarea.selectionStart;
-        const end = textarea.selectionEnd;
-        const text = textarea.value;
-        const replacement = `<img src="${imageUrl}" alt="${file.name}" class="rounded-xl my-4 mx-auto max-w-full" />`;
-        const newValue = text.substring(0, start) + replacement + text.substring(end);
-        onChange(newValue);
-      }
-    } catch (err) {
-      alert(err instanceof Error ? err.message : "Error uploading file");
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  return (
-    <div className="flex items-center gap-1.5 p-1 bg-zinc-50 dark:bg-zinc-900 border border-zinc-205 dark:border-zinc-800 rounded-lg shrink-0 select-none">
-      <button
-        type="button"
-        className="px-2 py-0.5 text-xs font-semibold rounded hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
-        onClick={() => insertTag("<strong>", "</strong>")}
-        title="Bold text"
-      >
-        <strong>B</strong>
-      </button>
-      <button
-        type="button"
-        className="px-2 py-0.5 text-xs font-semibold rounded hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
-        onClick={() => insertTag("<em>", "</em>")}
-        title="Italic text"
-      >
-        <em>I</em>
-      </button>
-      <button
-        type="button"
-        className="px-2 py-0.5 text-xs font-semibold rounded hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
-        onClick={() => insertTag("<a href=\"URL\" target=\"_blank\">", "</a>")}
-        title="Insert link"
-      >
-        🔗 Link
-      </button>
-      <button
-        type="button"
-        className="px-2 py-0.5 text-xs font-semibold rounded hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
-        onClick={() => insertTag("<ul>\n  <li>", "</li>\n</ul>")}
-        title="Unordered list"
-      >
-        • List
-      </button>
-      
-      <label className="text-[10px] font-bold text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 cursor-pointer px-2 py-0.5 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded hover:border-zinc-400 dark:hover:border-zinc-700 transition-all">
-        {uploading ? "⏳..." : "🖼️ Image"}
-        <input 
-          type="file" 
-          accept="image/*" 
-          style={{ display: "none" }} 
-          onChange={handleImageUpload} 
-          disabled={uploading}
-        />
-      </label>
-    </div>
-  );
-}
 
 export default function ContentCreatorPage() {
   const params = useParams();
@@ -730,21 +611,14 @@ export default function ContentCreatorPage() {
                         <Input type="text" value={productModal.shortDescription || ""} onChange={e => setProductModal({...productModal, shortDescription: e.target.value})} required />
                       </div>
                       <div className="sm:col-span-2 space-y-1.5">
-                        <div className="flex justify-between items-center mb-0.5">
-                          <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Long Description (HTML Support)</label>
-                          <HTMLToolbar 
-                            value={productModal.description || ""} 
-                            onChange={val => setProductModal({ ...productModal, description: val })} 
-                            textareaId="product-description" 
-                          />
-                        </div>
-                        <textarea 
-                          id="product-description" 
-                          rows={8} 
-                          value={productModal.description || ""} 
-                          onChange={e => setProductModal({...productModal, description: e.target.value})} 
-                          required 
-                          className="w-full bg-transparent border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25 focus-visible:border-blue-500 dark:text-zinc-100"
+                        <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Long Description (Markdown Supported)</label>
+                        <MarkdownEditor
+                          id="product-description"
+                          value={productModal.description || ""}
+                          onChange={val => setProductModal({ ...productModal, description: val })}
+                          rows={10}
+                          placeholder="Write a detailed product description in Markdown...\n\n## Features\n- **Bold** feature\n- Another point\n\n## How it works\n1. Step one\n2. Step two"
+                          required
                         />
                       </div>
                     </div>
@@ -1152,29 +1026,19 @@ export default function ContentCreatorPage() {
                             />
                           </div>
                           <div className="sm:col-span-2 space-y-1.5">
-                            <div className="flex justify-between items-center mb-0.5">
-                              <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Step Description</label>
-                              <HTMLToolbar 
-                                value={step.description || ""} 
-                                onChange={val => {
-                                  const updated = [...(productModal.howItWorks || [])];
-                                  updated[idx] = { ...step, description: val };
-                                  setProductModal({ ...productModal, howItWorks: updated });
-                                }} 
-                                textareaId={`step-description-${idx}`} 
-                              />
-                            </div>
-                            <textarea 
+                            <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Step Description (Markdown Supported)</label>
+                            <MarkdownEditor
                               id={`step-description-${idx}`}
-                              rows={2} 
-                              value={step.description || ""} 
-                              onChange={e => {
+                              value={step.description || ""}
+                              onChange={val => {
                                 const updated = [...(productModal.howItWorks || [])];
-                                updated[idx] = { ...step, description: e.target.value };
+                                updated[idx] = { ...step, description: val };
                                 setProductModal({ ...productModal, howItWorks: updated });
-                              }} 
-                              required 
-                              className="w-full bg-transparent border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25 focus-visible:border-blue-500 dark:text-zinc-100"
+                              }}
+                              rows={3}
+                              compact
+                              placeholder="Describe this step..."
+                              required
                             />
                           </div>
                         </div>
@@ -1235,29 +1099,19 @@ export default function ContentCreatorPage() {
                             />
                           </div>
                           <div className="space-y-1.5">
-                            <div className="flex justify-between items-center mb-0.5">
-                              <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Answer (HTML support)</label>
-                              <HTMLToolbar 
-                                value={faq.answer || ""} 
-                                onChange={val => {
-                                  const updated = [...(productModal.faqs || [])];
-                                  updated[idx] = { ...faq, answer: val };
-                                  setProductModal({ ...productModal, faqs: updated });
-                                }} 
-                                textareaId={`faq-answer-${idx}`} 
-                              />
-                            </div>
-                            <textarea 
+                            <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Answer (Markdown Supported)</label>
+                            <MarkdownEditor
                               id={`faq-answer-${idx}`}
-                              rows={3} 
-                              value={faq.answer || ""} 
-                              onChange={e => {
+                              value={faq.answer || ""}
+                              onChange={val => {
                                 const updated = [...(productModal.faqs || [])];
-                                updated[idx] = { ...faq, answer: e.target.value };
+                                updated[idx] = { ...faq, answer: val };
                                 setProductModal({ ...productModal, faqs: updated });
-                              }} 
-                              required 
-                              className="w-full bg-transparent border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25 focus-visible:border-blue-500 dark:text-zinc-100"
+                              }}
+                              rows={4}
+                              compact
+                              placeholder="Answer this FAQ in detail..."
+                              required
                             />
                           </div>
                         </div>
@@ -1508,21 +1362,14 @@ export default function ContentCreatorPage() {
                     <Input type="text" value={blogModal.excerpt || ""} onChange={e => setBlogModal({...blogModal, excerpt: e.target.value})} required />
                   </div>
                   <div className="sm:col-span-2 space-y-1.5">
-                    <div className="flex justify-between items-center mb-0.5">
-                      <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Content (HTML Support)</label>
-                      <HTMLToolbar 
-                        value={blogModal.content || ""} 
-                        onChange={val => setBlogModal({ ...blogModal, content: val })} 
-                        textareaId="blog-content" 
-                      />
-                    </div>
-                    <textarea 
-                      id="blog-content" 
-                      rows={12} 
-                      value={blogModal.content || ""} 
-                      onChange={e => setBlogModal({...blogModal, content: e.target.value})} 
-                      required 
-                      className="w-full bg-transparent border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25 focus-visible:border-blue-500 dark:text-zinc-100"
+                    <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Content (Markdown Supported)</label>
+                    <MarkdownEditor
+                      id="blog-content"
+                      value={blogModal.content || ""}
+                      onChange={val => setBlogModal({ ...blogModal, content: val })}
+                      rows={16}
+                      placeholder={"Write your blog post in Markdown...\n\n## Introduction\nStart with a compelling opening paragraph.\n\n## Main Topic\n- Key point 1\n- Key point 2\n\n## Conclusion\nWrap up with a summary."}
+                      required
                     />
                   </div>
                 </div>
@@ -1591,13 +1438,13 @@ export default function ContentCreatorPage() {
                     <Input type="text" value={faqModal.question || ""} onChange={e => setFaqModal({...faqModal, question: e.target.value})} required />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Answer</label>
-                    <textarea 
-                      rows={5} 
-                      value={faqModal.answer || ""} 
-                      onChange={e => setFaqModal({...faqModal, answer: e.target.value})} 
-                      required 
-                      className="w-full bg-transparent border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25 focus-visible:border-blue-500 dark:text-zinc-100"
+                    <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Answer (Markdown Supported)</label>
+                    <MarkdownEditor
+                      value={faqModal.answer || ""}
+                      onChange={val => setFaqModal({ ...faqModal, answer: val })}
+                      rows={8}
+                      placeholder="Answer in Markdown...\n\n**Bold** key terms.\n- List key points\n\nUse `code` for technical terms."
+                      required
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -1686,13 +1533,14 @@ export default function ContentCreatorPage() {
                     <Input type="text" value={categoryModal.icon || ""} onChange={e => setCategoryModal({...categoryModal, icon: e.target.value})} placeholder="e.g. database" />
                   </div>
                   <div className="space-y-1.5 sm:col-span-2">
-                    <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Description</label>
-                    <textarea 
-                      rows={3} 
-                      value={categoryModal.description || ""} 
-                      onChange={e => setCategoryModal({...categoryModal, description: e.target.value})} 
-                      required 
-                      className="w-full bg-transparent border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25 focus-visible:border-blue-500 dark:text-zinc-100"
+                    <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Description (Markdown Supported)</label>
+                    <MarkdownEditor
+                      value={categoryModal.description || ""}
+                      onChange={val => setCategoryModal({ ...categoryModal, description: val })}
+                      rows={4}
+                      compact
+                      placeholder="Describe this category..."
+                      required
                     />
                   </div>
                 </div>
