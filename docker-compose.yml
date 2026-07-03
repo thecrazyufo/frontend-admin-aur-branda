@@ -61,7 +61,7 @@ services:
       - "3001:4321"
     environment:
       - PUBLIC_SITE_ID=brandA
-      - PUBLIC_API_URL=${PUBLIC_API_URL}
+      - PUBLIC_API_URL=${PUBLIC_API_URL:-http://localhost:8080/api}
     depends_on:
       - tenant-backend
 
@@ -146,7 +146,7 @@ services:
       - "80:80"
       - "443:443"
     environment:
-      - DOMAIN=${DOMAIN}
+      - DOMAIN=${DOMAIN:-localhost}
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
