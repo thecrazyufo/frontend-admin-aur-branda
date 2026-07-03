@@ -36,11 +36,13 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_PROFILES_ACTIVE: prod
       JWT_SECRET: ${JWT_SECRET:-7a3f8c2d1e6b9a4f0e5c8b2d7a1e4f9c3b6a0d8e2f5c9b4a7e1d6c3f0b8a5e2}
       SPRING_DATASOURCE_URL: jdbc:postgresql://db-postgres:5432/software_platform
       SPRING_DATASOURCE_USERNAME: admin
       SPRING_DATASOURCE_PASSWORD: admin123
+      CORS_ALLOWED_ORIGINS: http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3003,http://localhost:3004,http://localhost:3005
+      CORS_ALLOWED_ORIGIN_PATTERNS: http://*.thecrazyufo.in,https://*.thecrazyufo.in,https://*.vercel.app
     depends_on:
       db-postgres:
         condition: service_healthy
