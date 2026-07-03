@@ -4,11 +4,11 @@ import { ProductAPI , SettingsAPI } from "@/services/api";
 const settings = await SettingsAPI.get().catch(() => null);
 import { Star, Download, ShoppingCart, Check, Monitor, ChevronRight } from "lucide-react";
 import { generateProductSchema, generateBreadcrumbSchema, generateFAQSchema } from "@/lib/seo";
+import { parseMarkdownToHtml } from "@/lib/utils";
 import PricingCard from "@/components/common/PricingCard";
 import ProductCard from "@/components/common/ProductCard";
 import SectionHeader from "@/components/common/SectionHeader";
 import Breadcrumb from "@/components/layout/Breadcrumb";
-
 import type { Product } from "@/types/product";
 
 const { slug } = Astro.params;
@@ -31,17 +31,21 @@ if (!product || product.enabled === false) {
   return new Response("Product Not Found", { status: 404 });
 }
 
-const productUrl = `${settings?.url || ""}/products/${product.slug}`;
+const siteUrl = (settings?.url || "").replace(/\/$/, "");
+const productUrl = `${siteUrl}/products/${product.slug}`;
 const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
 ---
 
 <BaseLayout
   title={`${product.seo?.title || product.name} — ${settings?.name || ""}`}
   description={product.seo?.description || product.shortDescription}
+  ogType="product"
 >
-  <script type="application/ld+json" set:html={JSON.stringify(generateProductSchema({ name: product.name, description: product.description, price: lowestPaidPrice?.price || 0, rating: product.rating || 0, reviewCount: product.reviewCount || 0, url: productUrl }))} />
-  <script type="application/ld+json" set:html={JSON.stringify(generateBreadcrumbSchema([{ label: "Home", href: "/" }, { label: "Products", href: "/products" }, { label: product.name, href: `/products/${product.slug}` }]))} />
-  <script type="application/ld+json" set:html={JSON.stringify(generateFAQSchema(product.faqs || []))} />
+  <script type="application/ld+json" set:html={JSON.stringify(generateProductSchema({ name: product.name, description: product.description, image: product.thumbnailUrl || undefined, price: lowestPaidPrice?.price || 0, rating: product.rating || 0, reviewCount: product.reviewCount || 0, url: productUrl }))} />
+  <script type="application/ld+json" set:html={JSON.stringify(generateBreadcrumbSchema([{ label: "Home", href: "/" }, { label: "Products", href: "/products" }, { label: product.name, href: `/products/${product.slug}` }], siteUrl))} />
+  {product.faqs && product.faqs.length > 0 && (
+    <script type="application/ld+json" set:html={JSON.stringify(generateFAQSchema(product.faqs))} />
+  )}
 
   <Breadcrumb items={[{ label: "Products", href: "/products" }, { label: product.name }]} />
 
@@ -118,13 +122,13 @@ const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
     </div>
   </section>
 
-  {/* Description / HTML Overview Section */}
+  {/* Description / Markdown Overview Section */}
   {product.description && (
     <section class="section bg-white border-b border-gray-100" id="overview">
       <div class="container-custom max-w-4xl">
         <div class="prose max-w-none text-gray-700 leading-relaxed space-y-4">
           <h2 class="font-bold text-gray-900 text-2xl mb-6">Product Overview</h2>
-          <div set:html={product.description} />
+          <div set:html={parseMarkdownToHtml(product.description)} />
         </div>
       </div>
     </section>
@@ -219,7 +223,7 @@ const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
               <ChevronRight size={18} class="text-gray-400 shrink-0 group-open:rotate-90 transition-transform" />
             </summary>
             <div class="px-6 pb-5">
-              <p class="text-sm text-gray-600 leading-relaxed">{faq.answer}</p>
+              <div class="text-sm text-gray-600 leading-relaxed" set:html={parseMarkdownToHtml(faq.answer || "")} />
             </div>
           </details>
         ))}

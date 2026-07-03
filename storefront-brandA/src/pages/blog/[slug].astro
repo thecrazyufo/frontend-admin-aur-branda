@@ -3,6 +3,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import { BlogAPI , SettingsAPI } from "@/services/api";
 const settings = await SettingsAPI.get().catch(() => null);
 import { formatDate, parseMarkdownToHtml } from "@/lib/utils";
+import { generateArticleSchema, generateBreadcrumbSchema } from "@/lib/seo";
 import Breadcrumb from "@/components/layout/Breadcrumb";
 import { Clock, ArrowLeft } from "lucide-react";
 
@@ -21,12 +22,33 @@ try {
 if (!post) {
   return new Response("Blog Post Not Found", { status: 404 });
 }
+
+const siteUrl = (settings?.url || "").replace(/\/$/, "");
+const articleUrl = `${siteUrl}/blog/${post.slug}`;
 ---
 
 <BaseLayout
   title={`${post.seo.title} — ${settings?.name || ""}`}
   description={post.seo.description}
+  ogType="article"
+  author={post.author.name}
 >
+  <script type="application/ld+json"
+    set:html={JSON.stringify(generateArticleSchema({
+      title: post.seo.title,
+      description: post.seo.description,
+      authorName: post.author.name,
+      publishedAt: post.publishedAt,
+      url: articleUrl,
+      siteName: settings?.name || ""
+    }))}
+  />
+  <script type="application/ld+json"
+    set:html={JSON.stringify(generateBreadcrumbSchema(
+      [{ label: "Blog", href: "/blog" }, { label: post.title, href: `/blog/${post.slug}` }],
+      siteUrl
+    ))}
+  />
   <Breadcrumb items={[{ label: "Blog", href: "/blog" }, { label: post.title }]} />
   <div class="bg-gray-50 min-h-screen">
     <article class="container-custom py-12 max-w-3xl">

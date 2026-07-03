@@ -3,6 +3,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import { Mail, Phone, MapPin, Clock, MessageSquare } from "lucide-react";
 import ContactForm from "@/components/common/ContactForm";
 import { SettingsAPI } from "@/services/api";
+import { generateOrganizationSchema } from "@/lib/seo";
 
 const settings = await SettingsAPI.get().catch(() => null);
 
@@ -11,12 +12,26 @@ const siteDescription = settings?.description || "";
 const sitePhone = settings?.phone || "";
 const siteEmail = settings?.email || "";
 const siteAddress = settings?.address || "";
+const siteUrl = (settings?.url || "").replace(/\/$/, "");
+const siteSocials = Object.values(settings?.socials || {}).filter((v): v is string => typeof v === "string" && v.startsWith("http"));
 ---
 
 <BaseLayout
   title={`Contact Us — ${siteName}`}
   description="Get in touch with our support team. We're available 24/7 to help with any questions about our software tools."
 >
+  <script type="application/ld+json"
+    set:html={JSON.stringify(generateOrganizationSchema({
+      name: siteName,
+      url: siteUrl,
+      email: siteEmail || undefined,
+      phone: sitePhone || undefined,
+      address: siteAddress || undefined,
+      description: siteDescription || undefined,
+      logo: settings?.theme?.logoUrl || undefined,
+      socials: siteSocials.length ? siteSocials : undefined,
+    }))}
+  />
   <div>
     <div class="hero-gradient py-14 text-center">
       <div class="container-custom">

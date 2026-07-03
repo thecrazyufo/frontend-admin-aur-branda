@@ -21,7 +21,8 @@ if (!product || product.enabled === false) {
   return new Response("Product Not Found", { status: 404 });
 }
 
-const productUrl = `${settings?.url || ""}/products/${product.slug}`;
+const siteUrl = (settings?.url || "").replace(/\/$/, "");
+const productUrl = `${siteUrl}/products/${product.slug}`;
 const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
 const pricingList = (product.pricing && product.pricing.length > 0 ? product.pricing : [
   { name: "Standard License", price: 49.00, originalPrice: 99.00, period: "lifetime", features: ["1 Mailbox migration", "Free 1-year updates", "24/7 technical support"], cta: "" }
@@ -32,8 +33,8 @@ const pricingList = (product.pricing && product.pricing.length > 0 ? product.pri
   title={`Buy ${product.name} Securely — ${settings?.name || ""}`}
   description={`Secure checkout for ${product.name}. Choose from Standard, Business, or or Enterprise licensing plans. Instant key delivery and a 30-day money-back guarantee.`}
 >
-  <script is:inline type="application/ld+json" set:html={JSON.stringify(generateProductSchema({ name: product.name, description: product.description, price: lowestPaidPrice?.price || 49.00, rating: product.rating || 0, reviewCount: product.reviewCount || 0, url: productUrl }))} />
-  <script is:inline type="application/ld+json" set:html={JSON.stringify(generateBreadcrumbSchema([{ label: "Home", href: "/" }, { label: "Products", href: "/products" }, { label: product.name, href: `/products/${product.slug}` }, { label: "Buy", href: `/products/${product.slug}/buy` }]))} />
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(generateProductSchema({ name: product.name, description: product.description, image: product.thumbnailUrl || undefined, price: lowestPaidPrice?.price || 49.00, rating: product.rating || 0, reviewCount: product.reviewCount || 0, url: productUrl }))} />
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(generateBreadcrumbSchema([{ label: "Home", href: "/" }, { label: "Products", href: "/products" }, { label: product.name, href: `/products/${product.slug}` }, { label: "Buy", href: `/products/${product.slug}/buy` }], siteUrl))} />
 
   {/* Hero Banner */}
   <section class="hero-gradient py-12 text-white">

@@ -1,8 +1,10 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { ProductAPI } from "@/services/api";
+import { ProductAPI, SettingsAPI } from "@/services/api";
 import { Play, Download, ShoppingCart, HelpCircle, Monitor, BookOpen } from "lucide-react";
 import { generateBreadcrumbSchema, generateFAQSchema } from "@/lib/seo";
+import { parseMarkdownToHtml } from "@/lib/utils";
+const settings = await SettingsAPI.get().catch(() => null);
 
 const { slug } = Astro.params;
 
@@ -28,14 +30,17 @@ const steps = product.howItWorks && product.howItWorks.length > 0 ? product.howI
 ];
 
 const reqs = product.systemRequirements || { os: "Windows 11/10/8/7 (32/64 bit)", processor: "1 GHz Intel/AMD CPU", ram: "2 GB", disk: "100 MB free space" };
+const siteUrl = (settings?.url || "").replace(/\/$/, "");
 ---
 
 <BaseLayout
   title={`Step-by-Step User Guide: How to Use ${product.name}`}
   description={`Learn how to configure and use ${product.name} with our detailed step-by-step guide. Review system requirements, features, and FAQs.`}
 >
-  <script is:inline type="application/ld+json" set:html={JSON.stringify(generateBreadcrumbSchema([{ label: "Home", href: "/" }, { label: "Products", href: "/products" }, { label: product.name, href: `/products/${product.slug}` }, { label: "Guide", href: `/products/${product.slug}/guide` }]))} />
-  <script is:inline type="application/ld+json" set:html={JSON.stringify(generateFAQSchema(product.faqs || []))} />
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(generateBreadcrumbSchema([{ label: "Home", href: "/" }, { label: "Products", href: "/products" }, { label: product.name, href: `/products/${product.slug}` }, { label: "Guide", href: `/products/${product.slug}/guide` }], siteUrl))} />
+  {product.faqs && product.faqs.length > 0 && (
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(generateFAQSchema(product.faqs))} />
+  )}
 
   {/* Hero Header */}
   <section class="hero-gradient py-16 text-white">
@@ -82,7 +87,7 @@ const reqs = product.systemRequirements || { os: "Windows 11/10/8/7 (32/64 bit)"
                   </span>
                   
                   <h3 class="text-lg font-bold text-gray-900 mb-2">{s.title}</h3>
-                  <p class="text-sm text-gray-600 leading-relaxed" set:html={s.description}></p>
+                  <div class="text-sm text-gray-600 leading-relaxed" set:html={parseMarkdownToHtml(s.description || "")} />
                 </div>
               ))}
             </div>
@@ -103,7 +108,7 @@ const reqs = product.systemRequirements || { os: "Windows 11/10/8/7 (32/64 bit)"
                       <span class="text-blue-600 font-extrabold">Q:</span>
                       {faq.question}
                     </h4>
-                    <p class="text-sm text-gray-600 pl-5 leading-relaxed">{faq.answer}</p>
+                    <div class="text-sm text-gray-600 pl-5 leading-relaxed" set:html={parseMarkdownToHtml(faq.answer || "")} />
                   </div>
                 ))}
               </div>

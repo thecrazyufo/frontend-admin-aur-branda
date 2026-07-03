@@ -9,6 +9,8 @@ interface Props {
   description?: string;
   canonical?: string;
   ogImage?: string;
+  ogType?: string;
+  author?: string;
   noindex?: boolean;
 }
 
@@ -39,11 +41,20 @@ const seoDefaults = settings?.seoDefaults || {};
 const titleTemplate = seoDefaults.titleTemplate || "{page} — {siteName}";
 const defaultOgImage = seoDefaults.defaultOgImage || "";
 
+const twitterHandle = (() => {
+  const tw = settings?.socials?.twitter || "";
+  if (!tw) return "";
+  const handle = tw.replace(/.*twitter\.com\//, "").replace(/.*x\.com\//, "").replace(/^@/, "").trim();
+  return handle ? `@${handle}` : "";
+})();
+
 const {
   title = `${siteName} — ${siteTagline}`,
   description = siteDescription,
   canonical = Astro.props.canonical || new URL(Astro.url.pathname, Astro.site || Astro.url.origin).toString(),
-  ogImage = defaultOgImage,
+  ogImage = defaultOgImage || "/og-default.png",
+  ogType = "website",
+  author,
   noindex = false,
 } = Astro.props;
 
@@ -62,18 +73,24 @@ const fontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/
     <link rel="canonical" href={canonical} />
 
     <!-- Open Graph -->
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:url" content={canonical} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:site_name" content={siteName} />
 
-    <!-- Twitter -->
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
+    {twitterHandle && <meta name="twitter:site" content={twitterHandle} />}
+    {twitterHandle && <meta name="twitter:creator" content={twitterHandle} />}
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    {ogImage && <meta name="twitter:image" content={ogImage} />}
+    <meta name="twitter:image" content={ogImage} />
+    {author && <meta name="author" content={author} />}
 
     <!-- Google Verification -->
     {seoDefaults.googleVerification && (
@@ -83,10 +100,16 @@ const fontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/
     <!-- Favicon (dynamic from admin panel) -->
     <link rel="icon" href={faviconUrl} />
 
-    <!-- Fonts (dynamic from admin panel) -->
+    <!-- Fonts (dynamic from admin panel) — non-blocking load -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href={fontUrl} rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href={fontUrl}
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript><link rel="stylesheet" href={fontUrl} /></noscript>
 
     <!-- Dynamic Theme CSS Custom Properties -->
     <style define:vars={{ primaryColor, accentColor, fontFamily }}>
@@ -96,19 +119,6 @@ const fontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/
         --brand-font: var(--fontFamily), system-ui, sans-serif;
       }
     </style>
-    <!--Start of Tawk.to Script-->
-    <script type="text/javascript">
-      var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-      (function(){
-      var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-      s1.async=true;
-      s1.src='https://embed.tawk.to/6a39aeb5351d6e1d43433240/1jrol4u8n';
-      s1.charset='UTF-8';
-      s1.setAttribute('crossorigin','*');
-      s0.parentNode.insertBefore(s1,s0);
-      })();
-    </script>
-    <!--End of Tawk.to Script-->
   </head>
   <body class={`min-h-screen flex flex-col antialiased layout-${layoutTemplate}`} style={`font-family: '${fontFamily}', system-ui, sans-serif;`}>
     <!-- Announcement Bar (if enabled) -->
@@ -144,6 +154,19 @@ const fontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/
       address={settings?.address}
       socials={settings?.socials}
       footerConfig={footerConfig}
-    />
+    </Footer>
+
+    <!-- Tawk.to Live Chat — loaded at end of body for better LCP (render-blocking removed from <head>) -->
+    <script>
+      var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+      (function(){
+        var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+        s1.async=true;
+        s1.src='https://embed.tawk.to/6a39aeb5351d6e1d43433240/1jrol4u8n';
+        s1.charset='UTF-8';
+        s1.setAttribute('crossorigin','*');
+        s0.parentNode.insertBefore(s1,s0);
+      })();
+    </script>
   </body>
 </html>
