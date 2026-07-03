@@ -403,3 +403,15 @@ export const AdminOwnerAPI = {
   deleteCredentials: (username: string) => adminDelete(`/owner/credentials/${username}`),
 };
 
+export const AdminSocialProofAPI = {
+  getLogos: () => adminGet<any[]>("/social-proof/logos"),
+  createLogo: (data: any) => adminPost<any>("/social-proof/logos", data),
+  updateLogo: (id: string, data: any) => adminPut<any>(`/social-proof/logos/${id}`, data),
+  deleteLogo: (id: string) => adminDelete(`/social-proof/logos/${id}`),
+
+  getTestimonials: () => adminGet<any[]>("/social-proof/testimonials"),
+  createTestimonial: (data: any) => adminPost<any>("/social-proof/testimonials", data),
+  updateTestimonial: (id: string, data: any) => adminPut<any>(`/social-proof/testimonials/${id}`, data),
+  deleteTestimonial: (id: string) => adminDelete(`/social-proof/testimonials/${id}`),
+};
+

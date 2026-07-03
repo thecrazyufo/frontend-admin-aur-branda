@@ -31,5 +31,7 @@
     <include file="db/changelog/012-license-activations-table.xml" relativeToChangelogFile="false"/>
     <include file="db/changelog/013-orders-table.xml" relativeToChangelogFile="false"/>
     <include file="db/changelog/014-products-column-fix.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/015-social-proof.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/016-product-license-comparison.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>

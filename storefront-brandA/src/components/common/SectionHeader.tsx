@@ -21,19 +21,17 @@ export default function SectionHeader({
     <div className={cn(centered && "text-center", className)}>
       {eyebrow && (
         <span className={cn(
-          "inline-block text-xs font-bold uppercase tracking-widest mb-3 px-3 py-1 rounded-full",
-          light ? "text-blue-300 bg-white/10" : "text-blue-600 bg-blue-50"
+          "inline-block text-[12px] font-bold uppercase tracking-widest mb-3",
+          light ? "text-[--color-mute]" : "bg-gradient-to-r from-[--color-gradient-develop-start] to-[--color-gradient-preview-start] bg-clip-text text-transparent"
         )}>
           {eyebrow}
         </span>
       )}
-      <h2 className={cn("font-bold leading-tight mb-3", light ? "text-white" : "text-gray-900")}>
+      <h2 className={cn("mb-4", light ? "text-[--color-canvas]" : "text-[--color-ink]")}>
         {title}
       </h2>
-      {centered && <div className={cn("divider mx-auto", light ? "bg-gradient-to-r from-blue-400 to-amber-400" : "")} />}
-      {!centered && <div className="divider" />}
       {subtitle && (
-        <p className={cn("text-base max-w-2xl mt-4", light ? "text-gray-300" : "text-gray-500", centered && "mx-auto")}>
+        <p className={cn("text-[16px] max-w-2xl", light ? "text-[--color-mute]" : "text-[--color-body]", centered && "mx-auto")}>
           {subtitle}
         </p>
       )}

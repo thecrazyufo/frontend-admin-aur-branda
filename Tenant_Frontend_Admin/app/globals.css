@@ -17,12 +17,12 @@
   --color-navy-600: #1e4472;
   --color-navy-500: #2a5a8a;
 
-  --color-background: #ffffff;
-  --color-foreground: #0f172a;
-  --color-muted: #f1f5f9;
-  --color-muted-foreground: #64748b;
-  --color-border: #e2e8f0;
-  --color-card: #ffffff;
+  --color-background: var(--theme-background);
+  --color-foreground: var(--theme-foreground);
+  --color-muted: var(--theme-muted);
+  --color-muted-foreground: var(--theme-muted-foreground);
+  --color-border: var(--theme-border);
+  --color-card: var(--theme-card);
 
   --color-success: #10b981;
   --color-warning: #f59e0b;
@@ -60,6 +60,13 @@
   --navy-600: var(--color-navy-600);
   --navy-500: var(--color-navy-500);
 
+  --theme-background: #ffffff;
+  --theme-foreground: #171717;
+  --theme-muted: #fafafa;
+  --theme-muted-foreground: #888888;
+  --theme-border: #ebebeb;
+  --theme-card: #ffffff;
+
   --background: var(--color-background);
   --foreground: var(--color-foreground);
   --muted: var(--color-muted);
@@ -77,6 +84,8 @@
   --transition: 200ms ease;
   --transition-slow: 300ms ease;
 }
+
+
 
 /* ===== Base Layer Elements ===== */
 @layer base {

@@ -9,6 +9,7 @@ import PricingCard from "@/components/common/PricingCard";
 import ProductCard from "@/components/common/ProductCard";
 import SectionHeader from "@/components/common/SectionHeader";
 import Breadcrumb from "@/components/layout/Breadcrumb";
+import ProductGallery from "@/components/common/ProductGallery";
 import type { Product } from "@/types/product";
 
 const { slug } = Astro.params;
@@ -87,7 +88,7 @@ const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
 
           {/* CTAs */}
           <div class="flex flex-wrap gap-3">
-            <a href={`/checkout?product=${product.slug}&tier=${encodeURIComponent(lowestPaidPrice?.name || "Standard")}`} class="btn btn-accent text-base py-3 px-7 flex items-center gap-2">
+            <a href={`/checkout?product=${product.slug}&tier=${encodeURIComponent(lowestPaidPrice?.name || "Standard")}`} class="btn btn-primary text-base py-3 px-7 flex items-center gap-2">
               <ShoppingCart size={18} />
               Buy Now — ${lowestPaidPrice?.price}
             </a>
@@ -106,18 +107,8 @@ const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
           </div>
         </div>
 
-        {/* Product Visual */}
-        <div class="relative">
-          <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-12 flex items-center justify-center min-h-72">
-            <div class="text-center">
-              <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mx-auto mb-4 shadow-xl">
-                <Download size={40} class="text-white" />
-              </div>
-              <p class="font-bold text-gray-900 text-lg">{product.name}</p>
-              <p class="text-sm text-gray-500 mt-1">v{product.version}</p>
-            </div>
-          </div>
-        </div>
+        {/* Product Visual Gallery */}
+        <ProductGallery client:load screenshots={product.screenshots || []} productName={product.name} />
       </div>
     </div>
   </section>
@@ -178,6 +169,61 @@ const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
           <PricingCard tier={tier} productSlug={product.slug} />
         ))}
       </div>
+
+      {/* License Comparison Matrix */}
+      {product.licenseComparison && product.licenseComparison.length > 0 && (
+        <div class="mt-20 max-w-5xl mx-auto">
+          <SectionHeader title="Compare Licenses" subtitle="Detailed feature breakdown to help you choose the right tier." centered class="mb-8" />
+          <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-gray-50 border-b border-gray-100 text-sm uppercase tracking-wider text-gray-500">
+                    <th class="p-4 font-semibold w-1/3">Feature</th>
+                    <th class="p-4 font-semibold text-center">Trial</th>
+                    <th class="p-4 font-semibold text-center text-blue-600">Personal</th>
+                    <th class="p-4 font-semibold text-center">Enterprise</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                  {product.licenseComparison.map((row) => (
+                    <tr class="hover:bg-gray-50/50 transition-colors">
+                      <td class="p-4 text-sm font-medium text-gray-900">{row.feature}</td>
+                      <td class="p-4 text-center">
+                        {row.trial.toLowerCase() === "yes" ? (
+                          <Check size={18} class="text-green-500 mx-auto" />
+                        ) : row.trial.toLowerCase() === "no" ? (
+                          <span class="text-gray-300 font-bold">—</span>
+                        ) : (
+                          <span class="text-sm text-gray-600 font-medium">{row.trial}</span>
+                        )}
+                      </td>
+                      <td class="p-4 text-center bg-blue-50/20">
+                        {row.personal.toLowerCase() === "yes" ? (
+                          <Check size={18} class="text-blue-600 mx-auto" />
+                        ) : row.personal.toLowerCase() === "no" ? (
+                          <span class="text-gray-300 font-bold">—</span>
+                        ) : (
+                          <span class="text-sm text-gray-800 font-medium">{row.personal}</span>
+                        )}
+                      </td>
+                      <td class="p-4 text-center">
+                        {row.enterprise.toLowerCase() === "yes" ? (
+                          <Check size={18} class="text-purple-600 mx-auto" />
+                        ) : row.enterprise.toLowerCase() === "no" ? (
+                          <span class="text-gray-300 font-bold">—</span>
+                        ) : (
+                          <span class="text-sm text-gray-600 font-medium">{row.enterprise}</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   </section>
 

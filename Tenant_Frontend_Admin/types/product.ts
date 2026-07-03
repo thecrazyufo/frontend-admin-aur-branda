@@ -58,11 +58,15 @@ export interface Product {
   reviewCount: number;
   downloads: string;
   badge?: "bestseller" | "new" | "popular" | "updated";
+  version?: string;
+  lastUpdated?: string;
+  trialDownloadUrl?: string;
   features: string[];
   platforms: string[];
   supportedFormats: string[];
-  screenshots: ProductScreenshot[];
   pricing: PricingTier[];
+  licenseComparison?: { feature: string; trial: string; personal: string; enterprise: string }[];
+  screenshots?: ProductScreenshot[];
   systemRequirements: SystemRequirement;
   howItWorks: HowItWorksStep[];
   faqs: ProductFAQ[];

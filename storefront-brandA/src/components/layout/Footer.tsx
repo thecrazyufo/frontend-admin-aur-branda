@@ -28,7 +28,6 @@ interface FooterProps {
   footerConfig?: FooterConfigData;
 }
 
-// Default footer links — used when no footerConfig is provided from the API
 const defaultFooterLinks: FooterConfigData = {
   productLinks: [
     { label: "Email Migration", href: "/products?category=email-migration" },
@@ -70,56 +69,35 @@ export default function Footer({
   const links = footerConfig || defaultFooterLinks;
   const socialsToUse = socials || {};
 
-  // Dynamic admin login URL — use current host rather than hardcoded localhost
   const adminLoginUrl = typeof window !== "undefined" 
     ? `${window.location.protocol}//${window.location.hostname}:3000/admin/login`
     : "/admin/login";
 
-  const trustBadges = [
-    { icon: <Shield size={16} />, text: "SSL Secured" },
-    { icon: <Award size={16} />, text: "ISO Certified" },
-    { icon: <Users size={16} />, text: "1M+ Users" },
-  ];
-
   return (
-    <footer className="bg-[var(--navy-950)] text-gray-300">
-      {/* Main Footer */}
-      <div className="container-custom py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-10">
+    <footer className="bg-white border-t border-[--color-hairline] pt-16 pb-8">
+      <div className="container-custom">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-16">
           {/* Brand Column */}
           <div className="lg:col-span-2">
-            <a href="/" className="flex items-center gap-2 mb-4 group w-fit">
-              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-                <span className="text-white font-bold text-base">{siteName.charAt(0) || "S"}</span>
+            <a href="/" className="flex items-center gap-2.5 mb-5 group w-fit">
+              <div className="w-8 h-8 rounded-md bg-[--color-ink] flex items-center justify-center transition-transform group-hover:scale-105">
+                <span className="text-[--color-canvas] font-bold text-xs">{siteName.charAt(0) || "S"}</span>
               </div>
-              <span className="font-bold text-white text-lg">
+              <span className="font-semibold text-[--color-ink] tracking-tight">
                 {siteName}
               </span>
             </a>
-            <p className="text-sm text-gray-400 leading-relaxed mb-6 max-w-xs">
+            <p className="text-[14px] text-[--color-body] leading-relaxed mb-6 max-w-xs">
               {description}
             </p>
-
-            {/* Trust Badges */}
-            <div className="flex flex-wrap gap-3 mb-6">
-              {trustBadges.map((badge) => (
-                <div
-                  key={badge.text}
-                  className="flex items-center gap-1.5 text-xs text-gray-400 bg-white/5 rounded-full px-3 py-1.5 border border-white/10"
-                >
-                  <span className="text-green-400">{badge.icon}</span>
-                  {badge.text}
-                </div>
-              ))}
-            </div>
 
             {/* Social Links */}
             <div className="flex items-center gap-3">
               {[
                 { href: socialsToUse.twitter, label: "Twitter", text: "X" },
-                { href: socialsToUse.linkedin, label: "LinkedIn", text: "in" },
-                { href: socialsToUse.youtube, label: "YouTube", text: "YT" },
-                { href: socialsToUse.facebook, label: "Facebook", text: "f" },
+                { href: socialsToUse.github, label: "GitHub", text: "Gh" },
+                { href: socialsToUse.linkedin, label: "LinkedIn", text: "In" },
+                { href: socialsToUse.youtube, label: "YouTube", text: "Yt" },
               ].filter(s => s.href).map(({ href, label, text }) => (
                 <a
                   key={label}
@@ -127,7 +105,7 @@ export default function Footer({
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-blue-600 hover:border-blue-600 transition-all text-xs font-bold"
+                  className="w-8 h-8 rounded-md bg-[rgba(0,0,0,0.03)] border border-[--color-hairline] flex items-center justify-center text-[--color-body] hover:text-[--color-ink] hover:bg-[rgba(0,0,0,0.06)] transition-all text-xs font-semibold"
                 >
                   {text}
                 </a>
@@ -138,20 +116,15 @@ export default function Footer({
           {/* Products */}
           {links.productLinks && links.productLinks.length > 0 && (
             <div>
-              <h3 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">Products</h3>
-              <ul className="space-y-2.5">
+              <h3 className="text-[14px] font-medium text-[--color-ink] mb-4">Products</h3>
+              <ul className="space-y-3">
                 {links.productLinks.map((item) => (
                   <li key={item.href}>
-                    <a href={item.href} className="text-sm text-gray-400 hover:text-white transition-colors">
+                    <a href={item.href} className="text-[14px] text-[--color-body] hover:text-[--color-ink] transition-colors">
                       {item.label}
                     </a>
                   </li>
                 ))}
-                <li>
-                  <a href="/products" className="text-sm text-blue-400 hover:text-blue-300 font-medium">
-                    View All →
-                  </a>
-                </li>
               </ul>
             </div>
           )}
@@ -159,11 +132,11 @@ export default function Footer({
           {/* Company */}
           {links.companyLinks && links.companyLinks.length > 0 && (
             <div>
-              <h3 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">Company</h3>
-              <ul className="space-y-2.5">
+              <h3 className="text-[14px] font-medium text-[--color-ink] mb-4">Company</h3>
+              <ul className="space-y-3">
                 {links.companyLinks.map((item) => (
                   <li key={item.href}>
-                    <a href={item.href} className="text-sm text-gray-400 hover:text-white transition-colors">
+                    <a href={item.href} className="text-[14px] text-[--color-body] hover:text-[--color-ink] transition-colors">
                       {item.label}
                     </a>
                   </li>
@@ -175,11 +148,11 @@ export default function Footer({
           {/* Support */}
           {links.supportLinks && links.supportLinks.length > 0 && (
             <div>
-              <h3 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">Support</h3>
-              <ul className="space-y-2.5">
+              <h3 className="text-[14px] font-medium text-[--color-ink] mb-4">Support</h3>
+              <ul className="space-y-3">
                 {links.supportLinks.map((item) => (
                   <li key={item.href}>
-                    <a href={item.href} className="text-sm text-gray-400 hover:text-white transition-colors">
+                    <a href={item.href} className="text-[14px] text-[--color-body] hover:text-[--color-ink] transition-colors">
                       {item.label}
                     </a>
                   </li>
@@ -187,63 +160,35 @@ export default function Footer({
               </ul>
             </div>
           )}
-
-          {/* Contact */}
-          <div>
-            <h3 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">Contact</h3>
-            <ul className="space-y-3">
-              {phone && (
-                <li>
-                  <a href={`tel:${phone}`} className="flex items-start gap-2.5 text-sm text-gray-400 hover:text-white transition-colors">
-                    <Phone size={14} className="mt-0.5 shrink-0 text-blue-400" />
-                    {phone}
-                  </a>
-                </li>
-              )}
-              {email && (
-                <li>
-                  <a href={`mailto:${email}`} className="flex items-start gap-2.5 text-sm text-gray-400 hover:text-white transition-colors">
-                    <Mail size={14} className="mt-0.5 shrink-0 text-blue-400" />
-                    {email}
-                  </a>
-                </li>
-              )}
-              {address && (
-                <li>
-                  <div className="flex items-start gap-2.5 text-sm text-gray-400">
-                    <MapPin size={14} className="mt-0.5 shrink-0 text-blue-400" />
-                    {address}
-                  </div>
-                </li>
-              )}
-            </ul>
-          </div>
         </div>
-      </div>
 
-      {/* Bottom Bar */}
-      <div className="border-t border-white/10">
-        <div className="container-custom py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-gray-500">
-            © {currentYear} {siteName}. All rights reserved.
-          </p>
-          <div className="flex items-center gap-6">
-            {(links.legalLinks || []).map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="text-xs text-gray-500 hover:text-gray-300 transition-colors"
-              >
-                {item.label}
-              </a>
-            ))}
-            <a
-              href={adminLoginUrl}
-              className="text-xs text-gray-400 hover:text-indigo-400 font-semibold transition-colors flex items-center gap-1"
-            >
-              🔒 Admin Login
-            </a>
+        {/* Bottom Bar */}
+        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 border-t border-[--color-hairline]">
+          <div className="flex flex-col sm:flex-row items-center gap-4 text-[13px] text-[--color-mute]">
+            <span>© {currentYear} {siteName}. All rights reserved.</span>
+            
+            <div className="hidden sm:block h-3 w-px bg-[--color-hairline]"></div>
+            
+            <div className="flex items-center gap-4">
+              {(links.legalLinks || []).map((item) => (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  className="hover:text-[--color-ink] transition-colors"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
           </div>
+          
+          <a
+            href={adminLoginUrl}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium text-[--color-mute] hover:text-[--color-ink] hover:bg-[rgba(0,0,0,0.04)] transition-colors"
+          >
+            <Shield size={12} />
+            Admin Login
+          </a>
         </div>
       </div>
     </footer>

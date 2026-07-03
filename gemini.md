@@ -28,6 +28,8 @@ This file contains crucial instructions, standard commands, and architectural co
 
 The admin panel frontend utilizes **Tailwind CSS v4** with a custom theme defined in `globals.css`. All admin subpages are designed to be dark-first, clean, minimal, and highly spacious (inspired by Stripe, Vercel, and Linear).
 
+* **Strict Design Reference:** Always read and follow the typography, colors, and design patterns specified in [DESIGN.md](file:///Users/akashsahu.blue/Documents/Akas/software-selling-platform/DESIGN.md) before creating, modifying, or planning any user interfaces.
+
 ### 1. Central Primitives (`components/ui/`)
 All pages must utilize these centralized component wrappers instead of custom styles or raw HTML elements:
 * **Button** ([Button.tsx](file:///Users/akashsahu.blue/Documents/Akas/software-selling-platform/Tenant_Frontend_Admin/components/ui/Button.tsx)): Standardized variants (`default`, `outline`, `secondary`, `destructive`, `ghost`, `link`) with smooth active scale transitions.

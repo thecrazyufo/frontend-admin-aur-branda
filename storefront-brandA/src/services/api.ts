@@ -302,3 +302,8 @@ export const AuthAPI = {
       password,
     }),
 };
+
+export const SocialProofAPI = {
+  getLogos: (siteId: string = SITE_ID) => apiGet<any[]>(`/social-proof/logos?siteId=${siteId}`),
+  getTestimonials: (siteId: string = SITE_ID) => apiGet<any[]>(`/social-proof/testimonials?siteId=${siteId}`),
+};

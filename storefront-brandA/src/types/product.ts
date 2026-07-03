@@ -72,6 +72,7 @@ export interface Product {
     title: string;
     description: string;
     keywords: string[];
+    ogImage?: string | null;
   };
   version: string;
   lastUpdated: string;

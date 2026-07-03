@@ -13,15 +13,22 @@ export default function PricingCard({ tier, productSlug }: PricingCardProps) {
       className={cn(
         "relative rounded-2xl border p-6 flex flex-col transition-all duration-300",
         tier.popular
-          ? "border-blue-500 shadow-[0_0_0_2px_#1a56db,0_20px_40px_rgba(26,86,219,0.15)] bg-white scale-[1.02]"
+          ? "border-transparent shadow-[0_20px_40px_rgba(0,112,243,0.1)] bg-white scale-[1.02]"
           : "border-gray-200 shadow-sm bg-white hover:border-blue-200 hover:shadow-md"
       )}
     >
+      {/* Gradient border for popular tier */}
+      {tier.popular && (
+        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[--color-gradient-develop-start] via-[--color-gradient-preview-start] to-[--color-gradient-ship-end] p-[2px] -z-10">
+          <div className="absolute inset-0 bg-white rounded-[14px]"></div>
+        </div>
+      )}
+
       {/* Popular badge */}
       {tier.popular && (
-        <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-          <span className="bg-blue-600 text-white text-xs font-bold px-4 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg">
-            <Zap size={11} />
+        <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10">
+          <span className="bg-gradient-to-r from-[--color-gradient-develop-start] to-[--color-gradient-preview-start] text-white text-xs font-bold px-4 py-1.5 rounded-full flex items-center gap-1.5 shadow-[0_4px_14px_rgba(121,40,202,0.39)]">
+            <Zap size={11} className="text-yellow-300 fill-yellow-300" />
             Most Popular
           </span>
         </div>

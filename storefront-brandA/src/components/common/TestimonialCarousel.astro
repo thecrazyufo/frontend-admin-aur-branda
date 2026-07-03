@@ -1,0 +1,52 @@
+---
+interface Props {
+  testimonials: Array<{ 
+    authorName: string; 
+    authorTitle?: string; 
+    company?: string; 
+    content: string; 
+    rating: number; 
+    avatarUrl?: string; 
+  }>;
+}
+
+const { testimonials = [] } = Astro.props;
+---
+
+{testimonials.length > 0 && (
+  <section class="py-24 bg-[--color-canvas]">
+    <div class="layout-container">
+      <div class="text-center mb-16 space-y-4">
+        <h2 class="text-3xl md:text-5xl font-bold tracking-tight text-[--color-foreground]">Loved by builders globally</h2>
+        <p class="text-[--color-muted] text-lg max-w-2xl mx-auto">See what our customers have to say about our tools.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {testimonials.map((t) => (
+          <div class="bg-[--color-surface] border border-[--color-hairline] p-8 rounded-2xl flex flex-col justify-between hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors">
+            <div>
+              <div class="flex text-yellow-500 mb-6 text-sm">
+                {Array.from({length: t.rating || 5}).map(() => <span>★</span>)}
+              </div>
+              <p class="text-lg leading-relaxed text-[--color-foreground] font-medium mb-8">"{t.content}"</p>
+            </div>
+            
+            <div class="flex items-center gap-4">
+              {t.avatarUrl ? (
+                <img src={t.avatarUrl} alt={t.authorName} class="w-12 h-12 rounded-full object-cover border border-[--color-hairline]" />
+              ) : (
+                <div class="w-12 h-12 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center font-bold text-[--color-foreground]">
+                  {t.authorName.charAt(0)}
+                </div>
+              )}
+              <div>
+                <div class="font-semibold text-[--color-foreground]">{t.authorName}</div>
+                <div class="text-sm text-[--color-muted]">{t.authorTitle} {t.company && `at ${t.company}`}</div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}

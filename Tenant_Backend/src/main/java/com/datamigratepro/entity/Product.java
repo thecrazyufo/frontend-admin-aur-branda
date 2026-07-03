@@ -67,6 +67,10 @@ public class Product {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
+    private List<LicenseComparisonRow> licenseComparison;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
     private SystemRequirements systemRequirements;
 
     @JdbcTypeCode(SqlTypes.JSON)

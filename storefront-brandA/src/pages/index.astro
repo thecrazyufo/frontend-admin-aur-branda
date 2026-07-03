@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { ProductAPI, CategoryAPI, SettingsAPI, BrandAPI } from "@/services/api";
+import { ProductAPI, CategoryAPI, SettingsAPI, BrandAPI, SocialProofAPI } from "@/services/api";
 
 import LuxuryHome from "@/components/templates/luxury/Home.astro";
 import TechBoldHome from "@/components/templates/tech-bold/Home.astro";
@@ -14,24 +14,28 @@ let products = [];
 let categories = [];
 let settings = null;
 let brandConfig = null;
+let clientLogos = [];
+let dynamicTestimonials = [];
 
 try {
-  [products, categories, settings, brandConfig] = await Promise.all([
+  [products, categories, settings, brandConfig, clientLogos, dynamicTestimonials] = await Promise.all([
     ProductAPI.getAll(),
     CategoryAPI.getAll(),
     SettingsAPI.get().catch(() => null),
-    BrandAPI.getCurrentBrand()
+    BrandAPI.getCurrentBrand(),
+    SocialProofAPI.getLogos().catch(() => []),
+    SocialProofAPI.getTestimonials().catch(() => [])
   ]);
 } catch (e) {
   // Backend missing
 }
 
 const featured = products.filter(p => p.enabled !== false).slice(0, 6);
-const testimonials = products
+const testimonials = dynamicTestimonials.length > 0 ? dynamicTestimonials : products
   .flatMap((p) =>
     (p.reviews || []).map((r) => ({
-      author: r.author,
-      role: r.role || "IT Professional",
+      authorName: r.author,
+      authorTitle: r.role || "IT Professional",
       company: r.company || "Verified User",
       rating: r.rating || 5,
       content: r.content,
@@ -39,7 +43,7 @@ const testimonials = products
   )
   .slice(0, 6);
 
-const templateProps = { products, categories, settings, featured, testimonials };
+const templateProps = { products, categories, settings, featured, testimonials, clientLogos };
 const layoutTemplate = brandConfig?.layoutTemplate || "classic";
 const siteName = settings?.name || "";
 const siteTagline = settings?.tagline || "";

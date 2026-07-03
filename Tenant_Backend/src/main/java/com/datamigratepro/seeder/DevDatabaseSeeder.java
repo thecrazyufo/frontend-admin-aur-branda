@@ -913,8 +913,8 @@ public class DevDatabaseSeeder implements CommandLineRunner {
         defaultSetting.setId("settings-brandA");
         defaultSetting.setSiteId("brandA");
         defaultSetting.setName("Brand A");
-        defaultSetting.setTagline("Professional Software Tools for Data Migration & Management");
-        defaultSetting.setDescription("Industry-leading email migration, backup, file conversion, and cloud migration tools trusted by 1M+ users worldwide.");
+        defaultSetting.setTagline("Migrate Data at Lightning Speed Without Losing a Single Byte.");
+        defaultSetting.setDescription("Eliminate downtime and secure your enterprise data. Our automated migration tools handle emails, files, and cloud transfers in seconds—saving you thousands in IT hours.");
         defaultSetting.setUrl("https://brandA.com");
         defaultSetting.setEmail("support@brandA.com");
         defaultSetting.setPhone("+1 (800) 123-4567");

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, ChevronDown, Search, Download, Phone } from "lucide-react";
+import { Menu, X, ChevronDown, Search, Download } from "lucide-react";
 
 export interface NavItemData {
   label: string;
@@ -22,73 +22,51 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
 
-  // Filter to only enabled items
   const navItems = navigation.filter(item => item.enabled !== false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     
-    // Check if the admin_jwt cookie is present
     const hasAdminJwt = document.cookie.split(';').some((item) => item.trim().startsWith('admin_jwt='));
     setIsAdminLoggedIn(hasAdminJwt);
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Resolve admin portal URL — prefer prop, then env, then fallback
   const resolvedAdminUrl = adminUrl || 
     (typeof window !== "undefined" ? `${window.location.protocol}//${window.location.hostname}:3000/` : "/admin");
 
   return (
     <>
-      {/* Top bar */}
-      <div className="bg-[var(--navy-900)] text-gray-300 text-sm py-2 hidden md:block">
-        <div className="container-custom flex items-center justify-between">
-          <span className="flex items-center gap-2">
-            <Phone size={13} />
-            {phone}
-          </span>
-          <div className="flex items-center gap-6">
-            <span>30-Day Money-Back Guarantee</span>
-            <span>•</span>
-            <span>Free Trial Available</span>
-            <span>•</span>
-            <a href="/contact" className="text-amber-400 hover:text-amber-300 font-medium">
-              24/7 Support
-            </a>
-          </div>
-        </div>
-      </div>
-
-      {/* Main navbar */}
+      {/* Vercel-style clean Navbar with backdrop blur and hairline border */}
       <nav
-        className={`sticky top-0 z-50 transition-all duration-300 ${
+        className={`sticky top-0 z-50 transition-all duration-300 border-b ${
           scrolled
-            ? "bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-100"
-            : "bg-white border-b border-gray-100"
+            ? "bg-[rgba(255,255,255,0.7)] backdrop-blur-md border-[--color-hairline]"
+            : "bg-transparent border-transparent"
         }`}
       >
         <div className="container-custom">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-[60px]">
             {/* Logo */}
-            <a href="/" className="flex items-center gap-2 group">
+            <a href="/" className="flex items-center gap-2.5 group">
               {logoUrl ? (
-                <img src={logoUrl} alt={siteName} className="w-9 h-9 rounded-lg object-contain" />
+                <img src={logoUrl} alt={siteName} className="w-7 h-7 rounded-md object-contain" />
               ) : (
-                <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
-                  <span className="text-white font-bold text-base">{siteName.charAt(0) || "S"}</span>
+                <div className="w-7 h-7 rounded-md bg-[--color-ink] flex items-center justify-center transition-transform group-hover:scale-105">
+                  <span className="text-[--color-canvas] font-bold text-xs">{siteName.charAt(0) || "S"}</span>
                 </div>
               )}
               <div>
-                <span className="font-bold text-gray-900 text-lg leading-none">
+                <span className="font-semibold text-[--color-ink] tracking-tight">
                   {siteName}
                 </span>
               </div>
             </a>
 
             {/* Desktop Nav */}
-            <div className="hidden lg:flex items-center gap-1">
+            <div className="hidden lg:flex items-center gap-2">
               {navItems.map((item) => (
                 <div
                   key={item.href}
@@ -98,29 +76,29 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
                 >
                   <a
                     href={item.href}
-                    className={`flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    className={`flex items-center gap-1 px-3 py-1.5 rounded-md text-[14px] font-medium transition-colors ${
                       activeDropdown === item.label
-                        ? "text-blue-600 bg-blue-50"
-                        : "text-gray-700 hover:text-blue-600 hover:bg-blue-50"
+                        ? "text-[--color-ink] bg-[rgba(0,0,0,0.04)]"
+                        : "text-[--color-body] hover:text-[--color-ink] hover:bg-[rgba(0,0,0,0.04)]"
                     }`}
                   >
                     {item.label}
                     {item.children && (
                       <ChevronDown
                         size={14}
-                        className={`transition-transform ${activeDropdown === item.label ? "rotate-180" : ""}`}
+                        className={`transition-transform text-[--color-mute] ${activeDropdown === item.label ? "rotate-180 text-[--color-ink]" : ""}`}
                       />
                     )}
                   </a>
 
                   {/* Dropdown */}
                   {item.children && activeDropdown === item.label && (
-                    <div className="absolute top-full left-0 mt-1 w-56 bg-white rounded-xl shadow-xl border border-gray-100 py-2 animate-fade-in">
+                    <div className="absolute top-full left-0 mt-1 w-56 bg-[--color-canvas] rounded-lg shadow-lg border border-[--color-hairline] py-1.5 animate-fade-in">
                       {item.children.map((child) => (
                         <a
                           key={child.href}
                           href={child.href}
-                          className="block px-4 py-2.5 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                          className="block px-4 py-2 text-[14px] text-[--color-body] hover:text-[--color-ink] hover:bg-[rgba(0,0,0,0.02)] transition-colors"
                         >
                           {child.label}
                         </a>
@@ -135,59 +113,59 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
             <div className="hidden lg:flex items-center gap-3">
               <a
                 href="/search"
-                className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+                className="p-1.5 text-[--color-body] hover:text-[--color-ink] hover:bg-[rgba(0,0,0,0.04)] rounded-md transition-colors"
                 aria-label="Search"
               >
-                <Search size={18} />
+                <Search size={16} />
               </a>
               {isAdminLoggedIn && (
                 <a
                   href={resolvedAdminUrl}
-                  className="flex items-center gap-1.5 px-3 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700 shadow-sm transition-all"
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[rgba(0,0,0,0.05)] text-[--color-ink] rounded-md text-[13px] font-semibold hover:bg-[rgba(0,0,0,0.08)] transition-colors"
                 >
-                  <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-                  ⚙️ Admin Portal
+                  <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                  Admin
                 </a>
               )}
-              <a href="/download" className="btn btn-outline text-sm py-2 px-4">
-                <Download size={15} />
-                Free Trial
+              <div className="h-4 w-px bg-[--color-hairline] mx-1"></div>
+              <a href="/products" className="text-[14px] font-medium text-[--color-body] hover:text-[--color-ink] transition-colors">
+                Contact
               </a>
-              <a href="/products" className="btn btn-primary text-sm py-2 px-4">
-                View Products
+              <a href="/download" className="btn btn-primary text-[13px] py-1.5 px-3 rounded-md">
+                Deploy
               </a>
             </div>
 
             {/* Mobile menu button */}
             <button
-              className="lg:hidden p-2 text-gray-600 hover:text-gray-900"
+              className="lg:hidden p-1.5 text-[--color-body] hover:text-[--color-ink]"
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Toggle menu"
             >
-              {isOpen ? <X size={22} /> : <Menu size={22} />}
+              {isOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="lg:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-1">
+          <div className="lg:hidden bg-[--color-canvas] border-t border-[--color-hairline] px-4 py-4 space-y-1">
             {navItems.map((item) => (
               <div key={item.href}>
                 <a
                   href={item.href}
-                  className="block px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg"
+                  className="block px-3 py-2 text-[15px] font-medium text-[--color-ink] hover:bg-[rgba(0,0,0,0.04)] rounded-md"
                   onClick={() => setIsOpen(false)}
                 >
                   {item.label}
                 </a>
                 {item.children && (
-                  <div className="ml-4 border-l-2 border-blue-100 pl-3 mt-1 space-y-1">
+                  <div className="ml-4 border-l border-[--color-hairline] pl-3 mt-1 space-y-1">
                     {item.children.map((child) => (
                       <a
                         key={child.href}
                         href={child.href}
-                        className="block py-2 text-xs text-gray-500 hover:text-blue-600"
+                        className="block py-2 text-[14px] text-[--color-body] hover:text-[--color-ink]"
                         onClick={() => setIsOpen(false)}
                       >
                         {child.label}
@@ -197,23 +175,19 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
                 )}
               </div>
             ))}
-            <div className="pt-4 flex flex-col gap-2">
+            <div className="pt-4 flex flex-col gap-2 border-t border-[--color-hairline] mt-4">
               {isAdminLoggedIn && (
                 <a
                   href={resolvedAdminUrl}
-                  className="flex items-center justify-center gap-1.5 w-full py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-colors"
+                  className="flex items-center justify-center gap-1.5 w-full py-2 bg-[rgba(0,0,0,0.05)] text-[--color-ink] rounded-md text-[14px] font-semibold"
                   onClick={() => setIsOpen(false)}
                 >
-                  <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-                  ⚙️ Admin Portal
+                  <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                  Admin Portal
                 </a>
               )}
-              <a href="/download" className="btn btn-outline w-full justify-center">
-                <Download size={15} />
-                Free Trial
-              </a>
-              <a href="/products" className="btn btn-primary w-full justify-center">
-                View Products
+              <a href="/download" className="btn btn-primary w-full justify-center">
+                Deploy Now
               </a>
             </div>
           </div>

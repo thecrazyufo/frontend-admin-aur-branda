@@ -120,11 +120,18 @@ const fontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/
       }
     </style>
   </head>
-  <body class={`min-h-screen flex flex-col antialiased layout-${layoutTemplate}`} style={`font-family: '${fontFamily}', system-ui, sans-serif;`}>
+  <body class={`min-h-screen flex flex-col antialiased layout-${layoutTemplate} bg-canvas text-ink relative`} style={`font-family: '${fontFamily}', system-ui, sans-serif;`}>
+    
+    <!-- Vercel-style Decorative Mesh Gradient (Fixed Background) -->
+    <div class="fixed inset-0 pointer-events-none -z-10 overflow-hidden" aria-hidden="true">
+      <div class="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-[--color-gradient-develop-start] opacity-[0.03] blur-[120px]"></div>
+      <div class="absolute top-[10%] -right-[10%] w-[40%] h-[40%] rounded-full bg-[--color-gradient-preview-start] opacity-[0.03] blur-[120px]"></div>
+    </div>
+
     <!-- Announcement Bar (if enabled) -->
     {settings?.announcement?.enabled && settings.announcement.text && (
       <div
-        style={`background: ${settings.announcement.bgColor || '#6366f1'}; color: ${settings.announcement.textColor || '#fff'}; text-align: center; padding: 8px 16px; font-size: 13px; font-weight: 600;`}
+        style={`background: ${settings.announcement.bgColor || '#171717'}; color: ${settings.announcement.textColor || '#fff'}; text-align: center; padding: 8px 16px; font-size: 13px; font-weight: 500;`}
       >
         {settings.announcement.link ? (
           <a href={settings.announcement.link} style="color: inherit; text-decoration: underline;">
@@ -143,7 +150,7 @@ const fontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/
       navigation={mainNavigation}
       logoUrl={logoUrl}
     />
-    <main class="flex-1">
+    <main class="flex-1 relative">
       <slot />
     </main>
     <Footer

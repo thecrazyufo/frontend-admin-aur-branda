@@ -108,12 +108,12 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.DELETE, "/api/categories", "/api/categories/**")
                     .hasAnyRole("SUPER_ADMIN", "OWNER", "ADMIN", "SEO_CW_PRODUCT_MANAGER", "PRODUCT_MANAGER", "CONTENT_SEO_MANAGER", "WRITER")
 
-                // 🔐 Content mutations (blogs, faqs, help)
-                .requestMatchers(HttpMethod.POST, "/api/blog", "/api/blog/**", "/api/faqs", "/api/faqs/**", "/api/help", "/api/help/**")
+                // 🔐 Content mutations (blogs, faqs, help, social proof)
+                .requestMatchers(HttpMethod.POST, "/api/blog", "/api/blog/**", "/api/faqs", "/api/faqs/**", "/api/help", "/api/help/**", "/api/social-proof", "/api/social-proof/**")
                     .hasAnyRole("SUPER_ADMIN", "OWNER", "ADMIN", "SEO_CW_PRODUCT_MANAGER", "CONTENT_SEO_MANAGER", "WRITER")
-                .requestMatchers(HttpMethod.PUT, "/api/blog", "/api/blog/**", "/api/faqs", "/api/faqs/**", "/api/help", "/api/help/**")
+                .requestMatchers(HttpMethod.PUT, "/api/blog", "/api/blog/**", "/api/faqs", "/api/faqs/**", "/api/help", "/api/help/**", "/api/social-proof", "/api/social-proof/**")
                     .hasAnyRole("SUPER_ADMIN", "OWNER", "ADMIN", "SEO_CW_PRODUCT_MANAGER", "CONTENT_SEO_MANAGER", "WRITER")
-                .requestMatchers(HttpMethod.DELETE, "/api/blog", "/api/blog/**", "/api/faqs", "/api/faqs/**", "/api/help", "/api/help/**")
+                .requestMatchers(HttpMethod.DELETE, "/api/blog", "/api/blog/**", "/api/faqs", "/api/faqs/**", "/api/help", "/api/help/**", "/api/social-proof", "/api/social-proof/**")
                     .hasAnyRole("SUPER_ADMIN", "OWNER", "ADMIN", "SEO_CW_PRODUCT_MANAGER", "CONTENT_SEO_MANAGER", "WRITER")
 
                 // 🔐 File upload
@@ -128,6 +128,7 @@ public class SecurityConfig {
                 // ✅ Public GET endpoints (browsing the storefront)
                 .requestMatchers(HttpMethod.GET,
                     "/api/settings", "/api/settings/**",
+                    "/api/social-proof", "/api/social-proof/**",
                     "/api/brands", "/api/brands/**",
                     "/api/products", "/api/products/**",
                     "/api/blog", "/api/blog/**",
