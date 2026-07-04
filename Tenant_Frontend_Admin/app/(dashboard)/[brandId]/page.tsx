@@ -39,6 +39,8 @@ export default function BrandDashboardPage() {
  const isAdmin = userRole ==="ADMIN";
  const isLicenseAdmin = isSuperAdmin || isAdmin || userRole ==="LICENSE_ADMIN";
  const isBrandManager = isSuperAdmin || isAdmin || userRole ==="BRAND_MANAGER" || userRole ==="SEO";
+ const canManageProducts = isSuperAdmin || userRole ==="SEO" || userRole ==="SEO_CW_PRODUCT_MANAGER" || userRole ==="PRODUCT_MANAGER" || userRole ==="WRITER";
+ const canManageSeo = isSuperAdmin || userRole ==="SEO" || userRole ==="SEO_CW_PRODUCT_MANAGER" || userRole ==="CONTENT_SEO_MANAGER";
 
  useEffect(() => {
  async function loadDashboardData() {
@@ -151,7 +153,7 @@ export default function BrandDashboardPage() {
  {/* Metrics Cards Grid */}
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
  {/* Metric 1 */}
- <Card className="bg-white/40 backdrop-blur-md border-zinc-200">
+ <Card className="bg-white border-zinc-200 shadow-xs">
  <CardHeader className="pb-2">
  <CardDescription className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Products Catalog</CardDescription>
  <CardTitle className="text-3xl font-extrabold tracking-tight text-zinc-900 mt-1">{productCount}</CardTitle>
@@ -165,7 +167,7 @@ export default function BrandDashboardPage() {
 
  {/* Metric 2 */}
  {isLicenseAdmin && (
- <Card className="bg-white/40 backdrop-blur-md border-zinc-200">
+ <Card className="bg-white border-zinc-200 shadow-xs">
  <CardHeader className="pb-2">
  <CardDescription className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Desktop Licenses</CardDescription>
  <CardTitle className="text-3xl font-extrabold tracking-tight text-zinc-900 mt-1">{desktopLicCount}</CardTitle>
@@ -180,7 +182,7 @@ export default function BrandDashboardPage() {
 
  {/* Metric 3 */}
  {isLicenseAdmin && (
- <Card className="bg-white/40 backdrop-blur-md border-zinc-200">
+ <Card className="bg-white border-zinc-200 shadow-xs">
  <CardHeader className="pb-2">
  <CardDescription className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">SaaS Licenses</CardDescription>
  <CardTitle className="text-3xl font-extrabold tracking-tight text-zinc-900 mt-1">{webLicCount}</CardTitle>
@@ -194,7 +196,7 @@ export default function BrandDashboardPage() {
  )}
 
  {/* Metric 4 */}
- <Card className="bg-white/40 backdrop-blur-md border-zinc-200">
+ <Card className="bg-white border-zinc-200 shadow-xs">
  <CardHeader className="pb-2">
  <CardDescription className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">SEO Score</CardDescription>
  <CardTitle className="text-3xl font-extrabold tracking-tight text-zinc-900 mt-1">{seoScore}%</CardTitle>
@@ -322,6 +324,7 @@ export default function BrandDashboardPage() {
  <CardDescription className="text-[10px] text-zinc-500 mt-0.5">Instant redirects to administrative sections.</CardDescription>
  </CardHeader>
  <CardContent className="pt-4 space-y-3">
+ {canManageProducts && (
  <Link href={`/${brandId}/cc?action=new-product`} className="block">
  <div className="flex items-center gap-3 p-3 rounded-lg border border-zinc-150 hover:bg-card transition-colors select-none">
  <div className="w-8 h-8 rounded bg-indigo-500/10 text-indigo-600 flex items-center justify-center text-sm font-bold shrink-0">
@@ -333,6 +336,7 @@ export default function BrandDashboardPage() {
  </div>
  </div>
  </Link>
+ )}
 
  {isLicenseAdmin && (
  <Link href={`/${brandId}/admin?action=generate`} className="block">
@@ -348,6 +352,7 @@ export default function BrandDashboardPage() {
  </Link>
  )}
 
+ {canManageSeo && (
  <Link href={`/${brandId}/seo`} className="block">
  <div className="flex items-center gap-3 p-3 rounded-lg border border-zinc-150 hover:bg-card transition-colors select-none">
  <div className="w-8 h-8 rounded bg-amber-500/10 text-amber-600 flex items-center justify-center text-sm font-bold shrink-0">
@@ -359,6 +364,7 @@ export default function BrandDashboardPage() {
  </div>
  </div>
  </Link>
+ )}
 
  {isBrandManager && (
  <Link href={`/${brandId}/brand`} className="block">

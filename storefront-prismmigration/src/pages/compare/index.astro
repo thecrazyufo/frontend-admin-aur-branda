@@ -1,0 +1,116 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { ProductAPI, SettingsAPI } from "@/services/api";
+import SectionHeader from "@/components/common/SectionHeader";
+import { Check, X, Star } from "lucide-react";
+
+const settings = await SettingsAPI.get().catch(() => null);
+const siteName = settings?.name || "";
+const siteDescription = settings?.description || "";
+
+let productsList = [];
+let compareProducts = [];
+
+try {
+  productsList = await ProductAPI.getAll();
+  compareProducts = productsList.slice(0, 4);
+} catch (e) {
+  console.error("Error loading products for compare:", e);
+}
+
+// Dynamically extract up to 10 unique features from the loaded products
+const features = Array.from(
+  new Set(
+    compareProducts.flatMap((p) => p.features || [])
+  )
+).slice(0, 10);
+
+const hasFeature = (product: any, feature: string): boolean => {
+  return (product.features || []).includes(feature);
+};
+---
+
+<BaseLayout
+  title={`Compare Tools — ${siteName}`}
+  description={siteDescription}
+>
+  <div>
+    <div class="bg-[#0A0A0A] py-20 text-center border-b border-stone-900 relative overflow-hidden">
+      <!-- Ambient refraction glow background -->
+      <div class="absolute inset-0 pointer-events-none overflow-hidden">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] bg-[#EAB308]/5 blur-[90px] rounded-full"></div>
+      </div>
+
+      <div class="container-custom relative z-10">
+        <span class="inline-block text-[10px] font-bold uppercase tracking-widest mb-4 px-3 py-1.5 rounded-full text-[#EAB308] bg-[#EAB308]/15 border border-[#EAB308]/25">Compare</span>
+        <h1 class="text-white font-extrabold text-3xl md:text-4xl tracking-tight mb-4">Compare Our Tools</h1>
+        <p class="text-stone-300 max-w-lg mx-auto text-xs leading-relaxed">Find the right tool for your needs with our side-by-side comparison.</p>
+      </div>
+    </div>
+
+    <section class="py-20 bg-[#0A0A0A] border-t border-stone-900">
+      <div class="container-custom">
+        <SectionHeader eyebrow="Comparison Table" title="Feature Comparison" centered class="mb-10" />
+        <div class="overflow-x-auto">
+          <table class="w-full bg-stone-900/10 backdrop-blur rounded-xl border border-stone-900 shadow-2xl overflow-hidden min-w-[700px]">
+            <thead>
+              <tr class="border-b border-stone-900 bg-stone-950/40">
+                <th class="text-left p-5 font-semibold text-stone-300 w-48">Feature</th>
+                {compareProducts.map((p) => (
+                  <th class="p-5 text-center">
+                    <a href={`/products/${p.slug}`} class="hover:text-[#EAB308] transition-colors block">
+                      <div class="font-bold text-white text-sm leading-snug mb-1">{p.name}</div>
+                      <div class="flex items-center justify-center gap-1 text-[#EAB308] text-xs mb-2">
+                        <Star size={11} fill="currentColor" />
+                        <span class="text-stone-400 font-mono">{p.rating}</span>
+                      </div>
+                      {p.badge && (
+                        <span class="px-2 py-0.5 rounded border border-[#EAB308]/20 bg-[#EAB308]/10 text-[#EAB308] text-[10px] uppercase font-bold tracking-wider inline-block">{p.badge}</span>
+                      )}
+                    </a>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {features.map((feature, i) => (
+                <tr class={`border-b border-stone-900/60 ${i % 2 === 0 ? "bg-stone-900/10" : ""}`}>
+                  <td class="p-5 text-xs font-medium text-stone-300">{feature}</td>
+                  {compareProducts.map((p) => (
+                    <td class="p-5 text-center">
+                      {hasFeature(p, feature)
+                        ? <Check size={18} class="text-[#EAB308] mx-auto" />
+                        : <X size={18} class="text-stone-700 mx-auto" />}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+              <tr class="border-t border-stone-900 bg-stone-950/40">
+                <td class="p-5 font-bold text-white text-xs">Starting Price</td>
+                {compareProducts.map((p) => {
+                  const paid = p.pricing?.find((t) => t.price > 0);
+                  return (
+                    <td class="p-5 text-center">
+                      <span class="font-bold text-white text-base">${paid?.price || "0"}</span>
+                      <span class="text-[10px] text-stone-500 font-mono ml-1">/{paid?.period || "lifetime"}</span>
+                    </td>
+                  );
+                })}
+              </tr>
+              <tr>
+                <td class="p-5" />
+                {compareProducts.map((p) => (
+                  <td class="p-5 text-center">
+                    <a href={`/products/${p.slug}`} class="inline-block bg-[#EAB308] hover:bg-[#f1c40f] text-black font-extrabold text-xs py-2 px-4 rounded-lg transition-all duration-300 shadow-[0_0_15px_rgba(234,179,8,0.25)]">
+                      View Details
+                    </a>
+                  </td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

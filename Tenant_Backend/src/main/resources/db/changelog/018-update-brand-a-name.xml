@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <!-- 018: Update brandA details to Prism Migration -->
+    <changeSet id="018-update-brand-a-name" author="system">
+        <update tableName="brand_configs">
+            <column name="name" value="Prism Migration"/>
+            <column name="domain" value="prismmigration.local"/>
+            <where>id = 'brandA'</where>
+        </update>
+        <update tableName="admin_users">
+            <column name="full_name" value="Prism Migration Administrator"/>
+            <column name="email" value="admin@prismmigration.local"/>
+            <where>username = 'adminA'</where>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,73 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { HelpAPI , SettingsAPI } from "@/services/api";
+const settings = await SettingsAPI.get().catch(() => null);
+import { HELP_CATEGORY_LABELS } from "@/types/common";
+import SectionHeader from "@/components/common/SectionHeader";
+import { BookOpen, ArrowRight, ThumbsUp } from "lucide-react";
+
+let articles = [];
+
+try {
+  articles = await HelpAPI.getAll();
+} catch (e) {
+  console.error("Error loading help articles:", e);
+}
+---
+
+<BaseLayout
+  title={`Help Center & Documentation — ${settings?.name || ""}`}
+  description="Step-by-step guides, tutorials, and documentation for all DataMigrate Pro software tools."
+>
+  <div class="min-h-screen bg-[#0A0A0A]">
+    {/* Header */}
+    <div class="bg-[#0A0A0A] py-20 text-center border-b border-stone-900 relative overflow-hidden">
+      <!-- Ambient refraction glow background -->
+      <div class="absolute inset-0 pointer-events-none overflow-hidden">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] bg-[#EAB308]/5 blur-[90px] rounded-full"></div>
+      </div>
+
+      <div class="container-custom relative z-10">
+        <span class="inline-block text-[10px] font-bold uppercase tracking-widest mb-4 px-3 py-1.5 rounded-full text-[#EAB308] bg-[#EAB308]/15 border border-[#EAB308]/25">Help Center</span>
+        <h1 class="text-white font-extrabold text-3xl md:text-4xl tracking-tight mb-4">How can we help you?</h1>
+        <p class="text-stone-300 max-w-lg mx-auto text-xs leading-relaxed">
+          Find step-by-step guides, tutorials, and documentation for all our tools.
+        </p>
+      </div>
+    </div>
+
+    <div class="container-custom py-20">
+      <SectionHeader eyebrow="Articles" title="Help Documentation" class="mb-12" />
+      
+      {articles.length > 0 ? (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {articles.map((article) => (
+            <a href={`/help/${article.slug}`} class="group bg-stone-900/30 backdrop-blur rounded-xl border border-stone-900 p-6 block hover:border-[#EAB308]/30 transition-all duration-300">
+              <div class="w-10 h-10 rounded-xl bg-[#EAB308]/10 border border-[#EAB308]/25 flex items-center justify-center mb-4">
+                <BookOpen size={18} class="text-[#EAB308]" />
+              </div>
+              <span class="px-2.5 py-0.5 rounded border border-[#EAB308]/20 bg-[#EAB308]/10 text-[#EAB308] text-[9px] uppercase font-bold tracking-wider inline-block mb-3">{HELP_CATEGORY_LABELS[article.category]}</span>
+              <h3 class="font-bold text-white mb-2 group-hover:text-[#EAB308] transition-colors text-sm">{article.title}</h3>
+              <p class="text-xs text-stone-300 mb-4 line-clamp-2 leading-relaxed">{article.excerpt}</p>
+              <div class="flex items-center justify-between text-[11px] text-stone-400">
+                {article.helpful !== undefined && (
+                  <span class="flex items-center gap-1 font-mono">
+                    <ThumbsUp size={11} class="text-emerald-500" />
+                    {article.helpful} helpful
+                  </span>
+                )}
+                <span class="flex items-center gap-1 text-[#EAB308] font-bold group-hover:gap-2 transition-all">
+                  Read <ArrowRight size={12} />
+                </span>
+              </div>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="text-center py-20 bg-stone-900/30 backdrop-blur rounded-xl border border-stone-900 p-8 shadow-2xl">
+          <p class="text-stone-500 text-lg">No articles found.</p>
+        </div>
+      )}
+    </div>
+  </div>
+</BaseLayout>

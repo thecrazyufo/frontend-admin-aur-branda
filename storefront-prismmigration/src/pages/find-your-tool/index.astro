@@ -1,0 +1,33 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import SectionHeader from "@/components/common/SectionHeader";
+import FindYourToolWizard from "@/components/common/FindYourToolWizard";
+
+// Site-specific settings
+import { SettingsAPI } from "@/services/api";
+const settings = await SettingsAPI.get().catch(() => null);
+---
+
+<BaseLayout
+  title={`Find Your Tool — Requirement Based Tool Finder | ${settings?.name || "Prism Migration"}`}
+  description="Select your source data format and target platform to find the perfect automated migration or converter tool."
+>
+  <div class="min-h-screen bg-[#0A0A0A]">
+    {/* Header */}
+    <div class="bg-[#0A0A0A] border-b border-stone-900 py-12 lg:py-16 relative overflow-hidden">
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] bg-[#EAB308]/5 blur-[90px] rounded-full pointer-events-none"></div>
+      <div class="container-custom">
+        <SectionHeader
+          eyebrow="Migration Wizard"
+          title="Find Your Perfect Tool"
+          subtitle="Don't know which software to use? Simply tell us what data you have and where you want it to go. We'll find the best tool for the job."
+        />
+      </div>
+    </div>
+
+    {/* Wizard */}
+    <div class="bg-[#0A0A0A] py-8">
+      <FindYourToolWizard client:load />
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,817 @@
+---
+import type { Product } from "@/types/product";
+import type { Category } from "@/services/api";
+
+interface Testimonial {
+  authorName: string;
+  authorTitle: string;
+  company: string;
+  rating: number;
+  content: string;
+}
+
+const { categories, settings, featured, testimonials } = Astro.props;
+
+const siteName = settings?.name || "Prism Migration";
+const siteTagline = settings?.tagline || "Enterprise Mailbox & Database Migrators. Built to Run Locally.";
+const siteDescription = settings?.description || "Preserve folder structures, validate integrity with double checksums, and stream files at maximum connection speed. 100% private, on-premise execution.";
+const siteStats = settings?.stats || [];
+
+const iconMap: Record<string, string> = {
+  mail: "✉️", shield: "🛡️", "refresh-cw": "🔄", cloud: "☁️", "hard-drive": "💾", download: "⬇️",
+};
+
+const categoryIconMap: Record<string, string> = {
+  "email-migration": "✉️",
+  "backup": "💾",
+  "file-converter": "🔄",
+  "cloud-migration": "☁️",
+  "mailbox-recovery": "🛡️",
+  "data-export": "📤",
+};
+
+const categoryColorMap: Record<string, { text: string; bg: string; border: string; glow: string }> = {
+  "email-migration": { text: "text-[#EAB308]", bg: "bg-[#EAB308]/10", border: "border-[#EAB308]/20", glow: "shadow-[0_0_15px_rgba(234,179,8,0.15)]" },
+  "backup": { text: "text-[#3b82f6]", bg: "bg-[#3b82f6]/10", border: "border-[#3b82f6]/20", glow: "shadow-[0_0_15px_rgba(59,130,246,0.15)]" },
+  "file-converter": { text: "text-[#10b981]", bg: "bg-[#10b981]/10", border: "border-[#10b981]/20", glow: "shadow-[0_0_15px_rgba(16,185,129,0.15)]" },
+  "cloud-migration": { text: "text-[#a855f7]", bg: "bg-[#a855f7]/10", border: "border-[#a855f7]/20", glow: "shadow-[0_0_15px_rgba(168,85,247,0.15)]" },
+  "mailbox-recovery": { text: "text-[#ef4444]", bg: "bg-[#ef4444]/10", border: "border-[#ef4444]/20", glow: "shadow-[0_0_15px_rgba(239,68,68,0.15)]" },
+};
+---
+
+<!-- Sleek SaaS Hero Section (Premium Dark Theme) -->
+<section class="relative overflow-hidden bg-stone-950 pt-6 pb-10 md:pt-8 md:pb-12 border-b border-stone-900 tech-grid">
+  <!-- Cinematic Glowing Lights & Mesh Gradients -->
+  <div class="absolute inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
+    <!-- Center light source -->
+    <div class="absolute top-[20%] left-1/2 -translate-x-1/2 w-[60%] h-[60%] rounded-full bg-gradient-to-br from-[#EAB308]/10 to-indigo-900/10 blur-[140px] opacity-60"></div>
+    <!-- Bottom light source -->
+    <div class="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-stone-950 to-transparent z-10"></div>
+  </div>
+
+  <!-- Giant Glass Prism & Refraction Rays SVG (Stretches from left to right corner) -->
+  <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden flex items-center justify-center" aria-hidden="true">
+    <svg class="w-[135%] h-[115%] md:w-[125%] md:h-[105%] opacity-[0.55] scale-100 md:scale-105" viewBox="0 0 1200 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- Light Beam Gradients for Left-side Input Streams -->
+        <linearGradient id="rayGmailSource" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#ef4444" stop-opacity="0" />
+          <stop offset="100%" stop-color="#ef4444" stop-opacity="0.65" />
+        </linearGradient>
+        <linearGradient id="rayOutlookSource" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#3b82f6" stop-opacity="0" />
+          <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.65" />
+        </linearGradient>
+        <linearGradient id="rayThunderbirdSource" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#06b6d4" stop-opacity="0" />
+          <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.65" />
+        </linearGradient>
+        <linearGradient id="rayFileSource" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#EAB308" stop-opacity="0" />
+          <stop offset="100%" stop-color="#EAB308" stop-opacity="0.65" />
+        </linearGradient>
+        <linearGradient id="rayCloudSource" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#a855f7" stop-opacity="0" />
+          <stop offset="100%" stop-color="#a855f7" stop-opacity="0.65" />
+        </linearGradient>
+
+        <!-- Rainbow Refracted Rays (Gold, Cyan, Purple, Blue) for Right-side Output -->
+        <linearGradient id="rayGold" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#EAB308" stop-opacity="0.95" />
+          <stop offset="100%" stop-color="#EAB308" stop-opacity="0" />
+        </linearGradient>
+        <linearGradient id="rayCyan" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.95" />
+          <stop offset="100%" stop-color="#22d3ee" stop-opacity="0" />
+        </linearGradient>
+        <linearGradient id="rayPurple" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#a855f7" stop-opacity="0.95" />
+          <stop offset="100%" stop-color="#a855f7" stop-opacity="0" />
+        </linearGradient>
+        <linearGradient id="rayBlue" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.95" />
+          <stop offset="100%" stop-color="#3b82f6" stop-opacity="0" />
+        </linearGradient>
+
+        <!-- Glass Prism 3D Gradient -->
+        <linearGradient id="prismFaceLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#EAB308" stop-opacity="0.35" />
+          <stop offset="100%" stop-color="#854d0e" stop-opacity="0.05" />
+        </linearGradient>
+        <linearGradient id="prismFaceRight" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.2" />
+          <stop offset="100%" stop-color="#EAB308" stop-opacity="0.02" />
+        </linearGradient>
+        
+        <!-- Glow Filter -->
+        <filter id="cinematicGlow" x="-25%" y="-25%" width="150%" height="150%">
+          <feGaussianBlur stdDeviation="11" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+        <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="20" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+
+        <!-- PDF Document Icon -->
+        <g id="pdfIcon">
+          <rect x="-9" y="-12" width="18" height="24" rx="3" fill="#09090b" stroke="#EAB308" stroke-width="1.5" />
+          <path d="M 3 -12 L 9 -6 L 3 -6 Z" fill="#EAB308" />
+          <text x="0" y="7" fill="#EAB308" font-size="7" font-family="monospace" text-anchor="middle" font-weight="black">PDF</text>
+        </g>
+
+        <!-- DOCX Document Icon -->
+        <g id="docxIcon">
+          <rect x="-9" y="-12" width="18" height="24" rx="3" fill="#09090b" stroke="#3b82f6" stroke-width="1.5" />
+          <path d="M 3 -12 L 9 -6 L 3 -6 Z" fill="#3b82f6" />
+          <text x="0" y="7" fill="#3b82f6" font-size="6" font-family="monospace" text-anchor="middle" font-weight="black">DOCX</text>
+        </g>
+
+        <!-- Email Envelope Icon -->
+        <g id="emailIcon">
+          <rect x="-10" y="-8" width="20" height="16" rx="2" fill="#09090b" stroke="#fb923c" stroke-width="1.5" />
+          <path d="M -10 -8 L 0 0 L 10 -8" stroke="#fb923c" stroke-width="1.5" fill="none" stroke-linejoin="round" />
+        </g>
+
+        <!-- Cloud Storage Icon -->
+        <g id="cloudIcon">
+          <path d="M -7 3 C -9.5 3, -11.5 1, -11.5 -1.5 C -11.5 -4, -9.5 -6, -7 -6 C -6.2 -9, -3.5 -10, 0 -10 C 4.5 -10, 6.5 -7, 6.5 -5.5 C 8.5 -5.5, 11 -4, 11 -1.5 C 11 1.5, 8.5 3, 5.5 3 Z" fill="#09090b" stroke="#22d3ee" stroke-width="1.5" stroke-linejoin="round" />
+        </g>
+
+        <!-- Folder Directory Icon -->
+        <g id="folderIcon">
+          <path d="M -10 6 L -10 -8 L -4 -8 L -1 -5 L 8 -5 L 8 6 Z" fill="#09090b" stroke="#a855f7" stroke-width="1.5" stroke-linejoin="round" />
+        </g>
+
+        <!-- Outlook Icon -->
+        <g id="outlookIcon">
+          <rect x="-9" y="-9" width="18" height="18" rx="3" fill="#09090b" stroke="#2563eb" stroke-width="1.5" />
+          <text x="0" y="4.5" fill="#2563eb" font-size="10" font-family="sans-serif" font-weight="black" text-anchor="middle">O</text>
+        </g>
+
+        <!-- Gmail Icon -->
+        <g id="gmailIcon">
+          <rect x="-9" y="-9" width="18" height="18" rx="3" fill="#09090b" stroke="#ea4335" stroke-width="1.5" />
+          <path d="M -9 -9 L 0 -1 L 9 -9" stroke="#ea4335" stroke-width="1.5" fill="none" stroke-linejoin="round" />
+          <text x="0" y="6" fill="#ea4335" font-size="6.5" font-family="monospace" text-anchor="middle" font-weight="bold">M</text>
+        </g>
+
+        <!-- Thunderbird Icon -->
+        <g id="thunderbirdIcon">
+          <rect x="-9" y="-9" width="18" height="18" rx="3" fill="#09090b" stroke="#00bcd4" stroke-width="1.5" />
+          <text x="0" y="4.5" fill="#00bcd4" font-size="10" font-family="sans-serif" font-weight="black" text-anchor="middle">T</text>
+        </g>
+
+        <!-- PST Tag -->
+        <g id="pstIcon">
+          <rect x="-10" y="-8" width="20" height="16" rx="2" fill="#09090b" stroke="#EAB308" stroke-width="1.5" />
+          <text x="0" y="4" fill="#EAB308" font-size="7" font-family="monospace" text-anchor="middle" font-weight="black">PST</text>
+        </g>
+
+        <!-- EML Tag -->
+        <g id="emlIcon">
+          <rect x="-10" y="-8" width="20" height="16" rx="2" fill="#09090b" stroke="#10b981" stroke-width="1.5" />
+          <text x="0" y="4" fill="#10b981" font-size="7" font-family="monospace" text-anchor="middle" font-weight="black">EML</text>
+        </g>
+
+        <!-- MBOX Tag -->
+        <g id="mboxIcon">
+          <rect x="-11" y="-8" width="22" height="16" rx="2" fill="#09090b" stroke="#8b5cf6" stroke-width="1.5" />
+          <text x="0" y="4" fill="#8b5cf6" font-size="6.5" font-family="monospace" text-anchor="middle" font-weight="black">MBOX</text>
+        </g>
+
+        <!-- Server Cabinet Icon -->
+        <g id="serverIcon">
+          <rect x="-10" y="-12" width="20" height="24" rx="2" fill="#09090b" stroke="#EAB308" stroke-width="1.5" />
+          <line x1="-10" y1="-4" x2="10" y2="-4" stroke="#EAB308" stroke-width="1.2" />
+          <line x1="-10" y1="4" x2="10" y2="4" stroke="#EAB308" stroke-width="1.2" />
+          <circle cx="-5" cy="-8" r="1.5" fill="#10b981" />
+          <circle cx="-5" cy="0" r="1.5" fill="#10b981" />
+          <circle cx="-5" cy="8" r="1.5" fill="#10b981" />
+        </g>
+      </defs>
+
+      <!-- Background Grid Pattern -->
+      <g opacity="0.2">
+        <path d="M 0 100 L 1200 100 M 0 200 L 1200 200 M 0 300 L 1200 300 M 0 400 L 1200 400 M 0 500 L 1200 500" stroke="#EAB308" stroke-width="0.5" />
+        <path d="M 100 0 L 100 600 M 200 0 L 200 600 M 300 0 L 300 600 M 400 0 L 400 600 M 500 0 L 500 600 M 600 0 L 600 600 M 700 0 L 700 600 M 800 0 L 800 600 M 900 0 L 900 600 M 1000 0 L 1000 600 M 1100 0 L 1100 600" stroke="#EAB308" stroke-width="0.5" />
+      </g>
+
+      <!-- Faint Tech Circuit Lines -->
+      <g stroke="#EAB308" stroke-width="0.8" opacity="0.12" fill="none">
+        <path d="M 50 150 L 180 150 L 240 210 M 240 210 L 240 380" />
+        <circle cx="240" cy="380" r="3" fill="#EAB308" />
+        <path d="M 1150 450 L 1020 450 L 960 390 M 960 390 L 960 220" />
+        <circle cx="960" cy="220" r="3" fill="#EAB308" />
+      </g>
+
+      <!-- ================= LEFT SIDE INPUT PATH FLOWS ================= -->
+      <!-- Gmail Input path -->
+      <path d="M 0 140 Q 210 180, 425 290" stroke="url(#rayGmailSource)" stroke-width="3" opacity="0.7" />
+      <!-- Outlook Input path -->
+      <path d="M 0 230 Q 210 250, 411 310" stroke="url(#rayOutlookSource)" stroke-width="3.5" opacity="0.7" />
+      <!-- Thunderbird Input path -->
+      <path d="M 0 320 L 403 320" stroke="url(#rayThunderbirdSource)" stroke-width="3" opacity="0.7" />
+      <!-- Files Input path -->
+      <path d="M 0 410 Q 210 390, 396 330" stroke="url(#rayFileSource)" stroke-width="4" opacity="0.7" />
+      <!-- Cloud Input path -->
+      <path d="M 0 500 Q 210 450, 381 350" stroke="url(#rayCloudSource)" stroke-width="3" opacity="0.7" />
+      <!-- MBOX Input path -->
+      <path d="M 0 500 Q 210 450, 381 350" stroke="url(#rayCloudSource)" stroke-width="3" opacity="0.7" />
+
+      <!-- Moving Input Icons (flowing smoothly into the left interface of the prism) -->
+      <!-- Gmail Icon -->
+      <g>
+        <animateMotion dur="6s" repeatCount="indefinite" path="M 0 140 Q 210 180, 425 290" />
+        <animate attributeName="opacity" values="1;1;0" dur="6s" repeatCount="indefinite" />
+        <use href="#gmailIcon" filter="url(#cinematicGlow)" />
+      </g>
+      <!-- Outlook Icon -->
+      <g>
+        <animateMotion dur="5s" repeatCount="indefinite" path="M 0 230 Q 210 250, 411 310" />
+        <animate attributeName="opacity" values="1;1;0" dur="5s" repeatCount="indefinite" />
+        <use href="#outlookIcon" filter="url(#cinematicGlow)" />
+      </g>
+      <!-- Thunderbird Icon -->
+      <g>
+        <animateMotion dur="7s" repeatCount="indefinite" path="M 0 320 L 403 320" />
+        <animate attributeName="opacity" values="1;1;0" dur="7s" repeatCount="indefinite" />
+        <use href="#thunderbirdIcon" filter="url(#cinematicGlow)" />
+      </g>
+      <!-- PST File Icon -->
+      <g>
+        <animateMotion dur="5.5s" repeatCount="indefinite" path="M 0 410 Q 210 390, 396 330" />
+        <animate attributeName="opacity" values="1;1;0" dur="5.5s" repeatCount="indefinite" />
+        <use href="#pstIcon" filter="url(#cinematicGlow)" />
+      </g>
+      <!-- EML File Icon -->
+      <g>
+        <animateMotion dur="8s" repeatCount="indefinite" path="M 0 410 Q 210 390, 396 330" keyTimes="0;0.5;1" keyPoints="0;0.5;1" />
+        <animate attributeName="opacity" values="1;1;0" dur="8s" repeatCount="indefinite" />
+        <use href="#emlIcon" filter="url(#cinematicGlow)" />
+      </g>
+      <!-- Cloud Source Icon -->
+      <g>
+        <animateMotion dur="6.5s" repeatCount="indefinite" path="M 0 500 Q 210 450, 381 350" />
+        <animate attributeName="opacity" values="1;1;0" dur="6.5s" repeatCount="indefinite" />
+        <use href="#cloudIcon" filter="url(#cinematicGlow)" />
+      </g>
+      <!-- MBOX Source Icon -->
+      <g>
+        <animateMotion dur="7.2s" repeatCount="indefinite" path="M 0 500 Q 210 450, 381 350" keyTimes="0;0.5;1" keyPoints="0;0.5;1" />
+        <animate attributeName="opacity" values="1;1;0" dur="7.2s" repeatCount="indefinite" />
+        <use href="#mboxIcon" filter="url(#cinematicGlow)" />
+      </g>
+
+      <!-- ================= 2. CENTRAL 3D GLASS PRISM ================= -->
+      <!-- Prism Shadow backdrop glow -->
+      <polygon points="600,50 938,509 262,509" fill="#09090b" opacity="0.35" filter="url(#softGlow)" />
+      <!-- Left glass facet -->
+      <polygon points="600,50 600,509 262,509" fill="url(#prismFaceLeft)" stroke="#EAB308" stroke-width="1.8" />
+      <!-- Right glass facet -->
+      <polygon points="600,50 938,509 600,509" fill="url(#prismFaceRight)" stroke="#ffffff" stroke-width="1" opacity="0.8" />
+      <!-- Prism Base highlight -->
+      <line x1="262" y1="509" x2="938" y2="509" stroke="#EAB308" stroke-width="2.5" filter="url(#cinematicGlow)" />
+
+      <!-- Transformation Zone inside the Prism -->
+      <circle cx="600" cy="320" r="22" fill="#EAB308" opacity="0.3" filter="url(#softGlow)">
+        <animate attributeName="r" values="12;28;12" dur="3s" repeatCount="indefinite" />
+      </circle>
+      <circle cx="600" cy="320" r="12" fill="#ffffff" opacity="0.6" filter="url(#cinematicGlow)">
+        <animate attributeName="opacity" values="0.3;0.8;0.3" dur="2s" repeatCount="indefinite" />
+      </circle>
+
+      <!-- ================= 3. RIGHT SIDE REFRACTED OUTPUT PATHS ================= -->
+      <!-- Gold Ray (Top-Right) -->
+      <path d="M 600 320 C 720 280, 880 200, 1200 120" stroke="url(#rayGold)" stroke-width="12" filter="url(#cinematicGlow)" />
+      <!-- Cyan Ray (Mid-Right) -->
+      <path d="M 600 320 C 720 300, 880 270, 1200 230" stroke="url(#rayCyan)" stroke-width="14" filter="url(#cinematicGlow)" />
+      <!-- Purple Ray (Low-Right) -->
+      <path d="M 600 320 C 720 340, 880 370, 1200 340" stroke="url(#rayPurple)" stroke-width="13" filter="url(#cinematicGlow)" />
+      <!-- Blue Ray (Bottom-Right) -->
+      <path d="M 600 320 C 720 380, 880 440, 1200 450" stroke="url(#rayBlue)" stroke-width="15" filter="url(#cinematicGlow)" />
+
+      <!-- Moving Output Icons (scattering outwards showing successful migration) -->
+      <!-- PDF Document on Gold Ray -->
+      <g>
+        <animateMotion dur="5.5s" repeatCount="indefinite" path="M 600 320 C 720 280, 880 200, 1200 120" />
+        <animate attributeName="opacity" values="0;1;1;0" dur="5.5s" repeatCount="indefinite" />
+        <use href="#pdfIcon" filter="url(#cinematicGlow)" />
+      </g>
+      <!-- Office 365 / Outlook on Gold Ray -->
+      <g>
+        <animateMotion dur="7.2s" repeatCount="indefinite" path="M 600 320 C 720 280, 880 200, 1200 120" keyTimes="0;0.5;1" keyPoints="0;0.5;1" />
+        <animate attributeName="opacity" values="0;1;1;0" dur="7.2s" repeatCount="indefinite" />
+        <use href="#outlookIcon" filter="url(#cinematicGlow)" />
+      </g>
+
+      <!-- Email Envelope on Cyan Ray -->
+      <g>
+        <animateMotion dur="6.8s" repeatCount="indefinite" path="M 600 320 C 720 300, 880 270, 1200 230" />
+        <animate attributeName="opacity" values="0;1;1;0" dur="6.8s" repeatCount="indefinite" />
+        <use href="#emailIcon" filter="url(#cinematicGlow)" />
+      </g>
+      <!-- Gmail Destination on Cyan Ray -->
+      <g>
+        <animateMotion dur="8.5s" repeatCount="indefinite" path="M 600 320 C 720 300, 880 270, 1200 230" keyTimes="0;0.4;1" keyPoints="0;0.4;1" />
+        <animate attributeName="opacity" values="0;1;1;0" dur="8.5s" repeatCount="indefinite" />
+        <use href="#gmailIcon" filter="url(#cinematicGlow)" />
+      </g>
+
+      <!-- Cloud Storage on Purple Ray -->
+      <g>
+        <animateMotion dur="8.2s" repeatCount="indefinite" path="M 600 320 C 720 340, 880 370, 1200 340" />
+        <animate attributeName="opacity" values="0;1;1;0" dur="8.2s" repeatCount="indefinite" />
+        <use href="#cloudIcon" filter="url(#cinematicGlow)" />
+      </g>
+
+      <!-- Folder Directory on Blue Ray -->
+      <g>
+        <animateMotion dur="7.4s" repeatCount="indefinite" path="M 600 320 C 720 380, 880 440, 1200 450" />
+        <animate attributeName="opacity" values="0;1;1;0" dur="7.4s" repeatCount="indefinite" />
+        <use href="#folderIcon" filter="url(#cinematicGlow)" />
+      </g>
+      <!-- Server Cabinet Destination on Blue Ray -->
+      <g>
+        <animateMotion dur="9.2s" repeatCount="indefinite" path="M 600 320 C 720 380, 880 440, 1200 450" keyTimes="0;0.5;1" keyPoints="0;0.5;1" />
+        <animate attributeName="opacity" values="0;1;1;0" dur="9.2s" repeatCount="indefinite" />
+        <use href="#serverIcon" filter="url(#cinematicGlow)" />
+      </g>
+
+      <!-- DOCX Document on Gold/Cyan Ray -->
+      <g>
+        <animateMotion dur="9s" repeatCount="indefinite" path="M 600 320 C 720 260, 920 180, 1200 150" />
+        <animate attributeName="opacity" values="0;1;1;0" dur="9s" repeatCount="indefinite" />
+        <use href="#docxIcon" filter="url(#cinematicGlow)" />
+      </g>
+
+      <!-- ================= 5. BINARY & PHOTON PARTICLES ================= -->
+      <g>
+        <animateMotion dur="4s" repeatCount="indefinite" path="M 600 320 C 700 290, 900 240, 1200 200" />
+        <text fill="#ffffff" font-family="monospace" font-size="14" font-weight="black" opacity="0.9">0</text>
+      </g>
+      <g>
+        <animateMotion dur="5.2s" repeatCount="indefinite" path="M 600 320 C 700 330, 900 390, 1200 420" />
+        <text fill="#EAB308" font-family="monospace" font-size="14" font-weight="black" opacity="0.9">1</text>
+      </g>
+      <g>
+        <animateMotion dur="3.8s" repeatCount="indefinite" path="M 600 320 C 750 310, 950 320, 1200 310" />
+        <text fill="#22d3ee" font-family="monospace" font-size="13" font-weight="black" opacity="0.9">1</text>
+      </g>
+      <g>
+        <animateMotion dur="6s" repeatCount="indefinite" path="M 600 320 C 750 350, 950 420, 1200 470" />
+        <text fill="#a855f7" font-family="monospace" font-size="13" font-weight="black" opacity="0.9">0</text>
+      </g>
+
+      <!-- Transforming Data Packets (Pulsing circles on left-to-prism paths) -->
+      <g>
+        <animateMotion dur="3.5s" repeatCount="indefinite" path="M 0 320 L 403 320" />
+        <circle r="6" fill="#EAB308" filter="url(#cinematicGlow)">
+          <animate attributeName="r" values="3;7;3" dur="1.5s" repeatCount="indefinite" />
+        </circle>
+      </g>
+      <g>
+        <animateMotion dur="4.2s" repeatCount="indefinite" path="M 0 230 Q 210 250, 411 310" />
+        <circle r="5" fill="#3b82f6" filter="url(#cinematicGlow)">
+          <animate attributeName="r" values="2;5;2" dur="1.2s" repeatCount="indefinite" />
+        </circle>
+      </g>
+      <g>
+        <animateMotion dur="4.5s" repeatCount="indefinite" path="M 600 320 C 750 300, 950 250, 1200 220" />
+        <circle r="5" fill="#ffffff" filter="url(#cinematicGlow)">
+          <animate attributeName="opacity" values="0.2;1;0.2" dur="2s" repeatCount="indefinite" />
+        </circle>
+      </g>
+    </svg>
+  </div>
+
+  <div class="container-custom relative z-10 mx-auto px-4">
+    <!-- Clean, Highly Readable Text Overlay (Directly on Prism/Ray Background) -->
+    <div class="max-w-5xl mx-auto relative z-10 flex flex-col items-center text-center space-y-4 md:space-y-6 pt-1 pb-6 md:pb-8 lg:pb-10">
+      
+      <!-- Welcome Badge -->
+      <div class="inline-flex items-center gap-2 text-[10px] tracking-[0.25em] text-[#EAB308] uppercase font-bold bg-[#EAB308]/15 border border-[#EAB308]/25 px-4 py-1.5 rounded-full shadow-inner backdrop-blur-sm">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#EAB308] animate-ping"></span>
+        <span>WELCOME TO PRISM MIGRATION</span>
+      </div>
+
+      <!-- Title / Headline Overlay (Enhanced Shadows for Direct Overlay legibility) -->
+      <div class="space-y-4 max-w-4xl mx-auto">
+        <span class="text-5xl sm:text-7xl md:text-8xl lg:text-8.5xl font-black tracking-tight text-white block drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)] bg-clip-text bg-gradient-to-b from-white via-stone-100 to-stone-300">
+          Prism Migration
+        </span>
+        <h1 class="text-xl sm:text-3xl md:text-4.5xl lg:text-5.5xl font-black leading-tight tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-stone-100 via-amber-200 to-[#EAB308] drop-shadow-[0_4px_12px_rgba(0,0,0,1)]">
+          Migrate Data at Lightning Speed Without Losing a Single Byte.
+        </h1>
+      </div>
+
+      <!-- Subheadline Description -->
+      <p class="text-xs sm:text-sm md:text-base text-stone-200 max-w-2xl mx-auto leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,1)] font-medium">
+        Eliminate downtime and secure your enterprise data. Our automated migration tools handle emails, files, and cloud transfers in seconds — saving you thousands in IT hours.
+      </p>
+
+      <!-- Three Checkmarks in 3 Columns with Good Spacing -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-stone-100 pt-2 font-semibold max-w-2xl w-full mx-auto">
+        <div class="flex items-center justify-center gap-1.5 drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
+          <span class="text-[#EAB308] text-base font-bold">✓</span> 100% Private & Local Run
+        </div>
+        <div class="flex items-center justify-center gap-1.5 drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
+          <span class="text-[#EAB308] text-base font-bold">✓</span> Byte-Perfect Checksum Verification
+        </div>
+        <div class="flex items-center justify-center gap-1.5 drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
+          <span class="text-[#EAB308] text-base font-bold">✓</span> Lifetime License Keys
+        </div>
+      </div>
+
+      <!-- CTA Buttons (Solid Glowing Gold and Outlined White/Gold) -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-3 w-full max-w-md mx-auto relative z-20">
+        <a 
+          href="/products" 
+          class="w-full sm:w-[170px] text-center bg-[#EAB308] hover:bg-[#f1c40f] text-black text-xs font-bold py-2.5 px-5 rounded-lg transition-all duration-300 shadow-[0_0_15px_rgba(234,179,8,0.3)] hover:shadow-[0_0_20px_rgba(234,179,8,0.45)] transform active:scale-95 cursor-pointer"
+        >
+          Discover Utilities
+        </a>
+        <a 
+          href="/download" 
+          class="w-full sm:w-[170px] text-center border border-[#EAB308]/40 hover:border-[#EAB308] bg-stone-900/40 hover:bg-stone-900/80 text-[#EAB308] hover:text-white text-xs font-semibold py-2.5 px-5 rounded-lg transition-all duration-300 backdrop-blur-sm cursor-pointer"
+        >
+          Free Trial Installer
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Minimal Horizontal Stats Grid (Dark styled) -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 mt-6 border-t border-stone-900/60 max-w-3xl mx-auto">
+      {siteStats.slice(0, 4).map((stat: any) => (
+        <div class="text-center space-y-0.5">
+          <div class="text-xl md:text-2xl font-extrabold text-white">{stat.value}</div>
+          <div class="text-[9px] uppercase tracking-wider text-stone-400 font-semibold">{stat.label}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+  
+  <!-- Section Divider -->
+  <div class="h-px bg-gradient-to-r from-transparent via-[#EAB308]/15 to-transparent mt-8"></div>
+</section>
+
+<!-- Section I: Architectural Principles -->
+<section class="bg-[#0A0A0A] py-20 tech-grid relative overflow-hidden">
+  {/* Connected glow from hero */}
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-48 bg-[#EAB308]/3 blur-[90px] pointer-events-none"></div>
+  <div class="container-custom mx-auto px-4 relative z-10">
+    <div class="text-center mb-16">
+      <span class="text-[10px] tracking-wider text-[#EAB308] uppercase font-bold block">Integrity first</span>
+      <h2 class="text-2xl md:text-3xl font-extrabold text-white mt-2">Architectural Principles</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 lg:gap-12">
+      <!-- Principle 1 -->
+      <div class="bg-gradient-to-b from-[#EAB308]/5 to-stone-950/20 border border-stone-900 border-l-2 border-l-[#EAB308] p-8 rounded-xl relative overflow-hidden group hover:border-[#EAB308]/40 hover:bg-[#EAB308]/10 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1">
+        <div class="flex items-center justify-between mb-5 relative z-10">
+          <span class="font-mono text-4xl font-extrabold text-[#EAB308] drop-shadow-[0_0_15px_rgba(234,179,8,0.35)] select-none">01</span>
+          <span class="text-[8px] font-mono font-extrabold text-stone-500 tracking-wider">SOVEREIGNTY</span>
+        </div>
+        <h3 class="text-sm sm:text-base font-bold text-white mb-2.5 relative z-10 group-hover:text-[#EAB308] transition-colors">Completely Private Run</h3>
+        <p class="text-xs text-stone-300 leading-relaxed relative z-10">
+          Your credentials and databases remain inside your security perimeter. The package compiles and runs locally on your servers, eliminating middle-man cloud risk.
+        </p>
+      </div>
+
+      <!-- Principle 2 -->
+      <div class="bg-gradient-to-b from-stone-800/10 to-stone-950/20 border border-stone-900 border-l-2 border-l-[#EAB308] p-8 rounded-xl relative overflow-hidden group hover:border-[#EAB308]/40 hover:bg-stone-850/30 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1">
+        <div class="flex items-center justify-between mb-5 relative z-10">
+          <span class="font-mono text-4xl font-extrabold text-[#EAB308] drop-shadow-[0_0_15px_rgba(234,179,8,0.35)] select-none">02</span>
+          <span class="text-[8px] font-mono font-bold text-stone-500 tracking-wider">FIDELITY</span>
+        </div>
+        <h3 class="text-sm sm:text-base font-bold text-white mb-2.5 relative z-10 group-hover:text-[#EAB308] transition-colors">Byte-Perfect Delivery</h3>
+        <p class="text-xs text-stone-300 leading-relaxed relative z-10">
+          Every document mapping is double-checksum validated. Read, write, and folder mapping structures are preserved with absolute structural fidelity.
+        </p>
+      </div>
+
+      <!-- Principle 3 -->
+      <div class="bg-gradient-to-b from-[#22D3EE]/5 to-stone-950/20 border border-stone-900 border-l-2 border-l-[#EAB308] p-8 rounded-xl relative overflow-hidden group hover:border-[#EAB308]/40 hover:bg-[#22D3EE]/10 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1">
+        <div class="flex items-center justify-between mb-5 relative z-10">
+          <span class="font-mono text-4xl font-extrabold text-[#EAB308] drop-shadow-[0_0_15px_rgba(234,179,8,0.35)] select-none">03</span>
+          <span class="text-[8px] font-mono font-bold text-stone-500 tracking-wider">ASYNCHRONY</span>
+        </div>
+        <h3 class="text-sm sm:text-base font-bold text-white mb-2.5 relative z-10 group-hover:text-[#EAB308] transition-colors">Engineered Velocity</h3>
+        <p class="text-xs text-stone-300 leading-relaxed relative z-10">
+          Utilizes advanced multi-threaded channels to queue and stream files asynchronously, safely maximizing connection bandwidth while protecting host APIs.
+        </p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Section Divider -->
+  <div class="h-px bg-gradient-to-r from-transparent via-[#EAB308]/15 to-transparent mt-20"></div>
+</section>
+
+<!-- Section II: Pristine Software Collection (Grid Showcase) -->
+<section class="bg-[#0A0A0A] py-20 relative">
+  <div class="container-custom mx-auto px-4">
+    <div class="text-center mb-16">
+      <span class="text-[10px] tracking-wider text-[#EAB308] uppercase font-bold block">Production grade</span>
+      <h2 class="text-2xl md:text-3xl font-extrabold text-white mt-2">Pristine Software Collection</h2>
+    </div>
+
+    {featured.length > 0 ? (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {featured.map((product: Product) => {
+          const lowestPaidPrice = product.pricing?.find((p: any) => p.price > 0)?.price || 49.00;
+          return (
+            <div class="bg-white/[0.01] backdrop-blur-xl border border-stone-850 rounded-xl p-6 md:p-8 shadow-2xl flex flex-col justify-between relative overflow-hidden group hover:border-[#EAB308]/50 hover:bg-white/[0.03] transition-all duration-300 hover:shadow-[0_0_50px_rgba(234,179,8,0.12)] hover:scale-[1.02] hover:-translate-y-1">
+              <!-- Animated data flow line on hover -->
+              <div class="absolute top-0 inset-x-0 h-[2.5px] overflow-hidden bg-stone-900/40">
+                <div class="w-1/2 h-full bg-gradient-to-r from-transparent via-[#EAB308] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 data-flow-anim"></div>
+              </div>
+
+              {/* Floating neon background accents */}
+              <div class="absolute -left-10 top-1/4 w-20 h-20 bg-[#22D3EE]/5 blur-2xl rounded-full group-hover:scale-150 transition-transform duration-700 pointer-events-none"></div>
+              <div class="absolute -right-10 bottom-1/4 w-20 h-20 bg-[#C026D3]/5 blur-2xl rounded-full group-hover:scale-150 transition-transform duration-700 pointer-events-none"></div>
+
+              <div>
+                <!-- Top Meta Row -->
+                <div class="flex items-center justify-between mb-4">
+                  {(() => {
+                    const colors = categoryColorMap[product.category] || { text: "text-[#EAB308]", bg: "bg-[#EAB308]/10", border: "border-[#EAB308]/20", glow: "shadow-[0_0_15px_rgba(234,179,8,0.05)]" };
+                    return (
+                      <div class="flex items-center gap-3">
+                        <div class={`w-12 h-12 rounded-xl bg-stone-950 border border-stone-850 flex items-center justify-center text-xl transition-all ${colors.text} ${colors.glow} group-hover:border-[#EAB308]/30`}>
+                          {categoryIconMap[product.category] || "📦"}
+                        </div>
+                        <span class={`text-[9px] tracking-wider uppercase font-bold ${colors.text} ${colors.bg} px-2.5 py-0.5 rounded border ${colors.border} font-mono`}>
+                          {product.category.replace('-', ' ')}
+                        </span>
+                      </div>
+                    );
+                  })()}
+                  <span class="text-[9px] font-mono text-stone-500 font-semibold">
+                    v{product.version || "1.0.0"}
+                  </span>
+                </div>
+
+                <!-- Product Title -->
+                <h3 class="text-base sm:text-lg font-bold text-white mb-2.5 group-hover:text-[#EAB308] transition-colors">
+                  <a href={`/products/${product.slug}`} class="text-inherit hover:underline">
+                    {product.name}
+                  </a>
+                </h3>
+                
+                <p class="text-[12px] text-stone-300 leading-relaxed mb-4 line-clamp-2">
+                  {product.shortDescription || product.description}
+                </p>
+
+                <!-- Technical Spec Table (Compact & Monospaced) -->
+                <div class="border-y border-stone-850/60 py-3.5 mb-4">
+                  <div class="grid grid-cols-2 gap-y-2 text-[10px] font-mono">
+                    <div class="text-stone-500 font-semibold uppercase tracking-wider">Target Platform</div>
+                    <div class="text-stone-300 text-right font-bold truncate max-w-[130px] ml-auto">{product.platforms?.join(', ') || "Universal Desktop"}</div>
+
+                    <div class="text-stone-500 font-semibold uppercase tracking-wider">Encryption</div>
+                    <div class="text-stone-300 text-right font-bold">TLS 1.3 / AES-256</div>
+
+                    <div class="text-stone-500 font-semibold uppercase tracking-wider">Formats</div>
+                    <div class="text-[#22D3EE] text-right font-bold truncate max-w-[130px] ml-auto" title={product.supportedFormats?.join(', ')}>
+                      {product.supportedFormats?.slice(0, 3).join(', ') || "PST, EML, MSG"}
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Key Features List -->
+                <div class="mb-5">
+                  <div class="text-[9px] font-mono uppercase tracking-wider text-stone-500 mb-2">Engine Features</div>
+                  <ul class="space-y-1.5 text-[11px] text-[#E5E5E5]">
+                    {product.features?.slice(0, 2).map((feat: string) => (
+                      <li class="flex items-center gap-1.5">
+                        <span class="text-[#EAB308] text-[9px] font-bold">✓</span>
+                        <span class="truncate text-stone-350">{feat}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Pricing and Actions Footer -->
+              <div class="border-t border-stone-850/60 pt-4 mt-auto flex items-center justify-between relative z-10">
+                <div>
+                  <div class="text-[8px] uppercase tracking-wider text-stone-500 font-bold">Starting Price</div>
+                  <div class="text-lg font-black text-white font-mono">${lowestPaidPrice.toFixed(2)}</div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <a href={`/download?product=${product.slug}`} class="border border-[#EAB308]/30 hover:border-[#EAB308] bg-stone-900/60 hover:bg-[#EAB308]/10 text-[#EAB308] hover:text-white py-2 px-3.5 rounded-lg text-[11px] min-h-[32px] flex items-center justify-center font-bold transition-all duration-300 transform hover:scale-[1.03] active:scale-95 hover:shadow-[0_0_10px_rgba(234,179,8,0.15)]">
+                    Trial
+                  </a>
+                  <a href={`/checkout?product=${product.slug}&tier=Standard`} class="bg-[#EAB308] hover:bg-[#f1c40f] text-black py-2 px-3.5 rounded-lg text-[11px] min-h-[32px] flex items-center justify-center font-extrabold transition-all duration-300 transform hover:scale-[1.03] active:scale-95 shadow-[0_0_10px_rgba(234,179,8,0.2)]">
+                    Buy Key
+                  </a>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    ) : (
+      <div class="text-center py-16 text-stone-500 font-medium text-xs italic">
+        <p>Featured utilities loading... Please verify database backend status.</p>
+      </div>
+    )}
+  </div>
+  
+  <!-- Section Divider -->
+  <div class="h-px bg-gradient-to-r from-transparent via-[#EAB308]/15 to-transparent mt-20"></div>
+</section>
+
+<!-- Section III: High-Visibility Pricing & Tiers -->
+{featured.length > 0 && (
+  <section class="bg-[#0A0A0A] py-20 tech-grid relative">
+    <div class="container-custom mx-auto px-4">
+      <div class="text-center mb-16">
+        <span class="text-[10px] tracking-wider text-[#EAB308] uppercase font-bold block">Flexible Licensing</span>
+        <h2 class="text-2xl md:text-3xl font-extrabold text-white mt-2">Direct Licensing Plans</h2>
+        <p class="text-xs text-stone-400 mt-1.5">Select the ideal tier for {featured[0].name}. One-time purchase, lifetime validity.</p>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 pt-4">
+        {featured[0].pricing?.map((tier: any) => (
+          <div class={`backdrop-blur-xl border rounded-xl p-6 md:p-8 flex flex-col justify-between relative transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 ${tier.popular ? 'bg-stone-900/60 border-[#EAB308] shadow-[0_0_50px_rgba(234,179,8,0.25)] ring-2 ring-[#EAB308]/30' : 'bg-white/[0.01] border-stone-850 hover:border-stone-750'}`}>
+            {tier.popular && (
+              <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#EAB308] text-black text-[9px] uppercase tracking-wider font-extrabold px-3 py-1 rounded shadow-[0_0_10px_rgba(234,179,8,0.3)]">
+                Popular
+              </span>
+            )}
+            <div>
+              <div class="text-xs font-bold text-white mb-2 font-mono uppercase tracking-wider">{tier.name}</div>
+              <div class="flex items-baseline gap-1.5 mb-6">
+                <span class="text-3xl sm:text-4xl md:text-5xl font-black text-white font-mono tracking-tight">${tier.price}</span>
+                {tier.originalPrice && <span class="text-[11px] text-stone-500 line-through font-mono">${tier.originalPrice}</span>}
+                <span class="text-[9px] text-stone-400 capitalize font-mono">/ {tier.period}</span>
+              </div>
+              
+              <ul class="space-y-2 mb-6 text-[11px] text-[#E5E5E5] border-t border-stone-850/60 pt-4">
+                {tier.features?.map((f: string) => (
+                  <li class="flex items-center gap-2">
+                    <span class="text-[#EAB308] font-bold text-[9px]">✓</span>
+                    <span class="truncate text-stone-350">{f}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            <a
+              href={tier.price === 0 ? `/download?product=${featured[0].slug}` : `/checkout?product=${featured[0].slug}&tier=${encodeURIComponent(tier.name)}`}
+              class={`w-full text-center text-xs py-2.5 font-bold rounded transition-all duration-300 transform hover:scale-[1.02] active:scale-95 cursor-pointer ${tier.popular ? 'bg-[#EAB308] hover:bg-[#f1c40f] text-black shadow-[0_0_15px_rgba(234,179,8,0.25)] hover:shadow-[0_0_20px_rgba(234,179,8,0.4)]' : 'border border-[#EAB308]/30 hover:border-[#EAB308] bg-stone-900/60 hover:bg-[#EAB308]/10 text-[#EAB308] hover:text-white'}`}
+            >
+              {tier.cta || (tier.price === 0 ? "Download Trial" : "Acquire License")}
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+    
+    <!-- Section Divider -->
+    <div class="h-px bg-gradient-to-r from-transparent via-[#EAB308]/15 to-transparent mt-20"></div>
+  </section>
+)}
+
+<!-- Section IV: Category Suites -->
+{categories.length > 0 && (
+  <section class="bg-[#0A0A0A] py-20 tech-grid relative overflow-hidden">
+    <!-- Subtle Cyan Backlight -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[200px] bg-[#22D3EE]/3 blur-[120px] rounded-full"></div>
+    </div>
+    <div class="container-custom mx-auto px-4">
+      <div class="text-center mb-16">
+        <span class="text-[10px] tracking-wider text-[#EAB308] uppercase font-bold block">Classifications</span>
+        <h2 class="text-2xl md:text-3xl font-extrabold text-white mt-2">Curated Suites</h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
+        {categories.map((cat: Category) => (
+          <a
+            href={`/products?category=${cat.id}`}
+            class="group bg-white/[0.01] backdrop-blur border border-stone-850 p-6 rounded-xl transition-all duration-300 hover:border-[#22D3EE]/60 hover:bg-white/[0.03] flex flex-col justify-between min-h-[170px] relative overflow-hidden hover:scale-[1.02] hover:-translate-y-1"
+          >
+            <!-- Top meta row with side-by-side icon/title alignment -->
+            <div class="flex items-center gap-3.5 mb-3 relative z-10">
+              <div class="w-10 h-10 rounded-xl bg-stone-950 border border-stone-850 flex items-center justify-center text-lg shadow-[0_0_10px_rgba(34,211,238,0.05)] group-hover:border-[#22D3EE]/40 transition-all duration-300 shrink-0">
+                <span class="group-hover:scale-110 transition-transform">{iconMap[cat.icon] || "📦"}</span>
+              </div>
+              <div class="space-y-1">
+                <h3 class="text-sm font-bold text-white group-hover:text-[#22D3EE] transition-colors leading-tight">
+                  {cat.label}
+                </h3>
+                <span class="text-[9px] uppercase tracking-wider text-[#22D3EE] bg-[#22D3EE]/10 px-2 py-0.5 rounded font-mono font-bold border border-[#22D3EE]/20 shadow-[0_0_10px_rgba(34,211,238,0.05)] inline-block">
+                  {cat.count} files
+                </span>
+              </div>
+            </div>
+            
+            <div class="space-y-1.5 mt-1 relative z-10">
+              <p class="text-[11px] text-stone-350 leading-relaxed line-clamp-2">
+                {cat.description}
+              </p>
+            </div>
+            
+            <div class="flex items-center gap-1.5 text-[9px] uppercase tracking-wider font-bold text-stone-400 group-hover:text-[#22D3EE] pt-3.5 mt-3.5 border-t border-stone-850/60 transition-colors relative z-10">
+              Discover suite <span class="transform group-hover:translate-x-1 transition-transform">→</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+    
+    <!-- Section Divider -->
+    <div class="h-px bg-gradient-to-r from-transparent via-[#EAB308]/15 to-transparent mt-20"></div>
+  </section>
+)}
+
+<!-- Section V: Guest Reviews (Endorsements) -->
+<section class="bg-[#0A0A0A] py-20 tech-grid">
+  <div class="container-custom mx-auto px-4">
+    <div class="text-center mb-16">
+      <span class="text-[10px] tracking-wider text-[#EAB308] uppercase font-bold block">Verified Log</span>
+      <h2 class="text-2xl md:text-3xl font-extrabold text-white mt-2">Endorsements</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {testimonials.map((t: Testimonial) => (
+        <div class="bg-stone-900/30 backdrop-blur border border-stone-900 p-6 md:p-8 rounded-xl relative flex flex-col justify-between min-h-[200px] shadow-2xl transition-all duration-300 hover:border-[#EAB308]/30 hover:bg-stone-900/50 hover:scale-[1.02] hover:-translate-y-1">
+          <div>
+            <span class="text-4xl font-serif text-[#EAB308]/20 block -mt-3 -ml-1 select-none">“</span>
+            <p class="text-[12px] leading-relaxed text-[#E5E5E5] italic mb-4">
+              {t.content}
+            </p>
+          </div>
+          <div class="flex items-center gap-3 pt-4 border-t border-stone-900">
+            <div class="w-7 h-7 rounded-full bg-stone-800 border border-stone-750 flex items-center justify-center text-white text-[10px] font-bold">
+              {t.authorName?.charAt(0) || 'U'}
+            </div>
+            <div>
+              <div class="text-[12px] font-bold text-white leading-none">{t.authorName || 'Unknown User'}</div>
+              <div class="text-[9px] uppercase tracking-wider text-stone-400 mt-1 leading-none">{t.authorTitle}, {t.company}</div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+  
+  <!-- Section Divider -->
+  <div class="h-px bg-gradient-to-r from-transparent via-[#EAB308]/15 to-transparent mt-20"></div>
+</section>
+
+<!-- Acquisition Portal CTA -->
+<section class="bg-[#0A0A0A] py-20 relative overflow-hidden">
+  <!-- Subtle Amber Backlight -->
+  <div class="absolute inset-0 pointer-events-none overflow-hidden">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[200px] bg-[#EAB308]/8 blur-[100px] rounded-full"></div>
+  </div>
+
+  <div class="container-custom relative z-10 text-center mx-auto px-4">
+    <!-- Fine inner border trim -->
+    <div class="border border-stone-900 p-8 md:p-12 lg:p-16 relative bg-stone-950/40 backdrop-blur rounded-2xl">
+      <div class="absolute top-3 left-3 text-[#EAB308]/20 text-[10px] font-mono">+</div>
+      <div class="absolute top-3 right-3 text-[#EAB308]/20 text-[10px] font-mono">+</div>
+      <div class="absolute bottom-3 left-3 text-[#EAB308]/20 text-[10px] font-mono">+</div>
+      <div class="absolute bottom-3 right-3 text-[#EAB308]/20 text-[10px] font-mono">+</div>
+
+      <span class="text-[10px] tracking-widest text-[#EAB308] uppercase font-bold block mb-3">Acquisition Portal</span>
+      <h2 class="text-2xl md:text-3xl text-white font-extrabold mb-4 leading-tight">
+        Acquire On-Premises Infrastructure
+      </h2>
+      <p class="text-xs sm:text-sm text-stone-300 leading-relaxed max-w-lg mx-auto mb-8">
+        Evaluate your environments locally without financial commitment. Acquire standard or enterprise license keys when production deployment requirements arise.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/download" class="w-full sm:w-[180px] text-center bg-[#EAB308] hover:bg-[#f1c40f] text-black text-xs font-bold py-3 px-6 rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(234,179,8,0.35)] hover:shadow-[0_0_25px_rgba(234,179,8,0.5)] transform hover:scale-[1.03] active:scale-95 cursor-pointer">
+          Download Trial
+        </a>
+        <a href="/products" class="w-full sm:w-[180px] text-center border border-[#EAB308]/40 hover:border-[#EAB308] bg-stone-900/40 hover:bg-[#EAB308]/10 text-[#EAB308] hover:text-white text-xs font-semibold py-3 px-6 rounded-lg transition-all duration-300 backdrop-blur-sm cursor-pointer transform hover:scale-[1.03] active:scale-95 hover:shadow-[0_0_15px_rgba(234,179,8,0.15)]">
+          Browse Collection
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .tech-grid {
+    background-color: #0A0A0A;
+    background-size: 60px 60px;
+    background-image: 
+      linear-gradient(to right, rgba(234, 179, 8, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(234, 179, 8, 0.02) 1px, transparent 1px);
+  }
+
+  @keyframes data-flow-line {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(200%); }
+  }
+  .data-flow-anim {
+    animation: data-flow-line 2.5s linear infinite;
+  }
+</style>

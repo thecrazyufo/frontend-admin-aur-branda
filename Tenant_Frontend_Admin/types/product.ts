@@ -72,14 +72,14 @@ export interface Product {
   faqs: ProductFAQ[];
   reviews: ProductReview[];
   relatedProductIds: string[];
+  sourceFormats?: string[];
+  targetFormats?: string[];
+  capabilities?: Record<string, boolean>;
   seo: {
     title: string;
     description: string;
     keywords: string[];
   };
-  version: string;
-  lastUpdated: string;
-  trialDownloadUrl?: string;
   siteId: string;
   price?: number;
   enabled?: boolean;

@@ -1,0 +1,96 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { BlogAPI , SettingsAPI } from "@/services/api";
+const settings = await SettingsAPI.get().catch(() => null);
+import { formatDate, parseMarkdownToHtml } from "@/lib/utils";
+import { generateArticleSchema, generateBreadcrumbSchema } from "@/lib/seo";
+import Breadcrumb from "@/components/layout/Breadcrumb";
+import { Clock, ArrowLeft } from "lucide-react";
+
+const { slug } = Astro.params;
+
+let post = null;
+
+try {
+  if (slug) {
+    post = await BlogAPI.getBySlug(slug);
+  }
+} catch (e) {
+  console.error("Error loading blog post:", e);
+}
+
+if (!post) {
+  return new Response("Blog Post Not Found", { status: 404 });
+}
+
+const siteUrl = (settings?.url || "").replace(/\/$/, "");
+const articleUrl = `${siteUrl}/blog/${post.slug}`;
+---
+
+<BaseLayout
+  title={`${post.seo.title} — ${settings?.name || ""}`}
+  description={post.seo.description}
+  ogType="article"
+  author={post.author.name}
+>
+  <script type="application/ld+json"
+    set:html={JSON.stringify(generateArticleSchema({
+      title: post.seo.title,
+      description: post.seo.description,
+      authorName: post.author.name,
+      publishedAt: post.publishedAt,
+      url: articleUrl,
+      siteName: settings?.name || ""
+    }))}
+  />
+  <script type="application/ld+json"
+    set:html={JSON.stringify(generateBreadcrumbSchema(
+      [{ label: "Blog", href: "/blog" }, { label: post.title, href: `/blog/${post.slug}` }],
+      siteUrl
+    ))}
+  />
+  <Breadcrumb items={[{ label: "Blog", href: "/blog" }, { label: post.title }]} />
+  <div class="bg-[#0A0A0A] min-h-screen">
+    <article class="container-custom py-20 max-w-3xl">
+      <a href="/blog" class="inline-flex items-center gap-2 text-xs text-[#EAB308] hover:underline mb-8 font-semibold">
+        <ArrowLeft size={15} />
+        Back to Blog
+      </a>
+
+      {/* Header */}
+      <div class="mb-8">
+        <h1 class="font-extrabold text-white mb-4 text-2xl tracking-tight">{post.title}</h1>
+        <div class="flex flex-wrap items-center gap-4 text-xs text-stone-300">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-[#EAB308]/10 border border-[#EAB308]/20 text-[#EAB308] flex items-center justify-center font-bold text-xs">
+              {post.author.name.charAt(0)}
+            </div>
+            <div>
+              <span class="font-semibold text-stone-300">{post.author.name}</span>
+              <span class="text-stone-500 ml-1">— {post.author.role}</span>
+            </div>
+          </div>
+          <span>•</span>
+          <span class="font-mono">{formatDate(post.publishedAt)}</span>
+          <span>•</span>
+          <span class="flex items-center gap-1 font-mono"><Clock size={13} /> {post.readTime} min read</span>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div class="bg-stone-900/30 backdrop-blur border border-stone-900 rounded-xl shadow-2xl p-8">
+        <div class="prose prose-invert max-w-none">
+          <p class="text-sm text-stone-300 mb-6 font-bold leading-relaxed">{post.excerpt}</p>
+          <div class="text-stone-350 leading-relaxed text-xs space-y-4" set:html={parseMarkdownToHtml(post.content)} />
+        </div>
+      </div>
+
+      <div class="mt-8">
+        <a href="/blog" class="inline-flex items-center gap-2 py-2.5 px-5 border border-stone-800 text-stone-300 hover:text-white rounded-lg transition-colors text-xs font-bold">
+          <ArrowLeft size={15} />
+          Back to all articles
+        </a>
+      </div>
+    </article>
+  </div>
+</BaseLayout>

@@ -155,8 +155,10 @@ export async function adminGet<T>(path: string): Promise<T> {
       throw new Error(`Admin API Error: ${res.status} ${res.statusText}`);
     }
     if (res.status === 403) {
-      console.error(`[ADMIN CLIENT GET FORBIDDEN] [Trace: ${cid}] Access denied to ${url}`);
-      throw new Error(`Admin API Error: ${res.status} ${res.statusText}`);
+      const errText = await res.text().catch(() => "");
+      console.error(`[ADMIN CLIENT GET FORBIDDEN] [Trace: ${cid}] Access denied to ${url}. Server message: ${errText}`);
+      handleAuthExpiry();
+      throw new Error(`Admin API Error: 403 Forbidden - ${errText}`);
     }
     if (!res.ok) throw new Error(`Admin API Error: ${res.status} ${res.statusText}`);
     return res.json();
@@ -189,6 +191,7 @@ export async function adminPost<T>(path: string, body: unknown): Promise<T> {
     }
     if (res.status === 403) {
       console.error(`[ADMIN CLIENT POST FORBIDDEN] [Trace: ${cid}] Access denied to ${path}`);
+      handleAuthExpiry();
       throw new Error(`Admin API Error: ${res.status} ${res.statusText}`);
     }
     if (!res.ok) throw new Error(`Admin API Error: ${res.status} ${res.statusText}`);
@@ -222,6 +225,7 @@ export async function adminPut<T>(path: string, body: unknown): Promise<T> {
     }
     if (res.status === 403) {
       console.error(`[ADMIN CLIENT PUT FORBIDDEN] [Trace: ${cid}] Access denied to ${path}`);
+      handleAuthExpiry();
       throw new Error(`Admin API Error: ${res.status} ${res.statusText}`);
     }
     if (!res.ok) throw new Error(`Admin API Error: ${res.status} ${res.statusText}`);
@@ -255,6 +259,7 @@ export async function adminDelete(path: string): Promise<void> {
     }
     if (res.status === 403) {
       console.error(`[ADMIN CLIENT DELETE FORBIDDEN] [Trace: ${cid}] Access denied to ${url}`);
+      handleAuthExpiry();
       throw new Error(`Admin API Error: ${res.status} ${res.statusText}`);
     }
     if (!res.ok) throw new Error(`Admin API Error: ${res.status} ${res.statusText}`);

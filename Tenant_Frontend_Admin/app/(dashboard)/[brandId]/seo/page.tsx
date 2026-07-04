@@ -3,8 +3,9 @@
 import { useEffect, useState, FormEvent } from"react";
 import { useParams } from"next/navigation";
 import { useTheme } from"@/app/(dashboard)/layout";
-import { AdminProductAPI, AdminBlogAPI, AdminSettingsAPI } from"@/services/api";
-import { Product } from"@/types/product";
+import { AdminProductAPI, AdminBlogAPI, AdminSettingsAPI } from "@/services/api";
+import { Product } from "@/types/product";
+import { AuthService } from "@/services/auth";
 import { BlogPost } from"@/types/blog";
 import { Button } from"@/components/ui/Button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from"@/components/ui/Card";
@@ -81,6 +82,15 @@ export default function SeoAndSettingsPage() {
  const [settingsSaving, setSettingsSaving] = useState(false);
  const [settingsSuccess, setSettingsSuccess] = useState<string | null>(null);
  const [settingsError, setSettingsError] = useState<string | null>(null);
+
+ const [userRole, setUserRole] = useState<string>("");
+
+ useEffect(() => {
+   const session = AuthService.getSession();
+   if (session) {
+     setUserRole(session.role);
+   }
+ }, []);
 
  // Load SEO
  useEffect(() => {
@@ -364,6 +374,7 @@ export default function SeoAndSettingsPage() {
  >
  🔍 SEO Optimizer
  </button>
+ {(userRole !== "SEO" && userRole !== "SEO_CW_PRODUCT_MANAGER") && (
  <button 
  className={cn(
 "px-3 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer border-0 bg-transparent",
@@ -375,6 +386,7 @@ export default function SeoAndSettingsPage() {
  >
  🏠 Brand Configurations
  </button>
+ )}
  </div>
  </div>
 
@@ -690,7 +702,7 @@ export default function SeoAndSettingsPage() {
  )}
 
  {/* Settings Tab Content */}
- {activeTab ==="settings" && (
+ {activeTab ==="settings" && (userRole !== "SEO" && userRole !== "SEO_CW_PRODUCT_MANAGER") && (
  <div className="space-y-6">
  {settingsLoading ? (
  <div className="flex flex-col items-center justify-center py-20 gap-3 text-zinc-500">

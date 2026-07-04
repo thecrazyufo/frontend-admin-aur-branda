@@ -88,6 +88,10 @@ interface SiteSettings {
  legalPages?: Record<string, string>;
  pricingComparison?: PricingComparisonRow[];
  pricingFaqs?: PricingFaq[];
+ stats?: any[];
+ trustBadges?: any[];
+ teamMembers?: any[];
+ [key: string]: any;
 }
 
 const defaultTheme: ThemeConfig = {

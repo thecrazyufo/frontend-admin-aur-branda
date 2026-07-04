@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <!-- 019: Add capabilities JSONB column to products table -->
+    <changeSet id="019-product-capabilities" author="system">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="products" columnName="capabilities"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="products">
+            <column name="capabilities" type="jsonb" defaultValue="{}"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

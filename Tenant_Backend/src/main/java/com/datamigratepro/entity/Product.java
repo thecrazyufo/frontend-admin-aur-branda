@@ -8,6 +8,8 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 @Entity
 @Table(name = "products")
@@ -88,6 +90,31 @@ public class Product {
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private List<String> relatedProductIds;
+
+    /**
+     * Normalized source formats this tool accepts as input.
+     * e.g., ["pst", "ost", "outlook"] — used for Find Your Tool matching.
+     * Keys are lowercase and normalized (see FormatCompatibility for key conventions).
+     */
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "source_formats", columnDefinition = "jsonb")
+    private List<String> sourceFormats;
+
+    /**
+     * Normalized target/output formats this tool can produce.
+     * e.g., ["gmail", "google_workspace"] — used for Find Your Tool matching.
+     */
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "target_formats", columnDefinition = "jsonb")
+    private List<String> targetFormats;
+
+    /**
+     * Extensible capabilities map for Find Your Tool filters.
+     * e.g., {"supportsBatchCsv": true, "supportsImpersonation": true, "supportsMultipleAccounts": true}
+     */
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private Map<String, Boolean> capabilities = new HashMap<>();
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")

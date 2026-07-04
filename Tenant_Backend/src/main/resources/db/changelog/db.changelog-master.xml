@@ -33,5 +33,8 @@
     <include file="db/changelog/014-products-column-fix.xml" relativeToChangelogFile="false"/>
     <include file="db/changelog/015-social-proof.xml" relativeToChangelogFile="false"/>
     <include file="db/changelog/016-product-license-comparison.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/017-format-compatibility.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/018-update-brand-a-name.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/019-product-capabilities.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>

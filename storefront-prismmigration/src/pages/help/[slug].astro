@@ -1,0 +1,99 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { HelpAPI , SettingsAPI } from "@/services/api";
+const settings = await SettingsAPI.get().catch(() => null);
+import Breadcrumb from "@/components/layout/Breadcrumb";
+import { ArrowLeft, ThumbsUp, ThumbsDown } from "lucide-react";
+import { parseMarkdownToHtml } from "@/lib/utils";
+
+const { slug } = Astro.params;
+
+let article = null;
+
+try {
+  if (slug) {
+    article = await HelpAPI.getBySlug(slug);
+  }
+} catch (e) {
+  console.error("Error loading help article:", e);
+}
+
+if (!article) {
+  return new Response("Help Article Not Found", { status: 404 });
+}
+---
+
+<BaseLayout
+  title={`${article.title} — ${settings?.name || ""}`}
+  description={article.excerpt}
+>
+  <Breadcrumb items={[{ label: "Help Center", href: "/help" }, { label: article.title }]} />
+  <div class="bg-[#0A0A0A] min-h-screen">
+    <article class="container-custom py-20 max-w-3xl">
+      <a href="/help" class="inline-flex items-center gap-2 text-xs text-[#EAB308] hover:underline mb-8 font-semibold">
+        <ArrowLeft size={15} />
+        Back to Help Center
+      </a>
+      <h1 class="font-extrabold text-white mb-2 text-2xl tracking-tight">{article.title}</h1>
+      <p class="text-stone-300 text-xs mb-8">{article.excerpt}</p>
+
+      <div class="bg-stone-900/30 backdrop-blur rounded-xl border border-stone-900 shadow-2xl p-8">
+        <div class="prose prose-invert leading-relaxed text-xs text-stone-300 space-y-4" set:html={parseMarkdownToHtml(article.content || "")} />
+      </div>
+
+      {/* Helpful? */}
+      <div class="mt-8 bg-stone-900/30 backdrop-blur rounded-xl border border-stone-900 p-6 text-center">
+        <p class="font-bold text-white mb-4 text-xs">Was this article helpful?</p>
+        <div class="flex items-center justify-center gap-4 flex-wrap">
+          <button id="btn-helpful" class="text-xs py-2 px-5 text-emerald-500 border border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10 rounded-lg flex items-center gap-1.5 cursor-pointer transition-colors">
+            <ThumbsUp size={15} />
+            Yes (<span id="count-helpful">{article.helpful || 0}</span>)
+          </button>
+          <button id="btn-nothelpful" class="text-xs py-2 px-5 text-rose-500 border border-rose-500/20 bg-rose-500/5 hover:bg-rose-500/10 rounded-lg flex items-center gap-1.5 cursor-pointer transition-colors">
+            <ThumbsDown size={15} />
+            No (<span id="count-nothelpful">{article.notHelpful || 0}</span>)
+          </button>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <script is:inline define:vars={{ articleId: article.id, publicApiUrl: import.meta.env.PUBLIC_API_URL || "http://localhost:8080/api" }}>
+    const helpfulBtn = document.getElementById("btn-helpful");
+    const notHelpfulBtn = document.getElementById("btn-nothelpful");
+    const helpfulCount = document.getElementById("count-helpful");
+    const notHelpfulCount = document.getElementById("count-nothelpful");
+
+    helpfulBtn?.addEventListener("click", async () => {
+      try {
+        const res = await fetch(`${publicApiUrl}/help/${articleId}/helpful`, { method: "POST" });
+        if (res.ok) {
+          const data = await res.json();
+          if (helpfulCount) helpfulCount.textContent = data.helpful;
+          helpfulBtn.disabled = true;
+          if (notHelpfulBtn) notHelpfulBtn.disabled = true;
+          helpfulBtn.style.opacity = "0.5";
+          helpfulBtn.style.cursor = "not-allowed";
+        }
+      } catch (err) {
+        console.error("Failed to submit helpful feedback", err);
+      }
+    });
+
+    notHelpfulBtn?.addEventListener("click", async () => {
+      try {
+        const res = await fetch(`${publicApiUrl}/help/${articleId}/nothelpful`, { method: "POST" });
+        if (res.ok) {
+          const data = await res.json();
+          if (notHelpfulCount) notHelpfulCount.textContent = data.notHelpful;
+          helpfulBtn.disabled = true;
+          if (notHelpfulBtn) notHelpfulBtn.disabled = true;
+          notHelpfulBtn.style.opacity = "0.5";
+          notHelpfulBtn.style.cursor = "not-allowed";
+        }
+      } catch (err) {
+        console.error("Failed to submit not helpful feedback", err);
+      }
+    });
+  </script>
+</BaseLayout>

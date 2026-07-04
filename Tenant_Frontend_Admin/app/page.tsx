@@ -47,7 +47,7 @@ export default function PortalPage() {
  <div className="w-full max-w-5xl z-10 space-y-12">
  {/* Header */}
  <header className="text-center space-y-4">
- <div className="inline-flex items-center justify-center p-2.5 bg-zinc-900 border border-zinc-800 rounded-xl">
+ <div className="inline-flex items-center justify-center p-2.5 bg-muted border border-border rounded-xl">
  <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
  <rect width="32" height="32" rx="6" fill="url(#pgrad)" />
  <path d="M8 16L13 21L24 11" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -59,15 +59,15 @@ export default function PortalPage() {
  </defs>
  </svg>
  </div>
- <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl text-muted-foreground">
+ <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl text-foreground">
  Multi-Tenant Admin Portal
  </h1>
- <p className="text-sm text-zinc-400 max-w-md mx-auto">
+ <p className="text-sm text-muted-foreground max-w-md mx-auto">
  Select a brand storefront below to begin managing resources.
  </p>
  <div>
  <Link href="/admin/login">
- <Button variant="outline" className="text-xs font-semibold py-1.5 px-4 h-8 gap-2 bg-zinc-900 border-zinc-800 text-zinc-300 hover:text-muted-foreground">
+ <Button variant="outline" className="text-xs font-semibold py-1.5 px-4 h-8 gap-2 text-muted-foreground hover:text-foreground">
  🔑 Super Admin login
  </Button>
  </Link>
@@ -92,11 +92,11 @@ export default function PortalPage() {
  className={`group flex flex-col justify-between p-5 border cursor-pointer text-left transition-all duration-200 hover:-translate-y-1 hover:shadow-lg backdrop-blur-md ${accentColors[colorKey] || accentColors["indigo"]}`}
  >
  <div>
- <div className="w-10 h-10 rounded-lg flex items-center justify-center text-lg bg-zinc-900/60 border border-zinc-800/80 mb-4 group-hover:scale-105 transition-transform duration-200">
+ <div className="w-10 h-10 rounded-lg flex items-center justify-center text-lg bg-muted/60 border border-border/80 mb-4 group-hover:scale-105 transition-transform duration-200">
  {site.features && JSON.parse(site.features).icon ? JSON.parse(site.features).icon :"🛡️"}
  </div>
- <h3 className="text-sm font-bold text-zinc-200 group-hover:text-muted-foreground">{site.name}</h3>
- <p className="text-[11px] text-zinc-500 leading-normal mt-2">{site.domain}</p>
+ <h3 className="text-sm font-bold text-foreground group-hover:text-muted-foreground">{site.name}</h3>
+ <p className="text-[11px] text-muted-foreground leading-normal mt-2">{site.domain}</p>
  </div>
  <span className="text-[10px] font-bold tracking-wider mt-5 opacity-80 group-hover:opacity-100 uppercase transition-opacity">
  Manage storefront →
@@ -113,20 +113,20 @@ export default function PortalPage() {
  onClick={() => setSelectedBrand(null)}
  >
  <Card 
- className="w-full max-w-md bg-zinc-900 border-border p-6 space-y-6"
+ className="w-full max-w-md border-border p-6 space-y-6"
  onClick={(e) => e.stopPropagation()}
  >
  <div className="flex items-start justify-between">
  <div>
- <CardTitle className="text-base font-extrabold text-muted-foreground">
+ <CardTitle className="text-base font-extrabold text-foreground">
  Access: {selectedBrand.name}
  </CardTitle>
- <CardDescription className="text-xs text-zinc-500 mt-1">
+ <CardDescription className="text-xs text-muted-foreground mt-1">
  Choose your workspace role to log in
  </CardDescription>
  </div>
  <button 
- className="text-zinc-500 hover:text-muted-foreground text-xl font-medium leading-none focus:outline-none"
+ className="text-muted-foreground hover:text-foreground text-xl font-medium leading-none focus:outline-none"
  onClick={() => setSelectedBrand(null)}
  >
  &times;
@@ -137,21 +137,21 @@ export default function PortalPage() {
  {ROLES.map((role) => (
  <button
  key={role.id}
- className="w-full flex items-center gap-4 p-4 rounded-xl border border-zinc-800 bg-background text-left hover:bg-indigo-500/5 hover:border-indigo-500/30 transition-all duration-200 group"
+ className="w-full flex items-center gap-4 p-4 rounded-xl border border-border bg-background hover:bg-indigo-500/5 hover:border-indigo-500/30 text-left transition-all duration-200 group"
  onClick={() => handleRoleSelect(role.id)}
  >
- <div className="w-9 h-9 rounded-lg bg-zinc-900 flex items-center justify-center text-sm border border-zinc-800 group-hover:scale-105 transition-transform duration-200">
+ <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center text-sm border border-border group-hover:scale-105 transition-transform duration-200">
  {role.icon}
  </div>
  <div className="flex-1 min-w-0">
- <div className="text-xs font-bold text-zinc-200 group-hover:text-muted-foreground">
+ <div className="text-xs font-bold text-foreground group-hover:text-muted-foreground">
  {role.name}
  </div>
- <div className="text-[10px] text-zinc-500 leading-normal mt-0.5">
+ <div className="text-[10px] text-muted-foreground leading-normal mt-0.5">
  {role.desc}
  </div>
  </div>
- <div className="text-zinc-600 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all">
+ <div className="text-muted-foreground group-hover:text-indigo-400 group-hover:translate-x-1 transition-all">
  &rarr;
  </div>
  </button>

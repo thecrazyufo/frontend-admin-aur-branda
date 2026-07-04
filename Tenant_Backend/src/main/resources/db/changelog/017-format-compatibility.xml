@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <!-- 017: Format Compatibility Table + Product source/target format columns -->
+
+    <!-- System-level format compatibility knowledge base -->
+    <changeSet id="017-create-format-compatibility" author="system">
+        <createTable tableName="format_compatibility">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="source_format" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="target_format" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="compatibility_score" type="INTEGER" defaultValue="50">
+                <constraints nullable="false"/>
+            </column>
+            <column name="match_type" type="VARCHAR(20)" defaultValue="COMPATIBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="notes" type="TEXT"/>
+        </createTable>
+        <createIndex tableName="format_compatibility" indexName="idx_fc_source_format">
+            <column name="source_format"/>
+        </createIndex>
+        <createIndex tableName="format_compatibility" indexName="idx_fc_target_format">
+            <column name="target_format"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- Add source/target format columns to products table for precise matching -->
+    <changeSet id="017-add-product-format-columns" author="system">
+        <addColumn tableName="products">
+            <column name="source_formats" type="jsonb"/>
+        </addColumn>
+        <addColumn tableName="products">
+            <column name="target_formats" type="jsonb"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

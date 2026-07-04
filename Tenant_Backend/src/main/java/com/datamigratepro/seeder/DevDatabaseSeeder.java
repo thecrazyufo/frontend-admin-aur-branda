@@ -51,6 +51,9 @@ public class DevDatabaseSeeder implements CommandLineRunner {
     private UrlRedirectRepository urlRedirectRepository;
 
     @Autowired
+    private FormatCompatibilityRepository formatCompatibilityRepository;
+
+    @Autowired
     private com.datamigratepro.service.BrandConfigService brandConfigService;
 
     @Autowired
@@ -65,8 +68,8 @@ public class DevDatabaseSeeder implements CommandLineRunner {
                 // Super Admin (legacy: OWNER) — global access
                 new AdminUser("owner", passwordEncoder.encode("owner123"), "SUPER_ADMIN", "all", "Root Owner", "owner@platform.local"),
                 // Brand A staff
-                new AdminUser("adminA", passwordEncoder.encode("admin123"), "ADMIN", "brandA", "Brand A Administrator", "admin@brandA.local"),
-                new AdminUser("staffA", passwordEncoder.encode("admin123"), "SEO_CW_PRODUCT_MANAGER", "brandA", "Brand A SEO & Product Staff", "staff@brandA.local"),
+                new AdminUser("adminA", passwordEncoder.encode("admin123"), "ADMIN", "brandA", "Prism Migration Administrator", "admin@prismmigration.local"),
+                new AdminUser("staffA", passwordEncoder.encode("admin123"), "SEO_CW_PRODUCT_MANAGER", "brandA", "Prism Migration SEO & Product Staff", "staff@prismmigration.local"),
                 // Brand B staff
                 new AdminUser("adminB", passwordEncoder.encode("admin123"), "ADMIN", "brandB", "Brand B Administrator", "admin@brandB.local"),
                 new AdminUser("staffB", passwordEncoder.encode("admin123"), "SEO_CW_PRODUCT_MANAGER", "brandB", "Brand B SEO & Product Staff", "staff@brandB.local")
@@ -125,6 +128,60 @@ public class DevDatabaseSeeder implements CommandLineRunner {
                 TenantContext.clear();
             }
         }
+
+        // Seed format compatibility knowledge base (system-level, not per-tenant)
+        seedFormatCompatibility();
+        System.out.println("🔗 Seeded format compatibility matrix for Find Your Tool feature!");
+    }
+
+    /**
+     * Seeds the format compatibility knowledge base.
+     * This is system-level data (not per-tenant) representing universal format relationships.
+     * Used by GET /api/tools/match for fuzzy matching when no PERFECT_MATCH product is found.
+     */
+    private void seedFormatCompatibility() {
+        formatCompatibilityRepository.deleteAll();
+        formatCompatibilityRepository.saveAll(Arrays.asList(
+            // ── Microsoft Outlook family (PST ↔ OST) ──────────────────────────────
+            new FormatCompatibility("pst-to-ost",               "pst", "ost",              95, "EXACT",      "Same Microsoft binary format family — direct conversion supported"),
+            new FormatCompatibility("ost-to-pst",               "ost", "pst",              95, "EXACT",      "Exchange offline cache to Outlook archive — p6 (OST Recovery) handles this"),
+
+            // ── PST/Outlook → Gmail/Google ─────────────────────────────────────────
+            new FormatCompatibility("pst-to-gmail",             "pst", "gmail",            88, "SIMILAR",    "p1 migrates PST files directly to Gmail accounts"),
+            new FormatCompatibility("outlook-to-gmail",         "outlook", "gmail",         88, "SIMILAR",    "p1 migrates live Outlook mailbox to Gmail"),
+            new FormatCompatibility("pst-to-google-workspace",  "pst", "google_workspace", 85, "SIMILAR",    "p1/p5 migrate PST to Google Workspace/G Suite"),
+            new FormatCompatibility("ost-to-gmail",             "ost", "gmail",            78, "SIMILAR",    "OST files can be converted via PST bridge — indirect path"),
+
+            // ── Microsoft 365 → Google ─────────────────────────────────────────────
+            new FormatCompatibility("o365-to-gws",              "office365", "google_workspace", 92, "EXACT", "p5 directly migrates Office 365 to Google Workspace"),
+            new FormatCompatibility("o365-to-gmail",            "office365", "gmail",       88, "SIMILAR",    "p5 migrates O365 Exchange Online emails to Gmail"),
+            new FormatCompatibility("exchange-to-gws",          "exchange_online", "google_workspace", 90, "EXACT", "p5 supports Exchange Online to Google Workspace"),
+
+            // ── Gmail/Google → PST/MBOX/EML (Backup) ─────────────────────────────
+            new FormatCompatibility("gmail-to-pst",             "gmail", "pst",            82, "SIMILAR",    "p4 (Gmail Backup) exports Gmail directly to PST"),
+            new FormatCompatibility("gmail-to-mbox",            "gmail", "mbox",           78, "SIMILAR",    "p4 exports Gmail to MBOX format"),
+            new FormatCompatibility("gmail-to-eml",             "gmail", "eml",            75, "SIMILAR",    "p4 exports Gmail to individual EML files"),
+            new FormatCompatibility("gws-to-pst",               "google_workspace", "pst", 78, "SIMILAR",    "p4 supports Google Workspace backup to PST"),
+
+            // ── PST ↔ MBOX/EML/MSG ────────────────────────────────────────────────
+            new FormatCompatibility("pst-to-mbox",              "pst", "mbox",             72, "COMPATIBLE", "p3 (PST to MBOX Converter) handles this directly"),
+            new FormatCompatibility("pst-to-eml",               "pst", "eml",              70, "COMPATIBLE", "Can extract individual EML files from PST"),
+            new FormatCompatibility("mbox-to-pst",              "mbox", "pst",             65, "COMPATIBLE", "Reverse MBOX→PST conversion supported"),
+            new FormatCompatibility("eml-to-pst",               "eml", "pst",              62, "COMPATIBLE", "Bulk EML to PST aggregation supported"),
+
+            // ── OST → export formats ───────────────────────────────────────────────
+            new FormatCompatibility("ost-to-eml",               "ost", "eml",              62, "COMPATIBLE", "p6 (OST Recovery) exports recovered data to EML"),
+            new FormatCompatibility("ost-to-msg",               "ost", "msg",              60, "COMPATIBLE", "p6 exports recovered data to MSG format"),
+            new FormatCompatibility("ost-to-mbox",              "ost", "mbox",             55, "COMPATIBLE", "Indirect: OST→PST→MBOX path available"),
+
+            // ── Office 365 Backup → PST ────────────────────────────────────────────
+            new FormatCompatibility("o365-to-pst",              "office365", "pst",        72, "COMPATIBLE", "p2 (Office 365 Backup) can save backups as PST files"),
+
+            // ── Cross-vendor compatible pairs ──────────────────────────────────────
+            new FormatCompatibility("outlook-to-google-workspace", "outlook", "google_workspace", 82, "SIMILAR", "p1 supports Outlook (live) to Google Workspace migration"),
+            new FormatCompatibility("o365-to-mbox",             "office365", "mbox",       55, "COMPATIBLE", "Indirect migration path via PST intermediary"),
+            new FormatCompatibility("gmail-to-google-workspace","gmail", "google_workspace",70, "COMPATIBLE", "Same Google ecosystem — user/domain consolidation")
+        ));
     }
 
     private void seedLicenses() {
@@ -382,6 +439,9 @@ public class DevDatabaseSeeder implements CommandLineRunner {
             new ProductReview("r3", "Raj Patel", null, null, 4, "2025-01-30", "Works great! Some large PST files took a bit longer but everything migrated correctly.")
         ));
         p1.setRelatedProductIds(Arrays.asList("2", "3", "5"));
+        p1.setSourceFormats(Arrays.asList("pst", "ost", "outlook"));
+        p1.setTargetFormats(Arrays.asList("gmail", "google_workspace"));
+        p1.setCapabilities(makeCapabilities(false, false, false));
         p1.setSeo(new Seo("Outlook to Gmail Migration Tool — Migrate PST to Gmail Instantly", "Transfer emails, contacts, and calendars from Outlook/PST files to Gmail or Google Workspace with 100% accuracy. Download free trial.", Arrays.asList("outlook to gmail migration", "pst to gmail", "migrate outlook to google workspace", "email migration tool")));
         productRepository.save(p1);
 
@@ -448,6 +508,9 @@ public class DevDatabaseSeeder implements CommandLineRunner {
         ));
         p2.setRelatedProductIds(Arrays.asList("1", "4", "6"));
         p2.setSeo(new Seo("Office 365 Backup Tool — Backup Emails, OneDrive & SharePoint", "Complete Microsoft 365 backup and recovery solution. Backup emails, OneDrive, SharePoint, and Teams. Free trial available.", Arrays.asList("office 365 backup", "microsoft 365 backup", "o365 backup tool", "exchange online backup")));
+        p2.setSourceFormats(Arrays.asList("office365", "exchange_online", "onedrive", "sharepoint"));
+        p2.setTargetFormats(Arrays.asList("pst"));
+        p2.setCapabilities(makeCapabilities(true, true, true));
         productRepository.save(p2);
 
         // Product 3: PST to MBOX
@@ -512,6 +575,9 @@ public class DevDatabaseSeeder implements CommandLineRunner {
         ));
         p3.setRelatedProductIds(Arrays.asList("1", "4", "6"));
         p3.setSeo(new Seo("PST to MBOX Converter — Convert Outlook PST to Thunderbird MBOX", "Convert PST files to MBOX format with 100% accuracy. Compatible with Thunderbird, Apple Mail. Free trial available.", Arrays.asList("pst to mbox", "convert pst to mbox", "outlook to thunderbird", "pst converter")));
+        p3.setSourceFormats(Arrays.asList("pst", "ost"));
+        p3.setTargetFormats(Arrays.asList("mbox"));
+        p3.setCapabilities(makeCapabilities(false, false, false));
         productRepository.save(p3);
 
         // Product 4: Gmail Backup
@@ -574,6 +640,9 @@ public class DevDatabaseSeeder implements CommandLineRunner {
         ));
         p4.setRelatedProductIds(Arrays.asList("1", "2", "5"));
         p4.setSeo(new Seo("Gmail Backup Tool — Download Gmail Emails to PST, MBOX, PDF", "Backup your Gmail to PST, MBOX, EML, or PDF. Schedule automatic Gmail backups. Free trial available.", Arrays.asList("gmail backup tool", "download gmail emails", "gmail to pst", "gmail backup software")));
+        p4.setSourceFormats(Arrays.asList("gmail", "google_workspace"));
+        p4.setTargetFormats(Arrays.asList("pst", "mbox", "eml", "pdf"));
+        p4.setCapabilities(makeCapabilities(true, true, false));
         productRepository.save(p4);
 
         // Product 5: Office 365 to Google Workspace
@@ -636,6 +705,9 @@ public class DevDatabaseSeeder implements CommandLineRunner {
         ));
         p5.setRelatedProductIds(Arrays.asList("1", "2", "4"));
         p5.setSeo(new Seo("Office 365 to Google Workspace Migration Tool", "Migrate emails, contacts, calendars, and OneDrive files from Microsoft 365 to Google Workspace. Free trial for 10 mailboxes.", Arrays.asList("office 365 to google workspace", "microsoft 365 migration", "exchange to gmail", "cloud migration tool")));
+        p5.setSourceFormats(Arrays.asList("office365", "exchange_online", "onedrive"));
+        p5.setTargetFormats(Arrays.asList("gmail", "google_workspace", "google_drive"));
+        p5.setCapabilities(makeCapabilities(true, true, true));
         productRepository.save(p5);
 
         // Product 6: OST Recovery
@@ -699,6 +771,9 @@ public class DevDatabaseSeeder implements CommandLineRunner {
         ));
         p6.setRelatedProductIds(Arrays.asList("1", "3", "5"));
         p6.setSeo(new Seo("OST Recovery Tool — Recover & Repair Corrupted OST Files", "Recover corrupted or inaccessible OST files. Export to PST, EML, MSG, or Outlook. Preview before saving. Free trial.", Arrays.asList("ost recovery tool", "recover ost file", "ost to pst", "corrupted ost", "exchange ost recovery")));
+        p6.setSourceFormats(Arrays.asList("ost"));
+        p6.setTargetFormats(Arrays.asList("pst", "msg", "eml", "html", "pdf"));
+        p6.setCapabilities(makeCapabilities(false, false, false));
         productRepository.save(p6);
     }
 
@@ -912,20 +987,20 @@ public class DevDatabaseSeeder implements CommandLineRunner {
         SiteSetting defaultSetting = new SiteSetting();
         defaultSetting.setId("settings-brandA");
         defaultSetting.setSiteId("brandA");
-        defaultSetting.setName("Brand A");
+        defaultSetting.setName("Prism Migration");
         defaultSetting.setTagline("Migrate Data at Lightning Speed Without Losing a Single Byte.");
         defaultSetting.setDescription("Eliminate downtime and secure your enterprise data. Our automated migration tools handle emails, files, and cloud transfers in seconds—saving you thousands in IT hours.");
-        defaultSetting.setUrl("https://brandA.com");
-        defaultSetting.setEmail("support@brandA.com");
+        defaultSetting.setUrl("https://prismmigration.com");
+        defaultSetting.setEmail("support@prismmigration.com");
         defaultSetting.setPhone("+1 (800) 123-4567");
         defaultSetting.setAddress("123 Tech Park, San Francisco, CA 94107");
 
         defaultSetting.setSocials(new SiteSetting.Socials(
-            "https://twitter.com/brandA",
-            "https://linkedin.com/company/brandA",
-            "https://youtube.com/@brandA",
-            "https://facebook.com/brandA",
-            "https://github.com/brandA"
+            "https://twitter.com/prismmigration",
+            "https://linkedin.com/company/prismmigration",
+            "https://youtube.com/@prismmigration",
+            "https://facebook.com/prismmigration",
+            "https://github.com/prismmigration"
         ));
 
         defaultSetting.setStats(Arrays.asList(
@@ -970,7 +1045,29 @@ public class DevDatabaseSeeder implements CommandLineRunner {
             new SiteSetting.PricingFaq("Do I get free updates?", "Standard plans include 1 year of free updates. Enterprise/Business plans include lifetime updates.")
         ));
 
-        defaultSetting.setLegalPages(generateLegalPages("Brand A", "https://brandA.com", "support@brandA.com"));
+        defaultSetting.setLegalPages(generateLegalPages("Prism Migration", "https://prismmigration.com", "support@prismmigration.com"));
+
+        defaultSetting.setMainNavigation(Arrays.asList(
+            new SiteSetting.NavItem("Products", "#", null, true, Arrays.asList(
+                new SiteSetting.NavItem("Email Migration", "/products?category=email-migration", null, true, null),
+                new SiteSetting.NavItem("Backup Tools", "/products?category=backup", null, true, null),
+                new SiteSetting.NavItem("File Converters", "/products?category=file-converter", null, true, null),
+                new SiteSetting.NavItem("Cloud Migration", "/products?category=cloud-migration", null, true, null),
+                new SiteSetting.NavItem("Mailbox Recovery", "/products?category=mailbox-recovery", null, true, null)
+            )),
+            new SiteSetting.NavItem("Solutions", "#", null, true, Arrays.asList(
+                new SiteSetting.NavItem("For Enterprise", "/solutions/enterprise", null, true, null),
+                new SiteSetting.NavItem("For Small Business", "/solutions/small-business", null, true, null),
+                new SiteSetting.NavItem("For IT Services", "/solutions/it-services", null, true, null)
+            )),
+            new SiteSetting.NavItem("Resources", "#", null, true, Arrays.asList(
+                new SiteSetting.NavItem("Documentation", "/docs", null, true, null),
+                new SiteSetting.NavItem("API Reference", "/api-docs", null, true, null),
+                new SiteSetting.NavItem("Blog", "/blog", null, true, null),
+                new SiteSetting.NavItem("Community Forum", "/community", null, true, null)
+            )),
+            new SiteSetting.NavItem("Pricing", "/pricing", null, true, null)
+        ));
 
         return defaultSetting;
     }
@@ -1023,5 +1120,13 @@ public class DevDatabaseSeeder implements CommandLineRunner {
         );
 
         return pages;
+    }
+
+    private Map<String, Boolean> makeCapabilities(boolean multiple, boolean csv, boolean impersonation) {
+        Map<String, Boolean> caps = new HashMap<>();
+        caps.put("supportsMultipleAccounts", multiple);
+        caps.put("supportsBatchCsv", csv);
+        caps.put("supportsImpersonation", impersonation);
+        return caps;
     }
 }

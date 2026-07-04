@@ -92,13 +92,13 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.DELETE, "/api/settings", "/api/settings/**")
                     .hasAnyRole("SUPER_ADMIN", "OWNER", "ADMIN", "BRAND_MANAGER", "SEO")
 
-                // 🔐 Product mutations — Super Admin, Brand Admin, or SEO/CW & Product Manager
+                // 🔐 Product mutations — Super Admin or SEO/CW & Product Manager
                 .requestMatchers(HttpMethod.POST, "/api/products", "/api/products/**")
-                    .hasAnyRole("SUPER_ADMIN", "OWNER", "ADMIN", "SEO_CW_PRODUCT_MANAGER", "PRODUCT_MANAGER", "WRITER")
+                    .hasAnyRole("SUPER_ADMIN", "OWNER", "SEO_CW_PRODUCT_MANAGER", "PRODUCT_MANAGER", "SEO", "WRITER")
                 .requestMatchers(HttpMethod.PUT, "/api/products", "/api/products/**")
-                    .hasAnyRole("SUPER_ADMIN", "OWNER", "ADMIN", "SEO_CW_PRODUCT_MANAGER", "PRODUCT_MANAGER", "WRITER")
+                    .hasAnyRole("SUPER_ADMIN", "OWNER", "SEO_CW_PRODUCT_MANAGER", "PRODUCT_MANAGER", "SEO", "WRITER")
                 .requestMatchers(HttpMethod.DELETE, "/api/products", "/api/products/**")
-                    .hasAnyRole("SUPER_ADMIN", "OWNER", "ADMIN", "SEO_CW_PRODUCT_MANAGER", "PRODUCT_MANAGER", "WRITER")
+                    .hasAnyRole("SUPER_ADMIN", "OWNER", "SEO_CW_PRODUCT_MANAGER", "PRODUCT_MANAGER", "SEO", "WRITER")
 
                 // 🔐 Category mutations
                 .requestMatchers(HttpMethod.POST, "/api/categories", "/api/categories/**")
@@ -135,7 +135,11 @@ public class SecurityConfig {
                     "/api/faqs", "/api/faqs/**",
                     "/api/categories", "/api/categories/**",
                     "/api/help", "/api/help/**",
-                    "/api/redirects/resolve"
+                    "/api/redirects/resolve",
+                    // ✅ Find Your Tool — public storefront endpoints
+                    "/api/tools/match",
+                    "/api/tools/capabilities",
+                    "/api/formats/available"
                 ).permitAll()
 
                 .anyRequest().authenticated()
