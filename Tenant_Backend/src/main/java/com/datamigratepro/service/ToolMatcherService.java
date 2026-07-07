@@ -6,6 +6,12 @@ import com.datamigratepro.entity.FormatCompatibility;
 import com.datamigratepro.entity.Product;
 import com.datamigratepro.repository.FormatCompatibilityRepository;
 import com.datamigratepro.repository.ProductRepository;
+import com.datamigratepro.repository.SourceFormatRepository;
+import com.datamigratepro.repository.TargetFormatRepository;
+import com.datamigratepro.repository.KeyFeatureRepository;
+import com.datamigratepro.entity.SourceFormat;
+import com.datamigratepro.entity.TargetFormat;
+import com.datamigratepro.entity.KeyFeature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +37,15 @@ public class ToolMatcherService {
 
     @Autowired
     private FormatCompatibilityRepository formatCompatibilityRepository;
+
+    @Autowired
+    private SourceFormatRepository sourceFormatRepository;
+
+    @Autowired
+    private TargetFormatRepository targetFormatRepository;
+
+    @Autowired
+    private KeyFeatureRepository keyFeatureRepository;
 
     /**
      * Static lookup map: normalized format key → display metadata.
@@ -278,12 +293,33 @@ public class ToolMatcherService {
             }
         }
 
+        // Fetch dynamic registries for site/brand
+        List<SourceFormat> dbSources = sourceFormatRepository.findBySiteId(siteId);
+        List<TargetFormat> dbTargets = targetFormatRepository.findBySiteId(siteId);
+
+        Map<String, SourceFormat> dbSourceMap = dbSources.stream()
+                .collect(Collectors.toMap(SourceFormat::getKey, sf -> sf, (sf1, sf2) -> sf1));
+        Map<String, TargetFormat> dbTargetMap = dbTargets.stream()
+                .collect(Collectors.toMap(TargetFormat::getKey, tf -> tf, (tf1, tf2) -> tf1));
+
         List<AvailableFormatsResponse.FormatOption> srcOptions = srcKeys.stream()
-                .map(k -> FORMAT_METADATA.getOrDefault(k, generateFallbackOption(k)))
+                .map(k -> {
+                    SourceFormat sf = dbSourceMap.get(k);
+                    if (sf != null) {
+                        return new AvailableFormatsResponse.FormatOption(sf.getKey(), sf.getName(), sf.getIcon() != null ? sf.getIcon() : "file", sf.getDescription(), "Registry");
+                    }
+                    return FORMAT_METADATA.getOrDefault(k, generateFallbackOption(k));
+                })
                 .collect(Collectors.toList());
 
         List<AvailableFormatsResponse.FormatOption> tgtOptions = tgtKeys.stream()
-                .map(k -> FORMAT_METADATA.getOrDefault(k, generateFallbackOption(k)))
+                .map(k -> {
+                    TargetFormat tf = dbTargetMap.get(k);
+                    if (tf != null) {
+                        return new AvailableFormatsResponse.FormatOption(tf.getKey(), tf.getName(), tf.getIcon() != null ? tf.getIcon() : "file", tf.getDescription(), "Registry");
+                    }
+                    return FORMAT_METADATA.getOrDefault(k, generateFallbackOption(k));
+                })
                 .collect(Collectors.toList());
 
         return new AvailableFormatsResponse(srcOptions, tgtOptions);
@@ -356,17 +392,18 @@ public class ToolMatcherService {
             }
         }
 
-        // Build ordered labels map (only for capabilities that are actually present)
+        // Build labels map using the key features registry for this site
+        List<KeyFeature> dbFeatures = keyFeatureRepository.findBySiteId(siteId);
+        Map<String, String> dbFeatureMap = dbFeatures.stream()
+                .collect(Collectors.toMap(KeyFeature::getKey, KeyFeature::getName, (kf1, kf2) -> kf1));
+
         Map<String, String> labels = new LinkedHashMap<>();
-        // First add known labels in preferred order
-        for (String knownKey : CAPABILITY_LABELS.keySet()) {
-            if (availableCapabilities.contains(knownKey)) {
-                labels.put(knownKey, CAPABILITY_LABELS.get(knownKey));
-            }
-        }
-        // Then add any unknown capabilities with generated labels
         for (String key : availableCapabilities) {
-            if (!labels.containsKey(key)) {
+            if (dbFeatureMap.containsKey(key)) {
+                labels.put(key, dbFeatureMap.get(key));
+            } else if (CAPABILITY_LABELS.containsKey(key)) {
+                labels.put(key, CAPABILITY_LABELS.get(key));
+            } else {
                 String generated = key
                     .replaceAll("([A-Z])", " $1")
                     .replaceFirst("^supports ", "Supports ")

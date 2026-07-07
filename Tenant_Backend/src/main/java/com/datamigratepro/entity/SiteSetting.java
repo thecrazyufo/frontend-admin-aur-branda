@@ -101,6 +101,14 @@ public class SiteSetting {
     @Column(columnDefinition = "jsonb")
     private AboutPageConfig aboutPage;
 
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private CareersPageConfig careersPage;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "clients_page", columnDefinition = "jsonb")
+    private ClientsPageConfig clientsPage;
+
     // ─── NEW: Coupons & Offers ──────────────────────────────────────────────────
 
     @JdbcTypeCode(SqlTypes.JSON)
@@ -293,5 +301,61 @@ public class SiteSetting {
         private String defaultOgImage;
         private String robotsTxt;
         private String googleVerification;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CareersPageConfig {
+        private String heroTitle;
+        private String heroDescription;
+        private String companyCultureTitle;
+        private String companyCultureDesc;
+        private List<BenefitItem> benefits;
+        private List<JobPosition> openPositions;
+        private String metaTitle;
+        private String metaDescription;
+        private String metaKeywords;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class BenefitItem {
+        private String title;
+        private String description;
+        private String icon;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class JobPosition {
+        private String id;
+        private String title;
+        private String department;
+        private String location;
+        private String type;
+        private String experience;
+        private String salaryRange;
+        private String description;
+        private String requirements;
+        private boolean active;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ClientsPageConfig {
+        private String heroTitle;
+        private String heroSubtitle;
+        private List<StatItem> stats;
+        private String ctaTitle;
+        private String ctaText;
+        private String ctaButtonText;
+        private String ctaButtonLink;
+        private String metaTitle;
+        private String metaDescription;
+        private String metaKeywords;
     }
 }

@@ -9,6 +9,7 @@ export interface HelpArticle {
   publishedAt: string;
   helpful?: number;
   notHelpful?: number;
+  siteId?: string;
 }
 
 export type HelpCategory =
@@ -39,3 +40,34 @@ export interface SearchResult {
   excerpt: string;
   category?: string;
 }
+
+export interface CareerPosition {
+  id?: string;
+  title: string;
+  department: string;
+  location: string;
+  type: string;
+  experience?: string;
+  salaryRange?: string;
+  description: string;
+  requirements?: string;
+  status: "OPEN" | "CLOSED" | "ARCHIVED";
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeywords?: string;
+  siteId?: string;
+}
+
+export interface ClientsPageConfig {
+  heroTitle: string;
+  heroSubtitle: string;
+  stats: { value: string; label: string }[];
+  ctaTitle: string;
+  ctaText: string;
+  ctaButtonText: string;
+  ctaButtonLink: string;
+  metaTitle: string;
+  metaDescription: string;
+  metaKeywords: string;
+}
+

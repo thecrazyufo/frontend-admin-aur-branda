@@ -22,7 +22,36 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
 
-  const navItems = navigation.filter(item => item.enabled !== false);
+  const baseNavItems = navigation.filter(item => item.enabled !== false);
+  const navItems = baseNavItems.map(item => {
+    if (item.label.toLowerCase() === "careers") {
+      return { ...item, href: "/careers" };
+    }
+    if (item.label.toLowerCase().includes("clients")) {
+      return { ...item, href: "/clients" };
+    }
+    return item;
+  });
+
+  const hasCareers = navItems.some(item => item.label.toLowerCase() === "careers");
+  if (!hasCareers) {
+    const pricingIdx = navItems.findIndex(item => item.label.toLowerCase() === "pricing");
+    if (pricingIdx !== -1) {
+      navItems.splice(pricingIdx + 1, 0, { label: "Careers", href: "/careers", enabled: true });
+    } else {
+      navItems.push({ label: "Careers", href: "/careers", enabled: true });
+    }
+  }
+
+  const hasClients = navItems.some(item => item.label.toLowerCase().includes("clients"));
+  if (!hasClients) {
+    const careersIdx = navItems.findIndex(item => item.label.toLowerCase() === "careers");
+    if (careersIdx !== -1) {
+      navItems.splice(careersIdx + 1, 0, { label: "Our Clients", href: "/clients", enabled: true });
+    } else {
+      navItems.push({ label: "Our Clients", href: "/clients", enabled: true });
+    }
+  }
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);

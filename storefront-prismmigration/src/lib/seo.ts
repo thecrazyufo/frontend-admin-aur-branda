@@ -3,18 +3,18 @@
 function stripMarkdown(md: string): string {
   return md
     .replace(/```[\s\S]*?```/g, "")            // remove fenced code blocks
-    .replace(/`([^`]+)`/g, "$1")               // inline code → plain
-    .replace(/\*\*([^*]+)\*\*/g, "$1")         // bold → plain
-    .replace(/\*([^*]+)\*/g, "$1")             // italic * → plain
-    .replace(/_([^_]+)_/g, "$1")               // italic _ → plain
-    .replace(/~~([^~]+)~~/g, "$1")             // strikethrough → plain
-    .replace(/!\[([^\]]*)\]\([^)]+\)/g, "$1")  // images → alt text
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")   // links → link text
-    .replace(/^#{1,6}\s+/gm, "")               // headings → plain
+    .replace(/`([^`]+)`/g, "$1")               // inline code -> plain
+    .replace(/\*\*([^*]+)\*\*/g, "$1")         // bold -> plain
+    .replace(/\*([^*]+)\*/g, "$1")             // italic * -> plain
+    .replace(/_([^_]+)_/g, "$1")               // italic _ -> plain
+    .replace(/~~([^~]+)~~/g, "$1")             // strikethrough -> plain
+    .replace(/!\[([^\]]*)\]\([^)]+\)/g, "$1")  // images -> alt text
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")   // links -> link text
+    .replace(/^#{1,6}\s+/gm, "")               // headings -> plain
     .replace(/^[-*>]\s+/gm, "")                // list/blockquote markers
     .replace(/^\d+\.\s+/gm, "")               // numbered list markers
     .replace(/^---+$/gm, "")                   // horizontal rules
-    .replace(/\n{2,}/g, " ")                   // multiple newlines → space
+    .replace(/\n{2,}/g, " ")                   // multiple newlines -> space
     .replace(/\n/g, " ")
     .trim();
 }

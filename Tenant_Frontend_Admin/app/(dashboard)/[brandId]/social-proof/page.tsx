@@ -88,7 +88,28 @@ export default function SocialProofPage() {
   }
 
   if (loading) {
-    return <div className="p-8 text-zinc-500">Loading social proof data...</div>;
+    return (
+      <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-8 animate-pulse">
+        <div className="space-y-2">
+          <div className="h-8 bg-zinc-200 dark:bg-zinc-800 rounded w-1/4"></div>
+          <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-1/3"></div>
+        </div>
+        <div className="border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 space-y-4">
+          <div className="h-6 bg-zinc-200 dark:bg-zinc-800 rounded w-1/6"></div>
+          <div className="space-y-3">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="flex items-center gap-4 py-4 border-b border-zinc-200 dark:border-zinc-800">
+                <div className="h-10 w-10 bg-zinc-200 dark:bg-zinc-800 rounded-full"></div>
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-1/3"></div>
+                  <div className="h-3 bg-zinc-200 dark:bg-zinc-800 rounded w-1/2"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -126,7 +147,7 @@ export default function SocialProofPage() {
               <CardDescription>Manage logos shown in the marquee strip.</CardDescription>
             </div>
             <Button onClick={() => {
-              setEditingLogo({ companyName: "", logoUrl: "", displayOrder: 0 });
+              setEditingLogo({ companyName: "", logoUrl: "", displayOrder: 0, description: "", caseStudy: "" });
               setIsLogoModalOpen(true);
             }}>Add Logo</Button>
           </CardHeader>
@@ -233,6 +254,24 @@ export default function SocialProofPage() {
               <div className="space-y-2">
                 <label className="text-sm font-medium">Display Order</label>
                 <Input type="number" required value={editingLogo.displayOrder} onChange={e => setEditingLogo({...editingLogo, displayOrder: parseInt(e.target.value)})} />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Client Description</label>
+                <textarea 
+                  className="w-full flex min-h-[80px] rounded-md border border-[--border] bg-transparent px-3 py-2 text-sm placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                  value={editingLogo.description || ""} 
+                  onChange={e => setEditingLogo({...editingLogo, description: e.target.value})} 
+                  placeholder="e.g., A global leader in manufacturing and retail solutions."
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Case Study / Success Story (Markdown supported)</label>
+                <textarea 
+                  className="w-full flex min-h-[120px] rounded-md border border-[--border] bg-transparent px-3 py-2 text-sm placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                  value={editingLogo.caseStudy || ""} 
+                  onChange={e => setEditingLogo({...editingLogo, caseStudy: e.target.value})} 
+                  placeholder="Describe how they successfully used your products."
+                />
               </div>
               <div className="flex justify-end space-x-2 pt-4">
                 <Button variant="outline" type="button" onClick={() => setIsLogoModalOpen(false)}>Cancel</Button>

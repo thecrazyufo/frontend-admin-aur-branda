@@ -61,6 +61,8 @@ export interface Product {
   version?: string;
   lastUpdated?: string;
   trialDownloadUrl?: string;
+  installationSuccessUrl?: string;
+  uninstallationSuccessUrl?: string;
   features: string[];
   platforms: string[];
   supportedFormats: string[];

@@ -10,7 +10,7 @@ import { Input } from"@/components/ui/Input";
 import { Select } from"@/components/ui/Select";
 import { cn } from"@/lib/utils";
 
-type BrandTab ="identity" |"theme" |"navigation" |"hero" |"contact" |"legal" |"announcement" |"about" |"pricing" |"trust";
+type BrandTab ="identity" |"theme" |"navigation" |"hero" |"contact" |"legal" |"announcement" |"about" |"pricing" |"trust" | "careers" | "clients";
 
 interface ThemeConfig {
  primaryColor: string;
@@ -49,12 +49,56 @@ interface AnnouncementBar {
 }
 
 interface AboutPageConfig {
- heroTitle: string;
- heroDescription: string;
- missionTitle: string;
- missionContent: string;
- showTeam: boolean;
- showStats: boolean;
+  heroTitle: string;
+  heroDescription: string;
+  missionTitle: string;
+  missionContent: string;
+  showTeam: boolean;
+  showStats: boolean;
+}
+
+interface BenefitItem {
+  title: string;
+  description: string;
+  icon: string;
+}
+
+interface JobPosition {
+  id?: string;
+  title: string;
+  department: string;
+  location: string;
+  type: string;
+  experience: string;
+  salaryRange: string;
+  description: string;
+  requirements: string;
+  active: boolean;
+}
+
+interface CareersPageConfig {
+  heroTitle: string;
+  heroDescription: string;
+  companyCultureTitle: string;
+  companyCultureDesc: string;
+  benefits: BenefitItem[];
+  openPositions: JobPosition[];
+  metaTitle: string;
+  metaDescription: string;
+  metaKeywords: string;
+}
+
+interface ClientsPageConfig {
+  heroTitle: string;
+  heroSubtitle: string;
+  stats: { value: string; label: string }[];
+  ctaTitle: string;
+  ctaText: string;
+  ctaButtonText: string;
+  ctaButtonLink: string;
+  metaTitle: string;
+  metaDescription: string;
+  metaKeywords: string;
 }
 
 interface PricingComparisonRow {
@@ -85,6 +129,8 @@ interface SiteSettings {
  hero?: HeroConfig;
  announcement?: AnnouncementBar;
  aboutPage?: AboutPageConfig;
+ careersPage?: CareersPageConfig;
+ clientsPage?: ClientsPageConfig;
  legalPages?: Record<string, string>;
  pricingComparison?: PricingComparisonRow[];
  pricingFaqs?: PricingFaq[];
@@ -129,6 +175,53 @@ const defaultAbout: AboutPageConfig = {
  missionContent:"",
  showTeam: true,
  showStats: true,
+};
+
+const defaultCareers: CareersPageConfig = {
+  heroTitle: "Join Our Team",
+  heroDescription: "Help us build the future of software selling and data migration.",
+  companyCultureTitle: "Our Company Culture",
+  companyCultureDesc: "We value autonomy, craft, and balanced lives. We believe in doing great work without sacrificing sanity.",
+  benefits: [
+    { title: "Remote First", description: "Work from anywhere in the world.", icon: "Globe" },
+    { title: "Health & Wellness", description: "Comprehensive premium health coverage.", icon: "Heart" },
+    { title: "Learning & Growth", description: "Annual education budget for courses/books.", icon: "BookOpen" }
+  ],
+  openPositions: [
+    {
+      id: "job-1",
+      title: "Senior Full-Stack Engineer",
+      department: "Engineering",
+      location: "Remote, US/Europe",
+      type: "Full-Time",
+      experience: "Senior (5+ years)",
+      salaryRange: "$130k - $160k",
+      description: "Looking for an engineer to lead feature development on our core selling platforms.",
+      requirements: "• 5+ years with React, Next.js, and Java/Spring Boot\n• Experience with SQL and database design\n• Strong product sense",
+      active: true
+    }
+  ],
+  metaTitle: "Careers at Prism Migration | Join Our Team",
+  metaDescription: "Explore career opportunities at Prism Migration. We are looking for talented engineers, designers, and marketers.",
+  metaKeywords: "careers, jobs, engineering jobs, remote jobs"
+};
+
+const defaultClients: ClientsPageConfig = {
+  heroTitle: "Trusted by Leading Organizations",
+  heroSubtitle: "We help companies of all sizes migrate their enterprise data seamlessly, securely, and with zero downtime.",
+  stats: [
+    { value: "150+", label: "Companies Trust Us" },
+    { value: "50+", label: "Countries Served" },
+    { value: "10B+", label: "Items Migrated" },
+    { value: "99.9%", label: "Success Rate" }
+  ],
+  ctaTitle: "Join Our Growing List of Clients",
+  ctaText: "Ready to migrate your database, mailboxes, or cloud storage? Start your risk-free trial today or contact our integration team.",
+  ctaButtonText: "Contact Sales",
+  ctaButtonLink: "/contact",
+  metaTitle: "Our Clients — Enterprise Data Migration Success Stories",
+  metaDescription: "See how leading organizations use Prism Migration tools to translate, convert, and sync mailbox databases.",
+  metaKeywords: "clients, customers, case studies, enterprise, success stories",
 };
 
 const defaultNav: NavItem[] = [
@@ -180,6 +273,8 @@ export default function BrandManagerPage() {
  hero: data.hero || { ...defaultHero },
  announcement: data.announcement || { ...defaultAnnouncement },
  aboutPage: data.aboutPage || { ...defaultAbout },
+ careersPage: data.careersPage || { ...defaultCareers },
+ clientsPage: data.clientsPage || { ...defaultClients },
  legalPages: data.legalPages || {},
  pricingComparison: data.pricingComparison || [],
  pricingFaqs: data.pricingFaqs || [],
@@ -237,6 +332,16 @@ export default function BrandManagerPage() {
  setSettings({ ...settings, aboutPage: { ...(settings.aboutPage || defaultAbout), [field]: value } });
  }
 
+ function updateCareers(field: keyof CareersPageConfig, value: any) {
+ if (!settings) return;
+ setSettings({ ...settings, careersPage: { ...(settings.careersPage || defaultCareers), [field]: value } });
+ }
+
+ function updateClients(field: keyof ClientsPageConfig, value: any) {
+ if (!settings) return;
+ setSettings({ ...settings, clientsPage: { ...(settings.clientsPage || defaultClients), [field]: value } });
+ }
+
  function updateLegalPage(key: string, html: string) {
  if (!settings) return;
  setSettings({ ...settings, legalPages: { ...(settings.legalPages || {}), [key]: html } });
@@ -284,6 +389,8 @@ export default function BrandManagerPage() {
  { id:"pricing", label:"Pricing Matrix" },
  { id:"about", label:"About Page Config" },
  { id:"trust", label:"🤝 Company & Trust" },
+ { id:"careers", label:"💼 Careers Page" },
+ { id:"clients", label:"👥 Our Clients" },
  ];
 
  if (loading) {
@@ -694,8 +801,8 @@ export default function BrandManagerPage() {
  {activeTab ==="legal" && (
  <Card className=" border border-zinc-200 shadow-sm">
  <CardHeader>
- <CardTitle>📄 Legal Pages (HTML)</CardTitle>
- <CardDescription>These documents will render at /privacy, /terms, /refund, and /license on the storefront.</CardDescription>
+ <CardTitle>📄 Custom & Legal Pages (HTML)</CardTitle>
+ <CardDescription>Configure content for legal and installation success/uninstallation pages.</CardDescription>
  </CardHeader>
  <CardContent className="space-y-4">
  {[
@@ -703,6 +810,8 @@ export default function BrandManagerPage() {
  { key:"terms", label:"Terms of Service" },
  { key:"refund", label:"Refund Policy" },
  { key:"license", label:"License Agreement" },
+ { key:"thank-you-install", label:"Installation Success Page (Welcome)" },
+ { key:"goodbye", label:"Uninstallation Success Page (Goodbye)" },
  ].map(page => (
  <div key={page.key} className="space-y-1.5">
  <label className="text-xs font-semibold text-zinc-500">{page.label}</label>
@@ -920,6 +1029,393 @@ export default function BrandManagerPage() {
   </CardContent>
   </Card>
   </div>
+  )}
+
+  {activeTab === "careers" && (
+    <div className="space-y-6">
+      <Card className="border border-zinc-200 shadow-sm">
+        <CardHeader>
+          <CardTitle>💼 Careers Hero Section</CardTitle>
+          <CardDescription>Hero headline and intro for the /careers page.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-zinc-500">Hero Title</label>
+            <Input type="text" value={settings.careersPage?.heroTitle || ""} onChange={e => updateCareers("heroTitle", e.target.value)} />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-zinc-500">Hero Description</label>
+            <textarea
+              value={settings.careersPage?.heroDescription || ""}
+              onChange={e => updateCareers("heroDescription", e.target.value)}
+              rows={2}
+              className="w-full bg-transparent border border-zinc-200 rounded-lg px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25 focus-visible:border-blue-500"
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="border border-zinc-200 shadow-sm">
+        <CardHeader>
+          <CardTitle>🌟 Benefits & Perks</CardTitle>
+          <CardDescription>Core perks and benefits displayed on the careers page.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-3">
+            {(settings.careersPage?.benefits || []).map((benefit, idx) => (
+              <div key={idx} className="flex flex-col gap-2 bg-zinc-50 p-3 rounded-lg border border-zinc-100 relative group">
+                <button type="button" className="absolute -top-2 -right-2 w-6 h-6 bg-red-100 text-red-600 rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => {
+                  const arr = [...(settings.careersPage?.benefits || [])];
+                  arr.splice(idx, 1);
+                  updateCareers("benefits", arr);
+                }}>✕</button>
+                <div className="flex gap-2">
+                  <Input className="h-8 text-xs w-24" placeholder="Icon (e.g. Heart)" value={benefit.icon} onChange={(e) => {
+                    const arr = [...(settings.careersPage?.benefits || [])];
+                    arr[idx].icon = e.target.value;
+                    updateCareers("benefits", arr);
+                  }} />
+                  <Input className="h-8 text-xs font-semibold flex-1" placeholder="Title (e.g. Remote Work)" value={benefit.title} onChange={(e) => {
+                    const arr = [...(settings.careersPage?.benefits || [])];
+                    arr[idx].title = e.target.value;
+                    updateCareers("benefits", arr);
+                  }} />
+                </div>
+                <Input className="h-8 text-xs" placeholder="Description" value={benefit.description} onChange={(e) => {
+                  const arr = [...(settings.careersPage?.benefits || [])];
+                  arr[idx].description = e.target.value;
+                  updateCareers("benefits", arr);
+                }} />
+              </div>
+            ))}
+          </div>
+          <Button type="button" variant="outline" size="sm" onClick={() => {
+            const arr = [...(settings.careersPage?.benefits || [])];
+            arr.push({ title: "New Benefit", description: "", icon: "Gift" });
+            updateCareers("benefits", arr);
+          }}>+ Add Benefit</Button>
+        </CardContent>
+      </Card>
+
+      <Card className="border border-zinc-200 shadow-sm">
+        <CardHeader>
+          <CardTitle>🎨 Company Culture Section</CardTitle>
+          <CardDescription>Title and description for the company culture segment.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-zinc-500">Culture Section Title</label>
+            <Input type="text" value={settings.careersPage?.companyCultureTitle || ""} onChange={e => updateCareers("companyCultureTitle", e.target.value)} />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-zinc-500">Culture Description</label>
+            <textarea
+              value={settings.careersPage?.companyCultureDesc || ""}
+              onChange={e => updateCareers("companyCultureDesc", e.target.value)}
+              rows={4}
+              className="w-full bg-transparent border border-zinc-200 rounded-lg px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25 focus-visible:border-blue-500"
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="border border-zinc-200 shadow-sm">
+        <CardHeader>
+          <CardTitle>🎯 Open Positions</CardTitle>
+          <CardDescription>Manage current job postings and details.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-4">
+            {(settings.careersPage?.openPositions || []).map((pos, idx) => (
+              <div key={pos.id || idx} className="bg-zinc-50 p-4 rounded-lg border border-zinc-200 relative group space-y-3">
+                <button type="button" className="absolute top-2 right-2 w-6 h-6 bg-red-100 text-red-600 rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => {
+                  const arr = [...(settings.careersPage?.openPositions || [])];
+                  arr.splice(idx, 1);
+                  updateCareers("openPositions", arr);
+                }}>✕</button>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-semibold text-zinc-500">Job Title</label>
+                    <Input className="h-8 text-xs font-semibold" placeholder="e.g. Senior Backend Engineer" value={pos.title} onChange={(e) => {
+                      const arr = [...(settings.careersPage?.openPositions || [])];
+                      arr[idx].title = e.target.value;
+                      updateCareers("openPositions", arr);
+                    }} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-semibold text-zinc-500">Department</label>
+                    <Input className="h-8 text-xs" placeholder="e.g. Engineering" value={pos.department} onChange={(e) => {
+                      const arr = [...(settings.careersPage?.openPositions || [])];
+                      arr[idx].department = e.target.value;
+                      updateCareers("openPositions", arr);
+                    }} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-semibold text-zinc-500">Location</label>
+                    <Input className="h-8 text-xs" placeholder="e.g. Remote, US" value={pos.location} onChange={(e) => {
+                      const arr = [...(settings.careersPage?.openPositions || [])];
+                      arr[idx].location = e.target.value;
+                      updateCareers("openPositions", arr);
+                    }} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-semibold text-zinc-500">Job Type</label>
+                    <Input className="h-8 text-xs" placeholder="e.g. Full-Time" value={pos.type} onChange={(e) => {
+                      const arr = [...(settings.careersPage?.openPositions || [])];
+                      arr[idx].type = e.target.value;
+                      updateCareers("openPositions", arr);
+                    }} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-semibold text-zinc-500">Experience</label>
+                    <Input className="h-8 text-xs" placeholder="e.g. Mid-Senior" value={pos.experience} onChange={(e) => {
+                      const arr = [...(settings.careersPage?.openPositions || [])];
+                      arr[idx].experience = e.target.value;
+                      updateCareers("openPositions", arr);
+                    }} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-semibold text-zinc-500">Salary Range</label>
+                    <Input className="h-8 text-xs" placeholder="e.g. $100k - $130k" value={pos.salaryRange} onChange={(e) => {
+                      const arr = [...(settings.careersPage?.openPositions || [])];
+                      arr[idx].salaryRange = e.target.value;
+                      updateCareers("openPositions", arr);
+                    }} />
+                  </div>
+                  <div className="space-y-1.5 sm:col-span-2">
+                    <label className="text-[11px] font-semibold text-zinc-500">Short Description</label>
+                    <Input className="h-8 text-xs" placeholder="Short summary of the role..." value={pos.description} onChange={(e) => {
+                      const arr = [...(settings.careersPage?.openPositions || [])];
+                      arr[idx].description = e.target.value;
+                      updateCareers("openPositions", arr);
+                    }} />
+                  </div>
+                  <div className="space-y-1.5 sm:col-span-2">
+                    <label className="text-[11px] font-semibold text-zinc-500">Requirements & Details (Bullet points/Text)</label>
+                    <textarea
+                      rows={4}
+                      value={pos.requirements}
+                      placeholder="Bullet list of requirements..."
+                      onChange={(e) => {
+                        const arr = [...(settings.careersPage?.openPositions || [])];
+                        arr[idx].requirements = e.target.value;
+                        updateCareers("openPositions", arr);
+                      }}
+                      className="w-full bg-transparent border border-zinc-200 rounded-lg px-3 py-2 text-xs font-mono outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25 focus-visible:border-blue-500"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2 pt-2">
+                    <input
+                      type="checkbox"
+                      checked={pos.active}
+                      onChange={(e) => {
+                        const arr = [...(settings.careersPage?.openPositions || [])];
+                        arr[idx].active = e.target.checked;
+                        updateCareers("openPositions", arr);
+                      }}
+                      className="rounded border-zinc-300 text-blue-600 focus:ring-blue-500"
+                    />
+                    <span className="text-xs font-semibold text-zinc-700">Role Active / Accepting Applications</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <Button type="button" variant="outline" size="sm" onClick={() => {
+            const arr = [...(settings.careersPage?.openPositions || [])];
+            arr.push({
+              id: "job-" + Date.now(),
+              title: "New Role",
+              department: "",
+              location: "Remote",
+              type: "Full-Time",
+              experience: "",
+              salaryRange: "",
+              description: "",
+              requirements: "",
+              active: true
+            });
+            updateCareers("openPositions", arr);
+          }}>+ Add Position</Button>
+        </CardContent>
+      </Card>
+
+      <Card className="border border-zinc-200 shadow-sm">
+        <CardHeader>
+          <CardTitle>🔍 SEO Configuration</CardTitle>
+          <CardDescription>Configure search engine metadata for the careers page.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-zinc-500">Meta Title</label>
+            <Input type="text" value={settings.careersPage?.metaTitle || ""} onChange={e => updateCareers("metaTitle", e.target.value)} />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-zinc-500">Meta Description</label>
+            <textarea
+              value={settings.careersPage?.metaDescription || ""}
+              onChange={e => updateCareers("metaDescription", e.target.value)}
+              rows={2}
+              className="w-full bg-transparent border border-zinc-200 rounded-lg px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25 focus-visible:border-blue-500"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-zinc-500">Meta Keywords</label>
+            <Input type="text" value={settings.careersPage?.metaKeywords || ""} onChange={e => updateCareers("metaKeywords", e.target.value)} />
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )}
+
+  {/* OUR CLIENTS TAB */}
+  {activeTab === "clients" && (
+    <div className="space-y-6 animate-in fade-in duration-300">
+      <Card className="border border-zinc-200 shadow-sm">
+        <CardHeader>
+          <CardTitle>👥 Clients Page Configuration</CardTitle>
+          <CardDescription>Configure the landing section for your list of clients.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-zinc-500">Hero Section Title</label>
+            <Input type="text" value={settings.clientsPage?.heroTitle || ""} onChange={e => updateClients("heroTitle", e.target.value)} />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-zinc-500">Hero Subtitle</label>
+            <textarea
+              value={settings.clientsPage?.heroSubtitle || ""}
+              onChange={e => updateClients("heroSubtitle", e.target.value)}
+              rows={3}
+              className="w-full bg-transparent border border-zinc-200 rounded-lg px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25 focus-visible:border-blue-500"
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="border border-zinc-200 shadow-sm">
+        <CardHeader>
+          <CardTitle>📈 Stats & Metrics</CardTitle>
+          <CardDescription>Configure the stats grid metrics shown on the Clients page.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-4">
+            {(settings.clientsPage?.stats || []).map((stat, idx) => {
+              const arr = [...(settings.clientsPage?.stats || [])];
+              return (
+                <div key={idx} className="flex gap-4 items-center bg-zinc-50 dark:bg-zinc-900/30 p-3 rounded-lg border">
+                  <div className="flex-1 space-y-1">
+                    <label className="text-[10px] font-semibold text-zinc-400">Value (e.g., 150+)</label>
+                    <Input
+                      type="text"
+                      value={stat.value || ""}
+                      onChange={e => {
+                        arr[idx] = { ...stat, value: e.target.value };
+                        updateClients("stats", arr);
+                      }}
+                    />
+                  </div>
+                  <div className="flex-1 space-y-1">
+                    <label className="text-[10px] font-semibold text-zinc-400">Label (e.g., Companies Trust Us)</label>
+                    <Input
+                      type="text"
+                      value={stat.label || ""}
+                      onChange={e => {
+                        arr[idx] = { ...stat, label: e.target.value };
+                        updateClients("stats", arr);
+                      }}
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    className="mt-5"
+                    onClick={() => {
+                      arr.splice(idx, 1);
+                      updateClients("stats", arr);
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </div>
+              );
+            })}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const arr = [...(settings.clientsPage?.stats || [])];
+                arr.push({ value: "", label: "" });
+                updateClients("stats", arr);
+              }}
+            >
+              + Add Stat Metric
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="border border-zinc-200 shadow-sm">
+        <CardHeader>
+          <CardTitle>📢 Call to Action Section</CardTitle>
+          <CardDescription>Configure the conversion section at the bottom of the Clients page.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-zinc-500">CTA Title</label>
+            <Input type="text" value={settings.clientsPage?.ctaTitle || ""} onChange={e => updateClients("ctaTitle", e.target.value)} />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-zinc-500">CTA Text</label>
+            <textarea
+              value={settings.clientsPage?.ctaText || ""}
+              onChange={e => updateClients("ctaText", e.target.value)}
+              rows={3}
+              className="w-full bg-transparent border border-zinc-200 rounded-lg px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25 focus-visible:border-blue-500"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-zinc-500">CTA Button Text</label>
+              <Input type="text" value={settings.clientsPage?.ctaButtonText || ""} onChange={e => updateClients("ctaButtonText", e.target.value)} />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-zinc-500">CTA Button Link</label>
+              <Input type="text" value={settings.clientsPage?.ctaButtonLink || ""} onChange={e => updateClients("ctaButtonLink", e.target.value)} />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="border border-zinc-200 shadow-sm">
+        <CardHeader>
+          <CardTitle>🔍 SEO Configuration</CardTitle>
+          <CardDescription>Configure search engine metadata for the clients page.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-zinc-500">Meta Title</label>
+            <Input type="text" value={settings.clientsPage?.metaTitle || ""} onChange={e => updateClients("metaTitle", e.target.value)} />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-zinc-500">Meta Description</label>
+            <textarea
+              value={settings.clientsPage?.metaDescription || ""}
+              onChange={e => updateClients("metaDescription", e.target.value)}
+              rows={2}
+              className="w-full bg-transparent border border-zinc-200 rounded-lg px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25 focus-visible:border-blue-500"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-zinc-500">Meta Keywords</label>
+            <Input type="text" value={settings.clientsPage?.metaKeywords || ""} onChange={e => updateClients("metaKeywords", e.target.value)} />
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   )}
 
  {/* ABOUT PAGE TAB */}

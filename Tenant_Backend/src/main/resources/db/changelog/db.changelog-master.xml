@@ -36,5 +36,11 @@
     <include file="db/changelog/017-format-compatibility.xml" relativeToChangelogFile="false"/>
     <include file="db/changelog/018-update-brand-a-name.xml" relativeToChangelogFile="false"/>
     <include file="db/changelog/019-product-capabilities.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/020-global-registry.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/021-add-registry-multi-account.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/022-site-settings-careers.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/023-career-positions.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/024-site-settings-clients.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/025-product-install-urls.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>

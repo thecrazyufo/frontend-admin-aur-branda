@@ -14,7 +14,7 @@ export interface Category {
   color: string;
 }
 
-// In Astro SSR pages, we always run server-side → use Docker internal hostname
+// In Astro SSR pages, we always run server-side -> use Docker internal hostname
 // In client React Islands, use localhost
 const API_BASE =
   import.meta.env.PUBLIC_API_URL ||
@@ -30,7 +30,7 @@ function getCorrelationId(): string {
   return "store-srv-" + Math.random().toString(36).substring(2, 11);
 }
 
-// ─── Public API helpers ────────────────────────────────────────────────────────
+// --- Public API helpers --------------------------------------------------------
 
 const SITE_ID =
   (typeof process !== "undefined" ? (process.env.PUBLIC_SITE_ID || process.env.SITE_ID) : undefined) ||
@@ -86,7 +86,7 @@ export async function apiPost<T>(path: string, body: unknown): Promise<T> {
   }
 }
 
-// ─── Admin API helpers (JWT auth) ─────────────────────────────────────────────
+// --- Admin API helpers (JWT auth) ---------------------------------------------
 
 function getAdminToken(): string | null {
   if (typeof window === "undefined") return null;
@@ -174,7 +174,7 @@ export async function adminDelete(path: string): Promise<void> {
   }
 }
 
-// ─── Public APIs ───────────────────────────────────────────────────────────────
+// --- Public APIs ---------------------------------------------------------------
 
 export const CategoryAPI = {
   getAll: () => apiGet<Category[]>("/categories"),
@@ -271,6 +271,13 @@ export const SettingsAPI = {
   get: () => apiGet<any>("/settings"),
 };
 
+export const JobsAPI = {
+  getAll: (status?: string) => {
+    const url = status ? `/jobs?status=${status}` : "/jobs";
+    return apiGet<any[]>(url);
+  },
+};
+
 export const BrandAPI = {
   getActiveBrands: () => apiGet<any[]>("/brands"),
   getCurrentBrand: async () => {
@@ -279,7 +286,7 @@ export const BrandAPI = {
   }
 };
 
-// ─── Admin/Licensing APIs (require JWT) ────────────────────────────────────────────
+// --- Admin/Licensing APIs (require JWT) --------------------------------------------
 
 export const AdminLicenseAPI = {
   getAll: () => adminGet<LicenseKey[]>("/licensing-admin"),
@@ -328,9 +335,9 @@ export const ToolsAPI = {
   },
   /**
    * Returns the union of capabilities (e.g. "supportsMultipleAccounts") across all products
-   * matching a source → destination pair for a site.
+   * matching a source -> destination pair for a site.
    *
-   * Used to dynamically populate the wizard quiz step — only shows filter questions
+   * Used to dynamically populate the wizard quiz step -- only shows filter questions
    * that are actually relevant to the matching product set.
    */
   getCapabilities: (

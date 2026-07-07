@@ -73,7 +73,7 @@ const siteSocials = Object.values(settings?.socials || {}).filter((v): v is stri
                     <div>
                       <p class="text-[10px] font-semibold text-stone-400 uppercase tracking-wide mb-1">{item.label}</p>
                       {item.icon === "LiveChat" ? (
-                        <button onclick="window.Tawk_API?.maximize(); return false;" class="text-xs text-[#EAB308] hover:text-[#f1c40f] hover:underline font-bold text-left bg-transparent border-0 p-0 cursor-pointer">{item.value}</button>
+                        <button onclick="if (typeof window.triggerTawkOpen === 'function') { window.triggerTawkOpen(); } else { console.log('Tawk trigger helper not registered yet'); } return false;" class="text-xs text-[#EAB308] hover:text-[#f1c40f] hover:underline font-bold text-left bg-transparent border-0 p-0 cursor-pointer">{item.value}</button>
                       ) : item.href ? (
                         <a href={item.href} class="text-xs text-stone-300 hover:text-[#EAB308] font-semibold transition-colors">{item.value}</a>
                       ) : (

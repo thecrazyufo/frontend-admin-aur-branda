@@ -12,6 +12,7 @@ interface Props {
   ogType?: string;
   author?: string;
   noindex?: boolean;
+  keywords?: string;
 }
 
 const settings = await SettingsAPI.get().catch(() => null);
@@ -44,18 +45,24 @@ const defaultOgImage = seoDefaults.defaultOgImage || "";
 const twitterHandle = (() => {
   const tw = settings?.socials?.twitter || "";
   if (!tw) return "";
-  const handle = tw.replace(/.*twitter\.com\//, "").replace(/.*x\.com\//, "").replace(/^@/, "").trim();
+  const handle = tw
+    .replace(/.*twitter\.com\//, "")
+    .replace(/.*x\.com\//, "")
+    .replace(/^@/, "")
+    .trim();
   return handle ? `@${handle}` : "";
 })();
 
 const {
   title = `${siteName} — ${siteTagline}`,
   description = siteDescription,
-  canonical = Astro.props.canonical || new URL(Astro.url.pathname, Astro.site || Astro.url.origin).toString(),
+  canonical = Astro.props.canonical ||
+    new URL(Astro.url.pathname, Astro.site || Astro.url.origin).toString(),
   ogImage = defaultOgImage || "/og-default.png",
   ogType = "website",
   author,
   noindex = false,
+  keywords = Astro.props.keywords,
 } = Astro.props;
 
 // Google Fonts URL — dynamically load the font selected in admin
@@ -69,6 +76,7 @@ const fontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {keywords && <meta name="keywords" content={keywords} />}
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={canonical} />
 
@@ -103,12 +111,7 @@ const fontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/
     <!-- Fonts (dynamic from admin panel) — non-blocking load -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href={fontUrl}
-      media="print"
-      onload="this.media='all'"
-    />
+    <link rel="stylesheet" href={fontUrl} media="print" onload="this.media='all'" />
     <noscript><link rel="stylesheet" href={fontUrl} /></noscript>
 
     <!-- Dynamic Theme CSS Custom Properties -->
@@ -119,7 +122,7 @@ const fontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/
         --brand-font: var(--fontFamily), system-ui, sans-serif;
 
         /* Force dark theme values globally for the entire storefront */
-        --background: #0A0A0A;
+        --background: #0a0a0a;
         --foreground: #ffffff;
         --muted: #121212;
         --muted-foreground: #e5e5e5;
@@ -129,7 +132,7 @@ const fontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/
         --color-foreground: #ffffff;
         --color-muted: #a1a1aa;
         --color-surface: #121212;
-        --color-canvas: #0A0A0A;
+        --color-canvas: #0a0a0a;
         --color-canvas-soft: #121212;
         --color-canvas-soft-2: #18181b;
         --color-ink: #ffffff;
@@ -145,7 +148,7 @@ const fontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-[#EAB308] focus:text-black focus:font-extrabold focus:rounded-lg focus:outline-none focus:ring-2 focus:ring-[#EAB308] focus:ring-offset-2 focus:ring-offset-black transition-all">
       Skip to main content
     </a>
-    
+
     <!-- Vercel-style Decorative Mesh Gradient (Fixed Background) -->
     <div class="fixed inset-0 pointer-events-none -z-10 overflow-hidden" aria-hidden="true">
       <div class="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-[--color-gradient-develop-start] opacity-[0.03] blur-[120px]"></div>
@@ -154,9 +157,7 @@ const fontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/
 
     <!-- Announcement Bar (if enabled) -->
     {settings?.announcement?.enabled && settings.announcement.text && (
-      <div
-        style={`background: ${settings.announcement.bgColor || '#171717'}; color: ${settings.announcement.textColor || '#fff'}; text-align: center; padding: 8px 16px; font-size: 13px; font-weight: 500;`}
-      >
+      <div style={`background: ${settings.announcement.bgColor || '#171717'}; color: ${settings.announcement.textColor || '#fff'}; text-align: center; padding: 8px 16px; font-size: 13px; font-weight: 500;`}>
         {settings.announcement.link ? (
           <a href={settings.announcement.link} style="color: inherit; text-decoration: underline;">
             {settings.announcement.text}
@@ -185,19 +186,90 @@ const fontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/
       address={settings?.address}
       socials={settings?.socials}
       footerConfig={footerConfig}
-    </Footer>
+    />
 
-    <!-- Tawk.to Live Chat — loaded at end of body for better LCP (render-blocking removed from <head>) -->
-    <script>
-      var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-      (function(){
-        var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-        s1.async=true;
-        s1.src='https://embed.tawk.to/6a39aeb5351d6e1d43433240/1jrol4u8n';
-        s1.charset='UTF-8';
-        s1.setAttribute('crossorigin','*');
-        s0.parentNode.insertBefore(s1,s0);
+    <!-- Custom Floating Live Chat Button -->
+    <button
+      id="tawk-custom-chat-button"
+      class="group active:scale-95 transition-all duration-300"
+      style="position:fixed !important;bottom:28px !important;right:28px !important;z-index:2147483640 !important;display:flex !important;width:58px !important;height:58px !important;align-items:center !important;justify-content:center !important;border-radius:9999px !important;background:linear-gradient(135deg,#10B981 0%,#059669 100%) !important;color:#ffffff !important;border:none !important;cursor:pointer !important;box-shadow:0 8px 32px rgba(16,185,129,0.45),0 2px 8px rgba(0,0,0,0.25) !important;outline:none !important;visibility:visible !important;opacity:1 !important;overflow:visible !important;"
+      aria-label="Open live chat support"
+    >
+      <!-- Chat icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; display:block;">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      </svg>
+
+      <!-- Online Status Pulse Dot -->
+      <span style="position:absolute !important;top:3px !important;right:3px !important;width:14px !important;height:14px !important;display:flex !important;align-items:center !important;justify-content:center !important;">
+        <span style="position:absolute !important;width:100% !important;height:100% !important;border-radius:9999px !important;background:#34d399 !important;opacity:0.75 !important;animation:tawk-ping 1.5s cubic-bezier(0,0,0.2,1) infinite !important;"></span>
+        <span style="position:relative !important;display:inline-block !important;width:10px !important;height:10px !important;border-radius:9999px !important;background:#34d399 !important;border:2px solid white !important;"></span>
+      </span>
+
+      <!-- Tooltip -->
+      <span style="position:absolute !important;right:calc(100% + 12px) !important;top:50% !important;transform:translateY(-50%) !important;background:#18181b !important;color:#fff !important;font-size:12px !important;font-weight:600 !important;padding:6px 12px !important;border-radius:8px !important;white-space:nowrap !important;box-shadow:0 4px 16px rgba(0,0,0,0.4) !important;border:1px solid rgba(255,255,255,0.1) !important;pointer-events:none !important;opacity:0 !important;transition:opacity 0.2s ease !important;display:block !important;" id="tawk-chat-tooltip">Chat with us</span>
+    </button>
+
+    <!-- Chat button animations and hover effects -->
+    <style is:inline>
+      @keyframes tawk-ping {
+        75%, 100% { transform: scale(2); opacity: 0; }
+      }
+      #tawk-custom-chat-button:hover #tawk-chat-tooltip { opacity: 1 !important; }
+      #tawk-custom-chat-button:hover {
+        transform: scale(1.08) !important;
+        box-shadow: 0 12px 40px rgba(16,185,129,0.6), 0 4px 12px rgba(0,0,0,0.3) !important;
+      }
+    </style>
+
+    <!-- Tawk.to Live Chat Integration -->
+    <script is:inline>
+      var Tawk_API = Tawk_API || {};
+      var Tawk_LoadStart = new Date();
+
+      // Hide Tawk built-in bubble — we use our custom button instead
+      function hideTawkBuiltinBubble() {
+        if (typeof Tawk_API !== 'undefined' && typeof Tawk_API.hideWidget === 'function') {
+          Tawk_API.hideWidget();
+        }
+      }
+      Tawk_API.onLoad = function() { hideTawkBuiltinBubble(); };
+      Tawk_API.onChatMinimized = function() { hideTawkBuiltinBubble(); };
+      Tawk_API.onMinimize = function() { hideTawkBuiltinBubble(); };
+
+      // Load Tawk.to script asynchronously
+      (function() {
+        var s1 = document.createElement('script');
+        var s0 = document.getElementsByTagName('script')[0];
+        s1.async = true;
+        s1.src = 'https://embed.tawk.to/6a39aeb5351d6e1d43433240/1jrol4u8n';
+        s1.charset = 'UTF-8';
+        s1.setAttribute('crossorigin', '*');
+        s0.parentNode.insertBefore(s1, s0);
       })();
+
+      // Open Tawk chat panel inline when our custom button is clicked
+      window.triggerTawkOpen = function() {
+        var attempts = 0;
+        function tryOpen() {
+          if (typeof Tawk_API !== 'undefined' && typeof Tawk_API.maximize === 'function') {
+            if (typeof Tawk_API.showWidget === 'function') { Tawk_API.showWidget(); }
+            Tawk_API.maximize();
+          } else if (attempts < 40) {
+            attempts++;
+            setTimeout(tryOpen, 150);
+          }
+          // No fallback — chat only opens inline as a widget
+        }
+        tryOpen();
+      };
+
+      // Delegate click on custom button
+      document.addEventListener('click', function(e) {
+        if (e.target.closest('#tawk-custom-chat-button')) {
+          window.triggerTawkOpen();
+        }
+      });
     </script>
   </body>
 </html>

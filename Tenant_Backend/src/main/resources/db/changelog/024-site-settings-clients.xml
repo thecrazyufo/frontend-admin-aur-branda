@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="024-site-settings-clients" author="platform">
+        <!-- Add clients_page config column in site_settings -->
+        <addColumn tableName="site_settings">
+            <column name="clients_page" type="jsonb"/>
+        </addColumn>
+
+        <!-- Add description and case_study columns in client_logos -->
+        <addColumn tableName="client_logos">
+            <column name="description" type="text"/>
+            <column name="case_study" type="text"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

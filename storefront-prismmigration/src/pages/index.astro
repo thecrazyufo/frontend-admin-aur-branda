@@ -51,6 +51,22 @@ const siteDescription = settings?.description || "";
 ---
 
 <BaseLayout title={`${siteName} — ${siteTagline}`} description={siteDescription}>
+  <script type="application/ld+json"
+    set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": siteName,
+      "url": settings?.url || Astro.url.origin,
+      "logo": settings?.theme?.logoUrl || `${Astro.url.origin}/logo.png`,
+      "description": siteDescription,
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": settings?.phone,
+        "contactType": "customer service",
+        "email": settings?.email
+      }
+    })}
+  />
   {layoutTemplate === 'luxury' && <LuxuryHome {...templateProps} />}
   {layoutTemplate === 'tech-bold' && <TechBoldHome {...templateProps} />}
   {layoutTemplate === 'playful' && <PlayfulHome {...templateProps} />}

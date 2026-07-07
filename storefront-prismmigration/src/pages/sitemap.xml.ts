@@ -22,7 +22,7 @@ export const GET: APIRoute = async () => {
   const entries: SitemapEntry[] = [];
   const today = new Date().toISOString().split("T")[0];
 
-  // ── Homepage ──────────────────────────────────────────────────────────────
+  // -- Homepage --------------------------------------------------------------
   entries.push({
     url: siteUrl || "https://localhost",
     lastmod: today,
@@ -30,18 +30,20 @@ export const GET: APIRoute = async () => {
     priority: "1.0",
   });
 
-  // ── High-value static pages ───────────────────────────────────────────────
+  // -- High-value static pages -----------------------------------------------
   const highValueRoutes = [
     { path: "/products", priority: "0.9", changefreq: "weekly" },
     { path: "/pricing", priority: "0.8", changefreq: "monthly" },
     { path: "/faq", priority: "0.8", changefreq: "monthly" },
     { path: "/blog", priority: "0.8", changefreq: "weekly" },
+    { path: "/careers", priority: "0.8", changefreq: "weekly" },
+    { path: "/clients", priority: "0.8", changefreq: "weekly" },
   ];
   for (const r of highValueRoutes) {
     entries.push({ url: `${siteUrl}${r.path}`, priority: r.priority, changefreq: r.changefreq });
   }
 
-  // ── Medium-value static pages ─────────────────────────────────────────────
+  // -- Medium-value static pages ---------------------------------------------
   const mediumRoutes = [
     { path: "/compare", priority: "0.7", changefreq: "monthly" },
     { path: "/help", priority: "0.7", changefreq: "weekly" },
@@ -52,7 +54,7 @@ export const GET: APIRoute = async () => {
     entries.push({ url: `${siteUrl}${r.path}`, priority: r.priority, changefreq: r.changefreq });
   }
 
-  // ── Low-value / policy pages ──────────────────────────────────────────────
+  // -- Low-value / policy pages ----------------------------------------------
   const lowRoutes = [
     { path: "/privacy" },
     { path: "/terms" },
@@ -63,9 +65,9 @@ export const GET: APIRoute = async () => {
     entries.push({ url: `${siteUrl}${r.path}`, priority: "0.4", changefreq: "yearly" });
   }
 
-  // NOTE: /search, /download, /checkout intentionally excluded — all noindex
+  // NOTE: /search, /download, /checkout intentionally excluded -- all noindex
 
-  // ── Product pages ─────────────────────────────────────────────────────────
+  // -- Product pages ---------------------------------------------------------
   for (const product of products) {
     if (product.enabled !== false) {
       entries.push({
@@ -84,7 +86,7 @@ export const GET: APIRoute = async () => {
     }
   }
 
-  // ── Blog posts ────────────────────────────────────────────────────────────
+  // -- Blog posts ------------------------------------------------------------
   for (const post of blogs) {
     entries.push({
       url: `${siteUrl}/blog/${post.slug}`,
@@ -94,7 +96,7 @@ export const GET: APIRoute = async () => {
     });
   }
 
-  // ── Help articles ─────────────────────────────────────────────────────────
+  // -- Help articles ---------------------------------------------------------
   for (const article of helpArticles) {
     entries.push({
       url: `${siteUrl}/help/${article.slug}`,

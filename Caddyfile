@@ -9,7 +9,7 @@ admin.{$DOMAIN} {
 }
 
 # Storefront Brand A
-prismmigration.{$DOMAIN} {
+branda.{$DOMAIN} {
     reverse_proxy brandA:4321
     encode gzip
 }

@@ -74,4 +74,61 @@ public class HelpArticleController {
 
         return ResponseEntity.ok(Map.of("notHelpful", article.getNotHelpful()));
     }
+
+    // 🔐 ADMIN-ONLY WRITE ENDPOINTS
+    @PostMapping
+    public ResponseEntity<HelpArticle> createHelpArticle(@RequestBody HelpArticle helpArticle) {
+        if (helpArticle.getSiteId() == null || helpArticle.getSiteId().isBlank()) {
+            throw new IllegalArgumentException("HelpArticle siteId is required");
+        }
+        SecurityUtils.checkAccess(helpArticle.getSiteId());
+
+        if (helpArticle.getId() == null || helpArticle.getId().isBlank()) {
+            helpArticle.setId(java.util.UUID.randomUUID().toString());
+        }
+        if (helpArticle.getHelpful() == null) {
+            helpArticle.setHelpful(0);
+        }
+        if (helpArticle.getNotHelpful() == null) {
+            helpArticle.setNotHelpful(0);
+        }
+        return ResponseEntity.status(org.springframework.http.HttpStatus.CREATED).body(helpArticleRepository.save(helpArticle));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<HelpArticle> updateHelpArticle(@PathVariable String id, @RequestBody HelpArticle helpArticle) {
+        Optional<HelpArticle> existing = helpArticleRepository.findById(id);
+        if (existing.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        SecurityUtils.checkAccess(existing.get().getSiteId());
+        if (helpArticle.getSiteId() != null && !helpArticle.getSiteId().isBlank()) {
+            SecurityUtils.checkAccess(helpArticle.getSiteId());
+        } else {
+            helpArticle.setSiteId(existing.get().getSiteId());
+        }
+
+        helpArticle.setId(id);
+        if (helpArticle.getHelpful() == null) {
+            helpArticle.setHelpful(existing.get().getHelpful());
+        }
+        if (helpArticle.getNotHelpful() == null) {
+            helpArticle.setNotHelpful(existing.get().getNotHelpful());
+        }
+        return ResponseEntity.ok(helpArticleRepository.save(helpArticle));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteHelpArticle(@PathVariable String id) {
+        Optional<HelpArticle> articleOpt = helpArticleRepository.findById(id);
+        if (articleOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        SecurityUtils.checkAccess(articleOpt.get().getSiteId());
+
+        helpArticleRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 }

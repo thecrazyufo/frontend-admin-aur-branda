@@ -43,7 +43,7 @@ export const AuthService = {
 
     const expiresAt = parseInt(expiresAtStr, 10);
     if (Date.now() > expiresAt) {
-      // Token expired — clean up
+      // Token expired -- clean up
       AuthService.logout();
       return null;
     }

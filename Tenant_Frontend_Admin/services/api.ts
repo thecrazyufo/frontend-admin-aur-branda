@@ -1,8 +1,9 @@
 import { Product } from "@/types/product";
 import { BlogPost } from "@/types/blog";
 import { FAQ } from "@/types/faq";
-import { HelpArticle } from "@/types/common";
+import { HelpArticle, CareerPosition } from "@/types/common";
 import { LicenseKey, DesktopLicense } from "@/types/license";
+import { SourceFormat, TargetFormat, SupportedClient, KeyFeature } from "@/types/registry";
 
 
 export interface Category {
@@ -366,6 +367,20 @@ export const AdminSettingsAPI = {
   update: (settings: any) => adminPut<any>("/settings", settings),
 };
 
+export const AdminHelpAPI = {
+  getAll: () => adminGet<HelpArticle[]>("/help"),
+  create: (article: Partial<HelpArticle>) => adminPost<HelpArticle>("/help", article),
+  update: (id: string, article: Partial<HelpArticle>) => adminPut<HelpArticle>(`/help/${id}`, article),
+  delete: (id: string) => adminDelete(`/help/${id}`),
+};
+
+export const AdminCareerAPI = {
+  getAll: () => adminGet<CareerPosition[]>("/jobs"),
+  create: (job: Partial<CareerPosition>) => adminPost<CareerPosition>("/jobs", job),
+  update: (id: string, job: Partial<CareerPosition>) => adminPut<CareerPosition>(`/jobs/${id}`, job),
+  delete: (id: string) => adminDelete(`/jobs/${id}`),
+};
+
 export const AdminLicenseAPI = {
   getAll: () => adminGet<LicenseKey[]>("/licensing-admin"),
   generate: (data: {
@@ -418,5 +433,31 @@ export const AdminSocialProofAPI = {
   createTestimonial: (data: any) => adminPost<any>("/social-proof/testimonials", data),
   updateTestimonial: (id: string, data: any) => adminPut<any>(`/social-proof/testimonials/${id}`, data),
   deleteTestimonial: (id: string) => adminDelete(`/social-proof/testimonials/${id}`),
+};
+
+export const AdminRegistryAPI = {
+  // Source Formats
+  getSourceFormats: () => adminGet<SourceFormat[]>("/registry/source-formats"),
+  createSourceFormat: (data: Partial<SourceFormat>) => adminPost<SourceFormat>("/registry/source-formats", data),
+  updateSourceFormat: (id: string, data: Partial<SourceFormat>) => adminPut<SourceFormat>(`/registry/source-formats/${id}`, data),
+  deleteSourceFormat: (id: string) => adminDelete(`/registry/source-formats/${id}`),
+
+  // Target Formats
+  getTargetFormats: () => adminGet<TargetFormat[]>("/registry/target-formats"),
+  createTargetFormat: (data: Partial<TargetFormat>) => adminPost<TargetFormat>("/registry/target-formats", data),
+  updateTargetFormat: (id: string, data: Partial<TargetFormat>) => adminPut<TargetFormat>(`/registry/target-formats/${id}`, data),
+  deleteTargetFormat: (id: string) => adminDelete(`/registry/target-formats/${id}`),
+
+  // Supported Clients
+  getSupportedClients: () => adminGet<SupportedClient[]>("/registry/supported-clients"),
+  createSupportedClient: (data: Partial<SupportedClient>) => adminPost<SupportedClient>("/registry/supported-clients", data),
+  updateSupportedClient: (id: string, data: Partial<SupportedClient>) => adminPut<SupportedClient>(`/registry/supported-clients/${id}`, data),
+  deleteSupportedClient: (id: string) => adminDelete(`/registry/supported-clients/${id}`),
+
+  // Key Features
+  getKeyFeatures: () => adminGet<KeyFeature[]>("/registry/key-features"),
+  createKeyFeature: (data: Partial<KeyFeature>) => adminPost<KeyFeature>("/registry/key-features", data),
+  updateKeyFeature: (id: string, data: Partial<KeyFeature>) => adminPut<KeyFeature>(`/registry/key-features/${id}`, data),
+  deleteKeyFeature: (id: string) => adminDelete(`/registry/key-features/${id}`),
 };
 

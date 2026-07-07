@@ -39,6 +39,8 @@ const defaultFooterLinks: FooterConfigData = {
   companyLinks: [
     { label: "About Us", href: "/about" },
     { label: "Blog", href: "/blog" },
+    { label: "Careers", href: "/careers" },
+    { label: "Our Clients", href: "/clients" },
     { label: "Contact", href: "/contact" },
   ],
   supportLinks: [

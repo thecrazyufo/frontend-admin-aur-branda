@@ -59,22 +59,46 @@ public class DevDatabaseSeeder implements CommandLineRunner {
     @Autowired
     private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private SourceFormatRepository sourceFormatRepository;
+
+    @Autowired
+    private TargetFormatRepository targetFormatRepository;
+
+    @Autowired
+    private SupportedClientRepository supportedClientRepository;
+
+    @Autowired
+    private KeyFeatureRepository keyFeatureRepository;
+
+    @Autowired
+    private CareerPositionRepository careerPositionRepository;
+
+    @Autowired
+    private ClientLogoRepository clientLogoRepository;
+
+    @Autowired
+    private TestimonialRepository testimonialRepository;
+
     @Override
     public void run(String... args) throws Exception {
         try {
             TenantContext.setCurrentTenant("system");
-            adminUserRepository.deleteAll();
-            adminUserRepository.saveAll(Arrays.asList(
-                // Super Admin (legacy: OWNER) — global access
-                new AdminUser("owner", passwordEncoder.encode("owner123"), "SUPER_ADMIN", "all", "Root Owner", "owner@platform.local"),
-                // Brand A staff
-                new AdminUser("adminA", passwordEncoder.encode("admin123"), "ADMIN", "brandA", "Prism Migration Administrator", "admin@prismmigration.local"),
-                new AdminUser("staffA", passwordEncoder.encode("admin123"), "SEO_CW_PRODUCT_MANAGER", "brandA", "Prism Migration SEO & Product Staff", "staff@prismmigration.local"),
-                // Brand B staff
-                new AdminUser("adminB", passwordEncoder.encode("admin123"), "ADMIN", "brandB", "Brand B Administrator", "admin@brandB.local"),
-                new AdminUser("staffB", passwordEncoder.encode("admin123"), "SEO_CW_PRODUCT_MANAGER", "brandB", "Brand B SEO & Product Staff", "staff@brandB.local")
-            ));
-            System.out.println("👤 Seeded initial administrator credentials in system database!");
+            if (adminUserRepository.count() == 0) {
+                adminUserRepository.saveAll(Arrays.asList(
+                    // Super Admin (legacy: OWNER) — global access
+                    new AdminUser("owner", passwordEncoder.encode("owner123"), "SUPER_ADMIN", "all", "Root Owner", "owner@platform.local"),
+                    // Brand A staff
+                    new AdminUser("adminA", passwordEncoder.encode("admin123"), "ADMIN", "brandA", "Prism Migration Administrator", "admin@prismmigration.local"),
+                    new AdminUser("staffA", passwordEncoder.encode("admin123"), "SEO_CW_PRODUCT_MANAGER", "brandA", "Prism Migration SEO & Product Staff", "staff@prismmigration.local"),
+                    // Brand B staff
+                    new AdminUser("adminB", passwordEncoder.encode("admin123"), "ADMIN", "brandB", "Brand B Administrator", "admin@brandB.local"),
+                    new AdminUser("staffB", passwordEncoder.encode("admin123"), "SEO_CW_PRODUCT_MANAGER", "brandB", "Brand B SEO & Product Staff", "staff@brandB.local")
+                ));
+                System.out.println("👤 Seeded initial administrator credentials in system database!");
+            } else {
+                System.out.println("👤 Administrator credentials already exist. Skipping credentials seeding.");
+            }
         } finally {
             TenantContext.clear();
         }
@@ -85,24 +109,39 @@ public class DevDatabaseSeeder implements CommandLineRunner {
             try {
                 TenantContext.setCurrentTenant(brand);
 
+                if (siteSettingRepository.count() > 0) {
+                    System.out.println("🌱 Database " + brand + " already has configurations. Skipping seeding.");
+                    continue;
+                }
+
                 // Force clear brand-specific database tables to achieve a clean state reset
                 categoryRepository.deleteAll();
                 faqRepository.deleteAll();
                 productRepository.deleteAll();
                 blogPostRepository.deleteAll();
                 helpArticleRepository.deleteAll();
+                careerPositionRepository.deleteAll();
+                clientLogoRepository.deleteAll();
+                testimonialRepository.deleteAll();
                 licenseKeyRepository.deleteAll();
                 licenseRepository.deleteAll();
                 siteSettingRepository.deleteAll();
                 urlRedirectRepository.deleteAll();
+                sourceFormatRepository.deleteAll();
+                targetFormatRepository.deleteAll();
+                supportedClientRepository.deleteAll();
+                keyFeatureRepository.deleteAll();
                 
                 if ("brandA".equals(brand)) {
                     seedCategories();
+                    seedGlobalRegistryForBrandA();
                     seedFaqs();
                     seedProducts();
                     seedBlogPosts();
                     seedHelpArticles();
                     seedSiteSettingsForBrandA();
+                    seedCareerPositions("brandA");
+                    seedClientsForSite("brandA");
                     System.out.println("🌱 Database brandA successfully seeded with full platform catalog!");
 
                     seedLicenses();
@@ -112,6 +151,9 @@ public class DevDatabaseSeeder implements CommandLineRunner {
                     System.out.println("🔑 Seeded initial valid licenses for brandA!");
                 } else {
                     seedBrandSpecificCatalog(brand);
+                    seedGlobalRegistryGeneric(brand);
+                    seedCareerPositions(brand);
+                    seedClientsForSite(brand);
                     System.out.println("🌱 Database " + brand + " successfully seeded with catalog!");
                     
                     String prefix = switch (brand) {
@@ -130,8 +172,12 @@ public class DevDatabaseSeeder implements CommandLineRunner {
         }
 
         // Seed format compatibility knowledge base (system-level, not per-tenant)
-        seedFormatCompatibility();
-        System.out.println("🔗 Seeded format compatibility matrix for Find Your Tool feature!");
+        if (formatCompatibilityRepository.count() == 0) {
+            seedFormatCompatibility();
+            System.out.println("🔗 Seeded format compatibility matrix for Find Your Tool feature!");
+        } else {
+            System.out.println("🔗 Format compatibility matrix already exists. Skipping seeding.");
+        }
     }
 
     /**
@@ -1066,8 +1112,28 @@ public class DevDatabaseSeeder implements CommandLineRunner {
                 new SiteSetting.NavItem("Blog", "/blog", null, true, null),
                 new SiteSetting.NavItem("Community Forum", "/community", null, true, null)
             )),
-            new SiteSetting.NavItem("Pricing", "/pricing", null, true, null)
+            new SiteSetting.NavItem("Pricing", "/pricing", null, true, null),
+            new SiteSetting.NavItem("Careers", "/careers", null, true, null),
+            new SiteSetting.NavItem("Our Clients", "/clients", null, true, null)
         ));
+
+        SiteSetting.ClientsPageConfig clients = new SiteSetting.ClientsPageConfig();
+        clients.setHeroTitle("Trusted by Leading Organizations");
+        clients.setHeroSubtitle("We help companies of all sizes migrate their enterprise data seamlessly, securely, and with zero downtime.");
+        clients.setStats(Arrays.asList(
+            new SiteSetting.StatItem("150+", "Companies Trust Us"),
+            new SiteSetting.StatItem("50+", "Countries Served"),
+            new SiteSetting.StatItem("10B+", "Items Migrated"),
+            new SiteSetting.StatItem("99.9%", "Success Rate")
+        ));
+        clients.setCtaTitle("Join Our Growing List of Clients");
+        clients.setCtaText("Ready to migrate your database, mailboxes, or cloud storage? Start your risk-free trial today or contact our integration team.");
+        clients.setCtaButtonText("Contact Sales");
+        clients.setCtaButtonLink("/contact");
+        clients.setMetaTitle("Our Clients — Enterprise Data Migration Success Stories");
+        clients.setMetaDescription("See how leading organizations use Prism Migration tools to translate, convert, and sync mailbox databases.");
+        clients.setMetaKeywords("clients, customers, case studies, enterprise, success stories");
+        defaultSetting.setClientsPage(clients);
 
         return defaultSetting;
     }
@@ -1128,5 +1194,161 @@ public class DevDatabaseSeeder implements CommandLineRunner {
         caps.put("supportsBatchCsv", csv);
         caps.put("supportsImpersonation", impersonation);
         return caps;
+    }
+
+    private void seedGlobalRegistryForBrandA() {
+        sourceFormatRepository.saveAll(Arrays.asList(
+            new SourceFormat("sf-pst", "pst", "Outlook PST File", "Microsoft Outlook Personal Storage Table", "mail", "brandA"),
+            new SourceFormat("sf-ost", "ost", "Outlook OST File", "Microsoft Outlook Offline Storage Table", "mail", "brandA"),
+            new SourceFormat("sf-mbox", "mbox", "MBOX File", "Standard MBOX mailbox archive file", "mail", "brandA"),
+            new SourceFormat("sf-eml", "eml", "EML File", "Individual email message file format", "mail", "brandA"),
+            new SourceFormat("sf-msg", "msg", "Outlook MSG File", "Outlook individual message format", "mail", "brandA"),
+            new SourceFormat("sf-gmail", "gmail", "Gmail / Google Mail", "Google Mail IMAP account", "mail", "brandA"),
+            new SourceFormat("sf-office365", "office365", "Office 365 / Outlook.com", "Microsoft 365 Cloud account", "mail", "brandA")
+        ));
+
+        targetFormatRepository.saveAll(Arrays.asList(
+            new TargetFormat("tf-pst", "pst", "Outlook PST File", "Microsoft Outlook Personal Storage Table", "mail", "brandA"),
+            new TargetFormat("tf-mbox", "mbox", "MBOX File", "Standard MBOX mailbox archive file", "mail", "brandA"),
+            new TargetFormat("tf-eml", "eml", "EML File", "Individual email message file format", "mail", "brandA"),
+            new TargetFormat("tf-pdf", "pdf", "PDF Document", "Portable Document Format for printing/archiving", "file", "brandA"),
+            new TargetFormat("tf-gmail", "gmail", "Gmail / Google Mail", "Google Mail IMAP account", "mail", "brandA"),
+            new TargetFormat("tf-office365", "office365", "Office 365 / Outlook.com", "Microsoft 365 Cloud account", "mail", "brandA"),
+            new TargetFormat("tf-html", "html", "HTML File", "HyperText Markup Language files for web viewing", "file", "brandA")
+        ));
+
+        supportedClientRepository.saveAll(Arrays.asList(
+            new SupportedClient("sc-outlook", "outlook", "Microsoft Outlook", "Desktop client for Windows & Mac", "mail", "brandA"),
+            new SupportedClient("sc-thunderbird", "thunderbird", "Mozilla Thunderbird", "Open-source email desktop client", "mail", "brandA"),
+            new SupportedClient("sc-applemail", "applemail", "Apple Mail", "Built-in macOS/iOS email client", "mail", "brandA"),
+            new SupportedClient("sc-gmail", "gmail", "Google Webmail", "Gmail web interface on browsers", "mail", "brandA")
+        ));
+
+        keyFeatureRepository.saveAll(Arrays.asList(
+            new KeyFeature("kf-batch", "supportsMultipleAccounts", "Batch Migration", "Perform multiple migrations simultaneously", "brandA"),
+            new KeyFeature("kf-filters", "supportsBatchCsv", "Batch CSV Import", "Filter and import migrations via a CSV file list", "brandA"),
+            new KeyFeature("kf-preview", "supportsIncrementalSync", "Incremental Sync", "Migrate only new or modified items on subsequent runs", "brandA"),
+            new KeyFeature("kf-impersonation", "supportsImpersonation", "Domain Impersonation", "Administrator level domain impersonation for office migrations", "brandA")
+        ));
+    }
+
+    private void seedGlobalRegistryGeneric(String brand) {
+        sourceFormatRepository.saveAll(Arrays.asList(
+            new SourceFormat(brand + "-sf-pst", "pst", "Outlook PST File", "Microsoft Outlook Personal Storage Table", "mail", brand),
+            new SourceFormat(brand + "-sf-mbox", "mbox", "MBOX File", "Standard MBOX mailbox archive file", "mail", brand)
+        ));
+
+        targetFormatRepository.saveAll(Arrays.asList(
+            new TargetFormat(brand + "-tf-pst", "pst", "Outlook PST File", "Microsoft Outlook Personal Storage Table", "mail", brand),
+            new TargetFormat(brand + "-tf-pdf", "pdf", "PDF Document", "Portable Document Format for printing/archiving", "file", brand)
+        ));
+
+        supportedClientRepository.saveAll(Arrays.asList(
+            new SupportedClient(brand + "-sc-outlook", "outlook", "Microsoft Outlook", "Desktop client for Windows & Mac", "mail", brand)
+        ));
+
+        keyFeatureRepository.saveAll(Arrays.asList(
+            new KeyFeature(brand + "-kf-batch", "supportsMultipleAccounts", "Batch Migration", "Perform multiple migrations simultaneously", brand)
+        ));
+    }
+
+    private void seedCareerPositions(String siteId) {
+        CareerPosition p1 = new CareerPosition();
+        p1.setId("career-" + siteId + "-1");
+        p1.setTitle("Senior Java Developer");
+        p1.setLocation("Remote, US");
+        p1.setType("Full-Time");
+        p1.setDescription("We are seeking a senior-level Java engineer with 5+ years of experience in high-performance backends.");
+        p1.setRequirements("• 5+ years of experience with Java and Spring Boot\n• Strong knowledge of SQL databases and Liquibase\n• Excellent problem-solving skills");
+        p1.setStatus("OPEN");
+        p1.setMetaTitle("Join Us as a Senior Java Developer");
+        p1.setMetaDescription("Apply now for the Senior Java Developer position at our enterprise solutions team.");
+        p1.setMetaKeywords("java, developer, remote, spring boot");
+        p1.setSiteId(siteId);
+
+        CareerPosition p2 = new CareerPosition();
+        p2.setId("career-" + siteId + "-2");
+        p2.setTitle("Technical Writer");
+        p2.setLocation("Hybrid, New York");
+        p2.setType("Part-Time");
+        p2.setDescription("Looking for a technical writer to document system architectures and write user guide manuals.");
+        p2.setRequirements("• Experience in technical documentation or technical writing\n• Familiarity with Markdown and Markdown rendering engines\n• Basic understanding of enterprise software concepts");
+        p2.setStatus("OPEN");
+        p2.setMetaTitle("We are hiring: Technical Writer");
+        p2.setMetaDescription("Help us write clear technical guide documentation.");
+        p2.setMetaKeywords("writer, documentation, markdown");
+        p2.setSiteId(siteId);
+
+        CareerPosition p3 = new CareerPosition();
+        p3.setId("career-" + siteId + "-3");
+        p3.setTitle("Product Manager (Migration Suite)");
+        p3.setLocation("Remote, Global");
+        p3.setType("Full-Time");
+        p3.setDescription("Help define the roadmap for our next-generation data migration and integration platforms.");
+        p3.setRequirements("• 3+ years in product management for B2B developer tools\n• Deep understanding of ETL, cloud databases, or data migration\n• Strong communication skills");
+        p3.setStatus("OPEN");
+        p3.setMetaTitle("Product Manager Job Opening");
+        p3.setMetaDescription("Lead the roadmap for our migration tools.");
+        p3.setMetaKeywords("product manager, migration, B2B");
+        p3.setSiteId(siteId);
+
+        careerPositionRepository.saveAll(Arrays.asList(p1, p2, p3));
+        System.out.println("💼 Seeded 3 career positions for site: " + siteId);
+    }
+
+    private void seedClientsForSite(String siteId) {
+        // Seed client logos (with company name, logo url, description, case study)
+        ClientLogo l1 = new ClientLogo();
+        l1.setId("client-" + siteId + "-1");
+        l1.setSiteId(siteId);
+        l1.setCompanyName("Acme Corp");
+        l1.setLogoUrl("/images/logos/acme.svg");
+        l1.setDisplayOrder(1);
+        l1.setDescription("A global manufacturing leader with over 10,000 mailboxes.");
+        l1.setCaseStudy("Acme Corp migrated 12TB of legacy Exchange database mailboxes to Office 365 over a single weekend with zero data loss using our email migration suite.");
+        
+        ClientLogo l2 = new ClientLogo();
+        l2.setId("client-" + siteId + "-2");
+        l2.setSiteId(siteId);
+        l2.setCompanyName("Stark Industries");
+        l2.setLogoUrl("/images/logos/stark.svg");
+        l2.setDisplayOrder(2);
+        l2.setDescription("An advanced research and defense contractor.");
+        l2.setCaseStudy("Stark Industries integrated our secure backup and delta sync synchronization engine to mirror real-time CAD assets across their remote laboratories.");
+
+        ClientLogo l3 = new ClientLogo();
+        l3.setId("client-" + siteId + "-3");
+        l3.setSiteId(siteId);
+        l3.setCompanyName("Wayne Enterprises");
+        l3.setLogoUrl("/images/logos/wayne.svg");
+        l3.setDisplayOrder(3);
+        l3.setDescription("A diversified multinational conglomerate.");
+        l3.setCaseStudy("Wayne Enterprises consolidated 5 legacy PST database servers into a unified cloud archive, streamlining compliance and reducing storage overhead.");
+
+        clientLogoRepository.saveAll(Arrays.asList(l1, l2, l3));
+
+        // Seed some testimonials as well
+        Testimonial t1 = new Testimonial();
+        t1.setId("test-" + siteId + "-1");
+        t1.setSiteId(siteId);
+        t1.setAuthorName("Pepper Potts");
+        t1.setAuthorTitle("CEO");
+        t1.setCompany("Stark Industries");
+        t1.setContent("The data integrity and speed of the migration tool exceeded all our expectations. We moved massive databases without a single byte of corruption.");
+        t1.setRating(5);
+        t1.setIsFeatured(true);
+
+        Testimonial t2 = new Testimonial();
+        t2.setId("test-" + siteId + "-2");
+        t2.setSiteId(siteId);
+        t2.setAuthorName("Lucius Fox");
+        t2.setAuthorTitle("Business Manager");
+        t2.setCompany("Wayne Enterprises");
+        t2.setContent("Simplest database migration interface we've ever used. The dry-run validation caught format mismatches before writing a single record.");
+        t2.setRating(5);
+        t2.setIsFeatured(true);
+
+        testimonialRepository.saveAll(Arrays.asList(t1, t2));
+        System.out.println("💼 Seeded client logos and testimonials for site: " + siteId);
     }
 }

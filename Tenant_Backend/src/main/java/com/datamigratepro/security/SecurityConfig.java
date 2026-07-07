@@ -108,6 +108,14 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.DELETE, "/api/categories", "/api/categories/**")
                     .hasAnyRole("SUPER_ADMIN", "OWNER", "ADMIN", "SEO_CW_PRODUCT_MANAGER", "PRODUCT_MANAGER", "CONTENT_SEO_MANAGER", "WRITER")
 
+                // 🔐 Global Registry mutations
+                .requestMatchers(HttpMethod.POST, "/api/registry/**")
+                    .hasAnyRole("SUPER_ADMIN", "OWNER", "ADMIN", "SEO_CW_PRODUCT_MANAGER", "CONTENT_SEO_MANAGER", "BRAND_MANAGER", "SEO")
+                .requestMatchers(HttpMethod.PUT, "/api/registry/**")
+                    .hasAnyRole("SUPER_ADMIN", "OWNER", "ADMIN", "SEO_CW_PRODUCT_MANAGER", "CONTENT_SEO_MANAGER", "BRAND_MANAGER", "SEO")
+                .requestMatchers(HttpMethod.DELETE, "/api/registry/**")
+                    .hasAnyRole("SUPER_ADMIN", "OWNER", "ADMIN", "SEO_CW_PRODUCT_MANAGER", "CONTENT_SEO_MANAGER", "BRAND_MANAGER", "SEO")
+
                 // 🔐 Content mutations (blogs, faqs, help, social proof)
                 .requestMatchers(HttpMethod.POST, "/api/blog", "/api/blog/**", "/api/faqs", "/api/faqs/**", "/api/help", "/api/help/**", "/api/social-proof", "/api/social-proof/**")
                     .hasAnyRole("SUPER_ADMIN", "OWNER", "ADMIN", "SEO_CW_PRODUCT_MANAGER", "CONTENT_SEO_MANAGER", "WRITER")
@@ -136,6 +144,7 @@ public class SecurityConfig {
                     "/api/categories", "/api/categories/**",
                     "/api/help", "/api/help/**",
                     "/api/redirects/resolve",
+                    "/api/registry/**",
                     // ✅ Find Your Tool — public storefront endpoints
                     "/api/tools/match",
                     "/api/tools/capabilities",

@@ -8,12 +8,17 @@ import {
   AdminFaqAPI, 
   AdminCategoryAPI,
   AdminSettingsAPI,
+  AdminRegistryAPI,
+  AdminHelpAPI,
+  AdminCareerAPI,
   API_BASE
 } from "@/services/api";
+import { SourceFormat, TargetFormat, SupportedClient, KeyFeature } from "@/types/registry";
 import { Product } from "@/types/product";
 import { BlogPost } from "@/types/blog";
 import { FAQ } from "@/types/faq";
 import { Category } from "@/services/api";
+import { HelpArticle, HELP_CATEGORY_LABELS, HelpCategory, CareerPosition } from "@/types/common";
 import { Button } from "@/components/ui/Button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/Table";
@@ -21,7 +26,35 @@ import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { cn } from "@/lib/utils";
 
-type Tab = "products" | "blogs" | "faqs" | "categories";
+interface ConditionalField {
+  label: string;
+  type: "select" | "toggle";
+  options?: string[];
+  key: string;
+  description?: string;
+}
+
+const CATEGORY_CONDITIONAL_FIELDS: Record<string, ConditionalField[]> = {
+  "duplicate": [
+    {
+      label: "Scan Level",
+      type: "select",
+      options: ["File Name Only", "File Content Only", "Both (Full Analysis)"],
+      key: "scanLevel",
+      description: "Define the level of deduplication analysis."
+    }
+  ],
+  "migration": [
+    {
+      label: "Supports Incremental Sync",
+      type: "toggle",
+      key: "supportsIncrementalSync",
+      description: "Enable differential/delta sync for subsequent runs."
+    }
+  ]
+};
+
+type Tab = "products" | "blogs" | "faqs" | "categories" | "help" | "jobs";
 
 const emptyProduct = (): Partial<Product> => ({
   name: "",
@@ -33,6 +66,8 @@ const emptyProduct = (): Partial<Product> => ({
   version: "1.0.0",
   badge: undefined,
   trialDownloadUrl: "",
+  installationSuccessUrl: "",
+  uninstallationSuccessUrl: "",
   features: [],
   platforms: ["Windows"],
   supportedFormats: [],
@@ -235,6 +270,12 @@ function ContentCreatorContent() {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [helpArticles, setHelpArticles] = useState<HelpArticle[]>([]);
+  const [jobs, setJobs] = useState<CareerPosition[]>([]);
+  const [sourceFormatsRegistry, setSourceFormatsRegistry] = useState<SourceFormat[]>([]);
+  const [targetFormatsRegistry, setTargetFormatsRegistry] = useState<TargetFormat[]>([]);
+  const [supportedClientsRegistry, setSupportedClientsRegistry] = useState<SupportedClient[]>([]);
+  const [keyFeaturesRegistry, setKeyFeaturesRegistry] = useState<KeyFeature[]>([]);
 
   // Search
   const [search, setSearch] = useState("");
@@ -248,7 +289,50 @@ function ContentCreatorContent() {
   const [blogModal, setBlogModal] = useState<Partial<BlogPost> | null>(null);
   const [faqModal, setFaqModal] = useState<Partial<FAQ> | null>(null);
   const [categoryModal, setCategoryModal] = useState<Partial<Category> | null>(null);
+  const [helpModal, setHelpModal] = useState<Partial<HelpArticle> | null>(null);
+  const [jobModal, setJobModal] = useState<Partial<CareerPosition> | null>(null);
   const [saving, setSaving] = useState(false);
+
+  const [hasLocalDraft, setHasLocalDraft] = useState(false);
+  const [isDraftChecked, setIsDraftChecked] = useState(false);
+
+  // Check for local draft when opening the modal
+  useEffect(() => {
+    if (typeof window !== "undefined" && productModal) {
+      const draftKey = "prism_product_draft_" + (productModal.id || "new");
+      const savedDraft = localStorage.getItem(draftKey);
+      if (savedDraft) {
+        try {
+          const parsed = JSON.parse(savedDraft);
+          const isDifferent = JSON.stringify(parsed) !== JSON.stringify(productModal);
+          if (isDifferent) {
+            setHasLocalDraft(true);
+            setIsDraftChecked(false);
+          } else {
+            setHasLocalDraft(false);
+            setIsDraftChecked(true);
+          }
+        } catch {
+          setHasLocalDraft(false);
+          setIsDraftChecked(true);
+        }
+      } else {
+        setHasLocalDraft(false);
+        setIsDraftChecked(true);
+      }
+    } else {
+      setHasLocalDraft(false);
+      setIsDraftChecked(false);
+    }
+  }, [productModal?.id, productModal === null]);
+
+  // Auto-save useEffect — only saves after draft check is completed/restored/discarded
+  useEffect(() => {
+    if (typeof window !== "undefined" && productModal && isDraftChecked) {
+      const draftKey = "prism_product_draft_" + (productModal.id || "new");
+      localStorage.setItem(draftKey, JSON.stringify(productModal));
+    }
+  }, [productModal, isDraftChecked]);
 
   // Dynamic inline category states
   const [showInlineCategoryForm, setShowInlineCategoryForm] = useState(false);
@@ -299,17 +383,29 @@ function ContentCreatorContent() {
   async function loadData() {
     try {
       setLoading(true);
-      const [ps, bs, fs, cs, settings] = await Promise.all([
+      const [ps, bs, fs, cs, hs, js, settings, registrySF, registryTF, registrySC, registryKF] = await Promise.all([
         AdminProductAPI.getAll(),
         AdminBlogAPI.getAll(),
         AdminFaqAPI.getAll(),
         AdminCategoryAPI.getAll(),
-        AdminSettingsAPI.get().catch(() => null)
+        AdminHelpAPI.getAll().catch(() => []),
+        AdminCareerAPI.getAll().catch(() => []),
+        AdminSettingsAPI.get().catch(() => null),
+        AdminRegistryAPI.getSourceFormats().catch(() => []),
+        AdminRegistryAPI.getTargetFormats().catch(() => []),
+        AdminRegistryAPI.getSupportedClients().catch(() => []),
+        AdminRegistryAPI.getKeyFeatures().catch(() => [])
       ]);
       setProducts(ps.filter(x => x.siteId === brandId));
       setBlogs(bs.filter(x => x.siteId === brandId));
       setFaqs(fs.filter(x => x.siteId === brandId));
       setCategories(cs.filter(x => x.siteId === brandId));
+      setHelpArticles(hs.filter(x => x.siteId === brandId));
+      setJobs(js.filter(x => x.siteId === brandId));
+      setSourceFormatsRegistry(registrySF);
+      setTargetFormatsRegistry(registryTF);
+      setSupportedClientsRegistry(registrySC);
+      setKeyFeaturesRegistry(registryKF);
       if (settings && settings.url) {
         setSiteUrl(settings.url);
       }
@@ -370,6 +466,28 @@ function ContentCreatorContent() {
     }
   }
 
+  async function handleDeleteHelpArticle(id: string, title: string) {
+    if (!confirm(`Delete guide article "${title}"?`)) return;
+    try {
+      await AdminHelpAPI.delete(id);
+      setHelpArticles(prev => prev.filter(x => x.id !== id));
+      showToast("Guide article deleted successfully", "success");
+    } catch {
+      showToast("Failed to delete guide article", "error");
+    }
+  }
+
+  async function handleDeleteJob(id: string, title: string) {
+    if (!confirm(`Delete job posting "${title}"?`)) return;
+    try {
+      await AdminCareerAPI.delete(id);
+      setJobs(prev => prev.filter(x => x.id !== id));
+      showToast("Job posting deleted successfully", "success");
+    } catch {
+      showToast("Failed to delete job posting", "error");
+    }
+  }
+
   // Save Handlers
   async function handleSaveProduct(e: FormEvent) {
     e.preventDefault();
@@ -380,18 +498,49 @@ function ContentCreatorContent() {
     if (!productModal) return;
     try {
       setSaving(true);
+
+      let nameVal = productModal.name?.trim();
+      let slugVal = productModal.slug?.trim();
+      let catVal = productModal.category;
+
+      if (isDraftOnly) {
+        if (!nameVal) nameVal = "Untitled Draft Product";
+        if (!slugVal) {
+          slugVal = "untitled-draft-" + Math.random().toString(36).substring(2, 7);
+        }
+        if (!catVal) catVal = "email-migration";
+      } else {
+        // Enforce required fields on publish
+        if (!nameVal || !slugVal) {
+          showToast("Name and Slug are required to publish.", "error");
+          setSaving(false);
+          return;
+        }
+      }
+
       const payload = { 
         ...productModal, 
+        name: nameVal,
+        slug: slugVal,
+        category: catVal,
         siteId: brandId,
-        enabled: productModal.enabled !== false
+        enabled: isDraftOnly ? false : (productModal.enabled !== false)
       };
+
       let saved: Product;
       if (productModal.id) {
         saved = await AdminProductAPI.update(productModal.id, payload);
-        showToast(isDraftOnly ? "Draft progress saved successfully!" : "Product updated successfully!", "success");
+        showToast(isDraftOnly ? "Draft progress saved to database!" : "Product updated & published successfully!", "success");
       } else {
         saved = await AdminProductAPI.create(payload);
-        showToast(isDraftOnly ? "Draft progress saved successfully!" : "Product created successfully!", "success");
+        showToast(isDraftOnly ? "Draft progress saved to database!" : "Product created & published successfully!", "success");
+      }
+      
+      // Successful database save: clear local draft caching
+      if (typeof window !== "undefined") {
+        const draftKey = "prism_product_draft_" + (productModal.id || "new");
+        localStorage.removeItem(draftKey);
+        localStorage.removeItem("prism_product_draft_new");
       }
       
       if (isDraftOnly) {
@@ -485,6 +634,58 @@ function ContentCreatorContent() {
     }
   }
 
+  async function saveHelpArticle(isDraftOnly: boolean) {
+    if (!helpModal) return;
+    try {
+      setSaving(true);
+      const payload = { ...helpModal, siteId: brandId };
+      let saved: HelpArticle;
+      if (helpModal.id) {
+        saved = await AdminHelpAPI.update(helpModal.id, payload);
+        showToast(isDraftOnly ? "Draft progress saved successfully!" : "Guide article updated successfully!", "success");
+      } else {
+        saved = await AdminHelpAPI.create(payload);
+        showToast(isDraftOnly ? "Draft progress saved successfully!" : "Guide article created successfully!", "success");
+      }
+      if (isDraftOnly) {
+        setHelpModal(saved);
+      } else {
+        setHelpModal(null);
+      }
+      loadData();
+    } catch {
+      showToast("Failed to save guide article", "error");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function saveJob(isDraftOnly: boolean) {
+    if (!jobModal) return;
+    try {
+      setSaving(true);
+      const payload = { ...jobModal, siteId: brandId };
+      let saved: CareerPosition;
+      if (jobModal.id) {
+        saved = await AdminCareerAPI.update(jobModal.id, payload);
+        showToast(isDraftOnly ? "Draft progress saved successfully!" : "Job posting updated successfully!", "success");
+      } else {
+        saved = await AdminCareerAPI.create(payload);
+        showToast(isDraftOnly ? "Draft progress saved successfully!" : "Job posting created successfully!", "success");
+      }
+      if (isDraftOnly) {
+        setJobModal(saved);
+      } else {
+        setJobModal(null);
+      }
+      loadData();
+    } catch {
+      showToast("Failed to save job posting", "error");
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
       {toast && (
@@ -500,10 +701,10 @@ function ContentCreatorContent() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-zinc-200 dark:border-zinc-800 pb-5 gap-4">
         <div className="space-y-1">
           <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-            {activeTab === "products" ? "Product Manager" : activeTab === "blogs" ? "Blog Manager" : activeTab === "faqs" ? "FAQ Manager" : "Category Manager"}
+            {activeTab === "products" ? "Product Manager" : activeTab === "blogs" ? "Blog Manager" : activeTab === "faqs" ? "FAQ Manager" : activeTab === "categories" ? "Category Manager" : activeTab === "help" ? "Guide Manager" : "Career Manager"}
           </h1>
           <p className="text-xs text-zinc-500 dark:text-zinc-400 font-medium">
-            Manage storefront {activeTab} under brand scope:{" "}
+            Manage storefront {activeTab === "help" ? "guides" : activeTab === "jobs" ? "open positions" : activeTab} under brand scope:{" "}
             <span className="bg-blue-500/10 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-md font-mono text-[11px] font-bold">
               {brandId}
             </span>
@@ -533,6 +734,10 @@ function ContentCreatorContent() {
               setFaqModal({ question: "", answer: "", category: "general" });
             } else if (activeTab === "categories") {
               setCategoryModal({ label: "", description: "", icon: "", color: "#6366f1" });
+            } else if (activeTab === "help") {
+              setHelpModal({ title: "", slug: "", excerpt: "", content: "", category: "getting-started", tags: [] });
+            } else if (activeTab === "jobs") {
+              setJobModal({ title: "", department: "", location: "Remote", type: "Full-Time", experience: "", salaryRange: "", description: "", requirements: "", status: "OPEN" });
             }
           }}
           size="sm"
@@ -542,7 +747,7 @@ function ContentCreatorContent() {
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
-          Add {activeTab === "products" ? "Product" : activeTab === "blogs" ? "Blog" : activeTab === "faqs" ? "FAQ" : "Category"}
+          Add {activeTab === "products" ? "Product" : activeTab === "blogs" ? "Blog" : activeTab === "faqs" ? "FAQ" : activeTab === "categories" ? "Category" : activeTab === "help" ? "Guide" : "Position"}
         </Button>
       </div>
 
@@ -556,6 +761,11 @@ function ContentCreatorContent() {
                 className="text-xl font-bold cursor-pointer text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors select-none" 
                 onClick={() => {
                   if (confirm("Any unsaved changes will be lost. Exit?")) {
+                    if (typeof window !== "undefined") {
+                      const draftKey = "prism_product_draft_" + (productModal.id || "new");
+                      localStorage.removeItem(draftKey);
+                      localStorage.removeItem("prism_product_draft_new");
+                    }
                     setProductModal(null);
                   }
                 }} 
@@ -590,6 +800,10 @@ function ContentCreatorContent() {
                 </label>
               </div>
 
+              <span className="hidden md:inline text-[10px] text-zinc-400 dark:text-zinc-500 italic mr-2 select-none">
+                ✓ Auto-saved locally
+              </span>
+
               <Button 
                 variant="outline"
                 size="sm"
@@ -609,6 +823,11 @@ function ContentCreatorContent() {
                 className="text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-150 p-1.5 transition-colors border-0 bg-transparent cursor-pointer" 
                 onClick={() => {
                   if (confirm("Any unsaved changes will be lost. Exit?")) {
+                    if (typeof window !== "undefined") {
+                      const draftKey = "prism_product_draft_" + (productModal.id || "new");
+                      localStorage.removeItem(draftKey);
+                      localStorage.removeItem("prism_product_draft_new");
+                    }
                     setProductModal(null);
                   }
                 }}
@@ -655,6 +874,51 @@ function ContentCreatorContent() {
             {/* Right Editing Canvas */}
             <main className="flex-1 p-8 overflow-y-auto bg-white dark:bg-zinc-950">
               <form onSubmit={handleSaveProduct} className="max-w-3xl mx-auto">
+                {hasLocalDraft && (
+                  <div className="mb-6 p-4 rounded-xl border border-amber-500/25 bg-amber-500/10 text-amber-655 dark:text-amber-400 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs font-semibold animate-in fade-in slide-in-from-top-2 duration-300">
+                    <div className="flex items-center gap-2">
+                      <span className="text-base shrink-0">📝</span>
+                      <span>We found an unsaved local draft with newer changes. Would you like to restore it?</span>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0 font-bold">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (typeof window !== "undefined") {
+                            const draftKey = "prism_product_draft_" + (productModal?.id || "new");
+                            const savedDraft = localStorage.getItem(draftKey);
+                            if (savedDraft) {
+                              try {
+                                setProductModal(JSON.parse(savedDraft));
+                                showToast("Unsaved changes restored!", "success");
+                              } catch {}
+                            }
+                          }
+                          setHasLocalDraft(false);
+                          setIsDraftChecked(true);
+                        }}
+                        className="px-3 py-1.5 bg-amber-600 hover:bg-amber-705 text-white rounded-lg font-bold border-0 cursor-pointer transition-colors"
+                      >
+                        Restore Draft
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (typeof window !== "undefined") {
+                            const draftKey = "prism_product_draft_" + (productModal?.id || "new");
+                            localStorage.removeItem(draftKey);
+                          }
+                          setHasLocalDraft(false);
+                          setIsDraftChecked(true);
+                          showToast("Local changes discarded.", "error");
+                        }}
+                        className="px-3 py-1.5 bg-transparent hover:bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/25 rounded-lg font-bold cursor-pointer transition-colors"
+                      >
+                        Discard
+                      </button>
+                    </div>
+                  </div>
+                )}
                 {/* TAB 1: BASIC INFO */}
                 {modalSubTab === "basic" && (
                   <div className="space-y-4">
@@ -752,6 +1016,14 @@ function ContentCreatorContent() {
                         <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Trial Download URL</label>
                         <Input type="text" value={productModal.trialDownloadUrl || ""} onChange={e => setProductModal({...productModal, trialDownloadUrl: e.target.value})} placeholder="e.g. /download/trial?product=pst-converter" />
                       </div>
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Installation Success URL</label>
+                        <Input type="text" value={productModal.installationSuccessUrl || ""} onChange={e => setProductModal({...productModal, installationSuccessUrl: e.target.value})} placeholder="e.g. /thank-you-install" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Uninstallation Success URL</label>
+                        <Input type="text" value={productModal.uninstallationSuccessUrl || ""} onChange={e => setProductModal({...productModal, uninstallationSuccessUrl: e.target.value})} placeholder="e.g. /goodbye" />
+                      </div>
                       <div className="sm:col-span-2 space-y-1.5">
                         <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Short Description</label>
                         <Input type="text" value={productModal.shortDescription || ""} onChange={e => setProductModal({...productModal, shortDescription: e.target.value})} required />
@@ -771,9 +1043,75 @@ function ContentCreatorContent() {
                           value={productModal.description || ""} 
                           onChange={e => setProductModal({...productModal, description: e.target.value})} 
                           required 
-                          className="w-full bg-transparent border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25 focus-visible:border-blue-500 dark:text-zinc-100"
                         />
                       </div>
+                      {/* DYNAMIC CONDITIONAL FIELDS */}
+                      {(() => {
+                        const activeConditionalFields = Object.entries(CATEGORY_CONDITIONAL_FIELDS)
+                          .filter(([pattern]) => (productModal.category || "").toLowerCase().includes(pattern))
+                          .flatMap(([_, fields]) => fields);
+                          
+                        if (activeConditionalFields.length === 0) return null;
+                        
+                        return (
+                          <div className="sm:col-span-2 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/10 space-y-4 mt-2">
+                            <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Category-Specific Settings</h4>
+                            <div className="grid grid-cols-1 gap-4">
+                              {activeConditionalFields.map(field => {
+                                if (field.type === "toggle") {
+                                  const checked = !!(productModal.capabilities || {})[field.key];
+                                  return (
+                                    <div key={field.key} className="flex items-center justify-between p-3 rounded-lg border border-zinc-200/60 dark:border-zinc-800/85 bg-white dark:bg-zinc-900/40">
+                                      <div>
+                                        <label className="text-xs font-semibold text-zinc-750 dark:text-zinc-300">{field.label}</label>
+                                        {field.description && <p className="text-[10px] text-zinc-400 dark:text-zinc-500">{field.description}</p>}
+                                      </div>
+                                      <label className="relative inline-flex items-center cursor-pointer">
+                                        <input
+                                          type="checkbox"
+                                          checked={checked}
+                                          onChange={e => {
+                                            const newCaps = { ...(productModal.capabilities || {}), [field.key]: e.target.checked };
+                                            setProductModal({ ...productModal, capabilities: newCaps });
+                                          }}
+                                          className="sr-only peer"
+                                        />
+                                        <div className="w-9 h-5 bg-zinc-200 dark:bg-zinc-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600" />
+                                      </label>
+                                    </div>
+                                  );
+                                }
+                                
+                                if (field.type === "select") {
+                                  const selectedOption = field.options?.find(opt => !!(productModal.capabilities || {})[`${field.key}_${opt.replace(/\s+/g, "_")}`]) || field.options?.[0] || "";
+                                  return (
+                                    <div key={field.key} className="space-y-1.5">
+                                      <label className="text-xs font-semibold text-zinc-750 dark:text-zinc-300">{field.label}</label>
+                                      {field.description && <p className="text-[10px] text-zinc-400 dark:text-zinc-500 mb-1">{field.description}</p>}
+                                      <Select
+                                        value={selectedOption}
+                                        onChange={e => {
+                                          const nextVal = e.target.value;
+                                          const newCaps = { ...(productModal.capabilities || {}) };
+                                          field.options?.forEach(opt => {
+                                            newCaps[`${field.key}_${opt.replace(/\s+/g, "_")}`] = opt === nextVal;
+                                          });
+                                          setProductModal({ ...productModal, capabilities: newCaps });
+                                        }}
+                                      >
+                                        {field.options?.map(opt => (
+                                          <option key={opt} value={opt}>{opt}</option>
+                                        ))}
+                                      </Select>
+                                    </div>
+                                  );
+                                }
+                                return null;
+                              })}
+                            </div>
+                          </div>
+                        );
+                      })()}
                     </div>
                   </div>
                 )}
@@ -862,6 +1200,39 @@ function ContentCreatorContent() {
                       </div>
                     </div>
 
+                    {/* Supported Clients */}
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Supported Clients</label>
+                      {supportedClientsRegistry.length === 0 ? (
+                        <p className="text-xs text-zinc-500 italic">No supported clients defined in registry.</p>
+                      ) : (
+                        <div className="flex flex-wrap gap-1.5 p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/10">
+                          {supportedClientsRegistry.map(sc => {
+                            const isSelected = (productModal.tags || []).includes(sc.key);
+                            return (
+                              <button
+                                type="button"
+                                key={sc.key}
+                                onClick={() => {
+                                  const current = productModal.tags || [];
+                                  const next = isSelected ? current.filter(x => x !== sc.key) : [...current, sc.key];
+                                  setProductModal({ ...productModal, tags: next });
+                                }}
+                                className={cn(
+                                  "px-2.5 py-1 rounded-full text-xs font-medium border transition-colors cursor-pointer",
+                                  isSelected 
+                                    ? "bg-indigo-600/15 text-indigo-600 dark:text-indigo-400 border-indigo-500/30"
+                                    : "bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-750"
+                                )}
+                              >
+                                {sc.name}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+
                     <div className="space-y-1.5">
                       <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Supported Formats (comma-separated)</label>
                       <Input 
@@ -929,72 +1300,116 @@ function ContentCreatorContent() {
                       {/* Source Formats */}
                       <div className="space-y-1.5">
                         <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                          Source Formats <span className="text-zinc-400 font-normal">(what data does this tool convert FROM?)</span>
+                          Source Formats <span className="text-zinc-400 font-normal">(select what formats this tool converts FROM)</span>
                         </label>
-                        <Input
-                          type="text"
-                          value={(productModal.sourceFormats || []).join(", ")}
-                          onChange={e => {
-                            const arr = e.target.value.split(",").map(x => x.trim().toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "")).filter(Boolean);
-                            setProductModal({ ...productModal, sourceFormats: arr });
-                          }}
-                          placeholder="e.g. pst, ost, outlook, gmail, office365"
-                        />
-                        <p className="text-[10px] text-zinc-400">
-                          Use lowercase keys: pst, ost, outlook, office365, exchange_online, gmail, google_workspace, mbox, eml, msg, pdf, html, onedrive, sharepoint, google_drive
-                        </p>
+                        {sourceFormatsRegistry.length === 0 ? (
+                          <p className="text-xs text-zinc-500 italic">No source formats defined in registry.</p>
+                        ) : (
+                          <div className="flex flex-wrap gap-1.5 p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/10">
+                            {sourceFormatsRegistry.map(sf => {
+                              const isSelected = (productModal.sourceFormats || []).includes(sf.key);
+                              return (
+                                <button
+                                  type="button"
+                                  key={sf.key}
+                                  onClick={() => {
+                                    const current = productModal.sourceFormats || [];
+                                    const next = isSelected ? current.filter(x => x !== sf.key) : [...current, sf.key];
+                                    setProductModal({ ...productModal, sourceFormats: next });
+                                  }}
+                                  className={cn(
+                                    "px-2.5 py-1 rounded-full text-xs font-medium border transition-colors cursor-pointer",
+                                    isSelected 
+                                      ? "bg-indigo-600/15 text-indigo-600 dark:text-indigo-400 border-indigo-500/30"
+                                      : "bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-750"
+                                  )}
+                                >
+                                  {sf.name}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
                       </div>
 
                       {/* Target Formats */}
                       <div className="space-y-1.5">
                         <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                          Target Formats <span className="text-zinc-400 font-normal">(what can this tool convert TO?)</span>
+                          Target Formats <span className="text-zinc-400 font-normal">(select what formats this tool converts TO)</span>
                         </label>
-                        <Input
-                          type="text"
-                          value={(productModal.targetFormats || []).join(", ")}
-                          onChange={e => {
-                            const arr = e.target.value.split(",").map(x => x.trim().toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "")).filter(Boolean);
-                            setProductModal({ ...productModal, targetFormats: arr });
-                          }}
-                          placeholder="e.g. gmail, google_workspace, mbox, pst"
-                        />
+                        {targetFormatsRegistry.length === 0 ? (
+                          <p className="text-xs text-zinc-500 italic">No target formats defined in registry.</p>
+                        ) : (
+                          <div className="flex flex-wrap gap-1.5 p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/10">
+                            {targetFormatsRegistry.map(tf => {
+                              const isSelected = (productModal.targetFormats || []).includes(tf.key);
+                              return (
+                                <button
+                                  type="button"
+                                  key={tf.key}
+                                  onClick={() => {
+                                    const current = productModal.targetFormats || [];
+                                    const next = isSelected ? current.filter(x => x !== tf.key) : [...current, tf.key];
+                                    setProductModal({ ...productModal, targetFormats: next });
+                                  }}
+                                  className={cn(
+                                    "px-2.5 py-1 rounded-full text-xs font-medium border transition-colors cursor-pointer",
+                                    isSelected 
+                                      ? "bg-indigo-600/15 text-indigo-600 dark:text-indigo-400 border-indigo-500/30"
+                                      : "bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-750"
+                                  )}
+                                >
+                                  {tf.name}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
                       </div>
 
                       {/* Capabilities */}
-                      <div className="space-y-2">
-                        <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Advanced Capabilities</label>
-                        <p className="text-[10px] text-zinc-400">Enable these to let users filter for specific features in the wizard quiz step.</p>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                          {([
-                            ["supportsMultipleAccounts",  "Batch / Multiple Accounts"],
-                            ["supportsBatchCsv",          "CSV Batch Import"],
-                            ["supportsImpersonation",     "Admin Impersonation"],
-                            ["supportsScheduledMigration","Scheduled Migration"],
-                            ["supportsIncrementalSync",   "Incremental / Delta Sync"],
-                            ["supportsOfflineMode",       "Offline / No-Internet"],
-                            ["supportsEncryption",        "End-to-End Encryption"],
-                            ["supportsAuditLog",          "Audit Log / Report"],
-                          ] as [string, string][]).map(([key, label]) => {
-                            const caps = productModal.capabilities || {};
-                            const checked = !!caps[key];
-                            return (
-                              <label key={key} className="flex items-center gap-2 p-2.5 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 text-xs cursor-pointer select-none hover:border-indigo-300 dark:hover:border-indigo-700 transition-colors">
-                                <input
-                                  type="checkbox"
-                                  checked={checked}
-                                  className="rounded border-zinc-300 text-indigo-600 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-900 shrink-0"
-                                  onChange={e => {
-                                    const newCaps = { ...(productModal.capabilities || {}), [key]: e.target.checked };
-                                    setProductModal({ ...productModal, capabilities: newCaps });
-                                  }}
-                                />
-                                <span className="text-zinc-700 dark:text-zinc-300 font-medium">{label}</span>
-                              </label>
-                            );
-                          })}
-                        </div>
-                      </div>
+                      {(() => {
+                        const isImapSelected = (productModal.sourceFormats || []).some(f => ["gmail", "office365", "exchange_online", "imap"].includes(f)) ||
+                                               (productModal.targetFormats || []).some(f => ["gmail", "office365", "exchange_online", "imap"].includes(f));
+                        return (
+                          <div className="space-y-2">
+                            <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Advanced Capabilities</label>
+                            <p className="text-[10px] text-zinc-450 dark:text-zinc-400">Enable features supported by this product to dynamically filter queries in the quiz step.</p>
+                            {keyFeaturesRegistry.length === 0 ? (
+                              <p className="text-xs text-zinc-500 italic">No key features defined in registry.</p>
+                            ) : (
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                {keyFeaturesRegistry.map(kf => {
+                                  const key = kf.key;
+                                  const label = kf.name;
+                                  
+                                  // Conditional rendering: if key is Batch Mode Support (supportsMultipleAccounts) and IMAP is not selected, hide it
+                                  if (key === "supportsMultipleAccounts" && !isImapSelected) {
+                                    return null;
+                                  }
+
+                                  const caps = productModal.capabilities || {};
+                                  const checked = !!caps[key];
+                                  return (
+                                    <label key={key} className="flex items-center gap-2 p-2.5 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 text-xs cursor-pointer select-none hover:border-indigo-300 dark:hover:border-indigo-700 transition-colors">
+                                      <input
+                                        type="checkbox"
+                                        checked={checked}
+                                        className="rounded border-zinc-300 text-indigo-600 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-900 shrink-0"
+                                        onChange={e => {
+                                          const newCaps = { ...(productModal.capabilities || {}), [key]: e.target.checked };
+                                          setProductModal({ ...productModal, capabilities: newCaps });
+                                        }}
+                                      />
+                                      <span className="text-zinc-700 dark:text-zinc-300 font-medium">{label}</span>
+                                    </label>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })()}
                     </div>
                   </div>
                 )}
@@ -1734,6 +2149,335 @@ function ContentCreatorContent() {
         </div>
       )}
 
+      {helpModal && (
+        <div className="fixed inset-0 bg-white dark:bg-zinc-950 z-50 flex flex-col overflow-hidden animate-fade-in">
+          {/* Header Bar */}
+          <div className="flex items-center justify-between px-6 py-4 bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-200 dark:border-zinc-800 shrink-0">
+            <div className="flex items-center gap-4">
+              <span 
+                className="text-xl font-bold cursor-pointer text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors select-none" 
+                onClick={() => {
+                  if (confirm("Any unsaved changes will be lost. Exit?")) {
+                    setHelpModal(null);
+                  }
+                }} 
+                title="Exit Workspace"
+              >
+                ←
+              </span>
+              <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
+                {helpModal.id ? `Editing Guide: ${helpModal.title}` : "Create Guide Article"}
+              </h2>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="outline"
+                size="sm"
+                disabled={saving}
+                onClick={() => saveHelpArticle(true)}
+              >
+                Save Draft
+              </Button>
+              <Button 
+                size="sm"
+                disabled={saving}
+                onClick={() => saveHelpArticle(false)}
+              >
+                Save & Exit
+              </Button>
+              <button 
+                className="text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-150 p-1.5 transition-colors border-0 bg-transparent cursor-pointer" 
+                onClick={() => {
+                  if (confirm("Any unsaved changes will be lost. Exit?")) {
+                    setHelpModal(null);
+                  }
+                }}
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+
+          <div className="flex flex-1 overflow-hidden justify-center bg-zinc-50 dark:bg-zinc-950">
+            <main className="flex-1 max-w-3xl p-8 overflow-y-auto bg-white dark:bg-zinc-900/50 border-x border-zinc-200 dark:border-zinc-850">
+              <form onSubmit={e => { e.preventDefault(); saveHelpArticle(false); }} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5 sm:col-span-2">
+                    <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Guide Title</label>
+                    <Input 
+                      type="text" 
+                      value={helpModal.title || ""} 
+                      onChange={e => {
+                        const title = e.target.value;
+                        const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+                        setHelpModal({
+                          ...helpModal,
+                          title,
+                          slug: helpModal.id ? helpModal.slug : slug
+                        });
+                      }} 
+                      required 
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">URL Slug</label>
+                    <Input 
+                      type="text" 
+                      value={helpModal.slug || ""} 
+                      onChange={e => setHelpModal({...helpModal, slug: e.target.value.toLowerCase().replace(/[^a-z0-9\-]+/g, "")})} 
+                      required 
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Category</label>
+                    <Select 
+                      value={helpModal.category || "getting-started"} 
+                      onChange={e => setHelpModal({...helpModal, category: e.target.value as HelpCategory})}
+                    >
+                      <option value="getting-started">Getting Started</option>
+                      <option value="installation">Installation</option>
+                      <option value="migration">Migration Guides</option>
+                      <option value="troubleshooting">Troubleshooting</option>
+                      <option value="licensing">Licensing</option>
+                    </Select>
+                  </div>
+                  <div className="space-y-1.5 sm:col-span-2">
+                    <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Tags (Comma-separated)</label>
+                    <Input 
+                      type="text" 
+                      value={helpModal.tags?.join(", ") || ""} 
+                      onChange={e => setHelpModal({...helpModal, tags: e.target.value.split(",").map(t => t.trim()).filter(Boolean)})} 
+                      placeholder="e.g. migration, office-365, troubleshoot"
+                    />
+                  </div>
+                  <div className="space-y-1.5 sm:col-span-2">
+                    <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Excerpt / Short Summary</label>
+                    <textarea 
+                      rows={2} 
+                      value={helpModal.excerpt || ""} 
+                      onChange={e => setHelpModal({...helpModal, excerpt: e.target.value})} 
+                      required 
+                      className="w-full bg-transparent border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25 focus-visible:border-blue-500 dark:text-zinc-100"
+                    />
+                  </div>
+                  <div className="space-y-1.5 sm:col-span-2">
+                    <div className="flex justify-between items-center mb-0.5">
+                      <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Content (Markdown / HTML)</label>
+                      <HTMLToolbar 
+                        value={helpModal.content || ""} 
+                        onChange={val => setHelpModal({...helpModal, content: val})} 
+                        textareaId="help-content-editor" 
+                      />
+                    </div>
+                    <textarea 
+                      id="help-content-editor"
+                      rows={12} 
+                      value={helpModal.content || ""} 
+                      onChange={e => setHelpModal({...helpModal, content: e.target.value})} 
+                      required 
+                      className="w-full bg-transparent border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm font-mono outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25 focus-visible:border-blue-500 dark:text-zinc-100"
+                    />
+                  </div>
+                </div>
+              </form>
+            </main>
+          </div>
+        </div>
+      )}
+
+      {jobModal && (
+        <div className="fixed inset-0 bg-white dark:bg-zinc-950 z-50 flex flex-col overflow-hidden animate-fade-in">
+          {/* Header Bar */}
+          <div className="flex items-center justify-between px-6 py-4 bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-200 dark:border-zinc-800 shrink-0">
+            <div className="flex items-center gap-4">
+              <span 
+                className="text-xl font-bold cursor-pointer text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors select-none" 
+                onClick={() => {
+                  if (confirm("Any unsaved changes will be lost. Exit?")) {
+                    setJobModal(null);
+                  }
+                }} 
+                title="Exit Workspace"
+              >
+                ←
+              </span>
+              <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
+                {jobModal.id ? `Editing Position: ${jobModal.title}` : "Create Open Position"}
+              </h2>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="outline"
+                size="sm"
+                disabled={saving}
+                onClick={() => saveJob(true)}
+              >
+                Save Draft
+              </Button>
+              <Button 
+                size="sm"
+                disabled={saving}
+                onClick={() => saveJob(false)}
+              >
+                Save & Exit
+              </Button>
+              <button 
+                className="text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-150 p-1.5 transition-colors border-0 bg-transparent cursor-pointer" 
+                onClick={() => {
+                  if (confirm("Any unsaved changes will be lost. Exit?")) {
+                    setJobModal(null);
+                  }
+                }}
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+
+          <div className="flex flex-1 overflow-hidden justify-center bg-zinc-50 dark:bg-zinc-950">
+            <main className="flex-1 max-w-3xl p-8 overflow-y-auto bg-white dark:bg-zinc-900/50 border-x border-zinc-200 dark:border-zinc-850">
+              <form onSubmit={e => { e.preventDefault(); saveJob(false); }} className="space-y-6">
+                
+                {/* Basic Details */}
+                <div className="space-y-4">
+                  <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 border-b border-zinc-100 dark:border-zinc-800 pb-2">📋 Basic Job Information</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5 sm:col-span-2">
+                      <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Job Title</label>
+                      <Input 
+                        type="text" 
+                        value={jobModal.title || ""} 
+                        onChange={e => setJobModal({...jobModal, title: e.target.value})} 
+                        required 
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Department</label>
+                      <Input 
+                        type="text" 
+                        value={jobModal.department || ""} 
+                        onChange={e => setJobModal({...jobModal, department: e.target.value})} 
+                        required 
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Location</label>
+                      <Input 
+                        type="text" 
+                        value={jobModal.location || ""} 
+                        onChange={e => setJobModal({...jobModal, location: e.target.value})} 
+                        required 
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Job Type</label>
+                      <Select 
+                        value={jobModal.type || "Full-Time"} 
+                        onChange={e => setJobModal({...jobModal, type: e.target.value})}
+                      >
+                        <option value="Full-Time">Full-Time</option>
+                        <option value="Part-Time">Part-Time</option>
+                        <option value="Contract">Contract</option>
+                        <option value="Internship">Internship</option>
+                      </Select>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Status</label>
+                      <Select 
+                        value={jobModal.status || "OPEN"} 
+                        onChange={e => setJobModal({...jobModal, status: e.target.value as any})}
+                      >
+                        <option value="OPEN">OPEN / Accepting Applications</option>
+                        <option value="CLOSED">CLOSED / Not Accepting</option>
+                        <option value="ARCHIVED">ARCHIVED / Hidden</option>
+                      </Select>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Experience Level</label>
+                      <Input 
+                        type="text" 
+                        placeholder="e.g. Mid-Senior (3-5 years)"
+                        value={jobModal.experience || ""} 
+                        onChange={e => setJobModal({...jobModal, experience: e.target.value})} 
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Salary Range</label>
+                      <Input 
+                        type="text" 
+                        placeholder="e.g. $90k - $120k"
+                        value={jobModal.salaryRange || ""} 
+                        onChange={e => setJobModal({...jobModal, salaryRange: e.target.value})} 
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Job Content Description & Requirements */}
+                <div className="space-y-4 pt-4 border-t border-zinc-150 dark:border-zinc-800">
+                  <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">📝 Job Description & Requirements</h3>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Short Description</label>
+                    <textarea 
+                      rows={3} 
+                      value={jobModal.description || ""} 
+                      onChange={e => setJobModal({...jobModal, description: e.target.value})} 
+                      required 
+                      className="w-full bg-transparent border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25 focus-visible:border-blue-500 dark:text-zinc-100"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Requirements & Details (Markdown / Text)</label>
+                    <textarea 
+                      rows={6} 
+                      value={jobModal.requirements || ""} 
+                      onChange={e => setJobModal({...jobModal, requirements: e.target.value})} 
+                      className="w-full bg-transparent border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm font-mono outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25 focus-visible:border-blue-500 dark:text-zinc-100"
+                    />
+                  </div>
+                </div>
+
+                {/* SEO Configurations */}
+                <div className="space-y-4 pt-4 border-t border-zinc-150 dark:border-zinc-800">
+                  <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">🔍 SEO Configurations (Optional Overrides)</h3>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Meta Title</label>
+                    <Input 
+                      type="text" 
+                      placeholder="Custom job title for search results..."
+                      value={jobModal.metaTitle || ""} 
+                      onChange={e => setJobModal({...jobModal, metaTitle: e.target.value})} 
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Meta Description</label>
+                    <textarea 
+                      rows={2} 
+                      placeholder="Custom summary of the posting..."
+                      value={jobModal.metaDescription || ""} 
+                      onChange={e => setJobModal({...jobModal, metaDescription: e.target.value})} 
+                      className="w-full bg-transparent border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25 focus-visible:border-blue-500 dark:text-zinc-100"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Meta Keywords</label>
+                    <Input 
+                      type="text" 
+                      placeholder="e.g. jobs, engineering, remote work"
+                      value={jobModal.metaKeywords || ""} 
+                      onChange={e => setJobModal({...jobModal, metaKeywords: e.target.value})} 
+                    />
+                  </div>
+                </div>
+
+              </form>
+            </main>
+          </div>
+        </div>
+      )}
+
       {categoryModal && (
         <div className="fixed inset-0 bg-white dark:bg-zinc-950 z-50 flex flex-col overflow-hidden animate-fade-in">
           {/* Header Bar */}
@@ -1828,9 +2572,18 @@ function ContentCreatorContent() {
       {/* TABLES */}
       <Card className="dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm overflow-hidden">
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-3 text-zinc-500 dark:text-zinc-400">
-            <span className="w-8 h-8 rounded-full border-3 border-zinc-205 border-t-blue-500 animate-spin" />
-            <span className="text-xs font-semibold">Loading records...</span>
+          <div className="p-6 space-y-4 animate-pulse">
+            <div className="flex justify-between items-center pb-4 border-b border-zinc-200 dark:border-zinc-850">
+              <div className="h-5 bg-zinc-200 dark:bg-zinc-800 rounded w-1/4"></div>
+              <div className="h-5 bg-zinc-200 dark:bg-zinc-800 rounded w-1/12"></div>
+            </div>
+            {[1, 2, 3, 4, 5].map((idx) => (
+              <div key={idx} className="flex justify-between items-center py-4 border-b border-zinc-100 dark:border-zinc-850 last:border-0">
+                <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-1/3"></div>
+                <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-1/6"></div>
+                <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-1/12"></div>
+              </div>
+            ))}
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -2003,6 +2756,97 @@ function ContentCreatorContent() {
                         <div className="flex items-center justify-end gap-1.5">
                           <Button size="sm" variant="outline" className="h-7 px-2 text-xs" onClick={() => setCategoryModal(c)}>Edit</Button>
                           <Button size="sm" variant="outline" className="h-7 px-2 text-xs hover:bg-red-50 dark:hover:bg-red-950/20 hover:text-red-500 hover:border-red-200 dark:hover:border-red-900/30" onClick={() => handleDeleteCategory(c.id!, c.label)}>Delete</Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+
+            {activeTab === "help" && (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Title</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Excerpt</TableHead>
+                    <TableHead>Helpful Stats</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {helpArticles.filter(h => h.title.toLowerCase().includes(search.toLowerCase()) || h.excerpt?.toLowerCase().includes(search.toLowerCase())).map(h => (
+                    <TableRow key={h.id}>
+                      <TableCell className="font-semibold text-zinc-900 dark:text-zinc-150">
+                        <div className="flex flex-col">
+                          <span className="font-semibold">{h.title}</span>
+                          <span className="text-[11px] text-zinc-400 dark:text-zinc-500 font-mono">/{h.slug}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <span className="bg-zinc-100 dark:bg-zinc-850 border border-zinc-200 dark:border-zinc-750 px-2 py-0.5 rounded text-[11px] font-semibold text-zinc-600 dark:text-zinc-350">
+                          {HELP_CATEGORY_LABELS[h.category as HelpCategory] || h.category}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-zinc-500 dark:text-zinc-400 text-xs max-w-xs truncate">{h.excerpt || "—"}</TableCell>
+                      <TableCell className="text-zinc-500 dark:text-zinc-400 text-xs font-mono">
+                        👍 {h.helpful || 0} / 👎 {h.notHelpful || 0}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <Button size="sm" variant="outline" className="h-7 px-2 text-xs" onClick={() => setHelpModal(h)}>Edit</Button>
+                          <Button size="sm" variant="outline" className="h-7 px-2 text-xs hover:bg-red-50 dark:hover:bg-red-950/20 hover:text-red-500 hover:border-red-200 dark:hover:border-red-900/30" onClick={() => handleDeleteHelpArticle(h.id!, h.title)}>Delete</Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+
+            {activeTab === "jobs" && (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Title</TableHead>
+                    <TableHead>Department</TableHead>
+                    <TableHead>Location</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {jobs.filter(j => j.title.toLowerCase().includes(search.toLowerCase()) || j.department.toLowerCase().includes(search.toLowerCase())).map(j => (
+                    <TableRow key={j.id}>
+                      <TableCell className="font-semibold text-zinc-900 dark:text-zinc-150">
+                        <div className="flex flex-col">
+                          <span className="font-semibold">{j.title}</span>
+                          {j.experience && <span className="text-[11px] text-zinc-400 font-medium">{j.experience}</span>}
+                        </div>
+                      </TableCell>
+                      <TableCell>{j.department}</TableCell>
+                      <TableCell>{j.location}</TableCell>
+                      <TableCell>
+                        <span className="bg-zinc-100 dark:bg-zinc-850 border border-zinc-200 dark:border-zinc-750 px-2 py-0.5 rounded text-[11px] font-semibold text-zinc-600 dark:text-zinc-350">
+                          {j.type}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <span className={cn(
+                          "px-2 py-0.5 rounded text-[11px] font-bold border",
+                          j.status === "OPEN" ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400" :
+                          j.status === "CLOSED" ? "bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-400" :
+                          "bg-zinc-500/10 border-zinc-500/20 text-zinc-500 dark:text-zinc-400"
+                        )}>
+                          {j.status}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <Button size="sm" variant="outline" className="h-7 px-2 text-xs" onClick={() => setJobModal(j)}>Edit</Button>
+                          <Button size="sm" variant="outline" className="h-7 px-2 text-xs hover:bg-red-50 dark:hover:bg-red-950/20 hover:text-red-500 hover:border-red-200 dark:hover:border-red-900/30" onClick={() => handleDeleteJob(j.id!, j.title)}>Delete</Button>
                         </div>
                       </TableCell>
                     </TableRow>

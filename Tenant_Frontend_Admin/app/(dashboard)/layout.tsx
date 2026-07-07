@@ -5,6 +5,7 @@ import { useRouter, usePathname, useParams, useSearchParams } from "next/navigat
 import Link from "next/link";
 import { AuthService } from "@/services/auth";
 import { AdminOwnerAPI } from "@/services/api";
+import ChatWidget from "@/components/ui/ChatWidget";
 
 // ─── Extensible Roles & Navigation Registry ─────────────────────────────────
 export interface NavigationItem {
@@ -61,6 +62,12 @@ const HelpIcon = (
     <line x1="12" y1="17" x2="12.01" y2="17"/>
   </svg>
 );
+const BookIcon = (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+  </svg>
+);
 const TagIcon = (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
@@ -73,6 +80,19 @@ const ServerIcon = (
     <rect x="2" y="14" width="20" height="8" rx="2" ry="2" />
     <line x1="6" y1="6" x2="6.01" y2="6" strokeLinecap="round" strokeWidth="3" />
     <line x1="6" y1="18" x2="6.01" y2="18" strokeLinecap="round" strokeWidth="3" />
+  </svg>
+);
+const DatabaseIcon = (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+    <path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"></path>
+  </svg>
+);
+const BriefcaseIcon = (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
   </svg>
 );
 
@@ -98,7 +118,11 @@ export const ROLE_NAV_REGISTRY: Record<string, NavigationItem[]> = {
     { label: "Blog Manager", path: "/cc?tab=blogs", icon: ContentIcon },
     { label: "FAQ Manager", path: "/cc?tab=faqs", icon: HelpIcon },
     { label: "Category Manager", path: "/cc?tab=categories", icon: TagIcon },
+    { label: "Guide Manager", path: "/cc?tab=help", icon: BookIcon },
+    { label: "Career Manager", path: "/cc?tab=jobs", icon: BriefcaseIcon },
+    { label: "Client Manager", path: "/social-proof", icon: BrandIcon },
     { label: "Content & SEO", path: "/seo", icon: ContentIcon },
+    { label: "Global Registry", path: "/seo/registry", icon: DatabaseIcon },
   ],
   SEO_CW_PRODUCT_MANAGER: [
     { label: "Overview", path: "", icon: DashboardIcon },
@@ -106,7 +130,11 @@ export const ROLE_NAV_REGISTRY: Record<string, NavigationItem[]> = {
     { label: "Blog Manager", path: "/cc?tab=blogs", icon: ContentIcon },
     { label: "FAQ Manager", path: "/cc?tab=faqs", icon: HelpIcon },
     { label: "Category Manager", path: "/cc?tab=categories", icon: TagIcon },
+    { label: "Guide Manager", path: "/cc?tab=help", icon: BookIcon },
+    { label: "Career Manager", path: "/cc?tab=jobs", icon: BriefcaseIcon },
+    { label: "Client Manager", path: "/social-proof", icon: BrandIcon },
     { label: "Content & SEO", path: "/seo", icon: ContentIcon },
+    { label: "Global Registry", path: "/seo/registry", icon: DatabaseIcon },
   ],
   // ─── Legacy Roles (backwards compatibility) ────────────────
   OWNER: [
@@ -159,7 +187,7 @@ function SidebarOwnerSubNav({ ownerStats, pathname, activeBrands }: { ownerStats
   const filterVal = searchParams.get("filter");
 
   return (
-    <div className="owner-sub-nav flex flex-col gap-0.5 border-l border-zinc-850 pl-3 ml-4.5 mt-1 mb-2">
+    <div className="owner-sub-nav flex flex-col gap-0.5 border-l border-zinc-700 pl-3 ml-4.5 mt-1 mb-2">
       {[
         { id: "all", label: "Global Scope", count: ownerStats.global, color: "#94a3b8" },
         ...activeBrands.map(b => {
@@ -183,8 +211,8 @@ function SidebarOwnerSubNav({ ownerStats, pathname, activeBrands }: { ownerStats
             href={subHref}
             className={`flex items-center justify-between px-2 py-1 rounded-md text-[11px] font-medium transition-all ${
               isSubActive 
-                ? "text-white bg-zinc-850 font-semibold" 
-                : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+                ? "text-white bg-zinc-700 font-semibold" 
+                : "text-zinc-300 hover:text-white hover:bg-zinc-800/50"
             }`}
           >
             <div className="flex items-center gap-2">
@@ -194,8 +222,8 @@ function SidebarOwnerSubNav({ ownerStats, pathname, activeBrands }: { ownerStats
             <span
               className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full border transition-colors ${
                 isSubActive 
-                  ? "bg-zinc-700 border-zinc-650 text-white" 
-                  : "bg-zinc-800/80 border-zinc-750 text-zinc-450"
+                  ? "bg-zinc-700 border-zinc-600 text-white" 
+                  : "bg-zinc-800 border-zinc-700 text-zinc-300"
               }`}
             >
               {sub.count}
@@ -248,7 +276,7 @@ function SidebarNavItems({
           return (
             <div key={idx} className="space-y-0.5">
               <div
-                className={`flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs font-medium cursor-pointer transition-all relative ${isActive ? "text-white bg-zinc-800 font-semibold shadow-sm" : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"}`}
+                className={`flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs font-medium cursor-pointer transition-all relative ${isActive ? "text-white bg-zinc-700 font-semibold shadow-sm" : "text-zinc-300 hover:text-white hover:bg-zinc-800/50"}`}
                 onClick={() => setIsOwnerNavExpanded(!isOwnerNavExpanded)}
               >
                 <div className="flex items-center gap-2.5">
@@ -283,7 +311,7 @@ function SidebarNavItems({
           <Link
             key={idx}
             href={href}
-            className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-all relative ${isActive ? "text-white bg-zinc-800 font-semibold shadow-sm" : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"}`}
+            className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-all relative ${isActive ? "text-white bg-zinc-700 font-semibold shadow-sm" : "text-zinc-300 hover:text-white hover:bg-zinc-800/50"}`}
           >
             <span className="shrink-0 opacity-80">{item.icon}</span>
             {sidebarOpen && <span>{item.label}</span>}
@@ -389,6 +417,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         "/owner",
         `/${siteId}`,
         `/${siteId}/seo`,
+        `/${siteId}/seo/registry`,
         `/${siteId}/cc`,
         `/${siteId}/brand`,
         `/${siteId}/admin`
@@ -397,6 +426,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       activeBrands.forEach(b => {
         allowedHrefs.push(`/${b.id}`);
         allowedHrefs.push(`/${b.id}/seo`);
+        allowedHrefs.push(`/${b.id}/seo/registry`);
         allowedHrefs.push(`/${b.id}/cc`);
         allowedHrefs.push(`/${b.id}/brand`);
         allowedHrefs.push(`/${b.id}/admin`);
@@ -407,9 +437,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     }
 
     if (allowedHrefs.length > 0) {
-      const isAllowed = allowedHrefs.some(href => 
-        pathname === href || pathname.startsWith(href + "/")
-      );
+      const isAllowed = allowedHrefs.some(href => {
+        const cleanHref = href.split("?")[0];
+        return pathname === cleanHref || pathname.startsWith(cleanHref + "/");
+      });
       if (!isAllowed) {
         router.replace(allowedHrefs[0]);
       }
@@ -485,7 +516,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         icon: BrandIcon
       },
       {
-            label: "Product Manager",
+        label: "Product Manager",
         href: `/${siteId}/cc`,
         icon: ProductIcon
       },
@@ -560,7 +591,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               <div className="p-3 border-b border-zinc-800 shrink-0">
                 {pathname.includes("/seo") || pathname.includes("/cc") || pathname.includes("/admin") || pathname.includes("/brand") || pathname === `/${siteId}` ? (
                   <div className="space-y-1">
-                    <label className="block text-[8px] font-bold text-zinc-455 uppercase tracking-wider">
+                    <label className="block text-[8px] font-bold text-zinc-400 uppercase tracking-wider">
                       Active Storefront {isSuperAdmin(userRole) ? "🔓" : "🔒"}
                     </label>
                     {isSuperAdmin(userRole) ? (
@@ -579,7 +610,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                         )}
                       </select>
                     ) : (
-                      <div className="w-full bg-zinc-800 border border-zinc-700 text-zinc-250 text-xs rounded-md px-2 py-1.5 font-medium flex items-center gap-2 cursor-not-allowed">
+                      <div className="w-full bg-zinc-850 border border-zinc-700 text-zinc-100 text-xs rounded-md px-2 py-1.5 font-medium flex items-center gap-2 cursor-not-allowed">
                         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: primaryColor }}></div>
                         {activeBrandConfig?.name || siteId}
                       </div>
@@ -587,7 +618,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                   </div>
                 ) : (
                   <div className="space-y-1">
-                    <label className="block text-[8px] font-bold text-zinc-455 uppercase tracking-wider">
+                    <label className="block text-[8px] font-bold text-zinc-400 uppercase tracking-wider">
                       Platform Scope
                     </label>
                     <div className="w-full bg-indigo-950/40 border border-indigo-900/50 rounded-md py-1 text-center text-[11px] font-semibold text-indigo-300">
@@ -622,14 +653,14 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 {sidebarOpen && (
                   <div className="flex flex-col min-w-0">
                     <span className="text-[11px] font-semibold text-white truncate">{username}</span>
-                    <span className="text-[9px] text-zinc-400 truncate">
+                    <span className="text-[9px] text-zinc-300 truncate">
                       {isSuperAdmin(userRole) ? "Super Admin" : userRole.replace(/_/g, " ")}
                     </span>
                   </div>
                 )}
               </div>
               <button
-                className="flex items-center justify-center gap-1.5 w-full px-2 py-1 text-[11px] font-semibold rounded-md border border-zinc-800 text-zinc-400 hover:text-red-400 hover:border-red-900/30 hover:bg-red-950/20 transition-all cursor-pointer"
+                className="flex items-center justify-center gap-1.5 w-full px-2 py-1 text-[11px] font-semibold rounded-md border border-zinc-800 text-zinc-300 hover:text-red-400 hover:border-red-900/30 hover:bg-red-950/20 transition-all cursor-pointer"
                 onClick={handleLogout}
                 id="admin-logout-btn"
                 title="Logout"
@@ -746,6 +777,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             </main>
           </div>
         </div>
+        <ChatWidget />
       </ThemeContext.Provider>
     </SiteContext.Provider>
   );

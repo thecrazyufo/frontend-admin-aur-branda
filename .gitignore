@@ -10,6 +10,7 @@ target/
 *.jar
 *.war
 *.tar
+*.tar.gz
 *.zip
 *.log
 

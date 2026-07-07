@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <!-- 020: Global Data Registry Tables -->
+
+    <!-- Source Formats Registry -->
+    <changeSet id="020-create-source-formats" author="platform">
+        <createTable tableName="source_formats">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="format_key" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="icon" type="VARCHAR(255)"/>
+            <column name="site_id" type="VARCHAR(255)" defaultValue="default">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint tableName="source_formats" columnNames="format_key, site_id" constraintName="uq_source_format_key_site"/>
+
+        <createIndex tableName="source_formats" indexName="idx_sf_site_id">
+            <column name="site_id"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- Target Formats Registry -->
+    <changeSet id="020-create-target-formats" author="platform">
+        <createTable tableName="target_formats">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="format_key" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="icon" type="VARCHAR(255)"/>
+            <column name="site_id" type="VARCHAR(255)" defaultValue="default">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint tableName="target_formats" columnNames="format_key, site_id" constraintName="uq_target_format_key_site"/>
+
+        <createIndex tableName="target_formats" indexName="idx_tf_site_id">
+            <column name="site_id"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- Supported Clients Registry -->
+    <changeSet id="020-create-supported-clients" author="platform">
+        <createTable tableName="supported_clients">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="client_key" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="icon" type="VARCHAR(255)"/>
+            <column name="site_id" type="VARCHAR(255)" defaultValue="default">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint tableName="supported_clients" columnNames="client_key, site_id" constraintName="uq_client_key_site"/>
+
+        <createIndex tableName="supported_clients" indexName="idx_sc_site_id">
+            <column name="site_id"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- Key Features Registry -->
+    <changeSet id="020-create-key-features" author="platform">
+        <createTable tableName="key_features">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="feature_key" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="site_id" type="VARCHAR(255)" defaultValue="default">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint tableName="key_features" columnNames="feature_key, site_id" constraintName="uq_feature_key_site"/>
+
+        <createIndex tableName="key_features" indexName="idx_kf_site_id">
+            <column name="site_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

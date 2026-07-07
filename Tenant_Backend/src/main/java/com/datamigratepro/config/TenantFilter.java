@@ -51,8 +51,8 @@ public class TenantFilter implements Filter {
         String username = SecurityUtils.getCurrentUsername();
         MDC.put("userId", username != null ? username : "anonymous");
 
-        // Central authentication and public brand listing paths bypass siteId filters and resolve in the system context
-        if (path.startsWith("/api/auth/login") || path.startsWith("/api/auth/refresh") || path.startsWith("/api/auth/logout") || path.startsWith("/api/brands")) {
+        // Central authentication, public brand listing, owner management, and error paths bypass siteId filters and resolve in the system context
+        if (path.startsWith("/api/auth/login") || path.startsWith("/api/auth/refresh") || path.startsWith("/api/auth/logout") || path.startsWith("/api/brands") || path.startsWith("/api/owner") || path.startsWith("/error")) {
             try {
                 TenantContext.setCurrentTenant("system");
                 MDC.put("siteId", "system");

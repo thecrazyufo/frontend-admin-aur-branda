@@ -41,6 +41,8 @@ public class SocialProofController {
         logo.setCompanyName(dto.getCompanyName());
         logo.setLogoUrl(dto.getLogoUrl());
         logo.setDisplayOrder(dto.getDisplayOrder() != null ? dto.getDisplayOrder() : 0);
+        logo.setDescription(dto.getDescription());
+        logo.setCaseStudy(dto.getCaseStudy());
         return ResponseEntity.ok(clientLogoRepository.save(logo));
     }
 
@@ -52,6 +54,8 @@ public class SocialProofController {
                     logo.setCompanyName(dto.getCompanyName());
                     logo.setLogoUrl(dto.getLogoUrl());
                     logo.setDisplayOrder(dto.getDisplayOrder() != null ? dto.getDisplayOrder() : 0);
+                    logo.setDescription(dto.getDescription());
+                    logo.setCaseStudy(dto.getCaseStudy());
                     return ResponseEntity.ok(clientLogoRepository.save(logo));
                 })
                 .orElse(ResponseEntity.notFound().build());

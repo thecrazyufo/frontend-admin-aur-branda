@@ -46,6 +46,8 @@ public class Product {
     private String version;
     private String lastUpdated;
     private String trialDownloadUrl;
+    private String installationSuccessUrl;
+    private String uninstallationSuccessUrl;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
