@@ -77,6 +77,51 @@ Administrators land on the **Dashboard Overview & Analytics** screen (`/[brandId
 
 ---
 
+## 🌐 Production Infrastructure & Deployment Layout
+
+The live system uses a hybrid hosting model across Vercel and DigitalOcean VPS:
+
+```
+                  ┌──────────────────────────────────────────────┐
+                  │                 Vercel                       │
+                  │   - admin.thecrazyufo.in (Admin Dashboard)   │
+                  │   - branda.thecrazyufo.in (Storefront)       │
+                  └──────────────────────┬───────────────────────┘
+                                         │
+                                  Public API Calls
+                                         │
+                                         ▼
+                  ┌──────────────────────────────────────────────┐
+                  │          DigitalOcean VPS (64.227.150.88)    │
+                  │   - api.thecrazyufo.in (Backend REST API)    │
+                  │   - PostgreSQL Database (Port 5432)          │
+                  └──────────────────────────────────────────────┘
+```
+
+### 1. Frontend Hosting (Vercel)
+* **Domains:** `admin.thecrazyufo.in`, `branda.thecrazyufo.in`
+* **DNS Settings:** CNAME records are pointed to Vercel's edge network: `cname.vercel-dns.com`.
+* **Deployment Workflow:** Auto-deploys on every commit/push to the `main` branch of the GitHub repository `thecrazyufo/frontend-admin-aur-branda`.
+
+### 2. Backend & Database Hosting (DigitalOcean VPS)
+* **Domain:** `api.thecrazyufo.in`
+* **IP Address:** `64.227.150.88`
+* **Orchestration:** Managed via Docker Compose under the `/root/deploy_vps` directory on the VPS (composed of `db_postgres`, `software_tenant_backend`, and `software_caddy`).
+* **Deployment Workflow:**
+  1. Build the production backend Docker image locally for the target VPS CPU architecture (`linux/amd64` using cross-compilation).
+  2. Package it as a `.tar.gz` archive.
+  3. Upload the archive along with the updated Caddy and Docker configuration files to the VPS via `scp`.
+  4. SSH into the VPS to load the image, stop old container conflicts, and run `docker compose up -d`.
+  *This is automated using the [deploy_vps/deploy.sh](file:///Users/akashsahu.blue/Documents/Akas/software-selling-platform/deploy_vps/deploy.sh) script.*
+
+### 3. Local Host Mapping (Mac Developer Environment)
+Developers must keep their local `/etc/hosts` clean and only map `api.thecrazyufo.in` to allow backend resolution:
+```hosts
+64.227.150.88 api.thecrazyufo.in
+```
+
+---
+
 ## 🌐 Storefront SEO & Markdown Features
 
 1. **Server-Side Markdown Renderer**:
