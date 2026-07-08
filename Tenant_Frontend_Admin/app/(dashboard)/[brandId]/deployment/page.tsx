@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -10,8 +10,23 @@ export default function DeploymentPage() {
   const params = useParams();
   const brandId = params?.brandId as string || "brandA";
 
+  const [brandConfig, setBrandConfig] = useState<{ domain: string; devPort: string; name: string } | null>(null);
+
+  useEffect(() => {
+    import("@/services/api").then(({ BrandAPI }) => {
+      BrandAPI.getActiveBrands()
+        .then((brands) => {
+          const config = brands.find((b) => b.id === brandId);
+          if (config) {
+            setBrandConfig(config);
+          }
+        })
+        .catch(console.error);
+    });
+  }, [brandId]);
+
   const [logs, setLogs] = useState<string[]>([
-    "[02:08:10] Initializing deployment pipeline for " + brandId.toUpperCase() + "...",
+    "[02:08:10] Initializing deployment pipeline for " + (brandConfig?.name || brandId).toUpperCase() + "...",
     "[02:08:12] Checking Git repository status...",
     "[02:08:14] Fetching latest commits from main branch...",
     "[02:08:15] Dependency check: All packages verified.",
@@ -52,7 +67,7 @@ export default function DeploymentPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-bold text-foreground">Deployment Manager</h2>
-          <p className="text-xs text-muted-foreground">Monitor and trigger production builds for storefront: {brandId.toUpperCase()}</p>
+          <p className="text-xs text-muted-foreground">Monitor and trigger production builds for storefront: {(brandConfig?.name || brandId).toUpperCase()}</p>
         </div>
         <Button
           onClick={triggerDeploy}
@@ -75,7 +90,7 @@ export default function DeploymentPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-xs text-muted-foreground">Domain pointing: prismmigration.local (Port 3001)</p>
+            <p className="text-xs text-muted-foreground">Domain pointing: {brandConfig?.domain || (brandId === "brandA" ? "prismmigration.local" : `${brandId}.local`)} (Port {brandConfig?.devPort || (brandId === "brandA" ? "3001" : "3000")})</p>
           </CardContent>
         </Card>
 

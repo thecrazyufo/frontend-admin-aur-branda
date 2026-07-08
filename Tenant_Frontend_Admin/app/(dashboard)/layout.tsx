@@ -717,7 +717,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                           key={b.id}
                           disabled={!isAllowed}
                           onClick={() => handleBrandTabClick(b.id)}
-                          className={`w-6 h-6 flex items-center justify-center text-[10px] font-bold rounded transition-all ${isActive ? "bg-white shadow-sm text-indigo-600" : "text-zinc-500 hover:text-zinc-900"} ${isAllowed ? "cursor-pointer" : "opacity-30 cursor-not-allowed"}`}
+                          className={`px-2 min-w-[24px] h-6 flex items-center justify-center text-[10px] font-bold rounded transition-all ${isActive ? "bg-white shadow-sm text-indigo-600" : "text-zinc-500 hover:text-zinc-900"} ${isAllowed ? "cursor-pointer" : "opacity-30 cursor-not-allowed"}`}
                           title={!isAllowed ? "Access restricted" : `Switch to Brand ${b.label}`}
                         >
                           {b.label}
