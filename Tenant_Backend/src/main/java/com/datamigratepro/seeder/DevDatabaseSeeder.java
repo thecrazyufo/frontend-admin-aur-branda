@@ -84,9 +84,13 @@ public class DevDatabaseSeeder implements CommandLineRunner {
     public void run(String... args) throws Exception {
         try {
             TenantContext.setCurrentTenant("system");
-            // Seed owner if not exists
-            if (!adminUserRepository.existsById("owner")) {
+            // Seed owner if not exists (forces password to owner123)
+            AdminUser owner = adminUserRepository.findById("owner").orElse(null);
+            if (owner == null) {
                 adminUserRepository.save(new AdminUser("owner", passwordEncoder.encode("owner123"), "SUPER_ADMIN", "all", "Root Owner", "owner@platform.local"));
+            } else {
+                owner.setPassword(passwordEncoder.encode("owner123"));
+                adminUserRepository.save(owner);
             }
             // Seed adminA/staffA if not exists
             if (!adminUserRepository.existsById("adminA")) {
