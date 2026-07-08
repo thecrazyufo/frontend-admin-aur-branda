@@ -84,25 +84,32 @@ public class DevDatabaseSeeder implements CommandLineRunner {
     public void run(String... args) throws Exception {
         try {
             TenantContext.setCurrentTenant("system");
-            if (adminUserRepository.count() == 0) {
-                adminUserRepository.saveAll(Arrays.asList(
-                    // Super Admin (legacy: OWNER) — global access
-                    new AdminUser("owner", passwordEncoder.encode("owner123"), "SUPER_ADMIN", "all", "Root Owner", "owner@platform.local"),
-                    // Brand A staff
-                    new AdminUser("adminA", passwordEncoder.encode("admin123"), "ADMIN", "brandA", "Prism Migration Administrator", "admin@prismmigration.local"),
-                    new AdminUser("staffA", passwordEncoder.encode("admin123"), "SEO_CW_PRODUCT_MANAGER", "brandA", "Prism Migration SEO & Product Staff", "staff@prismmigration.local"),
-                    // ApexByte staff
-                    new AdminUser("adminB", passwordEncoder.encode("admin123"), "ADMIN", "apexbyte", "ApexByte Administrator", "admin@apexbyte.local"),
-                    new AdminUser("staffB", passwordEncoder.encode("admin123"), "SEO_CW_PRODUCT_MANAGER", "apexbyte", "ApexByte SEO & Product Staff", "staff@apexbyte.local"),
-                    // Migration Uncle staff
-                    new AdminUser("adminC", passwordEncoder.encode("admin123"), "ADMIN", "migrationuncle", "Migration Uncle Administrator", "admin@migrationuncle.local"),
-                    new AdminUser("staffC", passwordEncoder.encode("admin123"), "SEO_CW_PRODUCT_MANAGER", "migrationuncle", "Migration Uncle SEO & Product Staff", "staff@migrationuncle.local")
-                ));
-                System.out.println("👤 Seeded initial administrator credentials in system database!");
-            
-            } else {
-                System.out.println("👤 Administrator credentials already exist. Skipping credentials seeding.");
+            // Seed owner if not exists
+            if (!adminUserRepository.existsById("owner")) {
+                adminUserRepository.save(new AdminUser("owner", passwordEncoder.encode("owner123"), "SUPER_ADMIN", "all", "Root Owner", "owner@platform.local"));
             }
+            // Seed adminA/staffA if not exists
+            if (!adminUserRepository.existsById("adminA")) {
+                adminUserRepository.save(new AdminUser("adminA", passwordEncoder.encode("admin123"), "ADMIN", "brandA", "Prism Migration Administrator", "admin@prismmigration.local"));
+            }
+            if (!adminUserRepository.existsById("staffA")) {
+                adminUserRepository.save(new AdminUser("staffA", passwordEncoder.encode("admin123"), "SEO_CW_PRODUCT_MANAGER", "brandA", "Prism Migration SEO & Product Staff", "staff@prismmigration.local"));
+            }
+            // Seed adminB/staffB if not exists (ApexByte)
+            if (!adminUserRepository.existsById("adminB")) {
+                adminUserRepository.save(new AdminUser("adminB", passwordEncoder.encode("admin123"), "ADMIN", "apexbyte", "ApexByte Administrator", "admin@apexbyte.local"));
+            }
+            if (!adminUserRepository.existsById("staffB")) {
+                adminUserRepository.save(new AdminUser("staffB", passwordEncoder.encode("admin123"), "SEO_CW_PRODUCT_MANAGER", "apexbyte", "ApexByte SEO & Product Staff", "staff@apexbyte.local"));
+            }
+            // Seed adminC/staffC if not exists (Migration Uncle)
+            if (!adminUserRepository.existsById("adminC")) {
+                adminUserRepository.save(new AdminUser("adminC", passwordEncoder.encode("admin123"), "ADMIN", "migrationuncle", "Migration Uncle Administrator", "admin@migrationuncle.local"));
+            }
+            if (!adminUserRepository.existsById("staffC")) {
+                adminUserRepository.save(new AdminUser("staffC", passwordEncoder.encode("admin123"), "SEO_CW_PRODUCT_MANAGER", "migrationuncle", "Migration Uncle SEO & Product Staff", "staff@migrationuncle.local"));
+            }
+            System.out.println("👤 Checked and seeded missing administrator credentials in system database!");
         } finally {
             TenantContext.clear();
         }
