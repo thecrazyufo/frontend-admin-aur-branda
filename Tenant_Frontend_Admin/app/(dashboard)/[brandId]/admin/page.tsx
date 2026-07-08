@@ -40,14 +40,14 @@ export default function BrandLicensesPage() {
  // Modals
  const [showGenerateModal, setShowGenerateModal] = useState(false);
 
- // Brand Prefix Mapping
- const brandPrefixMap: Record<string, string> = {
- brandA:"PST",
- brandB:"PSTB",
- brandC:"PSTC",
- brandD:"PSTD",
- brandE:"PSTE",
- };
+  // Brand Prefix Mapping
+  const brandPrefixMap: Record<string, string> = {
+  brandA:"PST",
+  apexbyte:"PSTB",
+  migrationuncle:"PSTC",
+  brandD:"PSTD",
+  brandE:"PSTE",
+  };
  const activePrefix = brandPrefixMap[brandId] ||"PST";
 
  // Form states

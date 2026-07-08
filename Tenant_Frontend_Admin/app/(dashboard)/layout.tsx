@@ -704,12 +704,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                   <div className="flex items-center gap-0.5 bg-zinc-100 p-0.5 rounded-md border border-zinc-200 shrink-0">
                     {[
                       { id: "brandA", label: "A" },
-                      { id: "brandB", label: "B" },
-                      { id: "brandC", label: "C" },
+                      { id: "apexbyte", label: "APEX" },
+                      { id: "migrationuncle", label: "UNCLE" },
                       { id: "brandD", label: "D" },
                       { id: "brandE", label: "E" },
-                      { id: "migrationuncle", label: "UNCLE" },
-                      { id: "apexbyte", label: "APEX" },
                     ].map((b) => {
                       const isActive = siteId === b.id;
                       const isAllowed = isSuperAdmin(userRole) || sessionBrandId === b.id;
