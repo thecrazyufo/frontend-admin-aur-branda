@@ -325,7 +325,7 @@ export default function FindYourToolWizard() {
       {step === 1 && (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="text-center mb-8">
-            <h2 className="text-[#E2E8F0]xl font-bold text-white tracking-tight">What are you migrating from?</h2>
+            <h2 className="text-3xl font-bold text-white tracking-tight">What are you migrating from?</h2>
             <p className="text-[#E2E8F0] mt-2 text-lg">Select your current data source or format.</p>
           </div>
           <FormatGrid options={formats?.sourceFormats || []} onSelect={handleSourceSelect} />
@@ -344,7 +344,7 @@ export default function FindYourToolWizard() {
             <div className="inline-flex items-center bg-[#14B8A6]/10 border border-[#14B8A6]/20 text-[#14B8A6] px-4 py-1.5 rounded-full text-sm font-medium mb-4">
               Source: {source.label}
             </div>
-            <h2 className="text-[#E2E8F0]xl font-bold text-white tracking-tight">Where are you migrating to?</h2>
+            <h2 className="text-3xl font-bold text-white tracking-tight">Where are you migrating to?</h2>
             <p className="text-[#E2E8F0] mt-2 text-lg">Select your destination format or platform.</p>
           </div>
           {loadingCapabilities ? (
@@ -368,7 +368,7 @@ export default function FindYourToolWizard() {
           </div>
 
           <div className="text-center mb-8">
-            <h2 className="text-[#E2E8F0]xl font-bold text-white tracking-tight">Refine Your Search</h2>
+            <h2 className="text-3xl font-bold text-white tracking-tight">Refine Your Search</h2>
             <p className="text-[#E2E8F0] mt-2 text-sm">Select any special requirements to narrow down the best matching tools.</p>
           </div>
 

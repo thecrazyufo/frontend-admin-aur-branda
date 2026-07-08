@@ -153,7 +153,7 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
           <div className="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-4 text-emerald-500 border border-emerald-500/25">
             <CheckCircle size={36} />
           </div>
-          <h2 className="text-[#E2E8F0]xl font-bold text-white">Purchase Successful!</h2>
+          <h2 className="text-3xl font-bold text-white">Purchase Successful!</h2>
           <p className="text-[#E2E8F0] mt-2 text-xs">
             Your license key and invoice details are generated below.
           </p>

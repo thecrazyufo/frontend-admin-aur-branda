@@ -50,7 +50,7 @@ const siteUrl = (settings?.url || "").replace(/\/$/, "");
           <span class="inline-flex items-center gap-1.5 text-[10px] bg-[#14B8A6]/10 text-[#14B8A6] border border-[#14B8A6]/20 font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-4">
             <BookOpen size={12} /> Product Guide
           </span>
-          <h1 class="text-[#E2E8F0]xl md:text-[#94A3B8]xl font-extrabold mb-4">{product.name} Guide</h1>
+          <h1 class="text-3xl md:text-4xl font-extrabold mb-4">{product.name} Guide</h1>
           <p class="text-[#E2E8F0] text-sm max-w-xl">Learn how to install, configure, and execute data operations with our step-by-step documentation.</p>
         </div>
         
@@ -73,7 +73,7 @@ const siteUrl = (settings?.url || "").replace(/\/$/, "");
         <div class="lg:col-span-2 space-y-12">
           {/* Step by Step Guide */}
           <div>
-            <h2 class="text-[#E2E8F0]xl font-bold text-white mb-6 flex items-center gap-2">
+            <h2 class="text-3xl font-bold text-white mb-6 flex items-center gap-2">
               <span class="w-8 h-8 rounded-lg bg-[#14B8A6]/10 text-[#14B8A6] border border-[#14B8A6]/20 flex items-center justify-center text-sm"><Play size={16} /></span>
               Step-by-Step Instructions
             </h2>
@@ -96,7 +96,7 @@ const siteUrl = (settings?.url || "").replace(/\/$/, "");
           {/* Product FAQs */}
           {product.faqs && product.faqs.length > 0 && (
             <div class="pt-8 border-t border-[#334155]">
-              <h2 class="text-[#E2E8F0]xl font-bold text-white mb-6 flex items-center gap-2">
+              <h2 class="text-3xl font-bold text-white mb-6 flex items-center gap-2">
                 <span class="w-8 h-8 rounded-lg bg-[#14B8A6]/10 text-[#14B8A6] border border-[#14B8A6]/20 flex items-center justify-center text-sm"><HelpCircle size={16} /></span>
                 Frequently Asked Questions
               </h2>

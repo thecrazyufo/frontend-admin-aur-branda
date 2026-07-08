@@ -163,7 +163,7 @@ export function parseMarkdownToHtml(markdown: string): string {
       html += `<h2 class="text-xl font-bold text-white mt-8 mb-4">${processInline(trimmed.substring(3))}</h2>`;
     } else if (trimmed.startsWith("# ")) {
       closeListIfOpen();
-      html += `<h1 class="text-[#E2E8F0]xl font-bold text-[#E2E8F0] mt-10 mb-6">${processInline(trimmed.substring(2))}</h1>`;
+      html += `<h1 class="text-3xl font-bold text-[#E2E8F0] mt-10 mb-6">${processInline(trimmed.substring(2))}</h1>`;
     }
     // Unordered list
     else if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {

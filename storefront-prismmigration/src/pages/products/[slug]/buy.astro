@@ -39,7 +39,7 @@ const pricingList = (product.pricing && product.pricing.length > 0 ? product.pri
   {/* Hero Banner */}
   <section class="hero-gradient py-12 text-white">
     <div class="container-custom text-center">
-      <h1 class="text-[#E2E8F0]xl md:text-[#E2E8F0]xl font-bold mb-4">Secure Checkout</h1>
+      <h1 class="text-3xl md:text-3xl font-bold mb-4">Secure Checkout</h1>
       <p class="text-[#E2E8F0] max-w-xl mx-auto">Get instant activation keys for {product.name} immediately after completing your order.</p>
       
       {/* Checkout Stepper */}
@@ -100,7 +100,7 @@ const pricingList = (product.pricing && product.pricing.length > 0 ? product.pri
                     {tier.originalPrice && tier.originalPrice > tier.price && (
                       <span class="text-sm text-stone-500 line-through">${tier.originalPrice}</span>
                     )}
-                    <span class="text-[#E2E8F0]xl font-extrabold text-white">${tier.price}</span>
+                    <span class="text-3xl font-extrabold text-white">${tier.price}</span>
                   </div>
                   <p class="text-xs text-stone-500 mt-0.5 capitalize font-mono">One-time payment / {tier.period}</p>
                   

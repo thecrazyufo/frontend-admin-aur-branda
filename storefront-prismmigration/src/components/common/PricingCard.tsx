@@ -44,11 +44,11 @@ export default function PricingCard({ tier, productSlug }: PricingCardProps) {
       <div className="mb-6">
         {tier.price === 0 ? (
           <div className="flex items-end gap-1">
-            <span className="text-[#E2E8F0]xl font-bold text-white">Free</span>
+            <span className="text-3xl font-bold text-white">Free</span>
           </div>
         ) : (
           <div className="flex items-end gap-2">
-            <span className="text-[#E2E8F0]xl font-bold text-white">
+            <span className="text-3xl font-bold text-white">
               ${tier.price}
             </span>
             {tier.originalPrice && (
