@@ -72,6 +72,16 @@ export default function Navbar({
     }
   }
 
+  const hasBlog = navItems.some(item => item.label.toLowerCase() === "blog");
+  if (!hasBlog) {
+    const productsIdx = navItems.findIndex(item => item.label.toLowerCase() === "products");
+    if (productsIdx !== -1) {
+      navItems.splice(productsIdx + 1, 0, { label: "Blog", href: "/blog", enabled: true });
+    } else {
+      navItems.push({ label: "Blog", href: "/blog", enabled: true });
+    }
+  }
+
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll, { passive: true });
