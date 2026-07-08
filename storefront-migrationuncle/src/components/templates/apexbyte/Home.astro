@@ -1,0 +1,445 @@
+---
+// ApexByte Soft — Home Template
+// Corporate Blue-White: professional, clean, product-focused
+
+const { products, categories, settings, featured, testimonials } = Astro.props;
+const siteName    = settings?.name        || "ApexByte Soft";
+const siteTagline = settings?.tagline     || "Precision Software for Modern IT Teams";
+const siteDesc    = settings?.description || "Enterprise-grade migration and data management tools built for speed, security, and scalability.";
+const siteBadges  = settings?.trustBadges || [];
+
+const features = [
+  { icon: "⚡", title: "Lightning Fast",    desc: "Process millions of records in minutes with our optimized migration engine." },
+  { icon: "🔒", title: "Bank-Grade Security", desc: "AES-256 encryption at rest and in transit. SOC 2 Type II audited." },
+  { icon: "🎯", title: "Zero Data Loss",    desc: "100% lossless migration guaranteed with pre/post validation checks." },
+  { icon: "🔄", title: "Always Compatible", desc: "Supports 40+ source and destination formats across cloud and on-prem." },
+  { icon: "🛠️", title: "Easy to Deploy",    desc: "One-click setup with guided wizards. No IT expertise required." },
+  { icon: "📊", title: "Audit-Ready Logs",  desc: "Complete activity logs and reports for compliance and governance." },
+];
+---
+
+<div class="bg-white text-[var(--color-text-primary)] font-sans">
+
+  <!-- ===================== HERO SECTION ===================== -->
+  <!-- ===================== UNCLE FRIENDLY HERO SECTION ===================== -->
+  <section class="relative overflow-hidden bg-[var(--color-surface-2)] font-sans">
+    <!-- Warm Background Elements -->
+    <div class="absolute inset-0 pointer-events-none">
+      <!-- Soft dot pattern -->
+      <div class="absolute inset-0" style="background-image: radial-gradient(var(--color-uncle-300) 1px, transparent 1px); background-size: 40px 40px; opacity: 0.15;"></div>
+      
+      <!-- Warm Orbs -->
+      <div class="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-[var(--color-accent-400)] rounded-full mix-blend-multiply filter blur-[100px] opacity-10 animate-pulse-slow"></div>
+      <div class="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-[var(--color-uncle-500)] rounded-full mix-blend-multiply filter blur-[120px] opacity-10 animate-float" style="animation-duration: 12s;"></div>
+    </div>
+
+    <!-- Floating Friendly Icons (Boxes, Tools) -->
+    <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none hidden lg:block">
+      
+      <!-- Moving Box 1 -->
+      <div class="absolute top-[25%] right-[40%] animate-float" style="animation-delay: 0s;">
+        <div class="w-16 h-16 bg-white shadow-md rounded-xl border-2 border-[var(--color-uncle-100)] flex flex-col items-center justify-center text-[var(--color-uncle-500)]">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mb-1"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+        </div>
+      </div>
+
+      <!-- Trust Checkmark -->
+      <div class="absolute top-[40%] right-[15%] animate-float" style="animation-delay: 1.5s;">
+        <div class="w-14 h-14 bg-white shadow-md rounded-full border-2 border-[var(--color-accent-200)] flex flex-col items-center justify-center text-[var(--color-accent-500)]">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+        </div>
+      </div>
+      
+      <!-- File Folder -->
+      <div class="absolute top-[65%] left-[8%] animate-float" style="animation-delay: 0.8s">
+        <div class="w-16 h-16 bg-white shadow-md rounded-xl border-2 border-[var(--color-uncle-200)] flex flex-col items-center justify-center text-[var(--color-uncle-600)] rotate-[-10deg]">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-custom relative z-10 py-24 lg:py-32">
+      <div class="grid grid-cols-1 lg:grid-cols-2 items-center gap-16 lg:gap-20">
+
+        <!-- Left: Content -->
+        <div class="animate-fade-in-up relative z-20">
+          <div class="inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-[var(--color-uncle-100)] rounded-full text-xs font-bold text-[var(--color-uncle-700)] mb-8 shadow-sm">
+            <span class="text-[var(--color-accent-500)]">★</span>
+            #1 Friendly Migration Service
+          </div>
+
+          <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold text-[var(--color-text-primary)] mb-6 leading-[1.1] tracking-tight">
+            Relax. We've Got Your Migration Covered.
+          </h1>
+
+          <p class="text-lg md:text-xl text-[var(--color-text-secondary)] mb-10 max-w-xl leading-relaxed font-medium">
+            Your friendly, reliable partner for moving emails, files, and data. Simple to use, fast, and 100% stress-free. Let Uncle handle the heavy lifting.
+          </p>
+
+          <!-- CTA Buttons -->
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href="/products" class="btn btn-primary text-lg font-bold py-4 px-8 shadow-md hover:-translate-y-1 transition-all duration-300">
+              See Our Tools
+            </a>
+            <a href="/download" class="btn btn-outline text-lg font-bold py-4 px-8 bg-white transition-all duration-300">
+              Download Free Trial
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: Friendly Illustration (Moving Boxes) -->
+        <div class="relative animate-fade-in z-20 group" style="animation-delay: 0.2s">
+          <div class="bg-white rounded-3xl border-2 border-[var(--color-border)] shadow-xl p-8 relative transition-transform duration-500 group-hover:-translate-y-2">
+            
+            <div class="text-center mb-8">
+              <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[var(--color-uncle-100)] text-[var(--color-uncle-600)] mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </div>
+              <h3 class="text-2xl font-bold font-serif text-[var(--color-text-primary)]">Safe Data Transfer</h3>
+              <p class="text-[var(--color-text-secondary)] mt-2">Moving your data like it's our own.</p>
+            </div>
+
+            <!-- Animated Boxes -->
+            <div class="flex items-end justify-center gap-4 h-48 relative border-b-4 border-[var(--color-uncle-100)] pb-2">
+              
+              <div class="w-20 h-20 bg-[var(--color-surface-2)] border-2 border-[var(--color-border-strong)] rounded-xl flex items-center justify-center relative shadow-sm animate-float" style="animation-delay: 0s;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[var(--color-text-muted)]"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                <div class="absolute -top-3 -right-3 w-6 h-6 bg-[var(--color-uncle-500)] rounded-full text-white flex items-center justify-center shadow-md">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                </div>
+              </div>
+
+              <div class="w-24 h-28 bg-[var(--color-uncle-50)] border-2 border-[var(--color-uncle-300)] rounded-xl flex items-center justify-center relative shadow-md animate-float" style="animation-delay: 0.5s;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[var(--color-uncle-600)]"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <div class="absolute -top-3 -right-3 w-6 h-6 bg-[var(--color-uncle-500)] rounded-full text-white flex items-center justify-center shadow-md">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                </div>
+              </div>
+
+              <div class="w-16 h-16 bg-[var(--color-accent-50)] border-2 border-[var(--color-accent-300)] rounded-xl flex items-center justify-center relative shadow-sm animate-float" style="animation-delay: 1s;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[var(--color-accent-600)]"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                <div class="absolute -top-3 -right-3 w-6 h-6 bg-[var(--color-accent-500)] rounded-full text-white flex items-center justify-center shadow-md">
+                  <span class="text-xs font-bold font-sans">↑</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Decorative badge -->
+          <div class="absolute -bottom-5 -left-8 bg-white border-2 border-[var(--color-border)] rounded-2xl shadow-lg px-4 py-3 flex items-center gap-3 animate-float" style="animation-delay: 2s; animation-duration: 5s">
+            <div class="w-8 h-8 rounded-full bg-[var(--color-accent-100)] flex items-center justify-center">
+              <span class="text-lg">⭐</span>
+            </div>
+            <div>
+              <div class="text-[12px] font-bold text-[var(--color-text-primary)]">5/5 Star Rating</div>
+              <div class="text-[11px] text-[var(--color-text-secondary)]">Over 10k happy users</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TRUST BAR ===================== -->
+  {siteBadges.length > 0 && (
+    <section class="bg-white border-y border-[var(--color-border)] py-8">
+      <div class="container-custom">
+        <p class="text-center text-xs font-bold text-[var(--color-text-faint)] uppercase tracking-widest mb-6">
+          Trusted by enterprises worldwide
+        </p>
+        <div class="flex flex-wrap justify-center items-center gap-8 opacity-60 grayscale">
+          {siteBadges.map((b: any) => (
+            <div class="flex items-center gap-2 text-[var(--color-text-secondary)]">
+              <span class="text-2xl">{b.emoji}</span>
+              <span class="font-bold text-sm">{b.title}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- ===================== FEATURES GRID ===================== -->
+  <section class="section bg-white">
+    <div class="container-custom">
+      <div class="text-center mb-14">
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-[var(--color-uncle-100)] rounded-full text-xs font-bold text-[var(--color-uncle-700)] mb-4 uppercase tracking-wider">
+          Why Migration Uncle
+        </div>
+        <h2 class="mb-4">Simple. Fast. Safe.</h2>
+        <p class="text-[var(--color-text-muted)] max-w-2xl mx-auto text-lg">
+          Every tool we build is engineered for reliability, compliance, and scale — so you can focus on results, not troubleshooting.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {features.map((f, i) => (
+          <div
+            class="bg-white border border-[var(--color-border)] rounded-[var(--radius-lg)] p-8 flex flex-col gap-5 hover:shadow-[var(--shadow-lg)] hover:border-[var(--color-border-strong)] hover:-translate-y-1 transition-all duration-300 group"
+            style={`animation-delay: ${i * 60}ms`}
+          >
+            <div class="w-12 h-12 rounded-[var(--radius-md)] bg-[var(--color-uncle-50)] border border-[var(--color-uncle-100)] flex items-center justify-center text-2xl shrink-0 group-hover:bg-[var(--color-uncle-100)] group-hover:scale-110 transition-all duration-300">
+              {f.icon}
+            </div>
+            <div>
+              <h3 class="font-extrabold text-[var(--color-text-primary)] text-lg mb-2 tracking-tight">{f.title}</h3>
+              <p class="text-[15px] text-[var(--color-text-muted)] leading-relaxed">{f.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PRODUCTS SECTION ===================== -->
+  {featured.length > 0 && (
+    <section class="section bg-white">
+      <div class="container-custom">
+        <!-- Section header -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-[var(--color-cyan-50)] rounded-full text-xs font-bold text-[var(--color-cyan-600)] mb-4 uppercase tracking-wider border border-[var(--color-cyan-100)]">
+              Our Software
+            </div>
+            <h2 class="mb-3">Industry-Leading Solutions</h2>
+            <p class="text-[var(--color-text-muted)] max-w-xl text-base">
+              From email migration to cloud backup — find the right tool for your workflow.
+            </p>
+          </div>
+          <a href="/products" class="btn btn-outline text-sm shrink-0">
+            Browse All Products
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featured.map((product: any) => (
+            <div class="card-accent group overflow-hidden flex flex-col bg-white hover:shadow-[var(--shadow-md)] transition-all duration-200">
+              <!-- Top section -->
+              <div class="p-5">
+                <div class="flex items-start justify-between mb-4">
+                  <div class="w-12 h-12 rounded-[var(--radius-md)] bg-[var(--color-uncle-50)] border border-[var(--color-uncle-100)] flex items-center justify-center text-2xl group-hover:bg-[var(--color-uncle-100)] transition-colors">
+                    {product.icon || "📦"}
+                  </div>
+                  {product.badge && (
+                    <span class={`badge ${
+                      product.badge === 'bestseller' ? 'badge-blue' :
+                      product.badge === 'popular' ? 'badge-cyan' :
+                      product.badge === 'new' ? 'badge-green' : 'badge-amber'
+                    }`}>
+                      {product.badge === 'bestseller' ? 'Best Seller' :
+                       product.badge === 'popular' ? 'Popular' :
+                       product.badge === 'new' ? 'New' : 'Updated'}
+                    </span>
+                  )}
+                </div>
+
+                <h3 class="font-bold text-[var(--color-text-primary)] text-base tracking-tight mb-1.5 group-hover:text-[var(--color-uncle-600)] transition-colors line-clamp-2">
+                  {product.name}
+                </h3>
+                <p class="text-sm text-[var(--color-text-muted)] line-clamp-2 leading-relaxed">
+                  {product.shortDescription || product.description}
+                </p>
+              </div>
+
+              <!-- Bottom section -->
+              <div class="px-5 pb-5 border-t border-[var(--color-border)] pt-4 mt-auto">
+                <div class="flex items-center justify-between mb-3">
+                  {product.pricing?.find((p: any) => p.price > 0) ? (
+                    <div class="flex items-baseline gap-1.5">
+                      <span class="font-extrabold text-[var(--color-text-primary)] text-lg tracking-tight">
+                        ${product.pricing.find((p: any) => p.price > 0).price}
+                      </span>
+                      <span class="text-xs text-[var(--color-text-faint)]">
+                        / {product.pricing.find((p: any) => p.price > 0).period}
+                      </span>
+                    </div>
+                  ) : (
+                    <span class="font-bold text-[var(--color-success)] text-base">Free Trial</span>
+                  )}
+                </div>
+                <div class="flex gap-2">
+                  <a href={`/products/${product.id || product.slug}`} class="btn btn-primary flex-1 text-sm py-2.5 justify-center">
+                    View Details
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                  </a>
+                  <a href={`/download?product=${product.slug || product.id}`} class="btn btn-outline text-sm py-2.5 px-3" title="Free Trial">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- ===================== STATS BAND ===================== -->
+  <section class="bg-[var(--color-uncle-800)] py-14">
+    <div class="container-custom">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+        {[
+          { val: "500K+", label: "Active Users", sub: "Worldwide" },
+          { val: "99.9%", label: "Uptime SLA",  sub: "Guaranteed" },
+          { val: "40+",   label: "File Formats", sub: "Supported" },
+          { val: "24/7",  label: "Expert Support", sub: "Available" },
+        ].map(stat => (
+          <div>
+            <div class="font-extrabold text-4xl tracking-tight mb-1" style="color: var(--color-accent-400)">{stat.val}</div>
+            <div class="font-semibold text-white text-sm mb-0.5">{stat.label}</div>
+            <div class="text-xs" style="color: var(--color-uncle-400)">{stat.sub}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TESTIMONIALS ===================== -->
+  {testimonials.length > 0 && (
+    <section class="section bg-[var(--color-surface-2)]">
+      <div class="container-custom">
+        <div class="text-center mb-12">
+          <div class="inline-flex items-center gap-2 px-3 py-1 bg-amber-50 rounded-full text-xs font-bold text-amber-700 mb-4 uppercase tracking-wider border border-amber-100">
+            ★★★★★ Reviews
+          </div>
+          <h2 class="mb-3">What Our Customers Say</h2>
+          <p class="text-[var(--color-text-muted)] text-base">
+            Loved by IT professionals at companies of all sizes.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {testimonials.slice(0, 6).map((t: any) => (
+            <div class="bg-white rounded-[var(--radius-lg)] border border-[var(--color-border)] p-6 hover:shadow-[var(--shadow-md)] transition-shadow">
+              <!-- Stars -->
+              <div class="flex gap-0.5 mb-4">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <span class={i < (t.rating || 5) ? "text-amber-400" : "text-gray-200"}>★</span>
+                ))}
+              </div>
+              <!-- Quote -->
+              <p class="text-sm text-[var(--color-text-secondary)] leading-relaxed mb-5 italic">
+                "{t.content}"
+              </p>
+              <!-- Author -->
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full bg-[var(--color-uncle-600)] flex items-center justify-center text-white font-bold text-sm">
+                  {(t.author || "U")[0].toUpperCase()}
+                </div>
+                <div>
+                  <div class="font-bold text-[var(--color-text-primary)] text-sm">{t.author}</div>
+                  <div class="text-xs text-[var(--color-text-faint)]">{t.role} · {t.company}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- ===================== CTA BANNER ===================== -->
+  <section class="section relative overflow-hidden bg-[var(--color-uncle-900)]">
+    <!-- Background accent -->
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute right-0 bottom-0 w-96 h-96 rounded-full" style="background: radial-gradient(circle, var(--color-uncle-600) 0%, transparent 70%); opacity: 0.2; transform: translate(30%, 30%)"></div>
+      <div class="absolute left-0 top-0 w-64 h-64 rounded-full" style="background: radial-gradient(circle, var(--color-accent-500) 0%, transparent 70%); opacity: 0.15; transform: translate(-30%, -30%)"></div>
+    </div>
+
+    <div class="container-custom relative z-10 text-center">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-white/10 border border-white/20 rounded-full text-xs font-bold text-[var(--color-uncle-300)] mb-6 uppercase tracking-wider">
+        Get Started Today
+      </div>
+      <h2 class="text-white mb-5" style="font-size: clamp(1.75rem, 4vw, 2.75rem)">
+        Start Your Free Trial in Minutes
+      </h2>
+      <p class="text-[var(--color-uncle-300)] text-lg mb-10 max-w-2xl mx-auto">
+        No credit card required. Full-featured trial with expert onboarding support included.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/download" class="btn btn-cyan text-base py-3.5 px-10">
+          Download Free Trial
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+        </a>
+        <a href="/contact" class="btn btn-ghost-white text-base py-3.5 px-10">
+          Talk to Sales
+        </a>
+      </div>
+      <p class="text-xs text-[var(--color-uncle-400)] mt-6">
+        30-Day Money-Back Guarantee &nbsp;·&nbsp; No Setup Fees &nbsp;·&nbsp; Cancel Anytime
+      </p>
+    </div>
+  </section>
+
+</div>
+
+<style>
+  .btn-ghost-white {
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+  }
+  .btn-ghost-white:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.4);
+  }
+
+  /* Custom Animations for Hero */
+  @keyframes data-flow {
+    0% { transform: translateX(-100vw); }
+    100% { transform: translateX(100vw); }
+  }
+  .animate-data-flow {
+    animation: data-flow linear infinite;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(2deg); }
+  }
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  @keyframes data-flow-vertical {
+    0% { transform: translateY(-100%); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateY(100vh); opacity: 0; }
+  }
+  .animate-data-flow-vertical {
+    animation: data-flow-vertical linear infinite;
+  }
+
+  @keyframes fly-right {
+    0% { transform: translateX(0) translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateX(180px) translateY(-50px) scale(0.4); opacity: 0; }
+  }
+  .animate-fly-right {
+    animation: fly-right 2.5s ease-in-out infinite;
+  }
+
+  @keyframes dash {
+    to { stroke-dashoffset: -20; }
+  }
+  .animate-dash {
+    animation: dash 1s linear infinite;
+  }
+
+  @keyframes progress-fill {
+    0% { width: 0%; }
+  }
+  .animate-progress-fill {
+    animation: progress-fill 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  }
+  @keyframes pulse-slow {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+  }
+  .animate-pulse-slow {
+    animation: pulse-slow 4s ease-in-out infinite;
+  }
+</style>

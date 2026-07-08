@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, FormEvent, Suspense } from "react";
+import { useEffect, useState, useRef, FormEvent, Suspense } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { 
   AdminProductAPI, 
@@ -55,6 +55,140 @@ const CATEGORY_CONDITIONAL_FIELDS: Record<string, ConditionalField[]> = {
 };
 
 type Tab = "products" | "blogs" | "faqs" | "categories" | "help" | "jobs";
+
+interface ProductMultiSelectProps {
+  products: any[];
+  selectedIds: string[];
+  onChange: (ids: string[], addedId?: string) => void;
+  placeholder?: string;
+}
+
+function ProductMultiSelect({ products, selectedIds, onChange, placeholder = "Search and select products..." }: ProductMultiSelectProps) {
+  const [search, setSearch] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const selectedProducts = products.filter(p => selectedIds.includes(p.id));
+  const filteredProducts = products.filter(p =>
+    p.name.toLowerCase().includes(search.toLowerCase()) ||
+    (p.category || "").toLowerCase().includes(search.toLowerCase())
+  );
+
+  const grouped = filteredProducts.reduce((acc, p) => {
+    const cat = p.category || "Uncategorized";
+    if (!acc[cat]) acc[cat] = [];
+    acc[cat].push(p);
+    return acc;
+  }, {} as Record<string, any[]>);
+
+  const toggleProduct = (id: string) => {
+    const isAdding = !selectedIds.includes(id);
+    const next = isAdding
+      ? [...selectedIds, id]
+      : selectedIds.filter(x => x !== id);
+    onChange(next, isAdding ? id : undefined);
+  };
+
+  return (
+    <div ref={containerRef} className="relative w-full space-y-1.5">
+      {/* Selected chips and status */}
+      <div className="flex flex-wrap items-center gap-1.5 min-h-9 p-1.5 w-full bg-zinc-50/50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-lg">
+        {selectedProducts.map(p => (
+          <span 
+            key={p.id} 
+            className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-semibold bg-zinc-200/60 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border border-zinc-300 dark:border-zinc-700/60 animate-fade-in"
+          >
+            {p.name}
+            <button
+              type="button"
+              onClick={() => toggleProduct(p.id)}
+              className="text-[10px] text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-150 p-0.5 border-0 bg-transparent cursor-pointer"
+            >
+              ✕
+            </button>
+          </span>
+        ))}
+        {selectedIds.length === 0 && (
+          <span className="text-xs text-zinc-400 ml-1.5 select-none">{placeholder}</span>
+        )}
+        <div className="ml-auto pr-1">
+          <span className="text-[10px] uppercase tracking-wider font-bold text-zinc-400">
+            {selectedIds.length} selected
+          </span>
+        </div>
+      </div>
+
+      {/* Button to open dropdown / Search query input */}
+      <div className="relative">
+        <Input
+          type="text"
+          value={search}
+          onChange={e => {
+            setSearch(e.target.value);
+            setIsOpen(true);
+          }}
+          onFocus={() => setIsOpen(true)}
+          placeholder="Filter products by name or category..."
+          className="pr-8"
+        />
+        <button
+          type="button"
+          onClick={() => setIsOpen(!isOpen)}
+          className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-zinc-400 hover:text-zinc-650 dark:hover:text-zinc-300 border-0 bg-transparent cursor-pointer"
+        >
+          {isOpen ? "▲" : "▼"}
+        </button>
+      </div>
+
+      {/* Dropdown Menu */}
+      {isOpen && (
+        <div className="absolute z-50 w-full mt-1 bg-white dark:bg-zinc-900 border border-zinc-250 dark:border-zinc-800 rounded-lg shadow-lg max-h-60 overflow-y-auto divide-y divide-zinc-100 dark:divide-zinc-800">
+          {Object.keys(grouped).length === 0 ? (
+            <div className="p-3 text-xs text-zinc-400 text-center">No products found</div>
+          ) : (
+            Object.entries(grouped).map(([category, items]) => (
+              <div key={category} className="p-2 space-y-1">
+                <span className="px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+                  📁 {category}
+                </span>
+                <div className="space-y-0.5">
+                  {(items as any[]).map((p: any) => {
+                    const isChecked = selectedIds.includes(p.id);
+                    return (
+                      <div
+                        key={p.id}
+                        onClick={() => toggleProduct(p.id)}
+                        className={cn(
+                          "flex items-center justify-between px-2 py-1.5 rounded-md text-xs cursor-pointer select-none transition-colors",
+                          isChecked 
+                            ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 font-medium" 
+                            : "hover:bg-zinc-50 dark:hover:bg-zinc-800/40 text-zinc-700 dark:text-zinc-300"
+                        )}
+                      >
+                        <span>{p.name}</span>
+                        <span className="text-[10px] font-mono text-zinc-405 dark:text-zinc-500">({p.id})</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 const emptyProduct = (): Partial<Product> => ({
   name: "",
@@ -584,6 +718,10 @@ function ContentCreatorContent() {
 
   async function saveFaq(isDraftOnly: boolean) {
     if (!faqModal) return;
+    if (!isDraftOnly && (!faqModal.productIds || faqModal.productIds.length === 0)) {
+      showToast("Please select at least one Related Product/Tool", "error");
+      return;
+    }
     try {
       setSaving(true);
       const payload = { ...faqModal, siteId: brandId };
@@ -610,6 +748,10 @@ function ContentCreatorContent() {
 
   async function saveCategory(isDraftOnly: boolean) {
     if (!categoryModal) return;
+    if (!isDraftOnly && (!categoryModal.productIds || categoryModal.productIds.length === 0)) {
+      showToast("Please select at least one Related Product/Tool", "error");
+      return;
+    }
     try {
       setSaving(true);
       const payload = { ...categoryModal, siteId: brandId };
@@ -636,6 +778,10 @@ function ContentCreatorContent() {
 
   async function saveHelpArticle(isDraftOnly: boolean) {
     if (!helpModal) return;
+    if (!isDraftOnly && (!helpModal.productIds || helpModal.productIds.length === 0)) {
+      showToast("Please select at least one Related Product/Tool", "error");
+      return;
+    }
     try {
       setSaving(true);
       const payload = { ...helpModal, siteId: brandId };
@@ -923,6 +1069,15 @@ function ContentCreatorContent() {
                 {modalSubTab === "basic" && (
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-1.5 sm:col-span-2">
+                        <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Permanent Product ID</label>
+                        <Input 
+                          type="text" 
+                          value={productModal.id || "PRM-[CATEGORY]-[YEAR]-[SEQUENCE] (Generated automatically on Publish)"} 
+                          disabled 
+                          className="bg-zinc-100 dark:bg-zinc-900/50 font-mono text-xs cursor-not-allowed select-all" 
+                        />
+                      </div>
                       <div className="space-y-1.5">
                         <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Product Name</label>
                         <Input type="text" value={productModal.name || ""} onChange={e => setProductModal({...productModal, name: e.target.value})} required />
@@ -2063,6 +2218,16 @@ function ContentCreatorContent() {
                       className="w-full bg-transparent border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25 focus-visible:border-blue-500 dark:text-zinc-100"
                     />
                   </div>
+                  <div className="space-y-1.5 sm:col-span-2">
+                    <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Related Products/Tools</label>
+                    <ProductMultiSelect
+                      products={products}
+                      selectedIds={(blogModal as any).productIds || []}
+                      onChange={(updated) => {
+                        setBlogModal({ ...blogModal, productIds: updated } as any);
+                      }}
+                    />
+                  </div>
                 </div>
               </form>
             </main>
@@ -2141,6 +2306,23 @@ function ContentCreatorContent() {
                   <div className="space-y-1.5">
                     <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Category</label>
                     <Input type="text" value={faqModal.category || ""} onChange={e => setFaqModal({...faqModal, category: e.target.value as any})} required />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Related Products/Tools</label>
+                    <ProductMultiSelect
+                      products={products}
+                      selectedIds={faqModal.productIds || []}
+                      onChange={(updated, addedId) => {
+                        const nextState: any = { ...faqModal, productIds: updated };
+                        if (addedId) {
+                          const p = products.find(prod => prod.id === addedId);
+                          if (p && p.category) {
+                            nextState.category = p.category;
+                          }
+                        }
+                        setFaqModal(nextState);
+                      }}
+                    />
                   </div>
                 </div>
               </form>
@@ -2249,6 +2431,30 @@ function ContentCreatorContent() {
                       value={helpModal.tags?.join(", ") || ""} 
                       onChange={e => setHelpModal({...helpModal, tags: e.target.value.split(",").map(t => t.trim()).filter(Boolean)})} 
                       placeholder="e.g. migration, office-365, troubleshoot"
+                    />
+                  </div>
+                  <div className="space-y-1.5 sm:col-span-2">
+                    <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Related Products/Tools</label>
+                    <ProductMultiSelect
+                      products={products}
+                      selectedIds={helpModal.productIds || []}
+                      onChange={(updated, addedId) => {
+                        const nextState: any = { ...helpModal, productIds: updated };
+                        if (addedId) {
+                          const p = products.find(prod => prod.id === addedId);
+                          if (p && p.category) {
+                            const prodCat = p.category.toLowerCase();
+                            if (prodCat.includes("migration")) {
+                              nextState.category = "migration";
+                            } else if (prodCat.includes("recovery")) {
+                              nextState.category = "troubleshooting";
+                            } else {
+                              nextState.category = "getting-started";
+                            }
+                          }
+                        }
+                        setHelpModal(nextState);
+                      }}
                     />
                   </div>
                   <div className="space-y-1.5 sm:col-span-2">
@@ -2562,6 +2768,16 @@ function ContentCreatorContent() {
                       className="w-full bg-transparent border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25 focus-visible:border-blue-500 dark:text-zinc-100"
                     />
                   </div>
+                  <div className="space-y-1.5 sm:col-span-2">
+                    <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Related Products/Tools</label>
+                    <ProductMultiSelect
+                      products={products}
+                      selectedIds={categoryModal.productIds || []}
+                      onChange={(updated) => {
+                        setCategoryModal({ ...categoryModal, productIds: updated });
+                      }}
+                    />
+                  </div>
                 </div>
               </form>
             </main>
@@ -2604,8 +2820,15 @@ function ContentCreatorContent() {
                   {products.filter(p => p.name.toLowerCase().includes(search.toLowerCase()) || p.category?.toLowerCase().includes(search.toLowerCase())).map(p => (
                     <TableRow key={p.id}>
                       <TableCell className="font-semibold text-zinc-900 dark:text-zinc-150">
-                        <div className="flex flex-col">
-                          <span className="font-semibold">{p.name}</span>
+                        <div className="flex flex-col gap-0.5">
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold">{p.name}</span>
+                            {p.id && p.id.startsWith("PRM-") && (
+                              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700">
+                                {p.id}
+                              </span>
+                            )}
+                          </div>
                           <span className="text-[11px] text-zinc-405 dark:text-zinc-500 font-mono">/{p.slug}</span>
                         </div>
                       </TableCell>
@@ -2712,7 +2935,23 @@ function ContentCreatorContent() {
                 <TableBody>
                   {faqs.filter(f => f.question.toLowerCase().includes(search.toLowerCase()) || f.answer.toLowerCase().includes(search.toLowerCase())).map(f => (
                     <TableRow key={f.id}>
-                      <TableCell className="font-semibold text-zinc-900 dark:text-zinc-150" style={{ width: "30%" }}>{f.question}</TableCell>
+                      <TableCell className="font-semibold text-zinc-900 dark:text-zinc-150" style={{ width: "30%" }}>
+                        <div className="flex flex-col gap-1">
+                          <span>{f.question}</span>
+                          <div className="flex flex-wrap gap-1">
+                            {f.productNames && f.productNames.map(name => (
+                              <span key={name} className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-indigo-500/10 text-indigo-500 border border-indigo-500/20">
+                                📦 {name}
+                              </span>
+                            ))}
+                            {!f.productNames && (f as any).productName && (
+                              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-indigo-500/10 text-indigo-500 border border-indigo-500/20">
+                                📦 {(f as any).productName}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </TableCell>
                       <TableCell className="text-zinc-500 dark:text-zinc-400 text-xs max-w-[350px] truncate">{f.answer}</TableCell>
                       <TableCell>
                         <span className="bg-zinc-100 dark:bg-zinc-850 border border-zinc-200 dark:border-zinc-750 px-2 py-0.5 rounded text-[11px] font-semibold text-zinc-600 dark:text-zinc-350">{f.category}</span>
@@ -2743,7 +2982,18 @@ function ContentCreatorContent() {
                 <TableBody>
                   {categories.filter(c => c.label.toLowerCase().includes(search.toLowerCase())).map(c => (
                     <TableRow key={c.id}>
-                      <TableCell className="font-semibold text-zinc-900 dark:text-zinc-150">{c.label}</TableCell>
+                      <TableCell className="font-semibold text-zinc-900 dark:text-zinc-150">
+                        <div className="flex flex-col gap-1">
+                          <span>{c.label}</span>
+                          <div className="flex flex-wrap gap-1">
+                            {c.productNames && c.productNames.map(name => (
+                              <span key={name} className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-indigo-500/10 text-indigo-500 border border-indigo-500/20">
+                                📦 {name}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <span className="w-3 h-3 rounded-full border border-black/10 dark:border-white/10" style={{ backgroundColor: c.color }} />
@@ -2779,9 +3029,23 @@ function ContentCreatorContent() {
                   {helpArticles.filter(h => h.title.toLowerCase().includes(search.toLowerCase()) || h.excerpt?.toLowerCase().includes(search.toLowerCase())).map(h => (
                     <TableRow key={h.id}>
                       <TableCell className="font-semibold text-zinc-900 dark:text-zinc-150">
-                        <div className="flex flex-col">
-                          <span className="font-semibold">{h.title}</span>
-                          <span className="text-[11px] text-zinc-400 dark:text-zinc-500 font-mono">/{h.slug}</span>
+                        <div className="flex flex-col gap-1">
+                          <div className="flex items-center flex-wrap gap-2">
+                            <span className="font-semibold">{h.title}</span>
+                            <div className="flex flex-wrap gap-1">
+                              {h.productNames && h.productNames.map(name => (
+                                <span key={name} className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-indigo-500/10 text-indigo-500 border border-indigo-500/20">
+                                  📦 {name}
+                                </span>
+                              ))}
+                              {!h.productNames && (h as any).productName && (
+                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-indigo-500/10 text-indigo-500 border border-indigo-500/20">
+                                  📦 {(h as any).productName}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          <span className="text-[11px] text-zinc-405 dark:text-zinc-500 font-mono">/{h.slug}</span>
                         </div>
                       </TableCell>
                       <TableCell>

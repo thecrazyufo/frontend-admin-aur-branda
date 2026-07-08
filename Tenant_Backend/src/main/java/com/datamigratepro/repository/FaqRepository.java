@@ -11,4 +11,5 @@ public interface FaqRepository extends JpaRepository<Faq, String> {
     List<Faq> findByCategory(String category);
     List<Faq> findBySiteId(String siteId);
     List<Faq> findByCategoryAndSiteId(String category, String siteId);
+    List<Faq> findByProductId(String productId);
 }

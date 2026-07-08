@@ -42,5 +42,15 @@
     <include file="db/changelog/023-career-positions.xml" relativeToChangelogFile="false"/>
     <include file="db/changelog/024-site-settings-clients.xml" relativeToChangelogFile="false"/>
     <include file="db/changelog/025-product-install-urls.xml" relativeToChangelogFile="false"/>
-
+    <include file="db/changelog/026-link-faqs-guides-to-products.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/027-faq-guide-multiple-products.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/028-category-multiple-products.xml" relativeToChangelogFile="false"/>
+    <!-- Phase 1: Social proof entities linked to products -->
+    <include file="db/changelog/029-social-proof-product-ids.xml" relativeToChangelogFile="false"/>
+    <!-- Phase 2: Blog posts linked to products -->
+    <include file="db/changelog/030-blog-product-ids.xml" relativeToChangelogFile="false"/>
+    <!-- Phase 3: Trial downloads use proper productId reference -->
+    <include file="db/changelog/031-trial-downloads-product-id.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/032-migrationuncle-brand.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/033-apexbyte-brand.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

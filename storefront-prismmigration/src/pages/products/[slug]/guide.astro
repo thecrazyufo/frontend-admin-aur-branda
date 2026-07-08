@@ -47,11 +47,11 @@ const siteUrl = (settings?.url || "").replace(/\/$/, "");
     <div class="container-custom">
       <div class="flex flex-col md:flex-row items-center justify-between gap-8">
         <div>
-          <span class="inline-flex items-center gap-1.5 text-[10px] bg-[#EAB308]/10 text-[#EAB308] border border-[#EAB308]/20 font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-4">
+          <span class="inline-flex items-center gap-1.5 text-[10px] bg-[#F97316]/10 text-[#F97316] border border-[#F97316]/20 font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-4">
             <BookOpen size={12} /> Product Guide
           </span>
-          <h1 class="text-3xl md:text-5xl font-extrabold mb-4">{product.name} Guide</h1>
-          <p class="text-stone-300 text-sm max-w-xl">Learn how to install, configure, and execute data operations with our step-by-step documentation.</p>
+          <h1 class="text-[#0F172A]xl md:text-[#475569]xl font-extrabold mb-4">{product.name} Guide</h1>
+          <p class="text-[#0F172A] text-sm max-w-xl">Learn how to install, configure, and execute data operations with our step-by-step documentation.</p>
         </div>
         
         <div class="flex flex-wrap gap-4 shrink-0">
@@ -66,28 +66,28 @@ const siteUrl = (settings?.url || "").replace(/\/$/, "");
     </div>
   </section>
 
-  <section class="section bg-[#0A0A0A]">
+  <section class="section bg-[#F8FAFC]">
     <div class="container-custom">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
         {/* Main Content Area */}
         <div class="lg:col-span-2 space-y-12">
           {/* Step by Step Guide */}
           <div>
-            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-              <span class="w-8 h-8 rounded-lg bg-[#EAB308]/10 text-[#EAB308] border border-[#EAB308]/20 flex items-center justify-center text-sm"><Play size={16} /></span>
+            <h2 class="text-[#0F172A]xl font-bold text-white mb-6 flex items-center gap-2">
+              <span class="w-8 h-8 rounded-lg bg-[#F97316]/10 text-[#F97316] border border-[#F97316]/20 flex items-center justify-center text-sm"><Play size={16} /></span>
               Step-by-Step Instructions
             </h2>
             
-            <div class="relative pl-8 border-l border-stone-900 space-y-10 ml-4">
+            <div class="relative pl-8 border-l border-[#E2E8F0] space-y-10 ml-4">
               {steps.map((s, idx) => (
                 <div class="relative">
                   {/* Step bubble */}
-                  <span class="absolute -left-12 top-0.5 w-8 h-8 rounded-full bg-[#EAB308] text-black font-bold flex items-center justify-center text-sm shadow-[0_0_15px_rgba(234,179,8,0.25)]">
+                  <span class="absolute -left-12 top-0.5 w-8 h-8 rounded-full bg-[#F97316] text-black font-bold flex items-center justify-center text-sm shadow-[0_0_15px_rgba(249, 115, 22,0.25)]">
                     {s.step || (idx + 1)}
                   </span>
                   
                   <h3 class="text-lg font-bold text-white mb-2">{s.title}</h3>
-                  <div class="text-sm text-stone-300 leading-relaxed" set:html={parseMarkdownToHtml(s.description || "")} />
+                  <div class="text-sm text-[#0F172A] leading-relaxed" set:html={parseMarkdownToHtml(s.description || "")} />
                 </div>
               ))}
             </div>
@@ -95,20 +95,20 @@ const siteUrl = (settings?.url || "").replace(/\/$/, "");
 
           {/* Product FAQs */}
           {product.faqs && product.faqs.length > 0 && (
-            <div class="pt-8 border-t border-stone-900">
-              <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-                <span class="w-8 h-8 rounded-lg bg-[#EAB308]/10 text-[#EAB308] border border-[#EAB308]/20 flex items-center justify-center text-sm"><HelpCircle size={16} /></span>
+            <div class="pt-8 border-t border-[#E2E8F0]">
+              <h2 class="text-[#0F172A]xl font-bold text-white mb-6 flex items-center gap-2">
+                <span class="w-8 h-8 rounded-lg bg-[#F97316]/10 text-[#F97316] border border-[#F97316]/20 flex items-center justify-center text-sm"><HelpCircle size={16} /></span>
                 Frequently Asked Questions
               </h2>
               
               <div class="space-y-4">
                 {product.faqs.map((faq) => (
-                  <div class="bg-stone-900/30 backdrop-blur rounded-xl p-5 border border-stone-900 shadow-2xl">
+                  <div class="bg-white/30 backdrop-blur rounded-xl p-5 border border-[#E2E8F0] shadow-2xl">
                     <h4 class="font-bold text-white mb-2 flex items-start gap-2 text-sm md:text-base">
-                      <span class="text-[#EAB308] font-extrabold">Q:</span>
+                      <span class="text-[#F97316] font-extrabold">Q:</span>
                       {faq.question}
                     </h4>
-                    <div class="text-sm text-stone-300 pl-5 leading-relaxed" set:html={parseMarkdownToHtml(faq.answer || "")} />
+                    <div class="text-sm text-[#0F172A] pl-5 leading-relaxed" set:html={parseMarkdownToHtml(faq.answer || "")} />
                   </div>
                 ))}
               </div>
@@ -119,39 +119,39 @@ const siteUrl = (settings?.url || "").replace(/\/$/, "");
         {/* Sidebar Column */}
         <div class="space-y-8">
           {/* Compatibility Specs */}
-          <div class="bg-stone-900/30 backdrop-blur rounded-2xl p-6 border border-stone-900 shadow-sm">
-            <h3 class="font-bold text-white mb-4 pb-4 border-b border-stone-850 flex items-center gap-2">
-              <Monitor size={16} className="text-[#EAB308]" />
+          <div class="bg-white/30 backdrop-blur rounded-2xl p-6 border border-[#E2E8F0] shadow-sm">
+            <h3 class="font-bold text-white mb-4 pb-4 border-b border-[#E2E8F0] flex items-center gap-2">
+              <Monitor size={16} className="text-[#F97316]" />
               System Requirements
             </h3>
             
             <div class="space-y-4">
               <div class="flex gap-2">
                 <span class="text-xs font-semibold text-stone-500 w-20 shrink-0">OS:</span>
-                <span class="text-xs text-stone-300">{reqs.os}</span>
+                <span class="text-xs text-[#0F172A]">{reqs.os}</span>
               </div>
               <div class="flex gap-2">
                 <span class="text-xs font-semibold text-stone-500 w-20 shrink-0">Processor:</span>
-                <span class="text-xs text-stone-300">{reqs.processor}</span>
+                <span class="text-xs text-[#0F172A]">{reqs.processor}</span>
               </div>
               <div class="flex gap-2">
                 <span class="text-xs font-semibold text-stone-500 w-20 shrink-0">RAM:</span>
-                <span class="text-xs text-stone-300">{reqs.ram}</span>
+                <span class="text-xs text-[#0F172A]">{reqs.ram}</span>
               </div>
               <div class="flex gap-2">
                 <span class="text-xs font-semibold text-stone-500 w-20 shrink-0">Disk:</span>
-                <span class="text-xs text-stone-300">{reqs.disk}</span>
+                <span class="text-xs text-[#0F172A]">{reqs.disk}</span>
               </div>
             </div>
           </div>
 
           {/* Supported Formats */}
           {product.supportedFormats && product.supportedFormats.length > 0 && (
-            <div class="bg-stone-900/30 backdrop-blur rounded-2xl p-6 border border-stone-900 shadow-sm">
-              <h3 class="font-bold text-white mb-4 pb-4 border-b border-stone-850">Compatibility</h3>
+            <div class="bg-white/30 backdrop-blur rounded-2xl p-6 border border-[#E2E8F0] shadow-sm">
+              <h3 class="font-bold text-white mb-4 pb-4 border-b border-[#E2E8F0]">Compatibility</h3>
               <div class="flex flex-wrap gap-2">
                 {product.supportedFormats.map((fmt) => (
-                  <span class="px-2.5 py-1 bg-[#EAB308]/10 border border-[#EAB308]/20 text-[#EAB308] text-xs rounded font-mono font-bold">
+                  <span class="px-2.5 py-1 bg-[#F97316]/10 border border-[#F97316]/20 text-[#F97316] text-xs rounded font-mono font-bold">
                     {fmt}
                   </span>
                 ))}
@@ -160,16 +160,16 @@ const siteUrl = (settings?.url || "").replace(/\/$/, "");
           )}
 
           {/* CTA Box */}
-          <div class="bg-stone-900/40 border border-stone-850 text-white rounded-2xl p-6 shadow-lg text-center relative overflow-hidden">
+          <div class="bg-white/40 border border-[#E2E8F0] text-white rounded-2xl p-6 shadow-lg text-center relative overflow-hidden">
             <div class="relative z-10">
               <h3 class="font-bold text-lg mb-2">Convert Without Limits</h3>
-              <p class="text-xs text-stone-300 mb-6 leading-relaxed">Unlock the full version to convert unlimited files with complete technical support.</p>
+              <p class="text-xs text-[#0F172A] mb-6 leading-relaxed">Unlock the full version to convert unlimited files with complete technical support.</p>
               
               <a href={`/products/${product.slug}/buy`} class="btn btn-accent w-full py-2.5">
                 Get Lifetime Key
               </a>
             </div>
-            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-[#EAB308]/5 rounded-full blur-2xl"></div>
+            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-[#F97316]/5 rounded-full blur-2xl"></div>
           </div>
         </div>
       </div>

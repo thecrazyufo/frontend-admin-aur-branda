@@ -15,20 +15,20 @@ const htmlContent = settings?.legalPages?.["goodbye"];
   description="The software has been uninstalled. We are sorry to see you go."
   noindex={true}
 >
-  <section class="min-h-[80vh] flex items-center py-20 bg-[#0A0A0A] relative overflow-hidden tech-grid">
+  <section class="min-h-[80vh] flex items-center py-20 bg-[#F8FAFC] relative overflow-hidden tech-grid">
     <!-- Background accents -->
     <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-      <div class="absolute -top-[10%] left-[50%] -translate-x-1/2 w-[600px] h-[300px] bg-[#EAB308]/5 rounded-full blur-[120px]"></div>
+      <div class="absolute -top-[10%] left-[50%] -translate-x-1/2 w-[600px] h-[300px] bg-[#F97316]/5 rounded-full blur-[120px]"></div>
     </div>
 
     <div class="container-custom max-w-3xl mx-auto px-4 relative z-10">
       {hasCustomContent ? (
         <div 
-          class="bg-stone-900/30 backdrop-blur-xl border border-stone-850 p-8 md:p-12 rounded-3xl shadow-2xl prose prose-invert max-w-none prose-headings:text-white prose-p:text-stone-300 prose-a:text-[#EAB308] hover:prose-a:underline"
+          class="bg-white/30 backdrop-blur-xl border border-[#E2E8F0] p-8 md:p-12 rounded-3xl shadow-2xl prose prose-invert max-w-none prose-headings:text-white prose-p:text-[#0F172A] prose-a:text-[#F97316] hover:prose-a:underline"
           set:html={htmlContent}
         />
       ) : (
-        <div class="bg-stone-900/30 backdrop-blur-xl border border-stone-850 p-8 md:p-12 rounded-3xl shadow-2xl text-center space-y-8">
+        <div class="bg-white/30 backdrop-blur-xl border border-[#E2E8F0] p-8 md:p-12 rounded-3xl shadow-2xl text-center space-y-8">
           <!-- Trash or Goodbye SVG -->
           <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-red-500/10 border border-red-500/20 text-red-500 mb-2 animate-pulse">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10">
@@ -37,23 +37,23 @@ const htmlContent = settings?.legalPages?.["goodbye"];
           </div>
 
           <div class="space-y-3">
-            <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+            <h1 class="text-[#0F172A]xl md:text-[#0F172A]xl font-extrabold text-white tracking-tight">
               Uninstallation Completed
             </h1>
-            <p class="text-stone-400 text-sm md:text-base max-w-md mx-auto">
-              We are sorry to see you go. <span class="text-[#EAB308] font-bold">{siteName}</span> has been completely removed from your device.
+            <p class="text-[#475569] text-sm md:text-base max-w-md mx-auto">
+              We are sorry to see you go. <span class="text-[#F97316] font-bold">{siteName}</span> has been completely removed from your device.
             </p>
           </div>
 
           <!-- Feedback Callout -->
-          <div class="bg-stone-950/40 p-6 rounded-2xl border border-stone-900 max-w-lg mx-auto text-left space-y-4">
+          <div class="bg-[#F8FAFC]/40 p-6 rounded-2xl border border-[#E2E8F0] max-w-lg mx-auto text-left space-y-4">
             <h3 class="text-white font-semibold text-sm">Help us improve!</h3>
-            <p class="text-stone-400 text-xs leading-relaxed">
+            <p class="text-[#475569] text-xs leading-relaxed">
               We are constantly working to build a better tool. If you experienced any issues or have feedback, please let us know. Your suggestions directly shape future releases.
             </p>
             <a 
               href="/contact" 
-              class="inline-flex items-center gap-1.5 text-xs text-[#EAB308] font-semibold hover:underline"
+              class="inline-flex items-center gap-1.5 text-xs text-[#F97316] font-semibold hover:underline"
             >
               Share Feedback 
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3 h-3">
@@ -66,13 +66,13 @@ const htmlContent = settings?.legalPages?.["goodbye"];
           <div class="flex flex-col sm:flex-row gap-4 items-center justify-center pt-4">
             <a 
               href="/" 
-              class="w-full sm:w-auto px-6 py-3 bg-[#EAB308] hover:bg-[#f1c40f] text-black font-semibold rounded-lg text-sm transition-all duration-200 transform hover:scale-[1.02]"
+              class="w-full sm:w-auto px-6 py-3 bg-[#F97316] hover:bg-[#EA580C] text-black font-semibold rounded-lg text-sm transition-all duration-200 transform hover:scale-[1.02]"
             >
               Reinstall Software
             </a>
             <a 
               href="/products" 
-              class="w-full sm:w-auto px-6 py-3 bg-stone-900 border border-stone-850 hover:border-stone-800 text-stone-300 font-semibold rounded-lg text-sm transition-all duration-200"
+              class="w-full sm:w-auto px-6 py-3 bg-white border border-[#E2E8F0] hover:border-[#E2E8F0] text-[#0F172A] font-semibold rounded-lg text-sm transition-all duration-200"
             >
               Explore Other Products
             </a>

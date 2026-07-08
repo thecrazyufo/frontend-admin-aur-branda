@@ -49,7 +49,17 @@ public class BlogPost {
     @Column(columnDefinition = "jsonb")
     private Seo seo;
 
+    /** Product IDs this blog post is linked to */
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "product_ids", columnDefinition = "jsonb")
+    private List<String> productIds;
+
+    /** Transient: populated at query time from product names — not persisted */
+    @Transient
+    private List<String> productNames;
+
     @org.hibernate.annotations.TenantId
     @Column(name = "site_id", nullable = false)
     private String siteId;
 }
+

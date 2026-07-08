@@ -1,6 +1,7 @@
 package com.datamigratepro.dto;
 
 import lombok.Data;
+import java.util.List;
 
 @Data
 public class ClientLogoDto {
@@ -9,4 +10,5 @@ public class ClientLogoDto {
     private Integer displayOrder;
     private String description;
     private String caseStudy;
+    private List<String> productIds;
 }

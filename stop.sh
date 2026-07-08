@@ -26,7 +26,7 @@ fi
 
 BRANDB_PORT_PIDS=$(lsof -t -i:3002 2>/dev/null)
 if [ ! -z "$BRANDB_PORT_PIDS" ]; then
-  echo "⚡ Stopping Next.js Storefront (Port 3002)..."
+  echo "⚡ Stopping Next.js Storefront ApexByte (Port 3002)..."
   echo "$BRANDB_PORT_PIDS" | xargs kill -9 2>/dev/null || true
 fi
 

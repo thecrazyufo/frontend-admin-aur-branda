@@ -28,21 +28,21 @@ if (!article) {
   description={article.excerpt}
 >
   <Breadcrumb items={[{ label: "Help Center", href: "/help" }, { label: article.title }]} />
-  <div class="bg-[#0A0A0A] min-h-screen">
+  <div class="bg-[#F8FAFC] min-h-screen">
     <article class="container-custom py-20 max-w-3xl">
-      <a href="/help" class="inline-flex items-center gap-2 text-xs text-[#EAB308] hover:underline mb-8 font-semibold">
+      <a href="/help" class="inline-flex items-center gap-2 text-xs text-[#F97316] hover:underline mb-8 font-semibold">
         <ArrowLeft size={15} />
         Back to Help Center
       </a>
-      <h1 class="font-extrabold text-white mb-2 text-2xl tracking-tight">{article.title}</h1>
-      <p class="text-stone-300 text-xs mb-8">{article.excerpt}</p>
+      <h1 class="font-extrabold text-white mb-2 text-[#0F172A]xl tracking-tight">{article.title}</h1>
+      <p class="text-[#0F172A] text-xs mb-8">{article.excerpt}</p>
 
-      <div class="bg-stone-900/30 backdrop-blur rounded-xl border border-stone-900 shadow-2xl p-8">
-        <div class="prose prose-invert leading-relaxed text-xs text-stone-300 space-y-4" set:html={parseMarkdownToHtml(article.content || "")} />
+      <div class="bg-white/30 backdrop-blur rounded-xl border border-[#E2E8F0] shadow-2xl p-8">
+        <div class="prose prose-invert leading-relaxed text-xs text-[#0F172A] space-y-4" set:html={parseMarkdownToHtml(article.content || "")} />
       </div>
 
       {/* Helpful? */}
-      <div class="mt-8 bg-stone-900/30 backdrop-blur rounded-xl border border-stone-900 p-6 text-center">
+      <div class="mt-8 bg-white/30 backdrop-blur rounded-xl border border-[#E2E8F0] p-6 text-center">
         <p class="font-bold text-white mb-4 text-xs">Was this article helpful?</p>
         <div class="flex items-center justify-center gap-4 flex-wrap">
           <button id="btn-helpful" class="text-xs py-2 px-5 text-emerald-500 border border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10 rounded-lg flex items-center gap-1.5 cursor-pointer transition-colors">

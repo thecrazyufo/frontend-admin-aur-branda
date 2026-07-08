@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- Add product_id (PRM-* format) to trial_downloads, alongside existing productSlug for backward compat -->
+    <changeSet id="031-trial-downloads-product-id" author="platform">
+        <addColumn tableName="trial_downloads">
+            <column name="product_id" type="VARCHAR(50)"/>
+        </addColumn>
+        <!-- Backfill product_id from productSlug where possible via a custom SQL update -->
+        <sql>
+            UPDATE trial_downloads td
+            SET product_id = p.id
+            FROM products p
+            WHERE p.slug = td.product_slug
+              AND p.site_id = td.site_id
+              AND td.product_id IS NULL;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

@@ -34,28 +34,28 @@ export function getStaticPaths() {
   title={`${pageTitle} — ${siteName}`}
   description={`${pageTitle} for ${siteName}. Read our policies carefully.`}
 >
-  <section class="py-16 bg-[#0A0A0A]">
+  <section class="py-16 bg-[#F8FAFC]">
     <div class="container-custom max-w-4xl">
       <div class="mb-10 text-center">
-        <h1 class="text-3xl md:text-4xl font-bold text-white mb-3">
+        <h1 class="text-[#0F172A]xl md:text-[#0F172A]xl font-bold text-white mb-3">
           {pageTitle}
         </h1>
-        <p class="text-stone-400 text-sm">
+        <p class="text-[#475569] text-sm">
           Last updated: {new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
         </p>
       </div>
 
       <div
-        class="bg-stone-900/30 backdrop-blur rounded-2xl border border-stone-900 p-8 md:p-12 prose prose-invert prose-lg max-w-none
-               prose-headings:text-white prose-p:text-stone-300 prose-a:text-[#EAB308] prose-a:no-underline hover:prose-a:underline
-               prose-li:text-stone-300 prose-strong:text-white"
+        class="bg-white/30 backdrop-blur rounded-2xl border border-[#E2E8F0] p-8 md:p-12 prose prose-invert prose-lg max-w-none
+               prose-headings:text-white prose-p:text-[#0F172A] prose-a:text-[#F97316] prose-a:no-underline hover:prose-a:underline
+               prose-li:text-[#0F172A] prose-strong:text-white"
         set:html={htmlContent}
       />
 
       <div class="mt-8 text-center">
         <p class="text-sm text-stone-500">
           If you have questions about this policy, please
-          <a href="/contact" class="text-[#EAB308] hover:underline ml-1">contact our support team</a>.
+          <a href="/contact" class="text-[#F97316] hover:underline ml-1">contact our support team</a>.
         </p>
       </div>
     </div>

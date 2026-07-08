@@ -96,6 +96,7 @@ public class DevDatabaseSeeder implements CommandLineRunner {
                     new AdminUser("staffB", passwordEncoder.encode("admin123"), "SEO_CW_PRODUCT_MANAGER", "brandB", "Brand B SEO & Product Staff", "staff@brandB.local")
                 ));
                 System.out.println("👤 Seeded initial administrator credentials in system database!");
+            
             } else {
                 System.out.println("👤 Administrator credentials already exist. Skipping credentials seeding.");
             }
@@ -149,10 +150,35 @@ public class DevDatabaseSeeder implements CommandLineRunner {
 
                     licenseRepository.saveAll(createBrandLicenses("PST", "brandA"));
                     System.out.println("🔑 Seeded initial valid licenses for brandA!");
+                } else if ("apexbyte".equals(brand)) {
+                    seedApexByteCatalog();
+                    seedGlobalRegistryGeneric(brand);
+                    seedApexByteCareerPositions();
+                    seedApexByteClients();
+                    System.out.println("🌱 Database apexbyte successfully seeded with catalog!");
+                    
+                    licenseRepository.saveAll(createBrandLicenses("APX", "apexbyte"));
+                    System.out.println("🔑 Seeded initial valid licenses for apexbyte!");
+                
+                } else if ("migrationuncle".equals(brand)) {
+                        seedMigrationUncleSiteSettings();
+                    seedMigrationUncleCatalog();
+                    seedGlobalRegistryGeneric(brand);
+                    seedMigrationUncleCareerPositions();
+                    seedMigrationUncleClients();
+                    System.out.println("🌱 Database migrationuncle successfully seeded with catalog!");
+                    
+                    licenseRepository.saveAll(createBrandLicenses("MGU", "migrationuncle"));
+                    System.out.println("🔑 Seeded initial valid licenses for migrationuncle!");
                 } else {
-                    seedBrandSpecificCatalog(brand);
+                    if (brand.equals("apexbyte")) {
+                        seedApexByteCatalog(brand);
+                    } else {
+                        seedBrandSpecificCatalog(brand);
+                    }
                     seedGlobalRegistryGeneric(brand);
                     seedCareerPositions(brand);
+        seedSiteSettingsForApexByte();
                     seedClientsForSite(brand);
                     System.out.println("🌱 Database " + brand + " successfully seeded with catalog!");
                     
@@ -175,6 +201,7 @@ public class DevDatabaseSeeder implements CommandLineRunner {
         if (formatCompatibilityRepository.count() == 0) {
             seedFormatCompatibility();
             System.out.println("🔗 Seeded format compatibility matrix for Find Your Tool feature!");
+        
         } else {
             System.out.println("🔗 Format compatibility matrix already exists. Skipping seeding.");
         }
@@ -498,7 +525,7 @@ public class DevDatabaseSeeder implements CommandLineRunner {
         p2.setName("Office 365 Backup Tool");
         p2.setShortDescription("Complete backup solution for Microsoft Office 365 — emails, OneDrive, SharePoint, and Teams data.");
         p2.setDescription("Protect your Microsoft 365 data with our comprehensive backup solution. Backup emails, contacts, calendars, OneDrive files, SharePoint sites, and Teams conversations. Restore individual items or full mailboxes in minutes.");
-        p2.setCategory("backup");
+        p2.setCategory("apexbyte-backup");
         p2.setTags(Arrays.asList("office 365", "microsoft 365", "backup", "onedrive", "sharepoint"));
         p2.setRating(4.9);
         p2.setReviewCount(1876);
@@ -1029,6 +1056,47 @@ public class DevDatabaseSeeder implements CommandLineRunner {
         siteSettingRepository.save(setting);
     }
 
+
+    private void seedMigrationUncleSiteSettings() {
+        SiteSetting setting = new SiteSetting();
+        setting.setId("settings-migrationuncle");
+        setting.setSiteId("migrationuncle");
+        setting.setName("Migration Uncle");
+        setting.setTagline("Reliable & Friendly Data Migration Tools for Everyone.");
+        setting.setDescription("We make migrating your emails, databases, and files as easy as asking your favorite uncle for help. Warm, trustworthy, and effective.");
+        setting.setUrl("https://migrationuncle.com");
+        setting.setEmail("hello@migrationuncle.com");
+        setting.setPhone("+1 (800) 555-UNCLE");
+        setting.setAddress("789 Oak Lane, Techville, CA 90210");
+
+        setting.setSocials(new SiteSetting.Socials(
+            "https://twitter.com/migrationuncle",
+            "https://linkedin.com/company/migrationuncle",
+            "https://youtube.com/@migrationuncle",
+            "https://facebook.com/migrationuncle",
+            "https://github.com/migrationuncle"
+        ));
+
+        setting.setStats(Arrays.asList(
+            new SiteSetting.StatItem("500K+", "Downloads"),
+            new SiteSetting.StatItem("25K+", "Happy Users"),
+            new SiteSetting.StatItem("4.9★", "Avg Rating"),
+            new SiteSetting.StatItem("99.8%", "Success Rate")
+        ));
+
+        setting.setMainNavigation(Arrays.asList(
+            new SiteSetting.NavItem("Products", "/products", null, true, null),
+            new SiteSetting.NavItem("Pricing", "/pricing", null, true, null),
+            new SiteSetting.NavItem("Help Center", "/help", null, true, null),
+            new SiteSetting.NavItem("Careers", "/careers", null, true, null),
+            new SiteSetting.NavItem("Contact", "/contact", null, true, null)
+        ));
+
+        setting.setLegalPages(generateLegalPages("Migration Uncle", "https://migrationuncle.com", "hello@migrationuncle.com"));
+
+        siteSettingRepository.save(setting);
+    }
+
     private SiteSetting createBrandASiteSetting() {
         SiteSetting defaultSetting = new SiteSetting();
         defaultSetting.setId("settings-brandA");
@@ -1350,5 +1418,760 @@ public class DevDatabaseSeeder implements CommandLineRunner {
 
         testimonialRepository.saveAll(Arrays.asList(t1, t2));
         System.out.println("💼 Seeded client logos and testimonials for site: " + siteId);
+    }
+
+    private void seedApexByteCatalog() {
+        // 1. Categories
+        Category c1 = new Category();
+        c1.setId("apexbyte-migration");
+        c1.setSlug("apexbyte-migration");
+        c1.setLabel("Migration Tools");
+        c1.setDescription("Enterprise-grade tools to migrate email servers and cloud mailboxes.");
+        
+        Category c2 = new Category();
+        c2.setId("apexbyte-backup");
+        c2.setSlug("apexbyte-backup");
+        c2.setLabel("Backup Solutions");
+        c2.setDescription("Securely backup and archive your critical corporate data.");
+
+        Category c3 = new Category();
+        c3.setId("apexbyte-converters");
+        c3.setSlug("apexbyte-converters");
+        c3.setLabel("File Converters");
+        c3.setDescription("Fast and accurate binary file converters for documents and archives.");
+
+        Category c4 = new Category();
+        c4.setId("apexbyte-database");
+        c4.setSlug("apexbyte-database");
+        c4.setLabel("Database Tools");
+        c4.setDescription("Migrate between SQL Server, Oracle, MySQL, and PostgreSQL seamlessly.");
+
+        categoryRepository.saveAll(Arrays.asList(c1, c2, c3, c4));
+
+        // 2. Products
+        Product p1 = new Product();
+        p1.setId("apexbyte-exchange-migrator");
+        p1.setSlug("apexbyte-exchange-migrator");
+        p1.setName("ApexByte Exchange Migrator");
+        p1.setShortDescription("Seamlessly migrate on-premise Exchange to Microsoft 365.");
+        p1.setDescription("Our flagship product for enterprise Exchange migrations with zero downtime.");
+        p1.setCategory("apexbyte-migration");
+        p1.setBadge("bestseller");
+        
+        PricingTier p1t1 = new PricingTier("Standard", 199.0, null, "user", Arrays.asList("10 Mailboxes", "Standard Support"), "Buy Now", null, false);
+        PricingTier p1t2 = new PricingTier("Enterprise", 499.0, null, "user", Arrays.asList("Unlimited Mailboxes", "Priority Support"), "Contact Sales", null, true);
+        p1.setPricing(Arrays.asList(p1t1, p1t2));
+
+        ProductReview p1r1 = new ProductReview("r1", "John Doe", "IT Director", "TechCorp", 5, "2025-01-10", "Migrated 500 users over the weekend without a hitch. Incredible tool.");
+        p1.setReviews(Arrays.asList(p1r1));
+
+        Product p2 = new Product();
+        p2.setId("apexbyte-cloud-backup-pro");
+        p2.setSlug("apexbyte-cloud-backup-pro");
+        p2.setName("ApexByte Cloud Backup Pro");
+        p2.setShortDescription("Automated, encrypted backups for AWS, Azure, and Google Cloud.");
+        p2.setDescription("Ensure business continuity with point-in-time recovery for your cloud infrastructure.");
+        p2.setCategory("apexbyte-backup");
+        p2.setBadge("popular");
+
+        PricingTier p2t1 = new PricingTier("Business", 299.0, null, "server", Arrays.asList("Daily Backups", "AES-256 Encryption"), "Get Started", null, false);
+        p2.setPricing(Arrays.asList(p2t1));
+
+        ProductReview p2r1 = new ProductReview("r2", "Sarah Smith", "DevOps Lead", "CloudNative Inc.", 5, "2025-02-15", "Saved us from a major data loss incident last month. Worth every penny.");
+        p2.setReviews(Arrays.asList(p2r1));
+
+        Product p3 = new Product();
+        p3.setId("apexbyte-pdf-converter");
+        p3.setSlug("apexbyte-pdf-converter");
+        p3.setName("ApexByte PDF to Word Converter");
+        p3.setShortDescription("High-fidelity document conversion retaining exact formatting.");
+        p3.setDescription("Convert massive batches of PDF files into editable Word documents instantly.");
+        p3.setCategory("apexbyte-converters");
+        
+        PricingTier p3t1 = new PricingTier("Personal", 49.0, null, "license", Arrays.asList("Unlimited Conversions", "Basic Support"), "Buy License", null, false);
+        p3.setPricing(Arrays.asList(p3t1));
+
+        ProductReview p3r1 = new ProductReview("r3", "Michael Chang", "Legal Associate", "Law Firm LLP", 4, "2025-03-01", "Handles complex legal formatting much better than Adobe.");
+        p3.setReviews(Arrays.asList(p3r1));
+
+        Product p4 = new Product();
+        p4.setId("apexbyte-sql-migrator");
+        p4.setSlug("apexbyte-sql-migrator");
+        p4.setName("ApexByte SQL Schema Migrator");
+        p4.setShortDescription("Translate schemas and move data between major relational databases.");
+        p4.setDescription("Supports Oracle, SQL Server, MySQL, and PostgreSQL with automated schema translation.");
+        p4.setCategory("apexbyte-database");
+        p4.setBadge("new");
+        
+        PricingTier p4t1 = new PricingTier("Professional", 899.0, null, "license", Arrays.asList("Cross-database support", "Schema Mapping AI"), "Request Demo", null, true);
+        p4.setPricing(Arrays.asList(p4t1));
+
+        ProductReview p4r1 = new ProductReview("r4", "Elena Rodriguez", "DBA", "FinTech Solutions", 5, "2025-04-12", "The automated type mapping saved us weeks of manual work.");
+        p4.setReviews(Arrays.asList(p4r1));
+        
+        Product p5 = new Product();
+        p5.setId("apexbyte-duplicate-remover");
+        p5.setSlug("apexbyte-duplicate-remover");
+        p5.setName("ApexByte Outlook Duplicate Remover");
+        p5.setShortDescription("Clean up cluttered Outlook mailboxes with smart algorithms.");
+        p5.setDescription("Identifies and removes exact and partial duplicate emails, contacts, and calendar events.");
+        p5.setCategory("apexbyte-migration");
+        
+        PricingTier p5t1 = new PricingTier("Standard", 29.0, null, "license", Arrays.asList("Email Cleanup", "Contact Merging"), "Buy Now", null, false);
+        p5.setPricing(Arrays.asList(p5t1));
+        
+        ProductReview p5r1 = new ProductReview("r5", "David Kim", "Executive Assistant", "Global Corp", 5, "2025-05-20", "Freed up 10GB in my boss's mailbox in just 5 minutes.");
+        p5.setReviews(Arrays.asList(p5r1));
+
+        Product p6 = new Product();
+        p6.setId("apexbyte-gws-backup");
+        p6.setSlug("apexbyte-gws-backup");
+        p6.setName("ApexByte Google Workspace Backup");
+        p6.setShortDescription("Comprehensive backup for Gmail, Drive, Docs, and Sites.");
+        p6.setDescription("Protect your entire Google Workspace environment against ransomware and accidental deletion.");
+        p6.setCategory("apexbyte-backup");
+        p6.setBadge("popular");
+        
+        PricingTier p6t1 = new PricingTier("Enterprise", 399.0, null, "domain", Arrays.asList("Unlimited Users", "1-Click Restore"), "Contact Sales", null, true);
+        p6.setPricing(Arrays.asList(p6t1));
+        
+        ProductReview p6r1 = new ProductReview("r6", "Lisa Wong", "IT Manager", "EduTech", 5, "2025-06-10", "Restoring a deleted user's drive took less than a minute.");
+        p6.setReviews(Arrays.asList(p6r1));
+
+        productRepository.saveAll(Arrays.asList(p1, p2, p3, p4, p5, p6));
+
+        // 3. FAQs
+        Faq f1 = new Faq();
+        f1.setId("faq-apex-1");
+        f1.setQuestion("Do you offer technical support during migrations?");
+        f1.setAnswer("Yes, all our Enterprise licenses come with 24/7 priority support and dedicated migration engineers.");
+        f1.setProductId("apexbyte-exchange-migrator");
+        f1.setCategory("General");
+        f1.setSiteId("apexbyte");
+
+        Faq f2 = new Faq();
+        f2.setId("faq-apex-2");
+        f2.setQuestion("Can I try the software before buying?");
+        f2.setAnswer("Absolutely. We offer fully-functional free trials for all our products.");
+        f2.setCategory("General");
+        f2.setSiteId("apexbyte");
+        
+        Faq f3 = new Faq();
+        f3.setId("faq-apex-3");
+        f3.setQuestion("What is your refund policy?");
+        f3.setAnswer("We offer a strict 30-day money-back guarantee if the software fails to perform the described tasks and our support team cannot resolve the issue.");
+        f3.setCategory("General");
+        f3.setSiteId("apexbyte");
+        
+        Faq f4 = new Faq();
+        f4.setId("faq-apex-4");
+        f4.setQuestion("Are my backups encrypted?");
+        f4.setAnswer("Yes, ApexByte Cloud Backup Pro uses AES-256 military-grade encryption both in-transit and at-rest.");
+        f4.setProductId("apexbyte-cloud-backup-pro");
+        f4.setCategory("Security");
+        f4.setSiteId("apexbyte");
+        
+        Faq f5 = new Faq();
+        f5.setId("faq-apex-5");
+        f5.setQuestion("Does the SQL migrator support stored procedures?");
+        f5.setAnswer("Yes, our schema translation AI attempts to convert stored procedures between major dialects, though complex logic may require manual review.");
+        f5.setProductId("apexbyte-sql-migrator");
+        f5.setCategory("Technical");
+        f5.setSiteId("apexbyte");
+
+        faqRepository.saveAll(Arrays.asList(f1, f2, f3, f4, f5));
+
+        // 4. Guides (Help Articles)
+        HelpArticle h1 = new HelpArticle();
+        h1.setId("help-apex-1");
+        h1.setSiteId("apexbyte");
+        h1.setSlug("exchange-migration-best-practices");
+        h1.setTitle("Best Practices for Zero-Downtime Exchange Migrations");
+        h1.setContent("A comprehensive guide on planning, staging, and executing a migration from on-prem Exchange to Microsoft 365. Always run a delta sync after the final cutover.");
+        h1.setCategory("Migration");
+        h1.setTags(Arrays.asList("Exchange","Office365","Enterprise"));
+
+        HelpArticle h2 = new HelpArticle();
+        h2.setId("help-apex-2");
+        h2.setSiteId("apexbyte");
+        h2.setSlug("configuring-cloud-backup-schedules");
+        h2.setTitle("How to Configure Optimal Cloud Backup Schedules");
+        h2.setContent("Learn how to balance RPO/RTO requirements with storage costs by setting up tiered retention policies in ApexByte Cloud Backup Pro.");
+        h2.setCategory("Backup");
+        h2.setTags(Arrays.asList("Cloud","AWS","Azure"));
+
+        HelpArticle h3 = new HelpArticle();
+        h3.setId("help-apex-3");
+        h3.setSiteId("apexbyte");
+        h3.setSlug("translating-oracle-to-postgres");
+        h3.setTitle("Translating Oracle Schemas to PostgreSQL");
+        h3.setContent("A deep dive into how ApexByte handles specific Oracle data types like NUMBER and VARCHAR2 when migrating to PostgreSQL.");
+        h3.setCategory("Database");
+        h3.setTags(Arrays.asList("Oracle","PostgreSQL","SQL"));
+        
+        HelpArticle h4 = new HelpArticle();
+        h4.setId("help-apex-4");
+        h4.setSiteId("apexbyte");
+        h4.setSlug("troubleshooting-pdf-fonts");
+        h4.setTitle("Troubleshooting Missing Fonts in PDF Conversions");
+        h4.setContent("If your converted Word document looks different from the PDF, ensure the original fonts are installed on your system or enable 'Embed Missing Fonts' in the settings.");
+        h4.setCategory("Converters");
+        h4.setTags(Arrays.asList("PDF","Word","Formatting"));
+
+        HelpArticle h5 = new HelpArticle();
+        h5.setId("help-apex-5");
+        h5.setSiteId("apexbyte");
+        h5.setSlug("removing-duplicates-safely");
+        h5.setTitle("How to Remove Outlook Duplicates Safely");
+        h5.setContent("Always run a backup before removing duplicates. Use our 'Simulate' mode first to review the items that will be deleted.");
+        h5.setCategory("Maintenance");
+        h5.setTags(Arrays.asList("Outlook","Cleanup"));
+
+        helpArticleRepository.saveAll(Arrays.asList(h1, h2, h3, h4, h5));
+    }
+
+    private void seedApexByteCareerPositions() {
+        CareerPosition cp1 = new CareerPosition();
+        cp1.setId("se-backend-apex");
+        cp1.setSiteId("apexbyte");
+        cp1.setTitle("Senior Backend Engineer (Java)");
+        cp1.setLocation("Remote (US/Canada)");
+        cp1.setType("Full-time");
+        cp1.setDescription("We are looking for an experienced Java Spring Boot engineer to help build the next generation of our data migration engine. You will be working on highly concurrent data streaming pipelines.");
+        cp1.setRequirements("- 5+ years of Java experience\n- Strong understanding of Spring Boot\n- Experience with concurrent programming\n- Familiarity with PostgreSQL");
+        cp1.setStatus("OPEN");
+        
+        CareerPosition cp2 = new CareerPosition();
+        cp2.setId("tech-support-apex");
+        cp2.setSiteId("apexbyte");
+        cp2.setTitle("Technical Support Specialist");
+        cp2.setLocation("London, UK / Remote");
+        cp2.setType("Full-time");
+        cp2.setDescription("Join our global support team to assist enterprise clients with complex database and email migrations. Excellent communication skills required.");
+        cp2.setRequirements("- 2+ years in technical support\n- Knowledge of Microsoft Exchange and Office 365\n- Basic SQL knowledge\n- Excellent written English");
+        cp2.setStatus("OPEN");
+        
+        CareerPosition cp3 = new CareerPosition();
+        cp3.setId("product-manager-apex");
+        cp3.setSiteId("apexbyte");
+        cp3.setTitle("Product Manager - Cloud Solutions");
+        cp3.setLocation("San Francisco, CA");
+        cp3.setType("Full-time");
+        cp3.setDescription("Lead the product strategy for our rapidly growing suite of cloud backup solutions.");
+        cp3.setRequirements("- 3+ years in B2B SaaS Product Management\n- Experience in the data backup/security space\n- Strong analytical skills");
+        cp3.setStatus("OPEN");
+
+        careerPositionRepository.saveAll(Arrays.asList(cp1, cp2, cp3));
+    }
+
+    private void seedApexByteClients() {
+        ClientLogo cl1 = new ClientLogo();
+        cl1.setId("apex-client-1");
+        cl1.setSiteId("apexbyte");
+        cl1.setCompanyName("Acme Corp");
+        cl1.setLogoUrl("/logos/acme.svg"); // The UI will gracefully fallback if missing
+
+        ClientLogo cl2 = new ClientLogo();
+        cl2.setId("apex-client-2");
+        cl2.setSiteId("apexbyte");
+        cl2.setCompanyName("GlobalNet");
+        cl2.setLogoUrl("/logos/globalnet.svg");
+
+        clientLogoRepository.saveAll(Arrays.asList(cl1, cl2));
+    }
+
+
+    private void seedMigrationUncleCatalog() {
+        TenantContext.setCurrentTenant("migrationuncle");
+
+        // 1. Categories
+        Category c1 = new Category();
+        c1.setId("mgu-migration");
+        c1.setSlug("migration");
+        c1.setLabel("Migration");
+        c1.setDescription("Simple and reliable tools to move emails and data from one platform to another.");
+        
+        Category c2 = new Category();
+        c2.setId("mgu-backup");
+        c2.setSlug("backup");
+        c2.setLabel("Backup");
+        c2.setDescription("Securely backup your emails and data to prevent any loss.");
+
+        Category c3 = new Category();
+        c3.setId("mgu-converter");
+        c3.setSlug("converter");
+        c3.setLabel("Converter");
+        c3.setDescription("Convert your files into universal formats that you can read anywhere.");
+
+        Category c4 = new Category();
+        c4.setId("mgu-utility");
+        c4.setSlug("utility");
+        c4.setLabel("Utility");
+        c4.setDescription("Handy utilities to clean up and organize your digital life.");
+
+        categoryRepository.saveAll(Arrays.asList(c1, c2, c3, c4));
+
+        // 2. Products
+        Product p1 = new Product();
+        p1.setId("uncle-pst-to-gmail");
+        p1.setSlug("pst-to-gmail-converter");
+        p1.setName("PST to Gmail Converter");
+        p1.setShortDescription("The easiest way to move your old Outlook data to your Google account.");
+        p1.setDescription("Don't let your old emails collect dust. Uncle's tool helps you seamlessly transfer all your Outlook PST files to your new Gmail account with just a few clicks. It's safe, secure, and incredibly friendly to use.");
+        p1.setCategory("mgu-migration");
+        p1.setBadge("bestseller");
+        PricingTier p1t1 = new PricingTier("Home User", 29.0, null, "user", Arrays.asList("Up to 5 accounts", "Friendly Email Support"), "Get It Now", null, false);
+        p1.setPricing(Arrays.asList(p1t1));
+        ProductReview p1r1 = new ProductReview("r1", "Mary P.", "Retired Teacher", "Home User", 5, "2025-01-10", "I was so worried about losing my emails, but this tool was a breeze to use!");
+        p1.setReviews(Arrays.asList(p1r1));
+
+        Product p2 = new Product();
+        p2.setId("uncle-ost-recovery");
+        p2.setSlug("ost-recovery-tool");
+        p2.setName("OST Recovery Tool");
+        p2.setShortDescription("Rescue your data from corrupted Outlook offline files.");
+        p2.setDescription("Got an OST file you can't open? Don't panic. Uncle's recovery kit will repair the file and extract your emails, contacts, and calendars so you can get back to work.");
+        p2.setCategory("mgu-utility");
+        PricingTier p2t1 = new PricingTier("Standard", 49.0, null, "license", Arrays.asList("Unlimited Recoveries", "Priority Support"), "Buy License", null, false);
+        p2.setPricing(Arrays.asList(p2t1));
+
+        Product p3 = new Product();
+        p3.setId("uncle-duplicate-cleaner");
+        p3.setSlug("duplicate-cleaner");
+        p3.setName("Duplicate Cleaner");
+        p3.setShortDescription("Tidy up your messy mailbox by finding and removing duplicate emails.");
+        p3.setDescription("Is your inbox full of the same message? Uncle's Duplicate Cleaner scans your accounts and safely removes identical copies, giving you your space back.");
+        p3.setCategory("mgu-utility");
+        p3.setBadge("new");
+        PricingTier p3t1 = new PricingTier("Standard", 25.0, null, "license", Arrays.asList("Safe Mode Review", "Works with Outlook & IMAP"), "Clean Inbox", null, true);
+        p3.setPricing(Arrays.asList(p3t1));
+        ProductReview p3r1 = new ProductReview("r4", "Bob Jenkins", "Small Business Owner", "Bob's Plumbing", 5, "2025-04-12", "Finally got rid of 3,000 duplicate emails that were driving me crazy.");
+        p3.setReviews(Arrays.asList(p3r1));
+
+        Product p4 = new Product();
+        p4.setId("uncle-cloud-migration-kit");
+        p4.setSlug("cloud-migration-kit");
+        p4.setName("Cloud Migration Kit");
+        p4.setShortDescription("Move all your local files and emails to the cloud safely.");
+        p4.setDescription("Moving to the cloud doesn't have to be scary. This kit handles everything from local archives to cloud mailboxes in one smooth process.");
+        p4.setCategory("mgu-migration");
+        PricingTier p4t1 = new PricingTier("Pro", 99.0, null, "license", Arrays.asList("Unlimited Data", "24/7 Phone Support"), "Go to Cloud", null, false);
+        p4.setPricing(Arrays.asList(p4t1));
+
+        Product p5 = new Product();
+        p5.setId("uncle-mbox-to-pst");
+        p5.setSlug("mbox-to-pst-converter");
+        p5.setName("MBOX to PST Converter");
+        p5.setShortDescription("Convert Apple Mail and Thunderbird files to Outlook.");
+        p5.setDescription("Switching from Mac to PC? Or Thunderbird to Outlook? This tool converts your MBOX files to PST format flawlessly.");
+        p5.setCategory("mgu-converter");
+        PricingTier p5t1 = new PricingTier("Basic", 39.0, null, "license", Arrays.asList("Fast Conversion", "No Size Limits"), "Buy Now", null, false);
+        p5.setPricing(Arrays.asList(p5t1));
+
+        Product p6 = new Product();
+        p6.setId("uncle-email-backup-pro");
+        p6.setSlug("email-backup-pro");
+        p6.setName("Email Backup Pro");
+        p6.setShortDescription("Automated, secure backups for your IMAP or Exchange mailboxes.");
+        p6.setDescription("Never lose an email again. Set it and forget it. Email Backup Pro takes daily snapshots of your mailboxes to local storage.");
+        p6.setCategory("mgu-backup");
+        PricingTier p6t1 = new PricingTier("Annual", 49.0, null, "subscription", Arrays.asList("Daily Backups", "AES-256 Encryption"), "Subscribe", null, false);
+        p6.setPricing(Arrays.asList(p6t1));
+
+        Product p7 = new Product();
+        p7.setId("uncle-eml-viewer");
+        p7.setSlug("eml-viewer-free");
+        p7.setName("EML Viewer (Free)");
+        p7.setShortDescription("A simple utility to view standalone .eml files.");
+        p7.setDescription("Someone sent you an EML file and you don't have an email client installed? Use our free viewer to read the email and extract attachments.");
+        p7.setCategory("mgu-utility");
+        PricingTier p7t1 = new PricingTier("Free", 0.0, null, "free", Arrays.asList("View EMLs", "Extract Attachments"), "Download Free", null, false);
+        p7.setPricing(Arrays.asList(p7t1));
+
+        Product p8 = new Product();
+        p8.setId("uncle-ost-to-pst");
+        p8.setSlug("ost-to-pst-converter");
+        p8.setName("OST to PST Converter");
+        p8.setShortDescription("Convert healthy OST files to portable PST format.");
+        p8.setDescription("Need to backup your Exchange cache or move it to another machine? Convert it to PST easily with this tool.");
+        p8.setCategory("mgu-converter");
+        PricingTier p8t1 = new PricingTier("Standard", 39.0, null, "license", Arrays.asList("Batch Conversion", "High Speed"), "Buy Now", null, false);
+        p8.setPricing(Arrays.asList(p8t1));
+        
+        productRepository.saveAll(Arrays.asList(p1, p2, p3, p4, p5, p6, p7, p8));
+
+        // 3. FAQs
+        List<Faq> faqs = new ArrayList<>();
+        
+        Faq f1 = new Faq();
+        f1.setId("faq-mgu-1");
+        f1.setQuestion("I am not very good with computers. Is this hard to use?");
+        f1.setAnswer("Not at all! We designed all of our tools to be as simple as possible. Plus, our friendly support team is always here to help you step-by-step.");
+        f1.setCategory("General");
+        f1.setSiteId("migrationuncle");
+        f1.setProductIds(Arrays.asList("uncle-pst-to-gmail", "uncle-cloud-migration-kit"));
+        faqs.add(f1);
+
+        Faq f2 = new Faq();
+        f2.setId("faq-mgu-2");
+        f2.setQuestion("Will this delete my original emails?");
+        f2.setAnswer("No way! We only read your original files and create copies in the new location. Your original data is always perfectly safe.");
+        f2.setCategory("Safety");
+        f2.setSiteId("migrationuncle");
+        f2.setProductIds(Arrays.asList("uncle-pst-to-gmail", "uncle-duplicate-cleaner", "uncle-cloud-migration-kit"));
+        faqs.add(f2);
+        
+        Faq f3 = new Faq();
+        f3.setId("faq-mgu-3");
+        f3.setQuestion("What if the tool doesn't work for me?");
+        f3.setAnswer("We want you to be happy. If our tool doesn't solve your problem and we can't help fix it, we'll give you a full refund within 30 days.");
+        f3.setCategory("General");
+        f3.setSiteId("migrationuncle");
+        f3.setProductIds(Arrays.asList("uncle-pst-to-gmail", "uncle-ost-recovery", "uncle-mbox-to-pst"));
+        faqs.add(f3);
+
+        Faq f4 = new Faq();
+        f4.setId("faq-mgu-4");
+        f4.setQuestion("How fast is the conversion process?");
+        f4.setAnswer("It depends on your file size, but our tools are highly optimized. Typically, it can process 1GB of data in just a few minutes.");
+        f4.setCategory("Performance");
+        f4.setSiteId("migrationuncle");
+        f4.setProductIds(Arrays.asList("uncle-mbox-to-pst", "uncle-ost-to-pst"));
+        faqs.add(f4);
+
+        Faq f5 = new Faq();
+        f5.setId("faq-mgu-5");
+        f5.setQuestion("Does Duplicate Cleaner delete emails permanently?");
+        f5.setAnswer("By default, it moves duplicates to a 'Deleted Items' folder so you can review them. You can configure it to permanently delete if you prefer.");
+        f5.setCategory("Features");
+        f5.setSiteId("migrationuncle");
+        f5.setProductIds(Arrays.asList("uncle-duplicate-cleaner"));
+        faqs.add(f5);
+
+        Faq f6 = new Faq();
+        f6.setId("faq-mgu-6");
+        f6.setQuestion("Can it recover emails that were permanently deleted?");
+        f6.setAnswer("The OST Recovery tool can sometimes recover 'hard-deleted' items if the space hasn't been overwritten in the file yet.");
+        f6.setCategory("Features");
+        f6.setSiteId("migrationuncle");
+        f6.setProductIds(Arrays.asList("uncle-ost-recovery"));
+        faqs.add(f6);
+
+        Faq f7 = new Faq();
+        f7.setId("faq-mgu-7");
+        f7.setQuestion("Where are my backups stored?");
+        f7.setAnswer("Email Backup Pro stores your backups locally on your computer or any external hard drive you specify. We don't keep your data on our servers.");
+        f7.setCategory("Privacy");
+        f7.setSiteId("migrationuncle");
+        f7.setProductIds(Arrays.asList("uncle-email-backup-pro"));
+        faqs.add(f7);
+
+        Faq f8 = new Faq();
+        f8.setId("faq-mgu-8");
+        f8.setQuestion("Is the EML Viewer actually free?");
+        f8.setAnswer("Yes! 100% free, no ads, no hidden costs. It's our way of helping out the community.");
+        f8.setCategory("Pricing");
+        f8.setSiteId("migrationuncle");
+        f8.setProductIds(Arrays.asList("uncle-eml-viewer"));
+        faqs.add(f8);
+
+        Faq f9 = new Faq();
+        f9.setId("faq-mgu-9");
+        f9.setQuestion("Does it maintain folder hierarchy?");
+        f9.setAnswer("Absolutely. The cloud migration kit accurately maps your local folder structure directly to your cloud mailbox.");
+        f9.setCategory("Features");
+        f9.setSiteId("migrationuncle");
+        f9.setProductIds(Arrays.asList("uncle-cloud-migration-kit", "uncle-pst-to-gmail"));
+        faqs.add(f9);
+
+        Faq f10 = new Faq();
+        f10.setId("faq-mgu-10");
+        f10.setQuestion("Can I install this on a Mac?");
+        f10.setAnswer("Currently, our tools are designed for Windows operating systems (Windows 10 and 11).");
+        f10.setCategory("Compatibility");
+        f10.setSiteId("migrationuncle");
+        f10.setProductIds(Arrays.asList("uncle-pst-to-gmail", "uncle-mbox-to-pst"));
+        faqs.add(f10);
+
+        faqRepository.saveAll(faqs);
+
+        // 4. Guides (Help Articles)
+        List<HelpArticle> guides = new ArrayList<>();
+
+        HelpArticle h1 = new HelpArticle();
+        h1.setId("help-mgu-1");
+        h1.setSiteId("migrationuncle");
+        h1.setSlug("how-to-find-pst-file");
+        h1.setTitle("How to find your Outlook PST file");
+        h1.setContent("If you're not sure where Outlook keeps your data, don't worry! Open Outlook, go to File > Account Settings, and click the Data Files tab. The location of your file is listed right there.");
+        h1.setCategory("Getting Started");
+        h1.setTags(Arrays.asList("Outlook","PST","Beginner"));
+        h1.setProductIds(Arrays.asList("uncle-pst-to-gmail"));
+        guides.add(h1);
+
+        HelpArticle h2 = new HelpArticle();
+        h2.setId("help-mgu-2");
+        h2.setSiteId("migrationuncle");
+        h2.setSlug("what-is-an-ost-file");
+        h2.setTitle("What is an OST file anyway?");
+        h2.setContent("An OST file is an 'Offline Storage Table'. It's basically a cached copy of your mailbox when you use an Exchange or IMAP account. It lets you read your mail even when your internet is down.");
+        h2.setCategory("Learning");
+        h2.setTags(Arrays.asList("OST","Information"));
+        h2.setProductIds(Arrays.asList("uncle-ost-recovery", "uncle-ost-to-pst"));
+        guides.add(h2);
+
+        HelpArticle h3 = new HelpArticle();
+        h3.setId("help-mgu-3");
+        h3.setSiteId("migrationuncle");
+        h3.setSlug("preventing-duplicate-emails");
+        h3.setTitle("How to prevent duplicate emails in the future");
+        h3.setContent("Duplicates often happen when you drag and drop folders incorrectly or sync the same account on multiple devices improperly. Always use IMAP instead of POP3!");
+        h3.setCategory("Best Practices");
+        h3.setTags(Arrays.asList("Clean Inbox","Tips"));
+        h3.setProductIds(Arrays.asList("uncle-duplicate-cleaner"));
+        guides.add(h3);
+
+        HelpArticle h4 = new HelpArticle();
+        h4.setId("help-mgu-4");
+        h4.setSiteId("migrationuncle");
+        h4.setSlug("best-backup-strategy");
+        h4.setTitle("The 3-2-1 Backup Rule");
+        h4.setContent("Keep 3 copies of your data, on 2 different media, with 1 offsite. Email Backup Pro can help you automate the local backups.");
+        h4.setCategory("Learning");
+        h4.setTags(Arrays.asList("Backup","Security"));
+        h4.setProductIds(Arrays.asList("uncle-email-backup-pro"));
+        guides.add(h4);
+
+        HelpArticle h5 = new HelpArticle();
+        h5.setId("help-mgu-5");
+        h5.setSiteId("migrationuncle");
+        h5.setSlug("exporting-from-thunderbird");
+        h5.setTitle("Exporting your mail from Mozilla Thunderbird");
+        h5.setContent("Thunderbird uses the MBOX format. You can find your profile folder by clicking Help > Troubleshooting Information > Open Folder.");
+        h5.setCategory("Getting Started");
+        h5.setTags(Arrays.asList("MBOX","Thunderbird"));
+        h5.setProductIds(Arrays.asList("uncle-mbox-to-pst"));
+        guides.add(h5);
+
+        HelpArticle h6 = new HelpArticle();
+        h6.setId("help-mgu-6");
+        h6.setSiteId("migrationuncle");
+        h6.setSlug("migrating-to-office-365");
+        h6.setTitle("Checklist for Migrating to Office 365");
+        h6.setContent("Make sure you have your admin credentials, list of mailboxes, and inform your users about the downtime before starting the migration.");
+        h6.setCategory("Migration");
+        h6.setTags(Arrays.asList("Cloud","O365"));
+        h6.setProductIds(Arrays.asList("uncle-cloud-migration-kit"));
+        guides.add(h6);
+
+        helpArticleRepository.saveAll(guides);
+    }
+
+    private void seedMigrationUncleCareerPositions() {
+        List<CareerPosition> positions = new ArrayList<>();
+
+        CareerPosition cp1 = new CareerPosition();
+        cp1.setId("support-mgu");
+        cp1.setSiteId("migrationuncle");
+        cp1.setTitle("Friendly Support Agent");
+        cp1.setLocation("Remote (US Only)");
+        cp1.setType("Full-time");
+        cp1.setDescription("We're looking for patient, kind, and tech-savvy individuals to help our customers with their migrations.");
+        cp1.setRequirements("- Incredible patience and empathy\n- Good typing speed\n- Basic knowledge of Windows and Outlook");
+        cp1.setStatus("OPEN");
+        positions.add(cp1);
+
+        CareerPosition cp2 = new CareerPosition();
+        cp2.setId("dev-mgu-1");
+        cp2.setSiteId("migrationuncle");
+        cp2.setTitle("Software Engineer (.NET)");
+        cp2.setLocation("Austin, TX / Remote");
+        cp2.setType("Full-time");
+        cp2.setDescription("Help us build fast, reliable, and easy-to-use data parsing tools.");
+        cp2.setRequirements("- 3+ years of C# / .NET experience\n- Experience with binary file parsing\n- Passion for clean code");
+        cp2.setStatus("OPEN");
+        positions.add(cp2);
+
+        CareerPosition cp3 = new CareerPosition();
+        cp3.setId("marketing-mgu-1");
+        cp3.setSiteId("migrationuncle");
+        cp3.setTitle("Content Writer");
+        cp3.setLocation("Remote");
+        cp3.setType("Part-time");
+        cp3.setDescription("Write friendly, non-jargon articles explaining complex tech topics to home users.");
+        cp3.setRequirements("- Excellent English writing skills\n- Ability to simplify technical concepts\n- SEO knowledge is a plus");
+        cp3.setStatus("OPEN");
+        positions.add(cp3);
+
+        CareerPosition cp4 = new CareerPosition();
+        cp4.setId("qa-mgu-1");
+        cp4.setSiteId("migrationuncle");
+        cp4.setTitle("QA Tester");
+        cp4.setLocation("Remote");
+        cp4.setType("Contract");
+        cp4.setDescription("Break our software before our customers do!");
+        cp4.setRequirements("- Keen eye for detail\n- Experience setting up virtual machines\n- Familiarity with different email clients");
+        cp4.setStatus("OPEN");
+        positions.add(cp4);
+
+        careerPositionRepository.saveAll(positions);
+    }
+
+    private void seedMigrationUncleClients() {
+        List<ClientLogo> clients = new ArrayList<>();
+        
+        ClientLogo cl1 = new ClientLogo();
+        cl1.setId("mgu-client-1");
+        cl1.setSiteId("migrationuncle");
+        cl1.setCompanyName("Bob's Plumbing");
+        cl1.setLogoUrl("/logos/bobs-plumbing.svg");
+        clients.add(cl1);
+
+        ClientLogo cl2 = new ClientLogo();
+        cl2.setId("mgu-client-2");
+        cl2.setSiteId("migrationuncle");
+        cl2.setCompanyName("Main Street Bakery");
+        cl2.setLogoUrl("/logos/main-st-bakery.svg");
+        clients.add(cl2);
+
+        ClientLogo cl3 = new ClientLogo();
+        cl3.setId("mgu-client-3");
+        cl3.setSiteId("migrationuncle");
+        cl3.setCompanyName("Greenfield Accounting");
+        cl3.setLogoUrl("/logos/greenfield.svg");
+        clients.add(cl3);
+
+        ClientLogo cl4 = new ClientLogo();
+        cl4.setId("mgu-client-4");
+        cl4.setSiteId("migrationuncle");
+        cl4.setCompanyName("Local Tech Support Co.");
+        cl4.setLogoUrl("/logos/local-tech.svg");
+        clients.add(cl4);
+
+        clientLogoRepository.saveAll(clients);
+    }
+    
+    private void seedSiteSettingsForApexByte() {
+        SiteSetting setting = new SiteSetting();
+        setting.setId("settings-apexbyte");
+        setting.setSiteId("apexbyte");
+        setting.setName("ApexByte Soft");
+        setting.setTagline("Precision Software for Modern IT Teams");
+        setting.setDescription("Enterprise-grade migration, conversion, and data management tools built for speed, security, and scalability.");
+        setting.setUrl("https://apexbyte.local");
+        setting.setEmail("support@apexbyte.local");
+        setting.setPhone("+1 (800) 123-4567");
+        setting.setAddress("ApexByte HQ");
+        
+        setting.setSocials(new SiteSetting.Socials(
+            "https://twitter.com/apexbyte",
+            "https://linkedin.com/company/apexbyte",
+            "https://youtube.com/@apexbyte",
+            "https://facebook.com/apexbyte",
+            "https://github.com/apexbyte"
+        ));
+
+        setting.setStats(java.util.Arrays.asList(
+            new SiteSetting.StatItem("500K+", "Downloads"),
+            new SiteSetting.StatItem("10K+", "Happy Users"),
+            new SiteSetting.StatItem("4.8★", "Avg Rating"),
+            new SiteSetting.StatItem("99.9%", "Success Rate")
+        ));
+        
+        setting.setTrustBadges(java.util.Arrays.asList(
+            new SiteSetting.TrustBadge("🛡️", "Secure & Safe", "256-bit SSL encryption.", "text-green-600 bg-green-50")
+        ));
+
+        setting.setMainNavigation(java.util.Arrays.asList(
+            new SiteSetting.NavItem("Products", "#", null, true, java.util.Arrays.asList(
+                new SiteSetting.NavItem("Email Migration", "/products?category=email-migration", null, true, null),
+                new SiteSetting.NavItem("File Converters", "/products?category=file-converters", null, true, null)
+            )),
+            new SiteSetting.NavItem("Pricing", "/pricing", null, true, null),
+            new SiteSetting.NavItem("Careers", "/careers", null, true, null),
+            new SiteSetting.NavItem("Contact", "/contact", null, true, null)
+        ));
+
+        siteSettingRepository.save(setting);
+    }
+
+    private void seedApexByteCatalog(String brand) {
+
+
+        // Category
+        Category c1 = new Category();
+        c1.setId("cat-apexbyte-1");
+        c1.setLabel("Email Migration");
+        c1.setDescription("Enterprise mail migration tools.");
+        c1.setSlug("email");
+        c1.setIcon("Mail");
+        c1.setColor("#2563EB");
+        c1.setSiteId(brand);
+        categoryRepository.save(c1);
+
+        Category c2 = new Category();
+        c2.setId("cat-apexbyte-2");
+        c2.setLabel("File Converters");
+        c2.setDescription("Fastest file conversion utilities.");
+        c2.setSlug("converters");
+        c2.setIcon("FileText");
+        c2.setColor("#0EA5E9");
+        c2.setSiteId(brand);
+        categoryRepository.save(c2);
+
+        // Product 1
+        Product p1 = new Product();
+        p1.setId("prod-apexbyte-1");
+        p1.setName("Apex PST to Gmail Converter");
+        p1.setSlug("pst-to-gmail");
+        p1.setVersion("5.1.0");
+        p1.setEnabled(true);
+        p1.setShortDescription("Quickly convert and migrate PST files to Gmail/G-Suite with enterprise-grade speed and accuracy.");
+        p1.setDescription("<p>Apex PST to Gmail Converter is a corporate-grade utility designed to seamlessly upload local Outlook data files to Google Workspace. Engineered for speed and zero data loss.</p>");
+        p1.setCategory(c1.getId());
+        p1.setFeatures(List.of("Batch PST Migration", "Folder Hierarchy Retention", "Direct IMAP Upload", "Selective Date Range Migration"));
+        p1.setPlatforms(List.of("Windows", "Mac"));
+        p1.setSupportedFormats(List.of(".pst", ".ost"));
+        p1.setRating(4.9);
+        p1.setReviewCount(842);
+        p1.setDownloads("120k+");
+        p1.setSiteId(brand);
+
+        List<PricingTier> pricing = List.of(
+            new PricingTier("Standard License", 49.0, null, "Lifetime", List.of("1 Mailbox", "Standard Support"), "Buy Now", "1", false),
+            new PricingTier("Corporate License", 149.0, null, "Lifetime", List.of("50 Mailboxes", "Priority Support"), "Buy Now", "50", true)
+        );
+        p1.setPricing(pricing);
+        productRepository.save(p1);
+
+        // Link categories
+        c1.setProductIds(List.of(p1.getId()));
+        categoryRepository.save(c1);
+
+        // FAQ
+        Faq f1 = new Faq();
+        f1.setId("faq-apexbyte-1");
+        f1.setProductId(p1.getId());
+        f1.setProductIds(List.of(p1.getId()));
+        f1.setQuestion("Does it maintain folder hierarchy?");
+        f1.setAnswer("Yes, the tool preserves the exact folder structure of your PST file in Gmail.");
+        f1.setCategory("Technical Support");
+        f1.setSiteId(brand);
+        faqRepository.save(f1);
+
+        // Guide
+        HelpArticle h1 = new HelpArticle();
+        h1.setId("guide-apexbyte-1");
+        h1.setProductId(p1.getId());
+        h1.setProductIds(List.of(p1.getId()));
+        h1.setSlug("pst-gmail-guide");
+        h1.setTitle("How to Migrate PST to Gmail");
+        h1.setExcerpt("Step by step guide for PST to Gmail migration.");
+        h1.setContent("### 1. Add File\nLoad your PST file.\n\n### 2. Enter Credentials\nLog in to your Gmail.\n\n### 3. Convert\nClick convert to start the process.");
+        h1.setCategory("Product Guide");
+        h1.setSiteId(brand);
+        helpArticleRepository.save(h1);
+
+        System.out.println("✅ ApexByte Catalog injected.");
     }
 }

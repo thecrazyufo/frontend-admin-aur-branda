@@ -10,6 +10,8 @@ export interface HelpArticle {
   helpful?: number;
   notHelpful?: number;
   siteId?: string;
+  productIds?: string[];
+  productNames?: string[];
 }
 
 export type HelpCategory =

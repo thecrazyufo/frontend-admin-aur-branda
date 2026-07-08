@@ -27,22 +27,22 @@ const autoProduct = targetSlug ? productsList.find(p => p.slug === targetSlug) :
   noindex={true}
 >
   <div>
-    <section class="bg-[#0A0A0A] py-20 text-center border-b border-stone-900 relative overflow-hidden">
+    <section class="bg-[#F8FAFC] py-20 text-center border-b border-[#E2E8F0] relative overflow-hidden">
       <!-- Ambient refraction glow background -->
       <div class="absolute inset-0 pointer-events-none overflow-hidden">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] bg-[#EAB308]/5 blur-[90px] rounded-full"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] bg-[#F97316]/5 blur-[90px] rounded-full"></div>
       </div>
 
       <div class="container-custom relative z-10">
-        <span class="inline-block text-[10px] font-bold uppercase tracking-widest mb-4 px-3 py-1.5 rounded-full text-[#EAB308] bg-[#EAB308]/15 border border-[#EAB308]/25">Download Center</span>
-        <h1 class="text-white font-extrabold text-3xl md:text-4xl tracking-tight mb-4">Download Free Trials</h1>
-        <p class="text-stone-300 max-w-xl mx-auto leading-relaxed text-xs">
+        <span class="inline-block text-[10px] font-bold uppercase tracking-widest mb-4 px-3 py-1.5 rounded-full text-[#F97316] bg-[#F97316]/15 border border-[#F97316]/25">Download Center</span>
+        <h1 class="text-white font-extrabold text-[#0F172A]xl md:text-[#0F172A]xl tracking-tight mb-4">Download Free Trials</h1>
+        <p class="text-[#0F172A] max-w-xl mx-auto leading-relaxed text-xs">
           Try any tool free. No credit card required. Migrate/convert up to 50 items in trial mode to verify it works for you.
         </p>
-        <div class="flex items-center justify-center gap-6 mt-6 text-[11px] text-stone-400 font-mono flex-wrap">
+        <div class="flex items-center justify-center gap-6 mt-6 text-[11px] text-[#475569] font-mono flex-wrap">
           {["No Credit Card", "Instant Download", "100% Safe & Secure", "Windows Compatible"].map((t) => (
             <div class="flex items-center gap-1.5">
-              <CheckCircle size={13} class="text-[#EAB308]" />
+              <CheckCircle size={13} class="text-[#F97316]" />
               {t}
             </div>
           ))}
@@ -53,7 +53,7 @@ const autoProduct = targetSlug ? productsList.find(p => p.slug === targetSlug) :
     {/* Auto Download Modal overlay */}
     {autoProduct && (
       <div id="download-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div class="bg-stone-900 rounded-2xl p-8 max-w-md w-full shadow-2xl relative border border-stone-850 text-center animate-in fade-in zoom-in duration-200">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl relative border border-[#E2E8F0] text-center animate-in fade-in zoom-in duration-200">
           <button 
             onclick="document.getElementById('download-overlay').style.display='none'"
             class="absolute top-4 right-4 text-stone-500 hover:text-white p-2 hover:bg-stone-850 rounded-full cursor-pointer transition-colors"
@@ -63,31 +63,31 @@ const autoProduct = targetSlug ? productsList.find(p => p.slug === targetSlug) :
           </button>
           
           <div id="modal-initial-state">
-            <div class="w-16 h-16 rounded-full bg-[#EAB308]/10 border border-[#EAB308]/25 flex items-center justify-center mx-auto mb-4 text-[#EAB308]">
+            <div class="w-16 h-16 rounded-full bg-[#F97316]/10 border border-[#F97316]/25 flex items-center justify-center mx-auto mb-4 text-[#F97316]">
               <Download size={32} />
             </div>
             
             <h2 class="text-xl font-bold text-white mb-2">Download Free Trial</h2>
-            <p class="text-xs text-stone-300 mb-6">
+            <p class="text-xs text-[#0F172A] mb-6">
               Enter your email to download your free trial of <strong class="text-white">{autoProduct.name}</strong>.
             </p>
             
             <form id="lead-form" class="space-y-4">
               <div class="text-left">
-                <label for="lead-email" class="block text-[10px] font-bold text-stone-400 mb-1.5 uppercase tracking-wider">Business Email Address</label>
+                <label for="lead-email" class="block text-[10px] font-bold text-[#475569] mb-1.5 uppercase tracking-wider">Business Email Address</label>
                 <input 
                   type="email" 
                   id="lead-email" 
                   required 
                   placeholder="name@company.com" 
-                  class="w-full px-4 py-3 rounded-lg border border-stone-800 text-xs focus:outline-none focus:ring-2 focus:ring-[#EAB308]/40 focus:border-transparent transition-all text-white bg-stone-950/80"
+                  class="w-full px-4 py-3 rounded-lg border border-[#E2E8F0] text-xs focus:outline-none focus:ring-2 focus:ring-[#F97316]/40 focus:border-transparent transition-all text-white bg-[#F8FAFC]/80"
                 />
               </div>
               
               <button 
                 type="submit" 
                 id="submit-btn" 
-                class="w-full text-center bg-[#EAB308] hover:bg-[#f1c40f] text-black text-xs font-bold py-3 px-6 rounded-lg transition-all duration-300 shadow-[0_0_15px_rgba(234,179,8,0.25)] hover:shadow-[0_0_20px_rgba(234,179,8,0.4)] cursor-pointer"
+                class="w-full text-center bg-[#F97316] hover:bg-[#EA580C] text-black text-xs font-bold py-3 px-6 rounded-lg transition-all duration-300 shadow-[0_0_15px_rgba(249, 115, 22,0.25)] hover:shadow-[0_0_20px_rgba(249, 115, 22,0.4)] cursor-pointer"
               >
                 Request Download
               </button>
@@ -102,11 +102,11 @@ const autoProduct = targetSlug ? productsList.find(p => p.slug === targetSlug) :
             </div>
             
             <h2 class="text-xl font-bold text-white mb-2">Starting Your Download...</h2>
-            <p class="text-xs text-stone-300 mb-6">
+            <p class="text-xs text-[#0F172A] mb-6">
               Downloading the setup package for <strong class="text-white">{autoProduct.name}</strong>.
             </p>
             
-            <div class="bg-stone-950 rounded-xl p-4 text-xs text-stone-400 text-left space-y-2 mb-6 border border-stone-850">
+            <div class="bg-[#F8FAFC] rounded-xl p-4 text-xs text-[#475569] text-left space-y-2 mb-6 border border-[#E2E8F0]">
               <p class="font-semibold text-white">Next Steps:</p>
               <ol class="list-decimal list-inside space-y-1">
                 <li>Open the downloaded installer file.</li>
@@ -118,7 +118,7 @@ const autoProduct = targetSlug ? productsList.find(p => p.slug === targetSlug) :
             <a 
               id="manual-download-link"
               href="#" 
-              class="inline-block w-full text-center bg-[#EAB308] hover:bg-[#f1c40f] text-black text-xs font-bold py-2.5 px-6 rounded-lg transition-all duration-300"
+              class="inline-block w-full text-center bg-[#F97316] hover:bg-[#EA580C] text-black text-xs font-bold py-2.5 px-6 rounded-lg transition-all duration-300"
             >
               Click here if download doesn't start
             </a>
@@ -186,20 +186,20 @@ const autoProduct = targetSlug ? productsList.find(p => p.slug === targetSlug) :
       </div>
     )}
 
-    <section class="py-20 bg-[#0A0A0A] border-t border-stone-900">
+    <section class="py-20 bg-[#F8FAFC] border-t border-[#E2E8F0]">
       <div class="container-custom">
         <SectionHeader eyebrow="Downloads" title="All Available Tools" class="mb-12 text-center" />
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           {productsList.map((product) => (
-            <div class="bg-stone-900/10 backdrop-blur border border-stone-900 hover:border-[#EAB308]/30 rounded-xl p-6 flex items-start justify-between gap-6 shadow-2xl transition-all duration-300">
+            <div class="bg-white/10 backdrop-blur border border-[#E2E8F0] hover:border-[#F97316]/30 rounded-xl p-6 flex items-start justify-between gap-6 shadow-2xl transition-all duration-300">
               <div class="flex items-start gap-4 flex-1">
-                <div class="w-12 h-12 rounded-xl bg-stone-950 border border-stone-850 flex items-center justify-center shadow-md shrink-0">
-                  <Download size={20} class="text-[#EAB308]" />
+                <div class="w-12 h-12 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-center shadow-md shrink-0">
+                  <Download size={20} class="text-[#F97316]" />
                 </div>
                 <div>
                   <h3 class="font-bold text-white mb-1 text-sm">{product.name}</h3>
-                  <p class="text-xs text-stone-300 mb-3 line-clamp-2 leading-relaxed">{product.shortDescription}</p>
-                  <div class="flex items-center gap-3 text-[10px] text-stone-400 font-mono flex-wrap">
+                  <p class="text-xs text-[#0F172A] mb-3 line-clamp-2 leading-relaxed">{product.shortDescription}</p>
+                  <div class="flex items-center gap-3 text-[10px] text-[#475569] font-mono flex-wrap">
                     <span class="flex items-center gap-1"><Monitor size={11} /> Windows</span>
                     <span>v{product.version}</span>
                     <span>{product.downloads} downloads</span>
@@ -209,12 +209,12 @@ const autoProduct = targetSlug ? productsList.find(p => p.slug === targetSlug) :
               <div class="flex flex-col gap-2 shrink-0">
                 <a
                   href={`/download?product=${product.slug}`}
-                  class="bg-[#EAB308] hover:bg-[#f1c40f] text-black py-2 px-4 rounded-lg text-xs font-bold transition-all duration-300 flex items-center justify-center gap-1"
+                  class="bg-[#F97316] hover:bg-[#EA580C] text-black py-2 px-4 rounded-lg text-xs font-bold transition-all duration-300 flex items-center justify-center gap-1"
                 >
                   <Download size={14} />
                   Download
                 </a>
-                <a href={`/products/${product.slug}`} class="text-xs text-center text-[#EAB308] hover:underline">
+                <a href={`/products/${product.slug}`} class="text-xs text-center text-[#F97316] hover:underline">
                   Learn more →
                 </a>
               </div>

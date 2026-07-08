@@ -51,26 +51,26 @@ const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
   <Breadcrumb items={[{ label: "Products", href: "/products" }, { label: product.name }]} />
 
   {/* Product Hero */}
-  <section class="bg-[#0A0A0A] py-16 tech-grid relative overflow-hidden">
+  <section class="bg-[#F8FAFC] py-16 tech-grid relative overflow-hidden">
     <!-- Ambient refraction glow background -->
     <div class="absolute inset-0 pointer-events-none overflow-hidden">
-      <div class="absolute top-1/2 left-1/4 -translate-y-1/2 w-[350px] h-[150px] bg-[#EAB308]/5 blur-[90px] rounded-full"></div>
+      <div class="absolute top-1/2 left-1/4 -translate-y-1/2 w-[350px] h-[150px] bg-[#F97316]/5 blur-[90px] rounded-full"></div>
     </div>
 
     <div class="container-custom relative z-10">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <div>
           {product.badge && (
-            <span class="bg-[#EAB308]/10 text-[#EAB308] border border-[#EAB308]/25 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider rounded mb-4 inline-block">
+            <span class="bg-[#F97316]/10 text-[#F97316] border border-[#F97316]/25 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider rounded mb-4 inline-block">
               {product.badge === "bestseller" ? "🏆 Best Seller" : product.badge === "popular" ? "🔥 Popular" : product.badge === "new" ? "✨ New" : "🔄 Updated"}
             </span>
           )}
-          <h1 class="font-extrabold text-white text-3xl tracking-tight mb-4">{product.name}</h1>
+          <h1 class="font-extrabold text-white text-[#0F172A]xl tracking-tight mb-4">{product.name}</h1>
           <p class="text-base text-[#E5E5E5] mb-6">{product.shortDescription}</p>
 
           {/* Rating */}
-          <div class="flex items-center gap-3 mb-6 text-xs text-stone-400 font-medium">
-            <div class="flex text-[#EAB308]">
+          <div class="flex items-center gap-3 mb-6 text-xs text-[#475569] font-medium">
+            <div class="flex text-[#F97316]">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star size={14} fill={i < Math.floor(product.rating || 0) ? "currentColor" : "none"} strokeWidth={1.5} />
               ))}
@@ -78,14 +78,14 @@ const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
             <span class="font-bold text-white">{product.rating || 0}</span>
             <span>({(product.reviewCount || 0).toLocaleString()} reviews)</span>
             <span class="text-stone-700">•</span>
-            <span class="text-[#EAB308]">{product.downloads || "0"} downloads</span>
+            <span class="text-[#F97316]">{product.downloads || "0"} downloads</span>
           </div>
 
           {/* Top Features */}
           <ul class="space-y-2 mb-8">
             {(product.features || []).slice(0, 5).map((f) => (
-              <li class="flex items-center gap-2 text-xs text-stone-300">
-                <Check size={14} class="text-[#EAB308] shrink-0" />
+              <li class="flex items-center gap-2 text-xs text-[#0F172A]">
+                <Check size={14} class="text-[#F97316] shrink-0" />
                 {f}
               </li>
             ))}
@@ -93,11 +93,11 @@ const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
 
           {/* CTAs */}
           <div class="flex flex-wrap gap-3">
-            <a href={`/checkout?product=${product.slug}&tier=${encodeURIComponent(lowestPaidPrice?.name || "Standard")}`} class="bg-[#EAB308] hover:bg-[#f1c40f] text-black font-extrabold text-sm py-3 px-6 rounded flex items-center gap-2 transition-all duration-300 transform active:scale-95 shadow-[0_0_15px_rgba(234,179,8,0.25)] hover:shadow-[0_0_20px_rgba(234,179,8,0.4)]">
+            <a href={`/checkout?product=${product.slug}&tier=${encodeURIComponent(lowestPaidPrice?.name || "Standard")}`} class="bg-[#F97316] hover:bg-[#EA580C] text-white font-extrabold text-sm py-3 px-6 rounded flex items-center gap-2 transition-all duration-300 transform active:scale-95 shadow-[0_0_15px_rgba(249, 115, 22,0.25)] hover:shadow-[0_0_20px_rgba(249, 115, 22,0.4)]">
               <ShoppingCart size={16} />
               Buy Now — ${lowestPaidPrice?.price}
             </a>
-            <a href={`/download?product=${product.slug}`} class="border border-[#EAB308]/30 hover:border-[#EAB308] bg-stone-900/60 hover:bg-[#EAB308]/10 text-[#EAB308] hover:text-white text-sm py-3 px-6 rounded flex items-center gap-2 transition-all duration-300 font-bold">
+            <a href={`/download?product=${product.slug}`} class="border border-[#F97316]/30 hover:border-[#F97316] bg-white/60 hover:bg-[#F97316]/10 text-[#F97316] hover:text-white text-sm py-3 px-6 rounded flex items-center gap-2 transition-all duration-300 font-bold">
               <Download size={16} />
               Free Trial
             </a>
@@ -107,7 +107,7 @@ const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
           <div class="flex items-center gap-2 mt-6 flex-wrap">
             <Monitor size={14} class="text-stone-500" />
             {(product.platforms || []).map((p) => (
-              <span class="text-[9px] font-bold uppercase tracking-wider text-stone-300 bg-stone-850 border border-stone-800 px-2 py-0.5 rounded">{p}</span>
+              <span class="text-[9px] font-bold uppercase tracking-wider text-[#0F172A] bg-stone-850 border border-[#E2E8F0] px-2 py-0.5 rounded">{p}</span>
             ))}
           </div>
         </div>
@@ -119,10 +119,10 @@ const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
   </section>
 
   <!-- Section Divider -->
-  <div class="h-px bg-gradient-to-r from-transparent via-[#EAB308]/15 to-transparent"></div>
+  <div class="h-px bg-gradient-to-r from-transparent via-[#F97316]/15 to-transparent"></div>
 
   {/* Description / Markdown Over  {product.description && (
-    <section class="bg-[#0A0A0A] py-16 tech-grid" id="overview">
+    <section class="bg-[#F8FAFC] py-16 tech-grid" id="overview">
       <div class="container-custom max-w-4xl">
         <div class="prose prose-invert max-w-none text-[#E5E5E5] leading-relaxed space-y-4">
           <h2 class="font-bold text-white text-xl mb-6">Product Overview</h2>
@@ -133,23 +133,23 @@ const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
   )}
 
   <!-- Section Divider -->
-  <div class="h-px bg-gradient-to-r from-transparent via-[#EAB308]/15 to-transparent"></div>
+  <div class="h-px bg-gradient-to-r from-transparent via-[#F97316]/15 to-transparent"></div>
 
   {/* Features Section */}
-  <section class="bg-[#0A0A0A] py-16 tech-grid" id="features">
+  <section class="bg-[#F8FAFC] py-16 tech-grid" id="features">
     <div class="container-custom">
       <div class="text-center mb-10">
-        <span class="text-[10px] tracking-wider text-[#EAB308] uppercase font-bold block">Engine Details</span>
-        <h2 class="text-xl font-bold text-white mt-1">Everything You Need</h2>
+        <span class="text-[10px] tracking-wider text-[#F97316] uppercase font-bold block">Engine Details</span>
+        <h2 class="text-xl font-bold text-[#0F172A] mt-1">Everything You Need</h2>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         {(product.features || []).map((feature) => (
-          <div class="flex items-start gap-3 bg-stone-900/30 backdrop-blur rounded-xl p-4 border border-stone-900 shadow-2xl">
-            <div class="w-8 h-8 rounded-lg bg-[#EAB308]/10 border border-[#EAB308]/25 flex items-center justify-center shrink-0 mt-0.5">
-              <Check size={14} class="text-[#EAB308]" />
+          <div class="flex items-start gap-3 bg-white/30 backdrop-blur rounded-xl p-4 border border-[#E2E8F0] shadow-2xl">
+            <div class="w-8 h-8 rounded-lg bg-[#F97316]/10 border border-[#F97316]/25 flex items-center justify-center shrink-0 mt-0.5">
+              <Check size={14} class="text-[#F97316]" />
             </div>
-            <span class="text-sm text-stone-300">{feature}</span>
+            <span class="text-sm text-[#0F172A]">{feature}</span>
           </div>
         ))}
       </div>
@@ -157,24 +157,24 @@ const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
   </section>
 
   <!-- Section Divider -->
-  <div class="h-px bg-gradient-to-r from-transparent via-[#EAB308]/15 to-transparent"></div>
+  <div class="h-px bg-gradient-to-r from-transparent via-[#F97316]/15 to-transparent"></div>
 
   {/* How It Works */}
-  <section class="bg-[#0A0A0A] py-16 tech-grid" id="how-it-works">
+  <section class="bg-[#F8FAFC] py-16 tech-grid" id="how-it-works">
     <div class="container-custom">
       <div class="text-center mb-12">
-        <span class="text-[10px] tracking-wider text-[#EAB308] uppercase font-bold block">Operation</span>
-        <h2 class="text-xl font-bold text-white mt-1">How It Works</h2>
+        <span class="text-[10px] tracking-wider text-[#F97316] uppercase font-bold block">Operation</span>
+        <h2 class="text-xl font-bold text-[#0F172A] mt-1">How It Works</h2>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {(product.howItWorks || []).map((step) => (
           <div class="text-center">
-            <div class="w-12 h-12 rounded-xl bg-stone-900 border border-stone-800 text-[#EAB308] flex items-center justify-center mx-auto mb-4 text-sm font-extrabold shadow-[0_0_15px_rgba(234,179,8,0.15)]">
+            <div class="w-12 h-12 rounded-xl bg-white border border-[#E2E8F0] text-[#F97316] flex items-center justify-center mx-auto mb-4 text-sm font-extrabold shadow-[0_0_15px_rgba(249, 115, 22,0.15)]">
               {step.step}
             </div>
             <h3 class="font-bold text-white text-sm mb-2">{step.title}</h3>
-            <p class="text-xs text-stone-400">{step.description}</p>
+            <p class="text-xs text-[#475569]">{step.description}</p>
           </div>
         ))}
       </div>
@@ -182,14 +182,14 @@ const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
   </section>
 
   <!-- Section Divider -->
-  <div class="h-px bg-gradient-to-r from-transparent via-[#EAB308]/15 to-transparent"></div>
+  <div class="h-px bg-gradient-to-r from-transparent via-[#F97316]/15 to-transparent"></div>
 
   {/* Pricing */}
-  <section class="bg-[#0A0A0A] py-16 tech-grid" id="pricing">
+  <section class="bg-[#F8FAFC] py-16 tech-grid" id="pricing">
     <div class="container-custom">
       <div class="text-center mb-12">
-        <span class="text-[10px] tracking-wider text-[#EAB308] uppercase font-bold block">Pricing</span>
-        <h2 class="text-xl font-bold text-white mt-1">Choose Your Plan</h2>
+        <span class="text-[10px] tracking-wider text-[#F97316] uppercase font-bold block">Pricing</span>
+        <h2 class="text-xl font-bold text-[#0F172A] mt-1">Choose Your Plan</h2>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto items-stretch">
@@ -205,40 +205,40 @@ const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
             <h2 class="text-lg font-bold text-white">Compare Licenses</h2>
           </div>
 
-          <div class="bg-stone-900/10 backdrop-blur rounded-xl border border-stone-900 overflow-hidden shadow-2xl">
+          <div class="bg-white/10 backdrop-blur rounded-xl border border-[#E2E8F0] overflow-hidden shadow-2xl">
             <div class="overflow-x-auto">
               <table class="w-full text-left border-collapse">
                 <thead>
-                  <tr class="bg-stone-950/40 border-b border-stone-800 text-xs uppercase tracking-wider text-stone-400">
+                  <tr class="bg-[#F8FAFC]/40 border-b border-[#E2E8F0] text-xs uppercase tracking-wider text-[#475569]">
                     <th class="p-4 font-semibold w-1/3">Feature</th>
                     <th class="p-4 font-semibold text-center">Trial</th>
-                    <th class="p-4 font-semibold text-center text-[#EAB308] bg-[#EAB308]/5">Personal</th>
+                    <th class="p-4 font-semibold text-center text-[#F97316] bg-[#F97316]/5">Personal</th>
                     <th class="p-4 font-semibold text-center">Enterprise</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-stone-900/60 text-xs">
                   {product.licenseComparison.map((row) => (
-                    <tr class="hover:bg-stone-900/10 transition-colors">
+                    <tr class="hover:bg-white/10 transition-colors">
                       <td class="p-4 font-medium text-white">{row.feature}</td>
-                      <td class="p-4 text-center text-stone-300">
+                      <td class="p-4 text-center text-[#0F172A]">
                         {row.trial.toLowerCase() === "yes" ? (
-                          <Check size={16} class="text-[#EAB308] mx-auto" />
+                          <Check size={16} class="text-[#F97316] mx-auto" />
                         ) : row.trial.toLowerCase() === "no" ? (
                           <span class="text-stone-700 font-bold">—</span>
                         ) : (
                           <span class="font-medium">{row.trial}</span>
                         )}
                       </td>
-                      <td class="p-4 text-center bg-[#EAB308]/5 text-[#EAB308] font-semibold">
+                      <td class="p-4 text-center bg-[#F97316]/5 text-[#F97316] font-semibold">
                         {row.personal.toLowerCase() === "yes" ? (
-                          <Check size={16} class="text-[#EAB308] mx-auto" />
+                          <Check size={16} class="text-[#F97316] mx-auto" />
                         ) : row.personal.toLowerCase() === "no" ? (
                           <span class="text-stone-700 font-bold">—</span>
                         ) : (
                           <span class="font-medium">{row.personal}</span>
                         )}
                       </td>
-                      <td class="p-4 text-center text-stone-300">
+                      <td class="p-4 text-center text-[#0F172A]">
                         {row.enterprise.toLowerCase() === "yes" ? (
                           <Check size={16} class="text-emerald-500 mx-auto" />
                         ) : row.enterprise.toLowerCase() === "no" ? (
@@ -259,21 +259,21 @@ const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
   </section>
 
   <!-- Section Divider -->
-  <div class="h-px bg-gradient-to-r from-transparent via-[#EAB308]/15 to-transparent"></div>
+  <div class="h-px bg-gradient-to-r from-transparent via-[#F97316]/15 to-transparent"></div>
 
   {/* Supported Formats */}
-  <section class="bg-[#0A0A0A] py-16 tech-grid">
+  <section class="bg-[#F8FAFC] py-16 tech-grid">
     <div class="container-custom">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
         <div>
           <div class="mb-6">
-            <span class="text-[9px] tracking-wider text-[#EAB308] uppercase font-bold block">Compatibility</span>
+            <span class="text-[9px] tracking-wider text-[#F97316] uppercase font-bold block">Compatibility</span>
             <h2 class="text-lg font-bold text-white mt-0.5">Supported Formats</h2>
           </div>
 
           <div class="flex flex-wrap gap-2">
             {(product.supportedFormats || []).map((fmt) => (
-              <span class="px-3 py-1.5 bg-stone-900 border border-stone-800 text-stone-300 text-xs rounded-lg font-mono font-medium">
+              <span class="px-3 py-1.5 bg-white border border-[#E2E8F0] text-[#0F172A] text-xs rounded-lg font-mono font-medium">
                 {fmt}
               </span>
             ))}
@@ -281,17 +281,17 @@ const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
         </div>
         <div>
           <div class="mb-6">
-            <span class="text-[9px] tracking-wider text-[#EAB308] uppercase font-bold block">Requirements</span>
+            <span class="text-[9px] tracking-wider text-[#F97316] uppercase font-bold block">Requirements</span>
             <h2 class="text-lg font-bold text-white mt-0.5">System Requirements</h2>
           </div>
 
-          <div class="bg-stone-900/30 backdrop-blur rounded-xl border border-stone-900 p-6 space-y-3 shadow-2xl">
-            <div class="flex gap-3 text-xs"><span class="font-semibold text-stone-400 w-24 shrink-0 pt-0.5">OS</span><span class="text-stone-300">{product.systemRequirements?.os || "N/A"}</span></div>
-            <div class="flex gap-3 text-xs"><span class="font-semibold text-stone-400 w-24 shrink-0 pt-0.5">Processor</span><span class="text-stone-300">{product.systemRequirements?.processor || "N/A"}</span></div>
-            <div class="flex gap-3 text-xs"><span class="font-semibold text-stone-400 w-24 shrink-0 pt-0.5">RAM</span><span class="text-stone-300">{product.systemRequirements?.ram || "N/A"}</span></div>
-            <div class="flex gap-3 text-xs"><span class="font-semibold text-stone-400 w-24 shrink-0 pt-0.5">Disk</span><span class="text-stone-300">{product.systemRequirements?.disk || "N/A"}</span></div>
+          <div class="bg-white/30 backdrop-blur rounded-xl border border-[#E2E8F0] p-6 space-y-3 shadow-2xl">
+            <div class="flex gap-3 text-xs"><span class="font-semibold text-[#475569] w-24 shrink-0 pt-0.5">OS</span><span class="text-[#0F172A]">{product.systemRequirements?.os || "N/A"}</span></div>
+            <div class="flex gap-3 text-xs"><span class="font-semibold text-[#475569] w-24 shrink-0 pt-0.5">Processor</span><span class="text-[#0F172A]">{product.systemRequirements?.processor || "N/A"}</span></div>
+            <div class="flex gap-3 text-xs"><span class="font-semibold text-[#475569] w-24 shrink-0 pt-0.5">RAM</span><span class="text-[#0F172A]">{product.systemRequirements?.ram || "N/A"}</span></div>
+            <div class="flex gap-3 text-xs"><span class="font-semibold text-[#475569] w-24 shrink-0 pt-0.5">Disk</span><span class="text-[#0F172A]">{product.systemRequirements?.disk || "N/A"}</span></div>
             {product.systemRequirements?.other?.map((req) => (
-              <div class="flex gap-3 text-xs"><span class="font-semibold text-stone-400 w-24 shrink-0 pt-0.5">Other</span><span class="text-stone-300">{req}</span></div>
+              <div class="flex gap-3 text-xs"><span class="font-semibold text-[#475569] w-24 shrink-0 pt-0.5">Other</span><span class="text-[#0F172A]">{req}</span></div>
             ))}
           </div>
         </div>
@@ -300,19 +300,19 @@ const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
   </section>
 
   <!-- Section Divider -->
-  <div class="h-px bg-gradient-to-r from-transparent via-[#EAB308]/15 to-transparent"></div>
+  <div class="h-px bg-gradient-to-r from-transparent via-[#F97316]/15 to-transparent"></div>
 
   {/* FAQ */}
-  <section class="bg-[#0A0A0A] py-16 tech-grid" id="faq">
+  <section class="bg-[#F8FAFC] py-16 tech-grid" id="faq">
     <div class="container-custom max-w-3xl">
       <div class="text-center mb-10">
-        <span class="text-[10px] tracking-wider text-[#EAB308] uppercase font-bold block">FAQ</span>
-        <h2 class="text-xl font-bold text-white mt-1">Frequently Asked Questions</h2>
+        <span class="text-[10px] tracking-wider text-[#F97316] uppercase font-bold block">FAQ</span>
+        <h2 class="text-xl font-bold text-[#0F172A] mt-1">Frequently Asked Questions</h2>
       </div>
 
       <div class="space-y-4">
         {(product.faqs || []).map((faq) => (
-          <details class="group bg-stone-900/30 backdrop-blur rounded-xl border border-stone-900 shadow-2xl overflow-hidden hover:border-[#EAB308]/30 transition-colors">
+          <details class="group bg-white/30 backdrop-blur rounded-xl border border-[#E2E8F0] shadow-2xl overflow-hidden hover:border-[#F97316]/30 transition-colors">
             <summary class="flex items-center justify-between px-6 py-4 cursor-pointer list-none">
               <span class="font-semibold text-white pr-4 text-sm">{faq.question}</span>
               <ChevronRight size={18} class="text-stone-500 shrink-0 group-open:rotate-90 transition-transform" />
@@ -327,25 +327,25 @@ const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
   </section>
 
   <!-- Section Divider -->
-  <div class="h-px bg-gradient-to-r from-transparent via-[#EAB308]/15 to-transparent"></div>
+  <div class="h-px bg-gradient-to-r from-transparent via-[#F97316]/15 to-transparent"></div>
 
   {/* Reviews */}
-  <section class="bg-[#0A0A0A] py-16 tech-grid" id="reviews">
+  <section class="bg-[#F8FAFC] py-16 tech-grid" id="reviews">
     <div class="container-custom">
       <div class="mb-10">
-        <span class="text-[10px] tracking-wider text-[#EAB308] uppercase font-bold block">Reviews</span>
-        <h2 class="text-xl font-bold text-white mt-1">Customer Reviews ({(product.reviewCount || 0).toLocaleString()})</h2>
+        <span class="text-[10px] tracking-wider text-[#F97316] uppercase font-bold block">Reviews</span>
+        <h2 class="text-xl font-bold text-[#0F172A] mt-1">Customer Reviews ({(product.reviewCount || 0).toLocaleString()})</h2>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {(product.reviews || []).map((review) => (
-          <div class="bg-stone-900/30 backdrop-blur rounded-xl border border-stone-900 p-6 shadow-2xl hover:border-[#EAB308]/30 transition-all duration-300">
-            <div class="flex text-[#EAB308] mb-3">
+          <div class="bg-white/30 backdrop-blur rounded-xl border border-[#E2E8F0] p-6 shadow-2xl hover:border-[#F97316]/30 transition-all duration-300">
+            <div class="flex text-[#F97316] mb-3">
               {Array.from({ length: review.rating || 0 }).map((_) => <Star size={12} fill="currentColor" />)}
             </div>
             <p class="text-xs text-[#E5E5E5] italic mb-4 leading-relaxed">&ldquo;{review.content}&rdquo;</p>
             <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-full bg-stone-850 border border-stone-800 flex items-center justify-center text-[#EAB308] font-bold text-xs">
+              <div class="w-8 h-8 rounded-full bg-stone-850 border border-[#E2E8F0] flex items-center justify-center text-[#F97316] font-bold text-xs">
                 {review.author?.charAt(0) || "U"}
               </div>
               <div>
@@ -362,15 +362,15 @@ const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
   </section>
 
   <!-- Section Divider -->
-  <div class="h-px bg-gradient-to-r from-transparent via-[#EAB308]/15 to-transparent"></div>
+  <div class="h-px bg-gradient-to-r from-transparent via-[#F97316]/15 to-transparent"></div>
 
   {/* Related Products */}
   {relatedProducts.length > 0 && (
-    <section class="bg-[#0A0A0A] py-16 tech-grid">
+    <section class="bg-[#F8FAFC] py-16 tech-grid">
       <div class="container-custom">
         <div class="mb-10">
-          <span class="text-[10px] tracking-wider text-[#EAB308] uppercase font-bold block">Explore</span>
-          <h2 class="text-xl font-bold text-white mt-1">Related Products</h2>
+          <span class="text-[10px] tracking-wider text-[#F97316] uppercase font-bold block">Explore</span>
+          <h2 class="text-xl font-bold text-[#0F172A] mt-1">Related Products</h2>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

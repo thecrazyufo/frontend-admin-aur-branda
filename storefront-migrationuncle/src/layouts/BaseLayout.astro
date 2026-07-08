@@ -1,0 +1,139 @@
+---
+import "../styles/globals.css";
+import Navbar from "../components/layout/Navbar";
+import Footer from "../components/layout/Footer";
+import { SettingsAPI, BrandAPI } from "../services/api";
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  ogImage?: string;
+  noindex?: boolean;
+}
+
+const settings = await SettingsAPI.get().catch(() => null);
+const brandConfig = await BrandAPI.getCurrentBrand().catch(() => null);
+
+const siteName        = settings?.name        || "Migration Uncle";
+const siteTagline     = settings?.tagline     || "Relax. We've Got Your Migration Covered.";
+const siteDescription = settings?.description || "Your friendly, reliable partner for moving emails, files, and data.";
+
+// Theme config (dynamic from admin)
+const themeConfig  = settings?.theme || {};
+const fontFamily   = themeConfig.fontFamily  || "Inter";
+const primaryColor = themeConfig.primaryColor || "#10B981";
+const accentColor  = themeConfig.accentColor  || "#F59E0B";
+const faviconUrl   = themeConfig.faviconUrl   || "/favicon.ico";
+const logoUrl      = themeConfig.logoUrl      || "";
+
+const mainNavigation = settings?.mainNavigation || [];
+const footerConfig   = settings?.footerConfig   || undefined;
+
+const seoDefaults      = settings?.seoDefaults || {};
+const defaultOgImage   = seoDefaults.defaultOgImage || "";
+
+const {
+  title       = `${siteName} — ${siteTagline}`,
+  description = siteDescription,
+  canonical   = Astro.props.canonical
+    || new URL(Astro.url.pathname, Astro.site || Astro.url.origin).toString(),
+  ogImage = defaultOgImage,
+  noindex = false,
+} = Astro.props;
+
+// Google Fonts — default to Plus Jakarta Sans if admin hasn't set a custom font
+const fontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/ /g, "+")}:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta property="og:site_name" content={siteName} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {ogImage && <meta name="twitter:image" content={ogImage} />}
+
+    <!-- Google Verification -->
+    {seoDefaults.googleVerification && (
+      <meta name="google-site-verification" content={seoDefaults.googleVerification} />
+    )}
+
+    <!-- Favicon -->
+    <link rel="icon" href={faviconUrl} />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href={fontUrl} rel="stylesheet" />
+
+    <!-- Dynamic CSS custom properties from admin panel -->
+    <style define:vars={{ primaryColor, accentColor, fontFamily }}>
+      :root {
+        --brand-primary: var(--primaryColor);
+        --brand-accent:  var(--accentColor);
+        --brand-font:    var(--fontFamily), system-ui, sans-serif;
+        /* Override theme apex defaults with admin values if provided */
+        --color-apex-600: var(--primaryColor);
+        --color-cyan-500: var(--accentColor);
+      }
+    </style>
+  </head>
+  <body
+    class="min-h-screen flex flex-col antialiased"
+    style={`font-family: '${fontFamily}', 'Plus Jakarta Sans', system-ui, sans-serif;`}
+  >
+    <!-- Announcement Bar -->
+    {settings?.announcement?.enabled && settings.announcement.text && (
+      <div
+        style={`background: ${settings.announcement.bgColor || 'var(--color-apex-600)'}; color: ${settings.announcement.textColor || '#fff'}; text-align: center; padding: 9px 16px; font-size: 12.5px; font-weight: 600; letter-spacing: -0.01em;`}
+      >
+        {settings.announcement.link ? (
+          <a href={settings.announcement.link} style="color: inherit; text-decoration: underline;">
+            {settings.announcement.text}
+          </a>
+        ) : (
+          settings.announcement.text
+        )}
+      </div>
+    )}
+
+    <Navbar
+      client:load
+      siteName={siteName}
+      phone={settings?.phone}
+      navigation={mainNavigation}
+      logoUrl={logoUrl}
+    />
+
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <Footer
+      siteName={siteName}
+      description={siteDescription}
+      phone={settings?.phone}
+      email={settings?.email}
+      address={settings?.address}
+      socials={settings?.socials}
+      footerConfig={footerConfig}
+    />
+  </body>
+</html>

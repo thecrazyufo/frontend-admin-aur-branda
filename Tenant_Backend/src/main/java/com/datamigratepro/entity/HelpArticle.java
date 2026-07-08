@@ -44,4 +44,17 @@ public class HelpArticle {
     @org.hibernate.annotations.TenantId
     @Column(name = "site_id", nullable = false)
     private String siteId;
+
+    @Column(name = "product_id")
+    private String productId;
+
+    @Transient
+    private String productName;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "product_ids", columnDefinition = "jsonb")
+    private List<String> productIds = new java.util.ArrayList<>();
+
+    @Transient
+    private List<String> productNames = new java.util.ArrayList<>();
 }

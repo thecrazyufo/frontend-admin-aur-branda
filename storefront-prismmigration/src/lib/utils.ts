@@ -118,7 +118,7 @@ export function parseMarkdownToHtml(markdown: string): string {
     if (/^(-{3,}|\*{3,}|_{3,})$/.test(trimmed)) {
       closeListIfOpen();
       closeBlockquoteIfOpen();
-      html += '<hr class="my-6 border-0 border-t border-stone-850" />';
+      html += '<hr class="my-6 border-[#E2E8F0] border-t border-[#E2E8F0]" />';
       continue;
     }
 
@@ -142,10 +142,10 @@ export function parseMarkdownToHtml(markdown: string): string {
       closeListIfOpen();
       const content = processInline(trimmed.substring(2));
       if (!inBlockquote) {
-        html += '<blockquote class="border-l-4 border-[#EAB308] bg-[#EAB308]/5 px-4 py-2 my-3 rounded-r-lg">';
+        html += '<blockquote class="border-l-4 border-[#F97316] bg-[#F97316]/5 px-4 py-2 my-3 rounded-r-lg">';
         inBlockquote = true;
       }
-      html += `<p class="text-sm leading-relaxed text-stone-300">${content}</p>`;
+      html += `<p class="text-sm leading-relaxed text-[#0F172A]">${content}</p>`;
       continue;
     } else {
       closeBlockquoteIfOpen();
@@ -163,13 +163,13 @@ export function parseMarkdownToHtml(markdown: string): string {
       html += `<h2 class="text-xl font-bold text-white mt-8 mb-4">${processInline(trimmed.substring(3))}</h2>`;
     } else if (trimmed.startsWith("# ")) {
       closeListIfOpen();
-      html += `<h1 class="text-2xl font-bold text-white mt-10 mb-6">${processInline(trimmed.substring(2))}</h1>`;
+      html += `<h1 class="text-[#0F172A]xl font-bold text-[#0F172A] mt-10 mb-6">${processInline(trimmed.substring(2))}</h1>`;
     }
     // Unordered list
     else if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
       if (!inList || listType !== "ul") {
         closeListIfOpen();
-        html += '<ul class="list-disc list-inside space-y-1.5 my-3 pl-4 text-stone-300">';
+        html += '<ul class="list-disc list-inside space-y-1.5 my-3 pl-4 text-[#0F172A]">';
         inList = true;
         listType = "ul";
       }
@@ -181,7 +181,7 @@ export function parseMarkdownToHtml(markdown: string): string {
       const text = trimmed.substring(match![0].length);
       if (!inList || listType !== "ol") {
         closeListIfOpen();
-        html += '<ol class="list-decimal list-inside space-y-1.5 my-3 pl-4 text-stone-300">';
+        html += '<ol class="list-decimal list-inside space-y-1.5 my-3 pl-4 text-[#0F172A]">';
         inList = true;
         listType = "ol";
       }
@@ -190,7 +190,7 @@ export function parseMarkdownToHtml(markdown: string): string {
     // Paragraph
     else {
       closeListIfOpen();
-      html += `<p class="my-3 text-stone-300 leading-relaxed">${processInline(trimmed)}</p>`;
+      html += `<p class="my-3 text-[#0F172A] leading-relaxed">${processInline(trimmed)}</p>`;
     }
   }
 
@@ -198,7 +198,7 @@ export function parseMarkdownToHtml(markdown: string): string {
   closeBlockquoteIfOpen();
 
   if (inCodeBlock && codeContent) {
-    html += `<pre class="bg-stone-950 text-emerald-400 text-sm font-mono rounded-xl p-4 my-4 overflow-x-auto whitespace-pre-wrap border border-stone-900"><code>${escapeHtml(codeContent)}</code></pre>`;
+    html += `<pre class="bg-[#F8FAFC] text-emerald-400 text-sm font-mono rounded-xl p-4 my-4 overflow-x-auto whitespace-pre-wrap border border-[#E2E8F0]"><code>${escapeHtml(codeContent)}</code></pre>`;
   }
 
   return html;

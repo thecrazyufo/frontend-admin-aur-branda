@@ -49,7 +49,7 @@ export default function ContactForm() {
   };
 
   return (
-    <div className="bg-stone-900/30 backdrop-blur border border-stone-900 rounded-xl p-8 shadow-2xl">
+    <div className="bg-white/30 backdrop-blur border border-[#E2E8F0] rounded-xl p-8 shadow-2xl">
       <h2 className="font-bold text-white text-lg mb-6">Send us a Message</h2>
       {status && (
         <div
@@ -65,23 +65,23 @@ export default function ContactForm() {
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <div>
-            <label className="block text-xs font-bold text-stone-400 mb-1.5">First Name *</label>
+            <label className="block text-xs font-bold text-[#475569] mb-1.5">First Name *</label>
             <input
               id="contact-firstname"
               type="text"
               required
-              className="w-full h-11 px-4 rounded-lg border border-stone-800 text-xs text-white bg-stone-950/80 focus:outline-none focus:ring-2 focus:ring-[#EAB308]/40 focus:border-transparent transition-all"
+              className="w-full h-11 px-4 rounded-lg border border-[#E2E8F0] text-xs text-white bg-[#F8FAFC]/80 focus:outline-none focus:ring-2 focus:ring-[#F97316]/40 focus:border-transparent transition-all"
               placeholder="John"
               value={formData.firstName}
               onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
             />
           </div>
           <div>
-            <label className="block text-xs font-bold text-stone-400 mb-1.5">Last Name</label>
+            <label className="block text-xs font-bold text-[#475569] mb-1.5">Last Name</label>
             <input
               id="contact-lastname"
               type="text"
-              className="w-full h-11 px-4 rounded-lg border border-stone-800 text-xs text-white bg-stone-950/80 focus:outline-none focus:ring-2 focus:ring-[#EAB308]/40 focus:border-transparent transition-all"
+              className="w-full h-11 px-4 rounded-lg border border-[#E2E8F0] text-xs text-white bg-[#F8FAFC]/80 focus:outline-none focus:ring-2 focus:ring-[#F97316]/40 focus:border-transparent transition-all"
               placeholder="Doe"
               value={formData.lastName}
               onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
@@ -89,39 +89,39 @@ export default function ContactForm() {
           </div>
         </div>
         <div>
-          <label className="block text-xs font-bold text-stone-400 mb-1.5">Email Address *</label>
+          <label className="block text-xs font-bold text-[#475569] mb-1.5">Email Address *</label>
           <input
             id="contact-email"
             type="email"
             required
-            className="w-full h-11 px-4 rounded-lg border border-stone-800 text-xs text-white bg-stone-950/80 focus:outline-none focus:ring-2 focus:ring-[#EAB308]/40 focus:border-transparent transition-all"
+            className="w-full h-11 px-4 rounded-lg border border-[#E2E8F0] text-xs text-white bg-[#F8FAFC]/80 focus:outline-none focus:ring-2 focus:ring-[#F97316]/40 focus:border-transparent transition-all"
             placeholder="john@example.com"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           />
         </div>
         <div>
-          <label className="block text-xs font-bold text-stone-400 mb-1.5">Subject</label>
+          <label className="block text-xs font-bold text-[#475569] mb-1.5">Subject</label>
           <select
             id="contact-subject"
-            className="w-full h-11 px-4 rounded-lg border border-stone-800 text-xs text-white bg-stone-950/80 focus:outline-none focus:ring-2 focus:ring-[#EAB308]/40 focus:border-transparent transition-all"
+            className="w-full h-11 px-4 rounded-lg border border-[#E2E8F0] text-xs text-white bg-[#F8FAFC]/80 focus:outline-none focus:ring-2 focus:ring-[#F97316]/40 focus:border-transparent transition-all"
             value={formData.subject}
             onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
           >
-            <option className="bg-stone-950">Technical Support</option>
-            <option className="bg-stone-950">License Activation</option>
-            <option className="bg-stone-950">Billing / Payment</option>
-            <option className="bg-stone-950">Sales Inquiry</option>
-            <option className="bg-stone-950">Other</option>
+            <option className="bg-[#F8FAFC]">Technical Support</option>
+            <option className="bg-[#F8FAFC]">License Activation</option>
+            <option className="bg-[#F8FAFC]">Billing / Payment</option>
+            <option className="bg-[#F8FAFC]">Sales Inquiry</option>
+            <option className="bg-[#F8FAFC]">Other</option>
           </select>
         </div>
         <div>
-          <label className="block text-xs font-bold text-stone-400 mb-1.5">Message *</label>
+          <label className="block text-xs font-bold text-[#475569] mb-1.5">Message *</label>
           <textarea
             id="contact-message"
             rows={5}
             required
-            className="w-full px-4 py-3 rounded-lg border border-stone-800 text-xs text-white bg-stone-950/80 focus:outline-none focus:ring-2 focus:ring-[#EAB308]/40 focus:border-transparent resize-none transition-all"
+            className="w-full px-4 py-3 rounded-lg border border-[#E2E8F0] text-xs text-white bg-[#F8FAFC]/80 focus:outline-none focus:ring-2 focus:ring-[#F97316]/40 focus:border-transparent resize-none transition-all"
             placeholder="Describe your issue or question..."
             value={formData.message}
             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
@@ -131,7 +131,7 @@ export default function ContactForm() {
           id="contact-submit"
           type="submit"
           disabled={loading}
-          className="w-full text-center bg-[#EAB308] hover:bg-[#f1c40f] text-black text-xs font-bold py-3 px-6 rounded-lg transition-all duration-300 shadow-[0_0_15px_rgba(234,179,8,0.25)] cursor-pointer disabled:opacity-50"
+          className="w-full text-center bg-[#F97316] hover:bg-[#EA580C] text-black text-xs font-bold py-3 px-6 rounded-lg transition-all duration-300 shadow-[0_0_15px_rgba(249, 115, 22,0.25)] cursor-pointer disabled:opacity-50"
         >
           {loading ? "Sending..." : "Send Message"}
         </button>

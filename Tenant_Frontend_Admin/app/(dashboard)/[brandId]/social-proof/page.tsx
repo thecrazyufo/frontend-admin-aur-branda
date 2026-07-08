@@ -1,14 +1,116 @@
 "use client";
 
-import { useEffect, useState, FormEvent } from "react";
+import { useEffect, useState, useRef, FormEvent } from "react";
 import { useParams } from "next/navigation";
-import { AdminSocialProofAPI } from "@/services/api";
+import { AdminSocialProofAPI, AdminProductAPI } from "@/services/api";
 import { Button } from "@/components/ui/Button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/Table";
 import { Input } from "@/components/ui/Input";
+import { cn } from "@/lib/utils";
 
 type Tab = "logos" | "testimonials";
+
+// ─── Searchable Product Multi-Select ─────────────────────────────────────────
+
+interface ProductMultiSelectProps {
+  products: any[];
+  selectedIds: string[];
+  onChange: (ids: string[]) => void;
+}
+
+function ProductMultiSelect({ products, selectedIds, onChange }: ProductMultiSelectProps) {
+  const [search, setSearch] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const selectedProducts = products.filter(p => selectedIds.includes(p.id));
+  const filteredProducts = products.filter(p =>
+    p.name.toLowerCase().includes(search.toLowerCase()) ||
+    (p.category || "").toLowerCase().includes(search.toLowerCase())
+  );
+
+  const grouped = filteredProducts.reduce((acc, p) => {
+    const cat = p.category || "Uncategorized";
+    if (!acc[cat]) acc[cat] = [];
+    acc[cat].push(p);
+    return acc;
+  }, {} as Record<string, any[]>);
+
+  const toggleProduct = (id: string) => {
+    const next = selectedIds.includes(id)
+      ? selectedIds.filter(x => x !== id)
+      : [...selectedIds, id];
+    onChange(next);
+  };
+
+  return (
+    <div ref={containerRef} className="relative w-full space-y-1.5">
+      <div className="flex flex-wrap items-center gap-1.5 min-h-9 p-1.5 w-full bg-zinc-50/50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-lg">
+        {selectedProducts.map(p => (
+          <span key={p.id} className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-semibold bg-zinc-200/60 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border border-zinc-300 dark:border-zinc-700/60">
+            {p.name}
+            <button type="button" onClick={() => toggleProduct(p.id)} className="text-[10px] text-zinc-400 hover:text-zinc-950 p-0.5 border-0 bg-transparent cursor-pointer">✕</button>
+          </span>
+        ))}
+        {selectedIds.length === 0 && <span className="text-xs text-zinc-400 ml-1.5 select-none">Select related products...</span>}
+        <div className="ml-auto pr-1">
+          <span className="text-[10px] uppercase tracking-wider font-bold text-zinc-400">{selectedIds.length} selected</span>
+        </div>
+      </div>
+      <div className="relative">
+        <Input
+          type="text"
+          value={search}
+          onChange={e => { setSearch(e.target.value); setIsOpen(true); }}
+          onFocus={() => setIsOpen(true)}
+          placeholder="Filter products by name or category..."
+          className="pr-8"
+        />
+        <button type="button" onClick={() => setIsOpen(!isOpen)} className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-zinc-400 border-0 bg-transparent cursor-pointer">
+          {isOpen ? "▲" : "▼"}
+        </button>
+      </div>
+      {isOpen && (
+        <div className="absolute z-50 w-full mt-1 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-lg max-h-52 overflow-y-auto divide-y divide-zinc-100 dark:divide-zinc-800">
+          {Object.keys(grouped).length === 0 ? (
+            <div className="p-3 text-xs text-zinc-400 text-center">No products found</div>
+          ) : (
+            Object.entries(grouped).map(([category, items]) => (
+              <div key={category} className="p-2 space-y-1">
+                <span className="px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-zinc-400">📁 {category}</span>
+                <div className="space-y-0.5">
+                  {(items as any[]).map((p: any) => (
+                    <div key={p.id} onClick={() => toggleProduct(p.id)}
+                      className={cn(
+                        "flex items-center justify-between px-2 py-1.5 rounded-md text-xs cursor-pointer select-none transition-colors",
+                        selectedIds.includes(p.id) ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 font-medium" : "hover:bg-zinc-50 dark:hover:bg-zinc-800/40 text-zinc-700 dark:text-zinc-300"
+                      )}>
+                      <span>{p.name}</span>
+                      <span className="text-[10px] font-mono text-zinc-400">({p.id})</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function SocialProofPage() {
   const params = useParams();
@@ -18,6 +120,7 @@ export default function SocialProofPage() {
   
   const [logos, setLogos] = useState<any[]>([]);
   const [testimonials, setTestimonials] = useState<any[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
   
   const [loading, setLoading] = useState(true);
 
@@ -38,12 +141,14 @@ export default function SocialProofPage() {
   async function fetchData() {
     setLoading(true);
     try {
-      const [l, t] = await Promise.all([
+      const [l, t, p] = await Promise.all([
         AdminSocialProofAPI.getLogos(),
-        AdminSocialProofAPI.getTestimonials()
+        AdminSocialProofAPI.getTestimonials(),
+        AdminProductAPI.getAll()
       ]);
       setLogos(l);
       setTestimonials(t);
+      setProducts(p);
     } catch (e) {
       console.error("Failed to fetch social proof", e);
     } finally {
@@ -147,7 +252,7 @@ export default function SocialProofPage() {
               <CardDescription>Manage logos shown in the marquee strip.</CardDescription>
             </div>
             <Button onClick={() => {
-              setEditingLogo({ companyName: "", logoUrl: "", displayOrder: 0, description: "", caseStudy: "" });
+              setEditingLogo({ companyName: "", logoUrl: "", displayOrder: 0, description: "", caseStudy: "", productIds: [] });
               setIsLogoModalOpen(true);
             }}>Add Logo</Button>
           </CardHeader>
@@ -161,6 +266,7 @@ export default function SocialProofPage() {
                     <TableHead>Logo</TableHead>
                     <TableHead>Company</TableHead>
                     <TableHead>Order</TableHead>
+                    <TableHead>Products</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -170,6 +276,14 @@ export default function SocialProofPage() {
                       <TableCell><img src={l.logoUrl} alt={l.companyName} className="h-8 max-w-[100px] object-contain bg-zinc-100 p-1 rounded" /></TableCell>
                       <TableCell>{l.companyName}</TableCell>
                       <TableCell>{l.displayOrder}</TableCell>
+                      <TableCell>
+                        <div className="flex flex-wrap gap-1">
+                          {(l.productNames || []).map((name: string) => (
+                            <span key={name} className="inline-flex px-1.5 py-0.5 rounded text-[10px] bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-medium border border-blue-200 dark:border-blue-800/40">{name}</span>
+                          ))}
+                          {(!l.productNames || l.productNames.length === 0) && <span className="text-[10px] text-zinc-400">—</span>}
+                        </div>
+                      </TableCell>
                       <TableCell className="text-right space-x-2">
                         <Button variant="outline" size="sm" onClick={() => { setEditingLogo(l); setIsLogoModalOpen(true); }}>Edit</Button>
                         <Button variant="destructive" size="sm" onClick={() => handleDeleteLogo(l.id)}>Delete</Button>
@@ -191,7 +305,7 @@ export default function SocialProofPage() {
               <CardDescription>Manage customer reviews and feedback.</CardDescription>
             </div>
             <Button onClick={() => {
-              setEditingTestimonial({ authorName: "", authorTitle: "", company: "", content: "", rating: 5, avatarUrl: "", isFeatured: false });
+              setEditingTestimonial({ authorName: "", authorTitle: "", company: "", content: "", rating: 5, avatarUrl: "", isFeatured: false, productIds: [] });
               setIsTestimonialModalOpen(true);
             }}>Add Testimonial</Button>
           </CardHeader>
@@ -222,6 +336,13 @@ export default function SocialProofPage() {
                         </div>
                       </div>
                       <p className="text-sm italic text-zinc-600 dark:text-zinc-400">"{t.content}"</p>
+                      {t.productNames && t.productNames.length > 0 && (
+                        <div className="flex flex-wrap gap-1">
+                          {t.productNames.map((name: string) => (
+                            <span key={name} className="inline-flex px-1.5 py-0.5 rounded text-[10px] bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 font-medium border border-indigo-200 dark:border-indigo-800/40">{name}</span>
+                          ))}
+                        </div>
+                      )}
                       <div className="flex justify-end space-x-2 pt-2 border-t border-[--border]">
                         <Button variant="ghost" size="sm" onClick={() => { setEditingTestimonial(t); setIsTestimonialModalOpen(true); }}>Edit</Button>
                         <Button variant="ghost" className="text-red-500" size="sm" onClick={() => handleDeleteTestimonial(t.id)}>Delete</Button>
@@ -238,7 +359,7 @@ export default function SocialProofPage() {
       {/* Logo Modal */}
       {isLogoModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-background rounded-xl shadow-xl w-full max-w-md overflow-hidden">
+          <div className="bg-background rounded-xl shadow-xl w-full max-w-md overflow-hidden max-h-[90vh] overflow-y-auto">
             <div className="px-6 py-4 border-b border-[--border]">
               <h2 className="text-lg font-semibold">{editingLogo.id ? "Edit Logo" : "Add Logo"}</h2>
             </div>
@@ -271,6 +392,14 @@ export default function SocialProofPage() {
                   value={editingLogo.caseStudy || ""} 
                   onChange={e => setEditingLogo({...editingLogo, caseStudy: e.target.value})} 
                   placeholder="Describe how they successfully used your products."
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Related Products/Tools</label>
+                <ProductMultiSelect
+                  products={products}
+                  selectedIds={editingLogo.productIds || []}
+                  onChange={ids => setEditingLogo({ ...editingLogo, productIds: ids })}
                 />
               </div>
               <div className="flex justify-end space-x-2 pt-4">
@@ -322,6 +451,14 @@ export default function SocialProofPage() {
               <div className="space-y-2">
                 <label className="text-sm font-medium">Rating (1-5)</label>
                 <Input type="number" min="1" max="5" required value={editingTestimonial.rating} onChange={e => setEditingTestimonial({...editingTestimonial, rating: parseInt(e.target.value)})} />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Related Products/Tools</label>
+                <ProductMultiSelect
+                  products={products}
+                  selectedIds={editingTestimonial.productIds || []}
+                  onChange={ids => setEditingTestimonial({ ...editingTestimonial, productIds: ids })}
+                />
               </div>
               <div className="flex justify-end space-x-2 pt-4">
                 <Button variant="outline" type="button" onClick={() => setIsTestimonialModalOpen(false)}>Cancel</Button>

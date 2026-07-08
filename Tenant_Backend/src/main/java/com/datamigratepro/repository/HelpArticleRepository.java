@@ -14,4 +14,6 @@ public interface HelpArticleRepository extends JpaRepository<HelpArticle, String
     List<HelpArticle> findBySiteId(String siteId);
     Optional<HelpArticle> findBySlugAndSiteId(String slug, String siteId);
     List<HelpArticle> findBySiteIdAndTitleContainingIgnoreCaseOrSiteIdAndExcerptContainingIgnoreCase(String siteId1, String title, String siteId2, String excerpt);
+    List<HelpArticle> findByProductId(String productId);
+    Optional<HelpArticle> findByProductIdAndSiteId(String productId, String siteId);
 }

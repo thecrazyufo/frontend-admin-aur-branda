@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- Add product_ids JSONB to testimonials -->
+    <changeSet id="029-testimonials-product-ids" author="platform">
+        <addColumn tableName="testimonials">
+            <column name="product_ids" type="JSONB"/>
+        </addColumn>
+    </changeSet>
+
+    <!-- Add product_ids JSONB to client_logos -->
+    <changeSet id="029b-client-logos-product-ids" author="platform">
+        <addColumn tableName="client_logos">
+            <column name="product_ids" type="JSONB"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

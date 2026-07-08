@@ -14,6 +14,8 @@ export interface Category {
   count: number;
   color: string;
   siteId: string;
+  productIds?: string[];
+  productNames?: string[];
 }
 
 export const API_BASE = (() => {

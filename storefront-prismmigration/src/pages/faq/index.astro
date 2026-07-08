@@ -31,9 +31,9 @@ try {
 
   <div class="hero-gradient py-14 text-center">
     <div class="container-custom">
-      <span class="inline-block text-xs font-bold uppercase tracking-widest mb-4 px-3 py-1.5 rounded-full text-[#EAB308] bg-[#EAB308]/10 border border-[#EAB308]/20">FAQ</span>
-      <h1 class="text-white font-bold mb-3">Frequently Asked Questions</h1>
-      <p class="text-stone-300 max-w-lg mx-auto">
+      <span class="inline-block text-xs font-bold uppercase tracking-widest mb-4 px-3 py-1.5 rounded-full text-[#F97316] bg-[#F97316]/10 border border-[#F97316]/20">FAQ</span>
+      <h1 class="text-[#0F172A] font-bold mb-3">Frequently Asked Questions</h1>
+      <p class="text-[#0F172A] max-w-lg mx-auto">
         Everything you need to know about our tools, licensing, and support.
       </p>
     </div>
@@ -44,18 +44,18 @@ try {
       <div class="mb-12">
         <SectionHeader
           eyebrow="Category"
-          title={FAQ_CATEGORY_LABELS[category as FAQCategory]}
+          title={FAQ_CATEGORY_LABELS[category as FAQCategory] || category}
           class="mb-6"
         />
         <div class="space-y-3">
           {items.map((faq) => (
-            <details class="group bg-stone-900/30 backdrop-blur rounded-2xl border border-stone-900 shadow-sm">
+            <details class="group bg-white/30 backdrop-blur rounded-2xl border border-[#E2E8F0] shadow-sm">
               <summary class="flex items-center justify-between px-6 py-4 cursor-pointer list-none">
                 <span class="font-semibold text-white pr-4">{faq.question}</span>
                 <ChevronRight size={18} class="text-stone-500 shrink-0 group-open:rotate-90 transition-transform" />
               </summary>
               <div class="px-6 pb-5">
-                <div class="text-sm text-stone-300 leading-relaxed prose-faq" set:html={parseMarkdownToHtml(faq.answer || faq.answer)} />
+                <div class="text-sm text-[#0F172A] leading-relaxed prose-faq" set:html={parseMarkdownToHtml(faq.answer || faq.answer)} />
               </div>
             </details>
           ))}

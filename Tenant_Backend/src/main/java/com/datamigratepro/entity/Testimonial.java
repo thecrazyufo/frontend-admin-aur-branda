@@ -5,9 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "testimonials")
@@ -43,6 +46,15 @@ public class Testimonial {
     @Column(name = "is_featured", nullable = false)
     private Boolean isFeatured = false;
 
+    /** Product IDs this testimonial is linked to */
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "product_ids", columnDefinition = "jsonb")
+    private List<String> productIds;
+
+    /** Transient: populated at query time from product names — not persisted */
+    @Transient
+    private List<String> productNames;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -51,3 +63,4 @@ public class Testimonial {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 }
+

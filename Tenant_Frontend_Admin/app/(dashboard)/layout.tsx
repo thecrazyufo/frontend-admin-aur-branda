@@ -708,6 +708,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                       { id: "brandC", label: "C" },
                       { id: "brandD", label: "D" },
                       { id: "brandE", label: "E" },
+                      { id: "migrationuncle", label: "UNCLE" },
+                      { id: "apexbyte", label: "APEX" },
                     ].map((b) => {
                       const isActive = siteId === b.id;
                       const isAllowed = isSuperAdmin(userRole) || sessionBrandId === b.id;

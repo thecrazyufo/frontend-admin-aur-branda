@@ -1,6 +1,7 @@
 package com.datamigratepro.dto;
 
 import lombok.Data;
+import java.util.List;
 
 @Data
 public class TestimonialDto {
@@ -11,4 +12,5 @@ public class TestimonialDto {
     private Integer rating;
     private String avatarUrl;
     private Boolean isFeatured;
+    private List<String> productIds;
 }

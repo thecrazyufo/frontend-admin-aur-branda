@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- Add product_ids JSONB to blog_posts -->
+    <changeSet id="030-blog-posts-product-ids" author="platform">
+        <addColumn tableName="blog_posts">
+            <column name="product_ids" type="JSONB"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

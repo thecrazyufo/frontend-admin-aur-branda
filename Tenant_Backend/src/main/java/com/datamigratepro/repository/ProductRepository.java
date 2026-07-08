@@ -16,4 +16,7 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     Optional<Product> findBySlugAndSiteId(String slug, String siteId);
     List<Product> findByCategoryAndSiteId(String category, String siteId);
     List<Product> findBySiteIdAndNameContainingIgnoreCaseOrSiteIdAndShortDescriptionContainingIgnoreCase(String siteId1, String name, String siteId2, String shortDescription);
+
+    @org.springframework.data.jpa.repository.Query("SELECT p.id FROM Product p WHERE p.id LIKE :prefix%")
+    List<String> findIdsStartingWith(@org.springframework.data.repository.query.Param("prefix") String prefix);
 }

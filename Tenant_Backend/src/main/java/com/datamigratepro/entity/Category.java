@@ -30,6 +30,13 @@ public class Category {
     private Integer count;
     private String color;
 
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
+    @Column(name = "product_ids", columnDefinition = "jsonb")
+    private java.util.List<String> productIds = new java.util.ArrayList<>();
+
+    @jakarta.persistence.Transient
+    private java.util.List<String> productNames = new java.util.ArrayList<>();
+
     @org.hibernate.annotations.TenantId
     @Column(name = "site_id", nullable = false)
     private String siteId;

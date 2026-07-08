@@ -21,8 +21,13 @@ public class TrialDownload {
     @Column(nullable = false)
     private String email;
 
+    /** Legacy slug-based reference — kept for backward compatibility */
     @Column(nullable = false)
     private String productSlug;
+
+    /** Canonical Product ID (PRM-* format) — preferred reference */
+    @Column(name = "product_id", length = 50)
+    private String productId;
 
     @CreationTimestamp
     @Column(updatable = false)
@@ -32,3 +37,4 @@ public class TrialDownload {
     @Column(name = "site_id", nullable = false)
     private String siteId;
 }
+

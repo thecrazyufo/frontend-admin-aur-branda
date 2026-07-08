@@ -30,6 +30,19 @@ public class Faq {
     @Column(name = "site_id", nullable = false)
     private String siteId;
 
+    @Column(name = "product_id")
+    private String productId;
+
+    @jakarta.persistence.Transient
+    private String productName;
+
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
+    @Column(name = "product_ids", columnDefinition = "jsonb")
+    private java.util.List<String> productIds = new java.util.ArrayList<>();
+
+    @jakarta.persistence.Transient
+    private java.util.List<String> productNames = new java.util.ArrayList<>();
+
     public Faq(String id, String question, String answer, String category) {
         this.id = id;
         this.question = question;

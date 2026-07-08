@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="032-migrationuncle-brand" author="system">
+        <insert tableName="brand_configs">
+            <column name="id" value="migrationuncle"/>
+            <column name="name" value="Migration Uncle"/>
+            <column name="domain" value="migrationuncle.local"/>
+            <column name="theme_colors" value="{&quot;primary&quot;:&quot;#10B981&quot;,&quot;accent&quot;:&quot;#F59E0B&quot;}"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="dev_port" value="3003"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

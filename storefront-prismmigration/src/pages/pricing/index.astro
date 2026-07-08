@@ -1,154 +1,157 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { ProductAPI, SettingsAPI } from "@/services/api";
-import PricingCard from "@/components/common/PricingCard";
+import { ProductAPI, CategoryAPI, SettingsAPI } from "@/services/api";
 import SectionHeader from "@/components/common/SectionHeader";
 import { generateFAQSchema } from "@/lib/seo";
-import { Check, X } from "lucide-react";
+import { Check, CreditCard, HelpCircle, ShieldCheck } from "lucide-react";
 
 const settings = await SettingsAPI.get().catch(() => null);
 
 const dynamicFaqs = settings?.pricingFaqs || [
-  { question: "Do I need a subscription?", answer: "No. All our tools use a one-time payment model. Pay once, use forever." },
-  { question: "Is there a free trial?", answer: "Yes! Every product has a free trial that lets you migrate/convert up to 50 items." },
-  { question: "What if I'm not satisfied?", answer: "We offer a 30-day money-back guarantee. No questions asked." },
-  { question: "Do I get free updates?", answer: "Standard plans include 1 year of free updates. Enterprise/Business plans include lifetime updates." },
+  { question: "How does licensing work?", answer: "We offer flexible licensing tiers tailored for different needs. Each license tier specifies its own validity period and features on the product page." },
+  { question: "Is there a free trial?", answer: "Yes! Every product has a free trial that lets you migrate/convert up to 50 items to verify functionality." },
+  { question: "What is your refund policy?", answer: "We offer a 30-day money-back guarantee if the software does not perform as described." },
+  { question: "How are updates delivered?", answer: "You will receive updates during the active period of your license. Lifetime licenses receive lifetime updates." },
 ];
 
-const dynamicComparison = settings?.pricingComparison || [
-  { feature: "Email Migration", trial: "50 emails", standard: "Unlimited", enterprise: "Unlimited" },
-  { feature: "Contacts & Calendar", trial: true, standard: true, enterprise: true },
-  { feature: "Folder Structure", trial: true, standard: true, enterprise: true },
-  { feature: "Batch Migration", trial: false, standard: false, enterprise: true },
-  { feature: "Delta Migration", trial: false, standard: true, enterprise: true },
-  { feature: "Number of Licenses", trial: "1", standard: "1", enterprise: "25" },
-  { feature: "Free Updates", trial: false, standard: "1 Year", enterprise: "Lifetime" },
-  { feature: "Technical Support", trial: "Email", standard: "Priority Email", enterprise: "24/7 Phone & Chat" },
-  { feature: "Price", trial: "Free", standard: "$49", enterprise: "$199" },
-];
-
-let flagship = null;
+let groupedProducts = [];
+let errorLoading = false;
 
 try {
-  const productsList = await ProductAPI.getAll();
-  if (productsList.length > 0) {
-    flagship = productsList[0];
-  }
+  const [productsList, categoriesList] = await Promise.all([
+    ProductAPI.getAll(),
+    CategoryAPI.getAll(),
+  ]);
+
+  const enabledProducts = productsList.filter(p => p.enabled !== false);
+
+  groupedProducts = categoriesList.map(cat => {
+    const productsInCategory = enabledProducts.filter(p => p.category === cat.id);
+    return {
+      category: cat,
+      products: productsInCategory
+    };
+  }).filter(group => group.products.length > 0);
 } catch (e) {
   console.error("Error loading products for pricing:", e);
+  errorLoading = true;
 }
+
+const getLowestPaidPlan = (product: any) => {
+  if (!product.pricing || product.pricing.length === 0) return null;
+  const paidTiers = product.pricing.filter((t: any) => t.price > 0);
+  if (paidTiers.length === 0) return null;
+  return paidTiers.reduce((lowest: any, current: any) => current.price < lowest.price ? current : lowest, paidTiers[0]);
+};
 ---
 
 <BaseLayout
-  title={`Pricing Plans — ${settings?.name || ""}`}
-  description="Transparent pricing for all our software tools. Free trial available. One-time payment, lifetime license. 30-day money-back guarantee."
+  title={`Pricing Catalog — ${settings?.name || ""}`}
+  description="Transparent pricing directory for all our software tools. Free trials, standard, and enterprise licensing plans available."
 >
   <script type="application/ld+json" set:html={JSON.stringify(generateFAQSchema(dynamicFaqs))} />
 
   {/* Header */}
-  <section class="bg-[#0A0A0A] py-16 text-center tech-grid border-b border-stone-900 relative overflow-hidden">
+  <section class="bg-[#F8FAFC] py-16 text-center tech-grid border-b border-[#E2E8F0] relative overflow-hidden">
     <!-- Ambient refraction glow background -->
     <div class="absolute inset-0 pointer-events-none overflow-hidden">
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] bg-[#EAB308]/5 blur-[90px] rounded-full"></div>
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] bg-[#F97316]/5 blur-[90px] rounded-full"></div>
     </div>
 
     <div class="container-custom relative z-10">
-      <span class="inline-block text-[10px] font-bold uppercase tracking-widest text-[#EAB308] bg-[#EAB308]/15 border border-[#EAB308]/25 px-3 py-1 rounded mb-4">
-        Simple Pricing
+      <span class="inline-block text-[10px] font-bold uppercase tracking-widest text-[#F97316] bg-[#F97316]/15 border border-[#F97316]/25 px-3 py-1 rounded mb-4">
+        Pricing Directory
       </span>
-      <h1 class="text-white font-extrabold text-3xl md:text-4xl tracking-tight mb-4">One-Time Purchase. Lifetime Validity.</h1>
+      <h1 class="text-white font-extrabold text-[#0F172A]xl md:text-[#0F172A]xl tracking-tight mb-4">Flexible Licensing Options</h1>
       <p class="text-[#E5E5E5] max-w-xl mx-auto leading-relaxed text-xs">
-        No subscriptions. No hidden fees. Choose your plan and own the software.
-        All plans include free technical support.
+        Select a tool from our catalog to view its specific pricing tiers, user allocations, and support periods.
       </p>
     </div>
   </section>
 
-  {/* Flagship Pricing */}
-  {flagship && (
-    <section class="bg-[#0A0A0A] py-16 tech-grid relative">
-      <div class="container-custom">
-        <div class="text-center mb-12">
-          <span class="text-[10px] tracking-wider text-[#EAB308] uppercase font-bold block">Enterprise Licensing</span>
-          <h2 class="text-xl md:text-2xl font-bold text-white mt-1">Direct Licensing Plans</h2>
-          <p class="text-xs text-stone-400 mt-1">Acquire on-premises keys for high-velocity database and folder migration.</p>
+  {/* Pricing Directory Catalog */}
+  <section class="bg-[#F8FAFC] py-16 relative min-h-[400px]">
+    <div class="container-custom">
+      {errorLoading ? (
+        <div class="text-center py-20 bg-white/10 rounded-2xl border border-[#E2E8F0] p-8">
+          <p class="text-[#0F172A] text-sm">Unable to load pricing catalog. Please verify that your system backend is online.</p>
         </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto items-stretch">
-          {(flagship.pricing || []).map((tier) => (
-            <PricingCard tier={tier} productSlug={flagship.slug} />
-          ))}
-        </div>
-
-        {/* Guarantees */}
-        <div class="mt-12 flex flex-wrap items-center justify-center gap-6 text-xs text-stone-300 font-mono">
-          {["30-Day Money-Back Guarantee", "No Subscription Required", "Free Technical Support", "Secure Payment"].map((g) => (
-            <div class="flex items-center gap-2">
-              <Check size={14} class="text-[#EAB308]" />
-              {g}
+      ) : groupedProducts.length > 0 ? (
+        <div class="space-y-16 max-w-5xl mx-auto">
+          {groupedProducts.map(group => (
+            <div>
+              <h2 class="text-xs font-bold text-white uppercase tracking-wider mb-6 border-b border-[#E2E8F0] pb-3 flex items-center gap-2">
+                <span class="text-[#F97316]">{group.category.label}</span>
+                <span class="text-[10px] text-[#475569] font-mono font-semibold">({group.products.length} {group.products.length !== 1 ? 'tools' : 'tool'})</span>
+              </h2>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {group.products.map(p => {
+                  const plan = getLowestPaidPlan(p);
+                  return (
+                    <div class="bg-white/20 backdrop-blur rounded-xl border border-[#E2E8F0] p-5 hover:border-[#F97316]/20 transition-all duration-300 flex flex-col justify-between shadow-lg">
+                      <div>
+                        <h3 class="font-bold text-white text-sm mb-1.5 tracking-tight">{p.name}</h3>
+                        <p class="text-[11px] text-[#475569] leading-relaxed mb-4 line-clamp-2">{p.shortDescription}</p>
+                      </div>
+                      
+                      <div class="flex items-center justify-between mt-4 pt-4 border-t border-[#E2E8F0]/40">
+                        <div>
+                          {plan ? (
+                            <>
+                              <span class="text-[9px] text-[#475569] uppercase tracking-wider font-semibold block">Starts at</span>
+                              <div class="flex items-baseline gap-0.5">
+                                <span class="text-base font-extrabold text-white">${plan.price}</span>
+                                <span class="text-[9px] text-[#475569] font-mono font-medium">/{plan.period}</span>
+                              </div>
+                            </>
+                          ) : (
+                            <span class="text-[#475569] text-[11px] font-semibold">Free / Contact Us</span>
+                          )}
+                        </div>
+                        <a href={`/products/${p.slug}`} class="bg-[#F97316]/10 hover:bg-[#F97316]/20 text-[#F97316] border border-[#F97316]/20 text-[10px] font-extrabold uppercase tracking-wider py-2 px-3.5 rounded transition-all duration-300">
+                          View Tiers
+                        </a>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           ))}
         </div>
-      </div>
-    </section>
-  )}
+      ) : (
+        <div class="text-center py-20 bg-white/10 rounded-2xl border border-[#E2E8F0] p-8 max-w-lg mx-auto">
+          <p class="text-[#0F172A] text-sm">No products found in the catalog index.</p>
+        </div>
+      )}
 
-  {/* Feature Comparison Table */}
-  <section class="bg-[#0A0A0A] py-16 border-t border-stone-900 tech-grid">
-    <div class="container-custom">
-      <div class="text-center mb-10">
-        <span class="text-[10px] tracking-wider text-[#EAB308] uppercase font-bold block">Compare Tiers</span>
-        <h2 class="text-xl font-bold text-white mt-1">Plan Comparison Matrix</h2>
-      </div>
-
-      <div class="overflow-x-auto max-w-4xl mx-auto rounded-xl border border-stone-900 bg-stone-900/10 backdrop-blur shadow-2xl">
-        <table class="w-full text-xs border-collapse">
-          <thead>
-            <tr class="border-b border-stone-900 bg-stone-950/40">
-              <th class="text-left py-4 px-6 font-semibold text-white w-1/2">Feature</th>
-              <th class="py-4 px-4 font-semibold text-stone-300 text-center">Free Trial</th>
-              <th class="py-4 px-4 font-semibold text-[#EAB308] bg-[#EAB308]/5 text-center">Standard</th>
-              <th class="py-4 px-4 font-semibold text-stone-300 text-center">Enterprise</th>
-            </tr>
-          </thead>
-          <tbody>
-            {dynamicComparison.map((row, i) => (
-              <tr class={`border-b border-stone-900/60 ${i % 2 === 0 ? "bg-stone-900/10" : ""}`}>
-                <td class="py-4 px-6 font-medium text-white">{row.feature}</td>
-                <td class="py-4 px-4 text-center text-stone-300">
-                  {typeof row.trial === "boolean"
-                    ? row.trial ? <Check size={15} class="text-emerald-500 mx-auto" /> : <X size={15} class="text-stone-600 mx-auto" />
-                    : row.trial}
-                </td>
-                <td class="py-4 px-4 text-center text-[#EAB308] bg-[#EAB308]/5 font-semibold">
-                  {typeof row.standard === "boolean"
-                    ? row.standard ? <Check size={15} class="text-[#EAB308] mx-auto" /> : <X size={15} class="text-stone-600 mx-auto" />
-                    : row.standard}
-                </td>
-                <td class="py-4 px-4 text-center text-stone-300">
-                  {typeof row.enterprise === "boolean"
-                    ? row.enterprise ? <Check size={15} class="text-emerald-500 mx-auto" /> : <X size={15} class="text-stone-600 mx-auto" />
-                    : row.enterprise}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {/* Guarantees Strip */}
+      <div class="mt-20 flex flex-wrap items-center justify-center gap-8 py-6 border-t border-[#E2E8F0] text-[11px] text-[#0F172A] font-mono">
+        <div class="flex items-center gap-2">
+          <ShieldCheck size={14} class="text-[#F97316]" />
+          30-Day Money-Back Guarantee
+        </div>
+        <div class="flex items-center gap-2">
+          <CreditCard size={14} class="text-[#F97316]" />
+          Secure Payment Processing
+        </div>
+        <div class="flex items-center gap-2">
+          <HelpCircle size={14} class="text-[#F97316]" />
+          Free Setup Assistance
+        </div>
       </div>
     </div>
   </section>
 
-  {/* Pricing FAQ */}
-  <section class="bg-[#0A0A0A] py-16 border-t border-stone-900 tech-grid">
+  {/* FAQ Section */}
+  <section class="bg-[#F8FAFC] py-16 border-t border-[#E2E8F0] tech-grid">
     <div class="container-custom max-w-3xl">
-      <div class="text-center mb-10">
-        <span class="text-[10px] tracking-wider text-[#EAB308] uppercase font-bold block">FAQ</span>
-        <h2 class="text-xl font-bold text-white mt-1">Licensing FAQ</h2>
-      </div>
+      <SectionHeader eyebrow="FAQ" title="Licensing FAQ" centered class="mb-10" />
 
       <div class="space-y-4">
         {dynamicFaqs.map((faq) => (
-          <div class="bg-stone-900/30 backdrop-blur rounded-xl border border-stone-900 p-6 shadow-2xl hover:border-[#EAB308]/30 transition-colors">
+          <div class="bg-white/30 backdrop-blur rounded-xl border border-[#E2E8F0] p-6 shadow-2xl hover:border-[#F97316]/30 transition-colors">
             <h3 class="font-bold text-white text-sm mb-2">{faq.question}</h3>
             <p class="text-xs text-[#E5E5E5] leading-relaxed">{faq.answer}</p>
           </div>

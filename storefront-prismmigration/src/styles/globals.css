@@ -57,8 +57,8 @@
 
 /* ===== Custom CSS Variables mapping (for backward compatibility & dynamic config) ===== */
 :root {
-  --gold: #EAB308;
-  --cyan: #22D3EE;
+  --gold: #F97316;
+  --cyan: #06B6D4;
   --background: #ffffff;
   --foreground: #171717;
   --muted: #fafafa;
@@ -143,7 +143,7 @@
 
   /* Global Keyboard Focus Indicators */
   *:focus-visible {
-    outline: 2px solid var(--brand-primary, #EAB308) !important;
+    outline: 2px solid var(--brand-primary, #F97316) !important;
     outline-offset: 4px !important;
   }
 
@@ -362,34 +362,35 @@
 /* ===== Scoped Overrides for Luxury Brand A Layout ===== */
 .layout-luxury {
   /* Color theme overrides */
-  --background: #0A0A0A;
-  --foreground: #FFFFFF;
-  --muted: #121212;
-  --muted-2: #18181b;
-  --muted-foreground: #E5E5E5;
-  --color-mute-var: #a1a1aa;
-  --border: #1f1f1f;
-  --border-strong: #3f3f46;
-  --card: #0E0E0E;
+  --background: #F8FAFC;
+  --color-canvas: #F8FAFC;
+  --foreground: #0F172A;
+  --muted: #F1F5F9;
+  --muted-2: #E2E8F0;
+  --muted-foreground: #475569;
+  --color-mute-var: #64748B;
+  --border: #E2E8F0;
+  --border-strong: #CBD5E1;
+  --card: #FFFFFF;
 
-  --brand-primary: #EAB308;
-  --brand-primary-dark: #f1c40f;
+  --brand-primary: #F97316;
+  --brand-primary-dark: #EA580C;
   --brand-primary-light: #fef08a;
-  --brand-accent: #EAB308;
-  --brand-accent-dark: #f1c40f;
+  --brand-accent: #F97316;
+  --brand-accent-dark: #EA580C;
   --brand-accent-light: #fef08a;
 
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-  background-color: #0A0A0A !important;
-  color: #FFFFFF !important;
+  background-color: #F8FAFC !important;
+  color: #F97316 !important;
 }
 
 /* Luxury Layout Translucent Badges */
 .layout-luxury .badge-blue { background: rgba(59, 130, 246, 0.1) !important; color: #60a5fa !important; border: 1px solid rgba(59, 130, 246, 0.2) !important; }
-.layout-luxury .badge-green { background: rgba(16, 185, 129, 0.1) !important; color: #34d399 !important; border: 1px solid rgba(16, 185, 129, 0.2) !important; }
-.layout-luxury .badge-amber { background: rgba(245, 158, 11, 0.1) !important; color: #fbbf24 !important; border: 1px solid rgba(245, 158, 11, 0.2) !important; }
+.layout-luxury .badge-green { background: rgba(249, 115, 22, 0.1) !important; color: #34d399 !important; border: 1px solid rgba(249, 115, 22, 0.2) !important; }
+.layout-luxury .badge-amber { background: rgba(6, 182, 212, 0.1) !important; color: #fbbf24 !important; border: 1px solid rgba(6, 182, 212, 0.2) !important; }
 .layout-luxury .badge-red { background: rgba(239, 68, 68, 0.1) !important; color: #f87171 !important; border: 1px solid rgba(239, 68, 68, 0.2) !important; }
-.layout-luxury .badge-purple { background: rgba(139, 92, 246, 0.1) !important; color: #a78bfa !important; border: 1px solid rgba(139, 92, 246, 0.2) !important; }
+.layout-luxury .badge-purple { background: rgba(249, 115, 22, 0.1) !important; color: #a78bfa !important; border: 1px solid rgba(249, 115, 22, 0.2) !important; }
 .layout-luxury .badge-gray { background: rgba(156, 163, 175, 0.1) !important; color: #d1d5db !important; border: 1px solid rgba(156, 163, 175, 0.2) !important; }
 .layout-luxury .badge { text-transform: uppercase !important; letter-spacing: 0.04em !important; font-size: 10px !important; }
 
@@ -403,7 +404,7 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
   font-weight: 700 !important;
   letter-spacing: -0.025em !important;
-  color: #FFFFFF !important;
+  color: #F97316 !important;
 }
 
 /* Button overrides for luxury feel */
@@ -421,43 +422,43 @@
 }
 
 .layout-luxury .btn-primary {
-  background: #EAB308 !important;
-  color: #0A0A0A !important;
-  border: 1px solid #EAB308 !important;
-  box-shadow: 0 0 15px rgba(234, 179, 8, 0.25) !important;
+  background: #F97316 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #F97316 !important;
+  box-shadow: 0 0 15px rgba(249, 115, 22, 0.25) !important;
 }
 
 .layout-luxury .btn-primary:hover {
-  background: #f1c40f !important;
-  border-color: #f1c40f !important;
-  color: #0A0A0A !important;
+  background: #EA580C !important;
+  border-color: #EA580C !important;
+  color: #FFFFFF !important;
   transform: translateY(-1px) !important;
-  box-shadow: 0 0 25px rgba(234, 179, 8, 0.5) !important;
+  box-shadow: 0 0 25px rgba(249, 115, 22, 0.5) !important;
 }
 
 .layout-luxury .btn-accent {
-  background: #EAB308 !important;
-  color: #0A0A0A !important;
-  border: 1px solid #EAB308 !important;
-  box-shadow: 0 0 15px rgba(234, 179, 8, 0.25) !important;
+  background: #F97316 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #F97316 !important;
+  box-shadow: 0 0 15px rgba(249, 115, 22, 0.25) !important;
 }
 
 .layout-luxury .btn-accent:hover {
-  background: #f1c40f !important;
-  border-color: #f1c40f !important;
-  color: #0A0A0A !important;
+  background: #EA580C !important;
+  border-color: #EA580C !important;
+  color: #FFFFFF !important;
   transform: translateY(-1px) !important;
 }
 
 .layout-luxury .btn-outline {
   background: transparent !important;
-  border: 1px solid rgba(234, 179, 8, 0.3) !important;
-  color: #EAB308 !important;
+  border: 1px solid rgba(249, 115, 22, 0.3) !important;
+  color: #F97316 !important;
 }
 
 .layout-luxury .btn-outline:hover {
-  background: rgba(234, 179, 8, 0.1) !important;
-  border-color: #EAB308 !important;
+  background: rgba(249, 115, 22, 0.1) !important;
+  border-color: #F97316 !important;
   color: #FFFFFF !important;
   transform: translateY(-1px) !important;
 }
@@ -465,7 +466,7 @@
 .layout-luxury .btn-ghost-white {
   background: rgba(255, 255, 255, 0.05) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  color: #ffffff !important;
+  color: #070E14 !important;
 }
 
 .layout-luxury .btn-ghost-white:hover {
@@ -481,10 +482,10 @@
 }
 
 .layout-luxury nav.shadow-lg {
-  background-color: rgba(10, 10, 10, 0.9) !important;
+  background-color: rgba(255, 255, 255, 0.9) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
-  border-bottom: 1px solid #1f1f1f !important;
+  border-bottom: 1px solid #E2E8F0 !important;
 }
 
 .layout-luxury nav a {
@@ -492,12 +493,12 @@
   text-transform: none !important;
   font-size: 13px !important;
   letter-spacing: -0.01em !important;
-  color: #e5e5e5 !important;
+  color: #475569 !important;
   transition: color 0.2s ease !important;
 }
 
 .layout-luxury nav a:hover {
-  color: #EAB308 !important;
+  color: #F97316 !important;
   background-color: transparent !important;
 }
 
@@ -506,54 +507,54 @@
 }
 
 .layout-luxury nav .text-blue-600 {
-  color: #EAB308 !important;
+  color: #F97316 !important;
 }
 
 .layout-luxury nav .bg-indigo-600 {
-  background-color: #EAB308 !important;
-  color: #0A0A0A !important;
+  background-color: #F97316 !important;
+  color: #FFFFFF !important;
   border-radius: 6px !important;
   font-size: 13px !important;
   padding: 0.5rem 1rem !important;
 }
 
 .layout-luxury nav .bg-indigo-600:hover {
-  background-color: #f1c40f !important;
+  background-color: #EA580C !important;
 }
 
 .layout-luxury .bg-\[var\(--navy-900\)\] {
-  background-color: #0A0A0A !important;
-  border-bottom: 1px solid #1f1f1f !important;
+  background-color: #F8FAFC !important;
+  border-bottom: 1px solid #E2E8F0 !important;
 }
 
 .layout-luxury .bg-\[var\(--navy-900\)\] a {
-  color: #EAB308 !important;
+  color: #F97316 !important;
 }
 
 .layout-luxury .bg-\[var\(--navy-900\)\] a:hover {
-  color: #ffffff !important;
+  color: #070E14 !important;
 }
 
 /* Footer overrides */
 .layout-luxury footer {
-  background-color: #0A0A0A !important;
+  background-color: #F8FAFC !important;
   color: #a3a3a3 !important;
   border-top: 1px solid #1f1f1f !important;
 }
 
 .layout-luxury footer h3,
 .layout-luxury footer h4 {
-  color: #FFFFFF !important;
+  color: #0F172A !important;
   font-family: 'Inter', sans-serif !important;
   font-weight: 600 !important;
 }
 
 .layout-luxury footer a {
-  color: #a3a3a3 !important;
+  color: #475569 !important;
 }
 
 .layout-luxury footer a:hover {
-  color: #FFFFFF !important;
+  color: #F97316 !important;
 }
 
 /* Premium Crosshair Grid Styling */
@@ -653,7 +654,7 @@
 
 .btn-primary:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 20px rgba(234, 179, 8, 0.4);
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.4);
 }
 
 .section-heading {
@@ -667,6 +668,6 @@
   left: 0;
   width: 60px;
   height: 3px;
-  background: linear-gradient(to right, #EAB308, transparent);
+  background: linear-gradient(to right, #F97316, transparent);
 }
 

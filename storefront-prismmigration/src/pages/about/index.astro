@@ -34,37 +34,37 @@ const siteDescription = settings?.description || "";
 >
   <div>
     {/* Hero */}
-    <section class="bg-[#0A0A0A] py-20 text-center border-b border-stone-900 relative overflow-hidden">
+    <section class="bg-[#F8FAFC] py-20 text-center border-b border-[#E2E8F0] relative overflow-hidden">
       <!-- Ambient refraction glow background -->
       <div class="absolute inset-0 pointer-events-none overflow-hidden">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] bg-[#EAB308]/5 blur-[90px] rounded-full"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] bg-[#F97316]/5 blur-[90px] rounded-full"></div>
       </div>
 
       <div class="container-custom relative z-10">
-        <span class="inline-block text-[10px] font-bold uppercase tracking-widest mb-4 px-3 py-1.5 rounded-full text-[#EAB308] bg-[#EAB308]/15 border border-[#EAB308]/25">About Us</span>
-        <h1 class="text-white font-extrabold text-3xl md:text-5xl tracking-tight mb-4 max-w-3xl mx-auto leading-tight">
+        <span class="inline-block text-[10px] font-bold uppercase tracking-widest mb-4 px-3 py-1.5 rounded-full text-[#F97316] bg-[#F97316]/15 border border-[#F97316]/25">About Us</span>
+        <h1 class="text-white font-extrabold text-[#0F172A]xl md:text-[#475569]xl tracking-tight mb-4 max-w-3xl mx-auto leading-tight">
           Trusted by IT Professionals Across the Globe
         </h1>
-        <p class="text-stone-300 max-w-xl mx-auto text-xs leading-relaxed">
+        <p class="text-[#0F172A] max-w-xl mx-auto text-xs leading-relaxed">
           We build the world's most reliable email migration and data management software — because your data is priceless.
         </p>
       </div>
     </section>
 
     {/* Stats */}
-    <section class="py-20 bg-[#0A0A0A] border-b border-stone-900">
+    <section class="py-20 bg-[#F8FAFC] border-b border-[#E2E8F0]">
       <div class="container-custom">
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
           {siteStats.map((stat) => (
-            <div class="text-center p-6 rounded-xl bg-stone-900/30 border border-stone-900 backdrop-blur">
-              <div class="flex justify-center text-[#EAB308] mb-3 text-2xl">
+            <div class="text-center p-6 rounded-xl bg-white/30 border border-[#E2E8F0] backdrop-blur">
+              <div class="flex justify-center text-[#F97316] mb-3 text-[#0F172A]xl">
                 {stat.icon === "TrendingUp" && <TrendingUp size={24} />}
                 {stat.icon === "Globe" && <Globe size={24} />}
                 {stat.icon === "Award" && <Award size={24} />}
                 {stat.icon === "Users" && <Users size={24} />}
               </div>
-              <div class="text-3xl font-extrabold text-white mb-1">{stat.value}</div>
-              <div class="text-xs text-stone-400 font-semibold uppercase tracking-wider">{stat.label}</div>
+              <div class="text-[#0F172A]xl font-extrabold text-white mb-1">{stat.value}</div>
+              <div class="text-xs text-[#475569] font-semibold uppercase tracking-wider">{stat.label}</div>
             </div>
           ))}
         </div>
@@ -72,14 +72,14 @@ const siteDescription = settings?.description || "";
     </section>
 
     {/* Mission */}
-    <section class="py-20 bg-[#0A0A0A] border-b border-stone-900">
+    <section class="py-20 bg-[#F8FAFC] border-b border-[#E2E8F0]">
       <div class="container-custom max-w-3xl text-center">
         <SectionHeader eyebrow="Our Mission" title="Data Migration Should Be Simple, Safe & Reliable" centered class="mb-8" />
-        <p class="text-xs text-stone-300 leading-relaxed mb-6">
+        <p class="text-xs text-[#0F172A] leading-relaxed mb-6">
           Founded in 2010, {siteName} started with a simple mission: help IT professionals migrate data without the fear of data loss.
           What began as a single file converter has grown into a comprehensive suite of tools used by IT teams worldwide.
         </p>
-        <p class="text-xs text-stone-300 leading-relaxed">
+        <p class="text-xs text-[#0F172A] leading-relaxed">
           Every tool we build goes through rigorous testing with millions of emails before release. We don't ship until we're confident
           that your data will be 100% intact on the other side.
         </p>
@@ -87,18 +87,18 @@ const siteDescription = settings?.description || "";
     </section>
 
     {/* Team */}
-    <section class="py-20 bg-[#0A0A0A]">
+    <section class="py-20 bg-[#F8FAFC]">
       <div class="container-custom">
         <SectionHeader eyebrow="Team" title="Meet Our Leadership" centered class="mb-12" />
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {team.map((member) => (
-            <div class="text-center bg-stone-900/30 backdrop-blur rounded-xl p-6 border border-stone-900 hover:border-[#EAB308]/30 transition-all duration-300">
-              <div class="w-16 h-16 rounded-xl bg-stone-950 border border-stone-850 flex items-center justify-center text-[#EAB308] text-lg font-bold mx-auto mb-4 shadow-md">
+            <div class="text-center bg-white/30 backdrop-blur rounded-xl p-6 border border-[#E2E8F0] hover:border-[#F97316]/30 transition-all duration-300">
+              <div class="w-16 h-16 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-center text-[#F97316] text-lg font-bold mx-auto mb-4 shadow-md">
                 {member.initials}
               </div>
               <h3 class="font-bold text-white mb-1">{member.name}</h3>
-              <p class="text-xs text-[#EAB308] font-semibold mb-2">{member.role}</p>
-              <p class="text-xs text-stone-400 leading-relaxed">{member.bio}</p>
+              <p class="text-xs text-[#F97316] font-semibold mb-2">{member.role}</p>
+              <p class="text-xs text-[#475569] leading-relaxed">{member.bio}</p>
             </div>
           ))}
         </div>

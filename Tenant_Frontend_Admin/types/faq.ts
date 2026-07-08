@@ -4,6 +4,8 @@ export interface FAQ {
   answer: string;
   category: FAQCategory;
   siteId: string;
+  productIds?: string[];
+  productNames?: string[];
 }
 
 export type FAQCategory =

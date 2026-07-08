@@ -1,0 +1,86 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { SettingsAPI } from "@/services/api";
+
+const settings = await SettingsAPI.get().catch(() => null);
+const siteName = settings?.name || "Prism Migration";
+
+// Try to fetch custom content, fallback to default premium welcome content if empty
+const hasCustomContent = !!settings?.legalPages?.["thank-you-install"];
+const htmlContent = settings?.legalPages?.["thank-you-install"];
+---
+
+<BaseLayout
+  title={`Thank You for Installing — ${siteName}`}
+  description="Your software installation was completed successfully. Get started with your data migration journey today."
+  noindex={true}
+>
+  <section class="min-h-[80vh] flex items-center py-20 bg-white relative overflow-hidden tech-grid">
+    <!-- Background accents -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+      <div class="absolute -top-[10%] left-[50%] -translate-x-1/2 w-[600px] h-[300px] bg-[var(--color-apex-600)]/5 rounded-full blur-[120px]"></div>
+    </div>
+
+    <div class="container-custom max-w-3xl mx-auto px-4 relative z-10">
+      {hasCustomContent ? (
+        <div 
+          class="bg-[var(--color-surface-2)]/30 backdrop-blur-xl border border-[var(--color-border)] p-8 md:p-12 rounded-3xl shadow-2xl prose prose-invert max-w-none prose-headings:text-[var(--color-text-primary)] prose-p:text-[var(--color-text-muted)] prose-a:text-[var(--color-apex-600)] hover:prose-a:underline"
+          set:html={htmlContent}
+        />
+      ) : (
+        <div class="bg-[var(--color-surface-2)]/30 backdrop-blur-xl border border-[var(--color-border)] p-8 md:p-12 rounded-3xl shadow-2xl text-center space-y-8">
+          <!-- Animated Checkmark SVG -->
+          <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[var(--color-apex-600)]/10 border border-[var(--color-apex-600)]/20 text-[var(--color-apex-600)] mb-2 animate-pulse">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+
+          <div class="space-y-3">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-[var(--color-text-primary)] tracking-tight">
+              Installation Completed!
+            </h1>
+            <p class="text-[var(--color-text-secondary)] text-sm md:text-base max-w-md mx-auto">
+              Thank you for choosing <span class="text-[var(--color-apex-600)] font-bold">{siteName}</span>. Your application has been successfully installed and is ready for use.
+            </p>
+          </div>
+
+          <!-- Getting Started Steps -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left pt-6 max-w-2xl mx-auto">
+            <div class="p-5 bg-[var(--color-apex-50)]/40 rounded-xl border border-[var(--color-border)] space-y-2">
+              <span class="text-xs font-bold text-[var(--color-apex-600)] uppercase tracking-wider">Step 1</span>
+              <h3 class="text-[var(--color-text-primary)] font-semibold text-sm">Launch Tool</h3>
+              <p class="text-stone-500 text-xs leading-relaxed">Open the software application from your desktop or applications folder.</p>
+            </div>
+            <div class="p-5 bg-[var(--color-apex-50)]/40 rounded-xl border border-[var(--color-border)] space-y-2">
+              <span class="text-xs font-bold text-[var(--color-apex-600)] uppercase tracking-wider">Step 2</span>
+              <h3 class="text-[var(--color-text-primary)] font-semibold text-sm">Activate License</h3>
+              <p class="text-stone-500 text-xs leading-relaxed">Enter your license key received via email to activate premium features.</p>
+            </div>
+            <div class="p-5 bg-[var(--color-apex-50)]/40 rounded-xl border border-[var(--color-border)] space-y-2">
+              <span class="text-xs font-bold text-[var(--color-apex-600)] uppercase tracking-wider">Step 3</span>
+              <h3 class="text-[var(--color-text-primary)] font-semibold text-sm">Start Migrating</h3>
+              <p class="text-stone-500 text-xs leading-relaxed">Follow the step-by-step wizard interface to begin your data transfer.</p>
+            </div>
+          </div>
+
+          <!-- CTAs -->
+          <div class="flex flex-col sm:flex-row gap-4 items-center justify-center pt-6">
+            <a 
+              href="/help" 
+              class="w-full sm:w-auto px-6 py-3 bg-[var(--color-apex-600)] hover:bg-[var(--color-apex-700)] text-black font-semibold rounded-lg text-sm transition-all duration-200 transform hover:scale-[1.02]"
+            >
+              Get Started Guide
+            </a>
+            <a 
+              href="/contact" 
+              class="w-full sm:w-auto px-6 py-3 bg-[var(--color-surface-2)] border border-stone-800 hover:border-stone-700 text-[var(--color-text-primary)] font-semibold rounded-lg text-sm transition-all duration-200"
+            >
+              Contact Support
+            </a>
+          </div>
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>
