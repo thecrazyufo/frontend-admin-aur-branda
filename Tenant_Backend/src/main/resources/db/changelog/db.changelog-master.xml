@@ -53,4 +53,5 @@
     <include file="db/changelog/031-trial-downloads-product-id.xml" relativeToChangelogFile="false"/>
     <include file="db/changelog/032-migrationuncle-brand.xml" relativeToChangelogFile="false"/>
     <include file="db/changelog/033-apexbyte-brand.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/034-remove-old-brands.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

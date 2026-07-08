@@ -91,9 +91,12 @@ public class DevDatabaseSeeder implements CommandLineRunner {
                     // Brand A staff
                     new AdminUser("adminA", passwordEncoder.encode("admin123"), "ADMIN", "brandA", "Prism Migration Administrator", "admin@prismmigration.local"),
                     new AdminUser("staffA", passwordEncoder.encode("admin123"), "SEO_CW_PRODUCT_MANAGER", "brandA", "Prism Migration SEO & Product Staff", "staff@prismmigration.local"),
-                    // Brand B staff
-                    new AdminUser("adminB", passwordEncoder.encode("admin123"), "ADMIN", "brandB", "Brand B Administrator", "admin@brandB.local"),
-                    new AdminUser("staffB", passwordEncoder.encode("admin123"), "SEO_CW_PRODUCT_MANAGER", "brandB", "Brand B SEO & Product Staff", "staff@brandB.local")
+                    // ApexByte staff
+                    new AdminUser("adminB", passwordEncoder.encode("admin123"), "ADMIN", "apexbyte", "ApexByte Administrator", "admin@apexbyte.local"),
+                    new AdminUser("staffB", passwordEncoder.encode("admin123"), "SEO_CW_PRODUCT_MANAGER", "apexbyte", "ApexByte SEO & Product Staff", "staff@apexbyte.local"),
+                    // Migration Uncle staff
+                    new AdminUser("adminC", passwordEncoder.encode("admin123"), "ADMIN", "migrationuncle", "Migration Uncle Administrator", "admin@migrationuncle.local"),
+                    new AdminUser("staffC", passwordEncoder.encode("admin123"), "SEO_CW_PRODUCT_MANAGER", "migrationuncle", "Migration Uncle SEO & Product Staff", "staff@migrationuncle.local")
                 ));
                 System.out.println("👤 Seeded initial administrator credentials in system database!");
             
@@ -183,8 +186,8 @@ public class DevDatabaseSeeder implements CommandLineRunner {
                     System.out.println("🌱 Database " + brand + " successfully seeded with catalog!");
                     
                     String prefix = switch (brand) {
-                        case "brandB" -> "PSTB";
-                        case "brandC" -> "PSTC";
+                        case "apexbyte" -> "PSTB";
+                        case "migrationuncle" -> "PSTC";
                         case "brandD" -> "PSTD";
                         case "brandE" -> "PSTE";
                         default -> "PST" + brand.substring(brand.length() - 1).toUpperCase();
@@ -300,8 +303,8 @@ public class DevDatabaseSeeder implements CommandLineRunner {
     private void seedNewLicenses() {
         List<License> licenses = new ArrayList<>();
         licenses.addAll(createBrandLicenses("PST", "brandA"));
-        licenses.addAll(createBrandLicenses("PSTB", "brandB"));
-        licenses.addAll(createBrandLicenses("PSTC", "brandC"));
+        licenses.addAll(createBrandLicenses("PSTB", "apexbyte"));
+        licenses.addAll(createBrandLicenses("PSTC", "migrationuncle"));
         licenses.addAll(createBrandLicenses("PSTD", "brandD"));
         licenses.addAll(createBrandLicenses("PSTE", "brandE"));
         licenseRepository.saveAll(licenses);
@@ -966,11 +969,11 @@ public class DevDatabaseSeeder implements CommandLineRunner {
     }
 
     private void seedBrandSpecificCatalog(String brand) {
-        String[] sites = {"brandB", "brandC", "brandD", "brandE"};
-        String[] siteNames = {"Brand B", "Brand C", "Brand D", "Brand E"};
+        String[] sites = {"apexbyte", "migrationuncle", "brandD", "brandE"};
+        String[] siteNames = {"ApexByte", "Migration Uncle", "Brand D", "Brand E"};
         String[] catNames = {"Email Migrations", "Database Tools", "Security Backups", "File Converters"};
-        String[] prodNames = {"Brand B Business Edition", "Brand C Database Migrator", "Brand D Backup Suite", "Brand E PDF Converter"};
-        String[] prodSlugs = {"brandB-business-edition", "brandC-database-migrator", "brandD-backup-suite", "brandE-pdf-converter"};
+        String[] prodNames = {"ApexByte Business Edition", "Migration Uncle Database Migrator", "Brand D Backup Suite", "Brand E PDF Converter"};
+        String[] prodSlugs = {"apexbyte-business-edition", "migrationuncle-database-migrator", "brandD-backup-suite", "brandE-pdf-converter"};
         String[] prodDescs = {
             "Professional mail server migration software for enterprise mailboxes.",
             "Easily migrate between MySQL, PostgreSQL, SQL Server, and Oracle database servers.",

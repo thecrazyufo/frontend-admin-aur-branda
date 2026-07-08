@@ -261,8 +261,8 @@ public class LicenseController {
         String brandPrefix = (String) request.get("brandPrefix");
         if (brandPrefix == null || brandPrefix.trim().isEmpty()) {
             brandPrefix = switch (siteId) {
-                case "brandB" -> "PSTB";
-                case "brandC" -> "PSTC";
+                case "apexbyte" -> "PSTB";
+                case "migrationuncle" -> "PSTC";
                 case "brandD" -> "PSTD";
                 case "brandE" -> "PSTE";
                 default -> "PST";

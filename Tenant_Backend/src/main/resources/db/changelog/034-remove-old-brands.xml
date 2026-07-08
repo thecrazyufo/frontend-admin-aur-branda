@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="034-remove-old-brands" author="system">
+        <!-- Delete old brand users so they can be re-seeded or clean -->
+        <delete tableName="admin_users">
+            <where>brand_id = 'brandB'</where>
+        </delete>
+        <delete tableName="admin_users">
+            <where>brand_id = 'brandC'</where>
+        </delete>
+
+        <!-- Delete old brand configs -->
+        <delete tableName="brand_configs">
+            <where>id = 'brandB'</where>
+        </delete>
+        <delete tableName="brand_configs">
+            <where>id = 'brandC'</where>
+        </delete>
+    </changeSet>
+
+</databaseChangeLog>
