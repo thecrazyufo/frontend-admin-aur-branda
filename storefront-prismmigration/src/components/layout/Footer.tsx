@@ -76,21 +76,21 @@ export default function Footer({
     : "/admin/login";
 
   return (
-    <footer className="bg-[#F8FAFC] border-t border-[#E2E8F0] pt-16 pb-8 text-[#0F172A]">
+    <footer className="bg-[#0F172A] border-t border-[#334155] pt-16 pb-8 text-[#E2E8F0]">
       <div className="container-custom">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-16">
           {/* Brand Column */}
           <div className="lg:col-span-2">
             <a href="/" className="flex items-center gap-2 mb-5 group w-fit">
-              <svg className="w-6 h-6 text-[#F97316] filter drop-shadow-[0_0_6px_rgba(249, 115, 22,0.8)] transition-transform group-hover:scale-110" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="8">
+              <svg className="w-6 h-6 text-[#14B8A6] filter drop-shadow-[0_0_6px_rgba(20, 184, 166,0.8)] transition-transform group-hover:scale-110" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="8">
                 <polygon points="50,15 15,80 85,80" />
                 <line x1="50" y1="15" x2="50" y2="80" strokeWidth="4" />
               </svg>
-              <span className="font-semibold text-white group-hover:text-[#F97316] tracking-tight transition-colors">
+              <span className="font-semibold text-white group-hover:text-[#14B8A6] tracking-tight transition-colors">
                 {siteName || "Prism Migration"}
               </span>
             </a>
-            <p className="text-[14px] text-[#475569] leading-relaxed mb-6 max-w-xs">
+            <p className="text-[14px] text-[#94A3B8] leading-relaxed mb-6 max-w-xs">
               {description}
             </p>
 
@@ -108,7 +108,7 @@ export default function Footer({
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="w-8 h-8 rounded-md bg-white/40 border border-[#E2E8F0] flex items-center justify-center text-[#0F172A] hover:text-[#F97316] hover:bg-white hover:border-[#CBD5E1] transition-all text-xs font-semibold"
+                  className="w-8 h-8 rounded-md bg-[#1E2937]/40 border border-[#334155] flex items-center justify-center text-[#E2E8F0] hover:text-[#14B8A6] hover:bg-[#1E2937] hover:border-[#475569] transition-all text-xs font-semibold"
                 >
                   {text}
                 </a>
@@ -123,7 +123,7 @@ export default function Footer({
               <ul className="space-y-3">
                 {links.productLinks.map((item) => (
                   <li key={item.href}>
-                    <a href={item.href} className="text-[14px] text-[#475569] hover:text-white transition-colors">
+                    <a href={item.href} className="text-[14px] text-[#94A3B8] hover:text-white transition-colors">
                       {item.label}
                     </a>
                   </li>
@@ -139,7 +139,7 @@ export default function Footer({
               <ul className="space-y-3">
                 {links.companyLinks.map((item) => (
                   <li key={item.href}>
-                    <a href={item.href} className="text-[14px] text-[#475569] hover:text-white transition-colors">
+                    <a href={item.href} className="text-[14px] text-[#94A3B8] hover:text-white transition-colors">
                       {item.label}
                     </a>
                   </li>
@@ -155,7 +155,7 @@ export default function Footer({
               <ul className="space-y-3">
                 {links.supportLinks.map((item) => (
                   <li key={item.href}>
-                    <a href={item.href} className="text-[14px] text-[#475569] hover:text-white transition-colors">
+                    <a href={item.href} className="text-[14px] text-[#94A3B8] hover:text-white transition-colors">
                       {item.label}
                     </a>
                   </li>
@@ -166,11 +166,11 @@ export default function Footer({
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 border-t border-[#E2E8F0]">
+        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 border-t border-[#334155]">
           <div className="flex flex-col sm:flex-row items-center gap-4 text-[13px] text-stone-500">
             <span>© {currentYear} {siteName}. All rights reserved.</span>
             
-            <div className="hidden sm:block h-3 w-px bg-white"></div>
+            <div className="hidden sm:block h-3 w-px bg-[#1E2937]"></div>
             
             <div className="flex items-center gap-4">
               {(links.legalLinks || []).map((item) => (
@@ -187,7 +187,7 @@ export default function Footer({
           
           <a
             href={adminLoginUrl}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium text-stone-500 hover:text-white hover:bg-white/50 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium text-stone-500 hover:text-white hover:bg-[#1E2937]/50 transition-colors"
           >
             <Shield size={12} />
             Admin Login

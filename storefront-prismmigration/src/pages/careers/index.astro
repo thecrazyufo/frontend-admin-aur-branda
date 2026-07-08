@@ -62,43 +62,43 @@ const schemas = activePositions.map((pos: any) => ({
     <script type="application/ld+json" set:html={JSON.stringify(schema)} />
   ))}
 
-  <div class="bg-[#F8FAFC] min-h-screen text-zinc-100 font-sans">
+  <div class="bg-[#0F172A] min-h-screen text-zinc-100 font-sans">
     {/* Hero Section */}
-    <section class="relative py-24 text-center border-b border-[#E2E8F0] overflow-hidden">
+    <section class="relative py-24 text-center border-b border-[#334155] overflow-hidden">
       <!-- Ambient reflection glow background -->
       <div class="absolute inset-0 pointer-events-none overflow-hidden">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] bg-[#F97316]/5 blur-[90px] rounded-full"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] bg-[#14B8A6]/5 blur-[90px] rounded-full"></div>
       </div>
 
       <div class="container-custom relative z-10 max-w-4xl mx-auto px-4">
-        <span class="inline-block text-[10px] font-bold uppercase tracking-widest mb-4 px-3 py-1.5 rounded-full text-[#F97316] bg-[#F97316]/15 border border-[#F97316]/25">
+        <span class="inline-block text-[10px] font-bold uppercase tracking-widest mb-4 px-3 py-1.5 rounded-full text-[#14B8A6] bg-[#14B8A6]/15 border border-[#14B8A6]/25">
           We Are Hiring
         </span>
-        <h1 class="text-white font-extrabold text-[#0F172A]xl md:text-[#0F172A]xl tracking-tight mb-6 leading-tight">
+        <h1 class="text-white font-extrabold text-[#E2E8F0]xl md:text-[#E2E8F0]xl tracking-tight mb-6 leading-tight">
           {careers.heroTitle}
         </h1>
-        <p class="text-[#0F172A] max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
+        <p class="text-[#E2E8F0] max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
           {careers.heroDescription}
         </p>
       </div>
     </section>
 
     {/* Benefits Section */}
-    <section class="py-20 border-b border-[#E2E8F0] bg-[#F8FAFC]/20">
+    <section class="py-20 border-b border-[#334155] bg-[#0F172A]/20">
       <div class="container-custom max-w-5xl mx-auto px-4">
         <SectionHeader eyebrow="Perks" title="Why You'll Love Working Here" centered class="mb-12" />
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           {(careers.benefits || []).map((b: any) => (
-            <div class="bg-white/35 border border-[#E2E8F0]/80 backdrop-blur rounded-2xl p-6 transition-all duration-300 hover:border-zinc-800">
-              <div class="w-12 h-12 rounded-xl bg-[#F97316]/10 flex items-center justify-center text-[#F97316] mb-4 border border-[#F97316]/20">
+            <div class="bg-[#1E2937]/35 border border-[#334155]/80 backdrop-blur rounded-2xl p-6 transition-all duration-300 hover:border-zinc-800">
+              <div class="w-12 h-12 rounded-xl bg-[#14B8A6]/10 flex items-center justify-center text-[#14B8A6] mb-4 border border-[#14B8A6]/20">
                 {b.icon === "Globe" && <Globe size={22} />}
                 {b.icon === "Heart" && <Heart size={22} />}
                 {b.icon === "BookOpen" && <BookOpen size={22} />}
                 {!["Globe", "Heart", "BookOpen"].includes(b.icon) && <Briefcase size={22} />}
               </div>
-              <h3 class="text-[#0F172A] font-bold text-lg mb-2">{b.title}</h3>
-              <p class="text-[#475569] text-xs leading-relaxed">{b.description}</p>
+              <h3 class="text-[#E2E8F0] font-bold text-lg mb-2">{b.title}</h3>
+              <p class="text-[#94A3B8] text-xs leading-relaxed">{b.description}</p>
             </div>
           ))}
         </div>
@@ -106,35 +106,35 @@ const schemas = activePositions.map((pos: any) => ({
     </section>
 
     {/* Culture Section */}
-    <section class="py-20 border-b border-[#E2E8F0]">
+    <section class="py-20 border-b border-[#334155]">
       <div class="container-custom max-w-3xl mx-auto px-4 text-center">
         <SectionHeader eyebrow="Culture" title={careers.companyCultureTitle} centered class="mb-6" />
-        <p class="text-[#0F172A] text-sm leading-relaxed whitespace-pre-line">
+        <p class="text-[#E2E8F0] text-sm leading-relaxed whitespace-pre-line">
           {careers.companyCultureDesc}
         </p>
       </div>
     </section>
 
     {/* Open Positions Section */}
-    <section class="py-20 border-b border-[#E2E8F0] bg-[#F8FAFC]/20" id="positions">
+    <section class="py-20 border-b border-[#334155] bg-[#0F172A]/20" id="positions">
       <div class="container-custom max-w-4xl mx-auto px-4">
         <SectionHeader eyebrow="Opportunities" title="Open Positions" centered class="mb-12" />
 
         {activePositions.length === 0 ? (
-          <div class="text-center py-12 bg-white/20 rounded-2xl border border-[#E2E8F0]">
+          <div class="text-center py-12 bg-[#1E2937]/20 rounded-2xl border border-[#334155]">
             <Briefcase size={36} class="text-stone-500 mx-auto mb-3" />
-            <p class="text-[#475569] text-sm">No open positions currently. Check back later or send a general application below!</p>
+            <p class="text-[#94A3B8] text-sm">No open positions currently. Check back later or send a general application below!</p>
           </div>
         ) : (
           <div class="space-y-4">
             {activePositions.map((pos: any) => (
-              <div class="bg-white/35 border border-[#E2E8F0]/80 rounded-2xl p-6 transition-all duration-300 hover:border-[#F97316]/30 group">
+              <div class="bg-[#1E2937]/35 border border-[#334155]/80 rounded-2xl p-6 transition-all duration-300 hover:border-[#14B8A6]/30 group">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
                   <div>
-                    <span class="inline-block text-[10px] font-bold text-[#F97316] uppercase tracking-wider bg-[#F97316]/10 border border-[#F97316]/20 px-2 py-0.5 rounded mb-2">
+                    <span class="inline-block text-[10px] font-bold text-[#14B8A6] uppercase tracking-wider bg-[#14B8A6]/10 border border-[#14B8A6]/20 px-2 py-0.5 rounded mb-2">
                       {pos.department}
                     </span>
-                    <h3 class="text-white text-lg font-bold group-hover:text-[#F97316] transition-colors">
+                    <h3 class="text-white text-lg font-bold group-hover:text-[#14B8A6] transition-colors">
                       {pos.title}
                     </h3>
                   </div>
@@ -142,13 +142,13 @@ const schemas = activePositions.map((pos: any) => ({
                   <a
                     href="#apply-form"
                     onclick={`document.getElementById('job-title-input').value = '${pos.title}'; document.getElementById('apply-form').scrollIntoView({behavior: 'smooth'});`}
-                    class="inline-flex h-9 items-center justify-center rounded-lg bg-[#F97316] px-4 text-xs font-bold text-stone-950 transition-transform duration-200 hover:scale-105 active:scale-95 shadow-lg"
+                    class="inline-flex h-9 items-center justify-center rounded-lg bg-[#14B8A6] px-4 text-xs font-bold text-stone-950 transition-transform duration-200 hover:scale-105 active:scale-95 shadow-lg"
                   >
                     Apply Now
                   </a>
                 </div>
 
-                <div class="flex flex-wrap items-center gap-y-2 gap-x-4 text-xs text-[#475569] font-medium mb-4">
+                <div class="flex flex-wrap items-center gap-y-2 gap-x-4 text-xs text-[#94A3B8] font-medium mb-4">
                   <span class="flex items-center gap-1.5">
                     <MapPin size={14} class="text-stone-500" />
                     {pos.location}
@@ -171,14 +171,14 @@ const schemas = activePositions.map((pos: any) => ({
                   )}
                 </div>
 
-                <p class="text-[#0F172A] text-xs leading-relaxed mb-4">
+                <p class="text-[#E2E8F0] text-xs leading-relaxed mb-4">
                   {pos.description}
                 </p>
 
                 {pos.requirements && (
-                  <div class="border-t border-[#E2E8F0]/60 pt-4 mt-4">
+                  <div class="border-t border-[#334155]/60 pt-4 mt-4">
                     <h4 class="text-white text-xs font-bold mb-2">Requirements:</h4>
-                    <p class="text-[#475569] text-xs font-mono leading-relaxed whitespace-pre-line">
+                    <p class="text-[#94A3B8] text-xs font-mono leading-relaxed whitespace-pre-line">
                       {pos.requirements}
                     </p>
                   </div>
@@ -193,70 +193,70 @@ const schemas = activePositions.map((pos: any) => ({
     {/* Application Form Section */}
     <section class="py-20" id="apply-form">
       <div class="container-custom max-w-xl mx-auto px-4">
-        <div class="bg-white/30 border border-[#E2E8F0] rounded-3xl p-8 backdrop-blur">
-          <h2 class="text-white text-[#0F172A]xl font-bold text-center mb-2">Apply for a Position</h2>
-          <p class="text-[#475569] text-xs text-center mb-8">Submit your resume and details. Our HR team will reach out within 3 business days.</p>
+        <div class="bg-[#1E2937]/30 border border-[#334155] rounded-3xl p-8 backdrop-blur">
+          <h2 class="text-white text-[#E2E8F0]xl font-bold text-center mb-2">Apply for a Position</h2>
+          <p class="text-[#94A3B8] text-xs text-center mb-8">Submit your resume and details. Our HR team will reach out within 3 business days.</p>
 
           <form id="career-form" class="space-y-4">
             <div class="space-y-1.5">
-              <label class="text-[11px] font-semibold text-[#475569] uppercase tracking-wider" for="full-name">Full Name</label>
+              <label class="text-[11px] font-semibold text-[#94A3B8] uppercase tracking-wider" for="full-name">Full Name</label>
               <input 
                 id="full-name" 
                 type="text" 
                 required 
                 placeholder="John Doe" 
-                class="w-full bg-[#0E0E0E] border border-[#E2E8F0] rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316]/25 transition-all"
+                class="w-full bg-[#0E0E0E] border border-[#334155] rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-[#14B8A6] focus:ring-1 focus:ring-[#14B8A6]/25 transition-all"
               />
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="space-y-1.5">
-                <label class="text-[11px] font-semibold text-[#475569] uppercase tracking-wider" for="email">Email Address</label>
+                <label class="text-[11px] font-semibold text-[#94A3B8] uppercase tracking-wider" for="email">Email Address</label>
                 <input 
                   id="email" 
                   type="email" 
                   required 
                   placeholder="john@example.com" 
-                  class="w-full bg-[#0E0E0E] border border-[#E2E8F0] rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316]/25 transition-all"
+                  class="w-full bg-[#0E0E0E] border border-[#334155] rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-[#14B8A6] focus:ring-1 focus:ring-[#14B8A6]/25 transition-all"
                 />
               </div>
               <div class="space-y-1.5">
-                <label class="text-[11px] font-semibold text-[#475569] uppercase tracking-wider" for="phone">Phone Number</label>
+                <label class="text-[11px] font-semibold text-[#94A3B8] uppercase tracking-wider" for="phone">Phone Number</label>
                 <input 
                   id="phone" 
                   type="tel" 
                   required 
                   placeholder="+1 (555) 000-0000" 
-                  class="w-full bg-[#0E0E0E] border border-[#E2E8F0] rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316]/25 transition-all"
+                  class="w-full bg-[#0E0E0E] border border-[#334155] rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-[#14B8A6] focus:ring-1 focus:ring-[#14B8A6]/25 transition-all"
                 />
               </div>
             </div>
 
             <div class="space-y-1.5">
-              <label class="text-[11px] font-semibold text-[#475569] uppercase tracking-wider" for="job-title-input">Target Position</label>
+              <label class="text-[11px] font-semibold text-[#94A3B8] uppercase tracking-wider" for="job-title-input">Target Position</label>
               <input 
                 id="job-title-input" 
                 type="text" 
                 required 
                 placeholder="e.g. Senior Full-Stack Engineer" 
-                class="w-full bg-[#0E0E0E] border border-[#E2E8F0] rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316]/25 transition-all"
+                class="w-full bg-[#0E0E0E] border border-[#334155] rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-[#14B8A6] focus:ring-1 focus:ring-[#14B8A6]/25 transition-all"
               />
             </div>
 
             <div class="space-y-1.5">
-              <label class="text-[11px] font-semibold text-[#475569] uppercase tracking-wider" for="resume">Cover Letter & Resume URL</label>
+              <label class="text-[11px] font-semibold text-[#94A3B8] uppercase tracking-wider" for="resume">Cover Letter & Resume URL</label>
               <textarea 
                 id="resume" 
                 required 
                 rows={5} 
                 placeholder="Tell us about yourself and share links to your LinkedIn, GitHub, or resume document..." 
-                class="w-full bg-[#0E0E0E] border border-[#E2E8F0] rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316]/25 transition-all resize-none"
+                class="w-full bg-[#0E0E0E] border border-[#334155] rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-[#14B8A6] focus:ring-1 focus:ring-[#14B8A6]/25 transition-all resize-none"
               ></textarea>
             </div>
 
             <button 
               type="submit" 
-              class="w-full inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#F97316] px-6 text-sm font-bold text-stone-950 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] shadow-lg cursor-pointer"
+              class="w-full inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#14B8A6] px-6 text-sm font-bold text-stone-950 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] shadow-lg cursor-pointer"
             >
               <Send size={16} />
               Submit Application
@@ -268,8 +268,8 @@ const schemas = activePositions.map((pos: any) => ({
             <div class="w-12 h-12 bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 rounded-full flex items-center justify-center mx-auto">
               <CheckCircle2 size={24} />
             </div>
-            <h3 class="text-[#0F172A] font-bold text-lg">Application Submitted!</h3>
-            <p class="text-[#475569] text-xs">Thank you for your interest. Our recruitment team has received your application and details.</p>
+            <h3 class="text-[#E2E8F0] font-bold text-lg">Application Submitted!</h3>
+            <p class="text-[#94A3B8] text-xs">Thank you for your interest. Our recruitment team has received your application and details.</p>
           </div>
         </div>
       </div>

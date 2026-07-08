@@ -12,10 +12,10 @@ const settings = await SettingsAPI.get().catch(() => null);
   title={`Find Your Tool — Requirement Based Tool Finder | ${settings?.name || "Prism Migration"}`}
   description="Select your source data format and target platform to find the perfect automated migration or converter tool."
 >
-  <div class="min-h-screen bg-[#F8FAFC]">
+  <div class="min-h-screen bg-[#0F172A]">
     {/* Header */}
-    <div class="bg-[#F8FAFC] border-b border-[#E2E8F0] py-12 lg:py-16 relative overflow-hidden">
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] bg-[#F97316]/5 blur-[90px] rounded-full pointer-events-none"></div>
+    <div class="bg-[#0F172A] border-b border-[#334155] py-12 lg:py-16 relative overflow-hidden">
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] bg-[#14B8A6]/5 blur-[90px] rounded-full pointer-events-none"></div>
       <div class="container-custom">
         <SectionHeader
           eyebrow="Migration Wizard"
@@ -26,7 +26,7 @@ const settings = await SettingsAPI.get().catch(() => null);
     </div>
 
     {/* Wizard */}
-    <div class="bg-[#F8FAFC] py-8">
+    <div class="bg-[#0F172A] py-8">
       <FindYourToolWizard client:load />
     </div>
   </div>

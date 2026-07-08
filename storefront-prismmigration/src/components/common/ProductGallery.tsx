@@ -55,7 +55,7 @@ export default function ProductGallery({ screenshots = [], productName }: Produc
             <button
               key={idx}
               onClick={() => setActiveIndex(idx)}
-              className={`relative shrink-0 w-24 h-16 rounded-lg overflow-hidden border-[#E2E8F0] transition-all snap-start ${
+              className={`relative shrink-0 w-24 h-16 rounded-lg overflow-hidden border-[#334155] transition-all snap-start ${
                 activeIndex === idx 
                   ? "border-blue-500 shadow-md ring-2 ring-blue-500/20 ring-offset-1" 
                   : "border-transparent opacity-60 hover:opacity-100 hover:border-zinc-300"

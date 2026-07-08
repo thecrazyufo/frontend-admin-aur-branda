@@ -12,15 +12,15 @@ const siteName = settings?.name || "";
   description="Search for products, documentation, blogs, and guides."
   noindex={true}
 >
-  <div class="min-h-screen bg-[#F8FAFC]">
-    <div class="bg-[#F8FAFC] py-16 text-center border-b border-[#E2E8F0] relative overflow-hidden">
+  <div class="min-h-screen bg-[#0F172A]">
+    <div class="bg-[#0F172A] py-16 text-center border-b border-[#334155] relative overflow-hidden">
       <!-- Ambient refraction glow background -->
       <div class="absolute inset-0 pointer-events-none overflow-hidden">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] bg-[#F97316]/5 blur-[90px] rounded-full"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] bg-[#14B8A6]/5 blur-[90px] rounded-full"></div>
       </div>
 
       <div class="container-custom relative z-10">
-        <h1 class="text-white font-extrabold text-[#0F172A]xl tracking-tight mb-3">Search</h1>
+        <h1 class="text-white font-extrabold text-[#E2E8F0]xl tracking-tight mb-3">Search</h1>
       </div>
     </div>
     <SearchResultsPage client:load />

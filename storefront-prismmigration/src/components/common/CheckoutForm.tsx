@@ -148,82 +148,82 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
 
   if (result) {
     return (
-      <div className="bg-white/30 backdrop-blur border border-[#E2E8F0] rounded-xl shadow-2xl p-8 max-w-2xl mx-auto my-8 print:border-none print:shadow-none print:my-0">
+      <div className="bg-[#1E2937]/30 backdrop-blur border border-[#334155] rounded-xl shadow-2xl p-8 max-w-2xl mx-auto my-8 print:border-none print:shadow-none print:my-0">
         <div className="text-center mb-8 print:hidden">
           <div className="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-4 text-emerald-500 border border-emerald-500/25">
             <CheckCircle size={36} />
           </div>
-          <h2 className="text-[#0F172A]xl font-bold text-white">Purchase Successful!</h2>
-          <p className="text-[#0F172A] mt-2 text-xs">
+          <h2 className="text-[#E2E8F0]xl font-bold text-white">Purchase Successful!</h2>
+          <p className="text-[#E2E8F0] mt-2 text-xs">
             Your license key and invoice details are generated below.
           </p>
         </div>
 
         {/* License Key Box */}
-        <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-6 mb-8 print:bg-white print:border-gray-200">
-          <div className="flex items-center gap-2 text-[#F97316] font-bold mb-3 text-xs">
+        <div className="bg-[#0F172A] border border-[#334155] rounded-2xl p-6 mb-8 print:bg-[#1E2937] print:border-gray-200">
+          <div className="flex items-center gap-2 text-[#14B8A6] font-bold mb-3 text-xs">
             <Key size={18} />
             <span>YOUR LICENSE KEY</span>
           </div>
-          <div className="flex items-center justify-between gap-4 bg-white border border-[#E2E8F0] rounded-xl p-4 font-mono text-lg font-bold text-white">
+          <div className="flex items-center justify-between gap-4 bg-[#1E2937] border border-[#334155] rounded-xl p-4 font-mono text-lg font-bold text-white">
             <span>{result.activationKey}</span>
             <button
               onClick={handleCopyKey}
-              className="text-[#F97316] hover:text-[#EA580C] p-2 hover:bg-stone-850 rounded-lg transition-colors print:hidden cursor-pointer"
+              className="text-[#14B8A6] hover:text-[#0D9488] p-2 hover:bg-stone-850 rounded-lg transition-colors print:hidden cursor-pointer"
               title="Copy license key"
             >
               {copied ? <span className="text-xs text-emerald-500 font-sans">Copied!</span> : <Copy size={16} />}
             </button>
           </div>
-          <p className="text-[10px] text-[#475569] mt-3 leading-relaxed">
+          <p className="text-[10px] text-[#94A3B8] mt-3 leading-relaxed">
             * Use this key and your Order ID <strong className="text-white">{result.orderId}</strong> to activate the desktop application under settings/license configuration.
           </p>
         </div>
 
         {/* Invoice Section */}
-        <div className="border-t border-[#E2E8F0] pt-8" id="invoice-receipt">
+        <div className="border-t border-[#334155] pt-8" id="invoice-receipt">
           <div className="flex justify-between items-start mb-6">
             <div>
               <h3 className="font-bold text-white text-base uppercase tracking-wider">INVOICE</h3>
-              <p className="text-[10px] text-[#475569] mt-1">Invoice #: {result.invoice.invoiceNumber}</p>
+              <p className="text-[10px] text-[#94A3B8] mt-1">Invoice #: {result.invoice.invoiceNumber}</p>
             </div>
             <div className="text-right">
-              <p className="text-xs font-semibold text-[#0F172A]">Date: {result.invoice.issueDate}</p>
-              <p className="text-xs text-[#475569]">Order Ref: {result.orderId}</p>
+              <p className="text-xs font-semibold text-[#E2E8F0]">Date: {result.invoice.issueDate}</p>
+              <p className="text-xs text-[#94A3B8]">Order Ref: {result.orderId}</p>
             </div>
           </div>
 
-          <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-5 mb-6">
+          <div className="bg-[#0F172A] border border-[#334155] rounded-2xl p-5 mb-6">
             <div className="flex justify-between text-xs mb-2">
-              <span className="text-[#475569]">Bill To:</span>
+              <span className="text-[#94A3B8]">Bill To:</span>
               <span className="font-medium text-white">{result.customerEmail}</span>
             </div>
             <div className="flex justify-between text-xs">
-              <span className="text-[#475569]">Payment Via:</span>
+              <span className="text-[#94A3B8]">Payment Via:</span>
               <span className="font-medium text-white">{result.paymentMethod} (Simulated)</span>
             </div>
           </div>
 
           {/* Itemized Charge */}
-          <div className="border border-[#E2E8F0] rounded-xl overflow-hidden mb-6">
+          <div className="border border-[#334155] rounded-xl overflow-hidden mb-6">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[10px] font-semibold text-[#475569] uppercase">
+                <tr className="bg-[#0F172A] border-b border-[#334155] text-[10px] font-semibold text-[#94A3B8] uppercase">
                   <th className="p-4">Item Description</th>
                   <th className="p-4 text-right">Price</th>
                 </tr>
               </thead>
               <tbody>
-                <tr className="text-xs border-b border-[#E2E8F0] text-[#0F172A]">
+                <tr className="text-xs border-b border-[#334155] text-[#E2E8F0]">
                   <td className="p-4">
                     <p className="font-semibold text-white">{result.invoice.itemName}</p>
                     <p className="text-[10px] text-stone-500 mt-0.5">Desktop Application License</p>
                   </td>
                   <td className="p-4 text-right font-medium">${result.invoice.subtotal.toFixed(2)}</td>
                 </tr>
-                <tr className="text-xs font-semibold text-white bg-[#F8FAFC]/40">
-                  <td className="p-4 text-right text-[#475569]">Total Paid</td>
-                  <td className="p-4 text-right text-base text-[#F97316] font-bold">${result.invoice.total.toFixed(2)}</td>
+                <tr className="text-xs font-semibold text-white bg-[#0F172A]/40">
+                  <td className="p-4 text-right text-[#94A3B8]">Total Paid</td>
+                  <td className="p-4 text-right text-base text-[#14B8A6] font-bold">${result.invoice.total.toFixed(2)}</td>
                 </tr>
               </tbody>
             </table>
@@ -233,14 +233,14 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
           <div className="flex gap-3 justify-end print:hidden">
             <button
               onClick={handlePrint}
-              className="py-2.5 px-4 flex items-center gap-2 text-xs font-bold border border-[#E2E8F0] text-[#0F172A] hover:text-white rounded-lg transition-colors cursor-pointer"
+              className="py-2.5 px-4 flex items-center gap-2 text-xs font-bold border border-[#334155] text-[#E2E8F0] hover:text-white rounded-lg transition-colors cursor-pointer"
             >
               <Printer size={15} />
               Print Invoice
             </button>
             <a
               href={`/download?product=${product.slug}`}
-              className="bg-[#F97316] hover:bg-[#EA580C] text-black py-2.5 px-6 flex items-center gap-2 text-xs font-extrabold rounded-lg transition-all duration-300 shadow-[0_0_15px_rgba(249, 115, 22,0.25)]"
+              className="bg-[#14B8A6] hover:bg-[#0D9488] text-black py-2.5 px-6 flex items-center gap-2 text-xs font-extrabold rounded-lg transition-all duration-300 shadow-[0_0_15px_rgba(20, 184, 166,0.25)]"
             >
               <Download size={15} />
               Download Installer
@@ -254,13 +254,13 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-6xl mx-auto py-12">
       {/* Left Column: Checkout Form */}
-      <div className="lg:col-span-7 bg-white/30 backdrop-blur border border-[#E2E8F0] rounded-xl shadow-2xl p-8">
+      <div className="lg:col-span-7 bg-[#1E2937]/30 backdrop-blur border border-[#334155] rounded-xl shadow-2xl p-8">
         <h2 className="text-xl font-bold text-white mb-6">Payment Information</h2>
 
         <form onSubmit={handleCheckoutSubmit} className="space-y-6">
           {/* Email field */}
           <div>
-            <label className="block text-[10px] font-bold text-[#475569] uppercase tracking-wider mb-2">
+            <label className="block text-[10px] font-bold text-[#94A3B8] uppercase tracking-wider mb-2">
               Billing Email Address
             </label>
             <input
@@ -269,7 +269,7 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
               placeholder="e.g. john@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 bg-[#F8FAFC]/80 border border-[#E2E8F0] rounded-lg text-white focus:border-[#F97316] focus:ring-2 focus:ring-[#F97316]/40 focus:outline-none transition-colors text-xs"
+              className="w-full px-4 py-3 bg-[#0F172A]/80 border border-[#334155] rounded-lg text-white focus:border-[#14B8A6] focus:ring-2 focus:ring-[#14B8A6]/40 focus:outline-none transition-colors text-xs"
             />
             <p className="text-[10px] text-stone-500 mt-1.5">
               We'll send your activation instructions and transaction invoice to this address.
@@ -278,7 +278,7 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
 
           {/* Payment Method Selector */}
           <div>
-            <label className="block text-[10px] font-bold text-[#475569] uppercase tracking-wider mb-3">
+            <label className="block text-[10px] font-bold text-[#94A3B8] uppercase tracking-wider mb-3">
               Select Payment Method
             </label>
             <div className="grid grid-cols-2 gap-4">
@@ -287,8 +287,8 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
                 onClick={() => setPaymentMethod("STRIPE")}
                 className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl border font-semibold text-xs transition-all cursor-pointer ${
                   paymentMethod === "STRIPE"
-                    ? "border-[#F97316] bg-[#F97316]/10 text-white"
-                    : "border-[#E2E8F0] hover:border-stone-700 text-[#475569]"
+                    ? "border-[#14B8A6] bg-[#14B8A6]/10 text-white"
+                    : "border-[#334155] hover:border-stone-700 text-[#94A3B8]"
                 }`}
               >
                 <CreditCard size={16} />
@@ -299,8 +299,8 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
                 onClick={() => setPaymentMethod("PAYPAL")}
                 className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl border font-semibold text-xs transition-all cursor-pointer ${
                   paymentMethod === "PAYPAL"
-                    ? "border-[#F97316] bg-[#F97316]/10 text-white"
-                    : "border-[#E2E8F0] hover:border-stone-700 text-[#475569]"
+                    ? "border-[#14B8A6] bg-[#14B8A6]/10 text-white"
+                    : "border-[#334155] hover:border-stone-700 text-[#94A3B8]"
                 }`}
               >
                 <span>💳 PayPal</span>
@@ -310,52 +310,52 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
 
           {/* Payment Detail Simulator */}
           {paymentMethod === "STRIPE" ? (
-            <div className="bg-[#F8FAFC]/40 border border-[#E2E8F0] rounded-xl p-5 space-y-4">
-              <div className="text-[10px] font-bold text-[#475569] uppercase tracking-widest mb-1">
+            <div className="bg-[#0F172A]/40 border border-[#334155] rounded-xl p-5 space-y-4">
+              <div className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest mb-1">
                 💳 Secure Stripe Sandbox
               </div>
               
               <div>
-                <label className="block text-xs font-semibold text-[#475569] mb-1.5">Cardholder Name</label>
+                <label className="block text-xs font-semibold text-[#94A3B8] mb-1.5">Cardholder Name</label>
                 <input
                   type="text"
                   placeholder="John Doe"
                   value={cardName}
                   onChange={(e) => setCardName(e.target.value)}
                   required
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-white focus:outline-none focus:ring-2 focus:ring-[#F97316]/40 focus:border-transparent"
+                  className="w-full px-3 py-2 bg-[#0F172A] border border-[#334155] rounded-lg text-xs text-white focus:outline-none focus:ring-2 focus:ring-[#14B8A6]/40 focus:border-transparent"
                 />
               </div>
 
               <div className="grid grid-cols-3 gap-4">
                 <div className="col-span-2">
-                  <label className="block text-xs font-semibold text-[#475569] mb-1.5">Card Number</label>
+                  <label className="block text-xs font-semibold text-[#94A3B8] mb-1.5">Card Number</label>
                   <input
                     type="text"
                     value={cardNumber}
                     onChange={(e) => setCardNumber(e.target.value)}
                     required
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-white focus:outline-none focus:ring-2 focus:ring-[#F97316]/40 focus:border-transparent"
+                    className="w-full px-3 py-2 bg-[#0F172A] border border-[#334155] rounded-lg text-xs text-white focus:outline-none focus:ring-2 focus:ring-[#14B8A6]/40 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#475569] mb-1.5">CVC</label>
+                  <label className="block text-xs font-semibold text-[#94A3B8] mb-1.5">CVC</label>
                   <input
                     type="text"
                     value={cardCvc}
                     onChange={(e) => setCardCvc(e.target.value)}
                     required
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-white focus:outline-none focus:ring-2 focus:ring-[#F97316]/40 focus:border-transparent"
+                    className="w-full px-3 py-2 bg-[#0F172A] border border-[#334155] rounded-lg text-xs text-white focus:outline-none focus:ring-2 focus:ring-[#14B8A6]/40 focus:border-transparent"
                   />
                 </div>
               </div>
             </div>
           ) : (
-            <div className="bg-[#F8FAFC]/40 border border-[#E2E8F0] rounded-xl p-5 text-center">
-              <div className="text-[10px] font-bold text-[#475569] uppercase tracking-widest mb-2">
+            <div className="bg-[#0F172A]/40 border border-[#334155] rounded-xl p-5 text-center">
+              <div className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest mb-2">
                 🛍️ PayPal Checkout Sandbox
               </div>
-              <p className="text-xs text-[#0F172A] max-w-sm mx-auto leading-relaxed">
+              <p className="text-xs text-[#E2E8F0] max-w-sm mx-auto leading-relaxed">
                 Clicking "Pay Now" will redirect you to a secure simulated PayPal popup to verify your account credentials.
               </p>
             </div>
@@ -371,7 +371,7 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
           <button
             type="submit"
             disabled={loading}
-            className="w-full text-center bg-[#F97316] hover:bg-[#EA580C] text-black text-xs font-bold py-3.5 px-6 rounded-lg transition-all duration-300 shadow-[0_0_15px_rgba(249, 115, 22,0.25)] cursor-pointer flex items-center justify-center gap-2"
+            className="w-full text-center bg-[#14B8A6] hover:bg-[#0D9488] text-black text-xs font-bold py-3.5 px-6 rounded-lg transition-all duration-300 shadow-[0_0_15px_rgba(20, 184, 166,0.25)] cursor-pointer flex items-center justify-center gap-2"
           >
             {loading ? (
               <>
@@ -390,11 +390,11 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
 
       {/* Right Column: Order Summary */}
       <div className="lg:col-span-5 space-y-6">
-        <div className="bg-white/30 backdrop-blur border border-[#E2E8F0] rounded-xl shadow-2xl p-6">
+        <div className="bg-[#1E2937]/30 backdrop-blur border border-[#334155] rounded-xl shadow-2xl p-6">
           <h3 className="font-bold text-white text-base mb-4">Order Summary</h3>
 
-          <div className="flex items-start gap-4 pb-6 border-b border-[#E2E8F0]">
-            <div className="w-12 h-12 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-[#F97316] flex items-center justify-center shadow-md shrink-0">
+          <div className="flex items-start gap-4 pb-6 border-b border-[#334155]">
+            <div className="w-12 h-12 rounded-xl bg-[#0F172A] border border-[#334155] text-[#14B8A6] flex items-center justify-center shadow-md shrink-0">
               <Download size={20} />
             </div>
             <div>
@@ -405,35 +405,35 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
 
           <div className="py-6 space-y-3 text-xs">
             <div className="flex justify-between">
-              <span className="text-[#475569]">License Subtotal</span>
+              <span className="text-[#94A3B8]">License Subtotal</span>
               <span className="font-medium text-white">${selectedTier.price.toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[#475569]">VAT / Tax</span>
+              <span className="text-[#94A3B8]">VAT / Tax</span>
               <span className="font-medium text-white">$0.00</span>
             </div>
           </div>
 
-          <div className="pt-6 border-t border-[#E2E8F0] flex justify-between items-baseline">
+          <div className="pt-6 border-t border-[#334155] flex justify-between items-baseline">
             <span className="font-bold text-white text-xs">Total Price</span>
-            <span className="font-bold text-xl text-[#F97316]">${selectedTier.price.toFixed(2)}</span>
+            <span className="font-bold text-xl text-[#14B8A6]">${selectedTier.price.toFixed(2)}</span>
           </div>
         </div>
 
         {/* Security Assurances */}
-        <div className="bg-[#F8FAFC]/45 border border-[#E2E8F0] rounded-xl p-5 space-y-4">
+        <div className="bg-[#0F172A]/45 border border-[#334155] rounded-xl p-5 space-y-4">
           <div className="flex items-start gap-3">
-            <ShieldCheck size={16} className="text-[#F97316] mt-0.5" />
+            <ShieldCheck size={16} className="text-[#14B8A6] mt-0.5" />
             <div>
               <p className="text-xs font-bold text-white">256-Bit SSL Encryption</p>
-              <p className="text-[10px] text-[#475569] mt-0.5">Your payment details are protected with bank-grade security protocols.</p>
+              <p className="text-[10px] text-[#94A3B8] mt-0.5">Your payment details are protected with bank-grade security protocols.</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
-            <CheckCircle size={16} className="text-[#F97316] mt-0.5" />
+            <CheckCircle size={16} className="text-[#14B8A6] mt-0.5" />
             <div>
               <p className="text-xs font-bold text-white">Instant Key Generation</p>
-              <p className="text-[10px] text-[#475569] mt-0.5">License key is rendered immediately on screen upon successful payment.</p>
+              <p className="text-[10px] text-[#94A3B8] mt-0.5">License key is rendered immediately on screen upon successful payment.</p>
             </div>
           </div>
         </div>

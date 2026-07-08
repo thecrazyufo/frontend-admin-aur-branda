@@ -64,18 +64,18 @@ export default function SearchResultsPage() {
       </div>
 
       {loading ? (
-        <div className="flex flex-col items-center justify-center gap-3 text-[#475569] py-20">
-          <Loader2 className="animate-spin text-[#F97316]" size={32} />
+        <div className="flex flex-col items-center justify-center gap-3 text-[#94A3B8] py-20">
+          <Loader2 className="animate-spin text-[#14B8A6]" size={32} />
           <p className="text-xs">Searching the database...</p>
         </div>
       ) : q ? (
         <>
-          <p className="text-xs text-[#475569] mb-6">
+          <p className="text-xs text-[#94A3B8] mb-6">
             {totalResults} result{totalResults !== 1 ? "s" : ""} for &ldquo;<strong className="text-white">{q}</strong>&rdquo;
           </p>
 
           {/* Tabs */}
-          <div className="flex gap-2 mb-6 border-b border-[#E2E8F0]">
+          <div className="flex gap-2 mb-6 border-b border-[#334155]">
             {[
               { key: "all", label: `All (${totalResults})` },
               { key: "products", label: `Products (${matchedProducts.length})` },
@@ -85,8 +85,8 @@ export default function SearchResultsPage() {
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key as typeof activeTab)}
-                className={`pb-3 px-1 text-xs font-bold border-b-2 -mb-px transition-colors cursor-pointer bg-transparent border-[#E2E8F0] ${
-                  activeTab === tab.key ? "border-[#F97316] text-[#F97316]" : "border-transparent text-[#475569] hover:text-white"
+                className={`pb-3 px-1 text-xs font-bold border-b-2 -mb-px transition-colors cursor-pointer bg-transparent border-[#334155] ${
+                  activeTab === tab.key ? "border-[#14B8A6] text-[#14B8A6]" : "border-transparent text-[#94A3B8] hover:text-white"
                 }`}
               >
                 {tab.label}
@@ -97,42 +97,42 @@ export default function SearchResultsPage() {
           <div className="space-y-3">
             {/* Products */}
             {(activeTab === "all" || activeTab === "products") && matchedProducts.map((p) => (
-              <a key={p.id} href={`/products/${p.slug}`} className="flex items-start gap-4 bg-white/30 backdrop-blur rounded-xl border border-[#E2E8F0] p-5 shadow-2xl hover:border-[#F97316]/30 transition-all duration-300 group block">
-                <div className="w-10 h-10 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-center shrink-0 text-[#F97316]">
+              <a key={p.id} href={`/products/${p.slug}`} className="flex items-start gap-4 bg-[#1E2937]/30 backdrop-blur rounded-xl border border-[#334155] p-5 shadow-2xl hover:border-[#14B8A6]/30 transition-all duration-300 group block">
+                <div className="w-10 h-10 rounded-lg bg-[#0F172A] border border-[#334155] flex items-center justify-center shrink-0 text-[#14B8A6]">
                   <Package size={18} />
                 </div>
                 <div>
-                  <span className="px-2 py-0.5 rounded border border-[#F97316]/20 bg-[#F97316]/10 text-[#F97316] text-[9px] uppercase font-bold tracking-wider inline-block mb-1">Product</span>
-                  <h3 className="font-bold text-white group-hover:text-[#F97316] transition-colors text-sm">{p.name}</h3>
-                  <p className="text-xs text-[#0F172A] mt-1">{p.shortDescription}</p>
+                  <span className="px-2 py-0.5 rounded border border-[#14B8A6]/20 bg-[#14B8A6]/10 text-[#14B8A6] text-[9px] uppercase font-bold tracking-wider inline-block mb-1">Product</span>
+                  <h3 className="font-bold text-white group-hover:text-[#14B8A6] transition-colors text-sm">{p.name}</h3>
+                  <p className="text-xs text-[#E2E8F0] mt-1">{p.shortDescription}</p>
                 </div>
               </a>
             ))}
 
             {/* Blog */}
             {(activeTab === "all" || activeTab === "blog") && matchedBlog.map((p) => (
-              <a key={p.id} href={`/blog/${p.slug}`} className="flex items-start gap-4 bg-white/30 backdrop-blur rounded-xl border border-[#E2E8F0] p-5 shadow-2xl hover:border-[#F97316]/30 transition-all duration-300 group block">
-                <div className="w-10 h-10 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-center shrink-0 text-[#F97316]">
+              <a key={p.id} href={`/blog/${p.slug}`} className="flex items-start gap-4 bg-[#1E2937]/30 backdrop-blur rounded-xl border border-[#334155] p-5 shadow-2xl hover:border-[#14B8A6]/30 transition-all duration-300 group block">
+                <div className="w-10 h-10 rounded-lg bg-[#0F172A] border border-[#334155] flex items-center justify-center shrink-0 text-[#14B8A6]">
                   <BookOpen size={18} />
                 </div>
                 <div>
-                  <span className="px-2 py-0.5 rounded border border-[#F97316]/20 bg-[#F97316]/10 text-[#F97316] text-[9px] uppercase font-bold tracking-wider inline-block mb-1">Blog</span>
-                  <h3 className="font-bold text-white group-hover:text-[#F97316] transition-colors text-sm">{p.title}</h3>
-                  <p className="text-xs text-[#0F172A] mt-1">{p.excerpt}</p>
+                  <span className="px-2 py-0.5 rounded border border-[#14B8A6]/20 bg-[#14B8A6]/10 text-[#14B8A6] text-[9px] uppercase font-bold tracking-wider inline-block mb-1">Blog</span>
+                  <h3 className="font-bold text-white group-hover:text-[#14B8A6] transition-colors text-sm">{p.title}</h3>
+                  <p className="text-xs text-[#E2E8F0] mt-1">{p.excerpt}</p>
                 </div>
               </a>
             ))}
 
             {/* Help */}
             {(activeTab === "all" || activeTab === "help") && matchedHelp.map((a) => (
-              <a key={a.id} href={`/help/${a.slug}`} className="flex items-start gap-4 bg-white/30 backdrop-blur rounded-xl border border-[#E2E8F0] p-5 shadow-2xl hover:border-[#F97316]/30 transition-all duration-300 group block">
-                <div className="w-10 h-10 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-center shrink-0 text-[#F97316]">
+              <a key={a.id} href={`/help/${a.slug}`} className="flex items-start gap-4 bg-[#1E2937]/30 backdrop-blur rounded-xl border border-[#334155] p-5 shadow-2xl hover:border-[#14B8A6]/30 transition-all duration-300 group block">
+                <div className="w-10 h-10 rounded-lg bg-[#0F172A] border border-[#334155] flex items-center justify-center shrink-0 text-[#14B8A6]">
                   <FileText size={18} />
                 </div>
                 <div>
-                  <span className="px-2 py-0.5 rounded border border-[#F97316]/20 bg-[#F97316]/10 text-[#F97316] text-[9px] uppercase font-bold tracking-wider inline-block mb-1">Help</span>
-                  <h3 className="font-bold text-white group-hover:text-[#F97316] transition-colors text-sm">{a.title}</h3>
-                  <p className="text-xs text-[#0F172A] mt-1">{a.excerpt}</p>
+                  <span className="px-2 py-0.5 rounded border border-[#14B8A6]/20 bg-[#14B8A6]/10 text-[#14B8A6] text-[9px] uppercase font-bold tracking-wider inline-block mb-1">Help</span>
+                  <h3 className="font-bold text-white group-hover:text-[#14B8A6] transition-colors text-sm">{a.title}</h3>
+                  <p className="text-xs text-[#E2E8F0] mt-1">{a.excerpt}</p>
                 </div>
               </a>
             ))}
@@ -140,9 +140,9 @@ export default function SearchResultsPage() {
             {totalResults === 0 && (
               <div className="text-center py-16">
                 <Search size={40} className="text-stone-800 mx-auto mb-4" />
-                <p className="text-[#0F172A] text-sm">No results found for &ldquo;{q}&rdquo;</p>
-                <p className="text-xs text-[#475569] mt-2">Try different keywords or browse our products.</p>
-                <a href="/products" className="bg-[#F97316] hover:bg-[#EA580C] text-white font-extrabold text-xs py-2.5 px-6 rounded-lg transition-all duration-300 shadow-[0_0_15px_rgba(249, 115, 22,0.25)] mt-6 inline-block">Browse Products</a>
+                <p className="text-[#E2E8F0] text-sm">No results found for &ldquo;{q}&rdquo;</p>
+                <p className="text-xs text-[#94A3B8] mt-2">Try different keywords or browse our products.</p>
+                <a href="/products" className="bg-[#14B8A6] hover:bg-[#0D9488] text-white font-extrabold text-xs py-2.5 px-6 rounded-lg transition-all duration-300 shadow-[0_0_15px_rgba(20, 184, 166,0.25)] mt-6 inline-block">Browse Products</a>
               </div>
             )}
           </div>
@@ -150,7 +150,7 @@ export default function SearchResultsPage() {
       ) : (
         <div className="text-center py-16">
           <Search size={40} className="text-stone-850 mx-auto mb-4" />
-          <p className="text-[#475569] text-xs">Type something to search...</p>
+          <p className="text-[#94A3B8] text-xs">Type something to search...</p>
         </div>
       )}
     </div>

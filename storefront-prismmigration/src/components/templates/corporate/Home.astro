@@ -9,13 +9,13 @@ const siteBadges = settings?.trustBadges || [];
 ---
 <div class="bg-slate-50 text-slate-800 font-sans min-h-screen">
   <!-- Professional Hero -->
-  <section class="bg-white border-b border-slate-200">
+  <section class="bg-[#1E2937] border-b border-slate-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32 flex flex-col lg:flex-row items-center gap-12">
       <div class="flex-1 text-center lg:text-left">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-blue-50 text-blue-700 text-sm font-semibold mb-6 border border-blue-100">
           ISO 27001 Certified Solutions
         </div>
-        <h1 class="text-[#0F172A]xl md:text-[#475569]xl lg:text-[#0F172A]xl font-bold text-slate-900 tracking-tight mb-6 leading-tight">
+        <h1 class="text-[#E2E8F0]xl md:text-[#94A3B8]xl lg:text-[#E2E8F0]xl font-bold text-slate-900 tracking-tight mb-6 leading-tight">
           {siteTagline}
         </h1>
         <p class="text-lg md:text-xl text-slate-600 mb-10 max-w-2xl mx-auto lg:mx-0">
@@ -25,7 +25,7 @@ const siteBadges = settings?.trustBadges || [];
           <a href="/contact" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded shadow-sm transition-colors w-full sm:w-auto text-center">
             Request a Demo
           </a>
-          <a href="/products" class="bg-white hover:bg-slate-50 text-slate-700 font-semibold py-3 px-8 rounded border border-slate-300 shadow-sm transition-colors w-full sm:w-auto text-center">
+          <a href="/products" class="bg-[#1E2937] hover:bg-slate-50 text-slate-700 font-semibold py-3 px-8 rounded border border-slate-300 shadow-sm transition-colors w-full sm:w-auto text-center">
             View Solutions
           </a>
         </div>
@@ -48,7 +48,7 @@ const siteBadges = settings?.trustBadges || [];
       <div class="flex flex-wrap justify-center gap-8 opacity-70 grayscale">
         {siteBadges.map(b => (
           <div class="flex items-center gap-2 text-white">
-            <span class="text-[#0F172A]xl">{b.emoji}</span>
+            <span class="text-[#E2E8F0]xl">{b.emoji}</span>
             <span class="font-bold text-lg">{b.title}</span>
           </div>
         ))}
@@ -59,13 +59,13 @@ const siteBadges = settings?.trustBadges || [];
   <!-- Structured Solutions Grid -->
   <section class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="mb-16 border-l-4 border-blue-600 pl-6">
-      <h2 class="text-[#0F172A]xl font-bold text-slate-900 mb-2">Enterprise Solutions</h2>
+      <h2 class="text-[#E2E8F0]xl font-bold text-slate-900 mb-2">Enterprise Solutions</h2>
       <p class="text-lg text-slate-600">Comprehensive toolsets designed for scale and security.</p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {featured.map((product) => (
-        <div class="bg-white border border-slate-200 rounded shadow-sm hover:shadow-md transition-shadow flex flex-col">
+        <div class="bg-[#1E2937] border border-slate-200 rounded shadow-sm hover:shadow-md transition-shadow flex flex-col">
           <div class="p-6 border-b border-slate-100 flex items-center gap-4">
             <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded flex items-center justify-center text-xl">
               {product.icon || "📊"}

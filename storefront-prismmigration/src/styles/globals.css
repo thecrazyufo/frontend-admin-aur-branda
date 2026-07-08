@@ -57,8 +57,8 @@
 
 /* ===== Custom CSS Variables mapping (for backward compatibility & dynamic config) ===== */
 :root {
-  --gold: #F97316;
-  --cyan: #06B6D4;
+  --gold: #14B8A6;
+  --cyan: #F59E0B;
   --background: #ffffff;
   --foreground: #171717;
   --muted: #fafafa;
@@ -143,7 +143,7 @@
 
   /* Global Keyboard Focus Indicators */
   *:focus-visible {
-    outline: 2px solid var(--brand-primary, #F97316) !important;
+    outline: 2px solid var(--brand-primary, #14B8A6) !important;
     outline-offset: 4px !important;
   }
 
@@ -362,8 +362,8 @@
 /* ===== Scoped Overrides for Luxury Brand A Layout ===== */
 .layout-luxury {
   /* Color theme overrides */
-  --background: #F8FAFC;
-  --color-canvas: #F8FAFC;
+  --background: #0F172A;
+  --color-canvas: #0F172A;
   --foreground: #0F172A;
   --muted: #F1F5F9;
   --muted-2: #E2E8F0;
@@ -373,24 +373,24 @@
   --border-strong: #CBD5E1;
   --card: #FFFFFF;
 
-  --brand-primary: #F97316;
-  --brand-primary-dark: #EA580C;
+  --brand-primary: #14B8A6;
+  --brand-primary-dark: #0D9488;
   --brand-primary-light: #fef08a;
-  --brand-accent: #F97316;
-  --brand-accent-dark: #EA580C;
+  --brand-accent: #14B8A6;
+  --brand-accent-dark: #0D9488;
   --brand-accent-light: #fef08a;
 
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-  background-color: #F8FAFC !important;
-  color: #F97316 !important;
+  background-color: #0F172A !important;
+  color: #14B8A6 !important;
 }
 
 /* Luxury Layout Translucent Badges */
 .layout-luxury .badge-blue { background: rgba(59, 130, 246, 0.1) !important; color: #60a5fa !important; border: 1px solid rgba(59, 130, 246, 0.2) !important; }
-.layout-luxury .badge-green { background: rgba(249, 115, 22, 0.1) !important; color: #34d399 !important; border: 1px solid rgba(249, 115, 22, 0.2) !important; }
-.layout-luxury .badge-amber { background: rgba(6, 182, 212, 0.1) !important; color: #fbbf24 !important; border: 1px solid rgba(6, 182, 212, 0.2) !important; }
+.layout-luxury .badge-green { background: rgba(20, 184, 166, 0.1) !important; color: #34d399 !important; border: 1px solid rgba(20, 184, 166, 0.2) !important; }
+.layout-luxury .badge-amber { background: rgba(245, 158, 11, 0.1) !important; color: #fbbf24 !important; border: 1px solid rgba(245, 158, 11, 0.2) !important; }
 .layout-luxury .badge-red { background: rgba(239, 68, 68, 0.1) !important; color: #f87171 !important; border: 1px solid rgba(239, 68, 68, 0.2) !important; }
-.layout-luxury .badge-purple { background: rgba(249, 115, 22, 0.1) !important; color: #a78bfa !important; border: 1px solid rgba(249, 115, 22, 0.2) !important; }
+.layout-luxury .badge-purple { background: rgba(20, 184, 166, 0.1) !important; color: #a78bfa !important; border: 1px solid rgba(20, 184, 166, 0.2) !important; }
 .layout-luxury .badge-gray { background: rgba(156, 163, 175, 0.1) !important; color: #d1d5db !important; border: 1px solid rgba(156, 163, 175, 0.2) !important; }
 .layout-luxury .badge { text-transform: uppercase !important; letter-spacing: 0.04em !important; font-size: 10px !important; }
 
@@ -404,7 +404,7 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
   font-weight: 700 !important;
   letter-spacing: -0.025em !important;
-  color: #F97316 !important;
+  color: #14B8A6 !important;
 }
 
 /* Button overrides for luxury feel */
@@ -422,43 +422,43 @@
 }
 
 .layout-luxury .btn-primary {
-  background: #F97316 !important;
+  background: #14B8A6 !important;
   color: #FFFFFF !important;
-  border: 1px solid #F97316 !important;
-  box-shadow: 0 0 15px rgba(249, 115, 22, 0.25) !important;
+  border: 1px solid #14B8A6 !important;
+  box-shadow: 0 0 15px rgba(20, 184, 166, 0.25) !important;
 }
 
 .layout-luxury .btn-primary:hover {
-  background: #EA580C !important;
-  border-color: #EA580C !important;
+  background: #0D9488 !important;
+  border-color: #0D9488 !important;
   color: #FFFFFF !important;
   transform: translateY(-1px) !important;
-  box-shadow: 0 0 25px rgba(249, 115, 22, 0.5) !important;
+  box-shadow: 0 0 25px rgba(20, 184, 166, 0.5) !important;
 }
 
 .layout-luxury .btn-accent {
-  background: #F97316 !important;
+  background: #14B8A6 !important;
   color: #FFFFFF !important;
-  border: 1px solid #F97316 !important;
-  box-shadow: 0 0 15px rgba(249, 115, 22, 0.25) !important;
+  border: 1px solid #14B8A6 !important;
+  box-shadow: 0 0 15px rgba(20, 184, 166, 0.25) !important;
 }
 
 .layout-luxury .btn-accent:hover {
-  background: #EA580C !important;
-  border-color: #EA580C !important;
+  background: #0D9488 !important;
+  border-color: #0D9488 !important;
   color: #FFFFFF !important;
   transform: translateY(-1px) !important;
 }
 
 .layout-luxury .btn-outline {
   background: transparent !important;
-  border: 1px solid rgba(249, 115, 22, 0.3) !important;
-  color: #F97316 !important;
+  border: 1px solid rgba(20, 184, 166, 0.3) !important;
+  color: #14B8A6 !important;
 }
 
 .layout-luxury .btn-outline:hover {
-  background: rgba(249, 115, 22, 0.1) !important;
-  border-color: #F97316 !important;
+  background: rgba(20, 184, 166, 0.1) !important;
+  border-color: #14B8A6 !important;
   color: #FFFFFF !important;
   transform: translateY(-1px) !important;
 }
@@ -498,7 +498,7 @@
 }
 
 .layout-luxury nav a:hover {
-  color: #F97316 !important;
+  color: #14B8A6 !important;
   background-color: transparent !important;
 }
 
@@ -507,11 +507,11 @@
 }
 
 .layout-luxury nav .text-blue-600 {
-  color: #F97316 !important;
+  color: #14B8A6 !important;
 }
 
 .layout-luxury nav .bg-indigo-600 {
-  background-color: #F97316 !important;
+  background-color: #14B8A6 !important;
   color: #FFFFFF !important;
   border-radius: 6px !important;
   font-size: 13px !important;
@@ -519,16 +519,16 @@
 }
 
 .layout-luxury nav .bg-indigo-600:hover {
-  background-color: #EA580C !important;
+  background-color: #0D9488 !important;
 }
 
 .layout-luxury .bg-\[var\(--navy-900\)\] {
-  background-color: #F8FAFC !important;
+  background-color: #0F172A !important;
   border-bottom: 1px solid #E2E8F0 !important;
 }
 
 .layout-luxury .bg-\[var\(--navy-900\)\] a {
-  color: #F97316 !important;
+  color: #14B8A6 !important;
 }
 
 .layout-luxury .bg-\[var\(--navy-900\)\] a:hover {
@@ -537,7 +537,7 @@
 
 /* Footer overrides */
 .layout-luxury footer {
-  background-color: #F8FAFC !important;
+  background-color: #0F172A !important;
   color: #a3a3a3 !important;
   border-top: 1px solid #1f1f1f !important;
 }
@@ -554,7 +554,7 @@
 }
 
 .layout-luxury footer a:hover {
-  color: #F97316 !important;
+  color: #14B8A6 !important;
 }
 
 /* Premium Crosshair Grid Styling */
@@ -654,7 +654,7 @@
 
 .btn-primary:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 20px rgba(249, 115, 22, 0.4);
+  box-shadow: 0 0 20px rgba(20, 184, 166, 0.4);
 }
 
 .section-heading {
@@ -668,6 +668,6 @@
   left: 0;
   width: 60px;
   height: 3px;
-  background: linear-gradient(to right, #F97316, transparent);
+  background: linear-gradient(to right, #14B8A6, transparent);
 }
 

@@ -41,18 +41,18 @@ const filteredCount = products.length;
   title={activeCategory ? `${activeCategory.label} Tools — ${settings?.name || ""}` : `All Software Products — ${settings?.name || ""}`}
   description={activeCategory ? activeCategory.description : "Browse our complete collection of email migration, backup, file converter, and cloud migration tools."}
 >
-  <div class="min-h-screen bg-[#F8FAFC] text-white">
+  <div class="min-h-screen bg-[#0F172A] text-white">
     {/* Header */}
-    <div class="bg-[#F8FAFC] border-b border-[#E2E8F0] py-16 tech-grid relative overflow-hidden">
+    <div class="bg-[#0F172A] border-b border-[#334155] py-16 tech-grid relative overflow-hidden">
       <!-- Subtle Ambient Glow -->
       <div class="absolute inset-0 pointer-events-none overflow-hidden">
-        <div class="absolute top-1/2 left-1/4 -translate-y-1/2 w-[350px] h-[150px] bg-[#F97316]/10 blur-[80px] rounded-full"></div>
+        <div class="absolute top-1/2 left-1/4 -translate-y-1/2 w-[350px] h-[150px] bg-[#14B8A6]/10 blur-[80px] rounded-full"></div>
       </div>
 
       <div class="container-custom relative z-10">
         <div class="max-w-2xl">
-          <span class="inline-block text-[10px] font-bold uppercase tracking-widest text-[#F97316] mb-2">Products</span>
-          <h1 class="text-[#0F172A]xl font-extrabold text-white tracking-tight mb-2">
+          <span class="inline-block text-[10px] font-bold uppercase tracking-widest text-[#14B8A6] mb-2">Products</span>
+          <h1 class="text-[#E2E8F0]xl font-extrabold text-white tracking-tight mb-2">
             {activeCategory ? activeCategory.label : "Pristine Software Collection"}
           </h1>
           <p class="text-xs text-[#E5E5E5] leading-relaxed">
@@ -66,20 +66,20 @@ const filteredCount = products.length;
       <div class="flex flex-col lg:flex-row gap-8">
         {/* Sidebar Filters */}
         <aside class="w-full lg:w-64 shrink-0">
-          <div class="bg-white/30 backdrop-blur rounded-xl border border-[#E2E8F0] p-5 sticky top-20 shadow-2xl">
-            <h3 class="font-bold text-white text-xs uppercase tracking-wider mb-4 border-b border-[#E2E8F0] pb-2">Categories</h3>
+          <div class="bg-[#1E2937]/30 backdrop-blur rounded-xl border border-[#334155] p-5 sticky top-20 shadow-2xl">
+            <h3 class="font-bold text-white text-xs uppercase tracking-wider mb-4 border-b border-[#334155] pb-2">Categories</h3>
             <ul class="space-y-1">
               <li>
                 <a
                   href="/products"
                   class={`flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition-all duration-300 ${
                     !category
-                      ? "bg-[#F97316]/10 text-[#F97316] border border-[#F97316]/20 font-bold"
-                      : "text-[#0F172A] hover:text-white hover:bg-white/40 border border-transparent"
+                      ? "bg-[#14B8A6]/10 text-[#14B8A6] border border-[#14B8A6]/20 font-bold"
+                      : "text-[#E2E8F0] hover:text-white hover:bg-[#1E2937]/40 border border-transparent"
                   }`}
                 >
                   All Products
-                  <span class="text-[10px] text-[#0F172A] bg-stone-800 border border-[#CBD5E1] px-1.5 py-0.5 rounded-md font-mono">
+                  <span class="text-[10px] text-[#E2E8F0] bg-stone-800 border border-[#475569] px-1.5 py-0.5 rounded-md font-mono">
                     {allProducts.length}
                   </span>
                 </a>
@@ -90,12 +90,12 @@ const filteredCount = products.length;
                     href={`/products?category=${cat.id}`}
                     class={`flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition-all duration-300 ${
                       category === cat.id
-                        ? "bg-[#F97316]/10 text-[#F97316] border border-[#F97316]/20 font-bold"
-                        : "text-[#0F172A] hover:text-white hover:bg-white/40 border border-transparent"
+                        ? "bg-[#14B8A6]/10 text-[#14B8A6] border border-[#14B8A6]/20 font-bold"
+                        : "text-[#E2E8F0] hover:text-white hover:bg-[#1E2937]/40 border border-transparent"
                     }`}
                   >
                     {cat.label}
-                    <span class="text-[10px] text-[#0F172A] bg-stone-800 border border-[#CBD5E1] px-1.5 py-0.5 rounded-md font-mono">
+                    <span class="text-[10px] text-[#E2E8F0] bg-stone-800 border border-[#475569] px-1.5 py-0.5 rounded-md font-mono">
                       {cat.count}
                     </span>
                   </a>
@@ -108,7 +108,7 @@ const filteredCount = products.length;
         {/* Product Grid */}
         <div class="flex-1">
           <div class="flex items-center justify-between mb-6">
-            <p class="text-xs text-[#475569] font-mono">
+            <p class="text-xs text-[#94A3B8] font-mono">
               {filteredCount} UTILI{filteredCount !== 1 ? "TIES" : "TY"} RESOLVED
             </p>
           </div>
@@ -120,9 +120,9 @@ const filteredCount = products.length;
               ))}
             </div>
           ) : (
-            <div class="text-center py-20 bg-white/10 backdrop-blur rounded-2xl border border-[#E2E8F0] p-8 shadow-2xl">
-              <p class="text-[#0F172A] text-sm">No migration utilities matching this query were found in database index.</p>
-              <a href="/products" class="inline-block mt-4 bg-[#F97316] hover:bg-[#EA580C] text-white font-extrabold text-xs py-2 px-4 rounded transition-colors shadow-[0_0_15px_rgba(249, 115, 22,0.2)]">Clear Filters</a>
+            <div class="text-center py-20 bg-[#1E2937]/10 backdrop-blur rounded-2xl border border-[#334155] p-8 shadow-2xl">
+              <p class="text-[#E2E8F0] text-sm">No migration utilities matching this query were found in database index.</p>
+              <a href="/products" class="inline-block mt-4 bg-[#14B8A6] hover:bg-[#0D9488] text-white font-extrabold text-xs py-2 px-4 rounded transition-colors shadow-[0_0_15px_rgba(20, 184, 166,0.2)]">Clear Filters</a>
             </div>
           )}
         </div>
