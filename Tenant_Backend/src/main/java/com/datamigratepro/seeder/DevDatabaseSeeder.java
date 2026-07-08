@@ -169,6 +169,7 @@ public class DevDatabaseSeeder implements CommandLineRunner {
                     seedGlobalRegistryGeneric(brand);
                     seedApexByteCareerPositions();
                     seedApexByteClients();
+                    seedSiteSettingsForApexByte();
                     System.out.println("🌱 Database apexbyte successfully seeded with catalog!");
                     
                     licenseRepository.saveAll(createBrandLicenses("APX", "apexbyte"));
@@ -192,7 +193,6 @@ public class DevDatabaseSeeder implements CommandLineRunner {
                     }
                     seedGlobalRegistryGeneric(brand);
                     seedCareerPositions(brand);
-        seedSiteSettingsForApexByte();
                     seedClientsForSite(brand);
                     System.out.println("🌱 Database " + brand + " successfully seeded with catalog!");
                     
