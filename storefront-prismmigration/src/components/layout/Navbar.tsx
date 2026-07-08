@@ -21,6 +21,7 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+  const [currentPath, setCurrentPath] = useState("");
 
   const baseNavItems = navigation.filter(item => item.enabled !== false);
   const navItems = baseNavItems.map(item => {
@@ -59,6 +60,7 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
     
     const hasAdminJwt = document.cookie.split(';').some((item) => item.trim().startsWith('admin_jwt='));
     setIsAdminLoggedIn(hasAdminJwt);
+    setCurrentPath(window.location.pathname);
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -68,14 +70,16 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
 
   return (
     <>
-      {/* Vercel-style clean Navbar with backdrop blur and hairline border */}
+      {/* Vercel-style clean Navbar with backdrop blur, hairline border, and teal top accent */}
       <nav
-        className={`sticky top-0 z-50 transition-all duration-300 border-b ${
+        className={`sticky top-0 z-50 transition-all duration-500 border-b ${
           scrolled
-            ? "bg-[#0F172A]/90 backdrop-blur-xl border-[#334155] shadow-lg"
-            : "bg-black/30 backdrop-blur-md border-[#334155]/40"
+            ? "bg-[#0F172A]/95 backdrop-blur-xl border-[#334155] shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
+            : "bg-[#0A0F1A]/60 backdrop-blur-md border-[#1E2937]/60"
         }`}
       >
+        {/* Teal top accent line on scroll */}
+        <div className={`absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#14B8A6]/60 to-transparent transition-opacity duration-500 ${scrolled ? 'opacity-100' : 'opacity-0'}`} />
         <div className="container-custom">
           <div className="flex items-center justify-between h-[60px]">
             {/* Logo */}
@@ -106,10 +110,10 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
                 >
                   <a
                     href={item.href}
-                    className={`flex items-center gap-1 px-3 py-1.5 rounded-md text-[14px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#14B8A6] focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
-                      activeDropdown === item.label
-                        ? "text-[#14B8A6] bg-[#1E2937]/50"
-                        : "text-white hover:text-[#14B8A6] hover:bg-[#1E2937]/50"
+                    className={`relative flex items-center gap-1 px-3 py-1.5 rounded-md text-[14px] font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#14B8A6] focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
+                      activeDropdown === item.label || currentPath === item.href
+                        ? "text-[#14B8A6] bg-[#14B8A6]/8"
+                        : "text-[#CBD5E1] hover:text-white hover:bg-[#1E2937]/50"
                     }`}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" || e.key === " ") {
@@ -123,13 +127,18 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
                     }}
                     aria-expanded={activeDropdown === item.label}
                     aria-haspopup={item.children ? "true" : undefined}
+                    aria-current={currentPath === item.href ? "page" : undefined}
                   >
                     {item.label}
                     {item.children && (
                       <ChevronDown
                         size={14}
-                        className={`transition-transform text-[#94A3B8] ${activeDropdown === item.label ? "rotate-180 text-[#14B8A6]" : ""}`}
+                        className={`transition-transform text-[#64748B] ${activeDropdown === item.label ? "rotate-180 text-[#14B8A6]" : ""}`}
                       />
+                    )}
+                    {/* Active page dot indicator */}
+                    {currentPath === item.href && !item.children && (
+                      <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#14B8A6]" />
                     )}
                   </a>
 
@@ -165,7 +174,7 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
               >
                 <Search size={16} />
               </a>
-              <div className="h-4 w-px bg-[#1E2937] mx-1"></div>
+              <div className="h-4 w-px bg-[#334155] mx-1"></div>
               <a
                 href="/find-your-tool"
                 className="text-[13px] font-semibold text-[#14B8A6] hover:text-[#0D9488] bg-[#14B8A6]/10 hover:bg-[#14B8A6]/20 border border-[#14B8A6]/20 px-3 py-1.5 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#14B8A6]"
@@ -181,7 +190,7 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
                   Admin
                 </a>
               )}
-              <div className="h-4 w-px bg-[#1E2937] mx-1"></div>
+              <div className="h-4 w-px bg-[#334155] mx-1"></div>
               <a href="/products" className="text-[14px] font-medium text-[#E2E8F0] hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#14B8A6]">
                 Contact
               </a>

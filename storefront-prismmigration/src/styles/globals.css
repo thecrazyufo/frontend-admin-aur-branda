@@ -671,3 +671,169 @@
   background: linear-gradient(to right, #14B8A6, transparent);
 }
 
+/* ===== Branded Text Selection ===== */
+::selection {
+  background-color: rgba(20, 184, 166, 0.25);
+  color: #e2e8f0;
+}
+::-moz-selection {
+  background-color: rgba(20, 184, 166, 0.25);
+  color: #e2e8f0;
+}
+
+/* ===== Fade-up Entry Animation ===== */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.animate-fade-up-delay-1 { animation-delay: 0.1s; }
+.animate-fade-up-delay-2 { animation-delay: 0.2s; }
+.animate-fade-up-delay-3 { animation-delay: 0.3s; }
+.animate-fade-up-delay-4 { animation-delay: 0.4s; }
+.animate-fade-up-delay-5 { animation-delay: 0.5s; }
+.animate-fade-up-delay-6 { animation-delay: 0.6s; }
+
+/* ===== Marquee Logo Strip ===== */
+@keyframes marquee-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 28s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+.marquee-outer {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+}
+
+/* ===== Shimmer sweep for stats / highlights ===== */
+@keyframes shimmer-sweep {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+.shimmer-text {
+  background: linear-gradient(
+    90deg,
+    #e2e8f0 0%,
+    #14B8A6 40%,
+    #F59E0B 60%,
+    #e2e8f0 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer-sweep 4s linear infinite;
+}
+
+/* ===== Pill overline badge ===== */
+.overline-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #14B8A6;
+  background: rgba(20, 184, 166, 0.08);
+  border: 1px solid rgba(20, 184, 166, 0.2);
+  padding: 4px 12px;
+  border-radius: 9999px;
+}
+
+.overline-pill::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #14B8A6;
+  flex-shrink: 0;
+}
+
+/* ===== Gradient card accent top-line ===== */
+.card-accent-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #14B8A6, #F59E0B, #14B8A6);
+  background-size: 200% 100%;
+  border-radius: 12px 12px 0 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.group:hover .card-accent-line {
+  opacity: 1;
+}
+
+/* ===== Corner bracket decoration ===== */
+.corner-bracket::before,
+.corner-bracket::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-color: rgba(20, 184, 166, 0.35);
+  border-style: solid;
+}
+
+.corner-bracket::before {
+  top: 14px;
+  left: 14px;
+  border-width: 1.5px 0 0 1.5px;
+}
+
+.corner-bracket::after {
+  bottom: 14px;
+  right: 14px;
+  border-width: 0 1.5px 1.5px 0;
+}
+
+/* ===== Star ratings ===== */
+.star-rating {
+  display: flex;
+  gap: 2px;
+  color: #F59E0B;
+  font-size: 11px;
+}
+
+/* ===== Verified badge chip ===== */
+.verified-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #14B8A6;
+  background: rgba(20, 184, 166, 0.08);
+  border: 1px solid rgba(20, 184, 166, 0.2);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
