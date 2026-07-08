@@ -3,6 +3,7 @@ import type { BlogPost } from "@/types/blog";
 import type { FAQ } from "@/types/faq";
 import type { HelpArticle } from "@/types/common";
 import type { LicenseKey } from "@/types/license";
+import type { AvailableFormatsResponse, ToolMatchResult } from "@/types/tools";
 
 export interface Category {
   id: string;
@@ -13,7 +14,7 @@ export interface Category {
   color: string;
 }
 
-// In Astro SSR pages, we always run server-side → use Docker internal hostname
+// In Astro SSR pages, we always run server-side -> use Docker internal hostname
 // In client React Islands, use localhost
 const API_BASE =
   import.meta.env.PUBLIC_API_URL ||
@@ -21,7 +22,15 @@ const API_BASE =
     ? "http://tenant-backend:8080/api"
     : "http://localhost:8080/api");
 
-// ─── Public API helpers ────────────────────────────────────────────────────────
+// Helper to generate a correlation ID
+function getCorrelationId(): string {
+  if (typeof window !== "undefined") {
+    return "store-req-" + Math.random().toString(36).substring(2, 11) + "-" + Date.now().toString(36);
+  }
+  return "store-srv-" + Math.random().toString(36).substring(2, 11);
+}
+
+// --- Public API helpers --------------------------------------------------------
 
 const SITE_ID =
   (typeof process !== "undefined" ? (process.env.PUBLIC_SITE_ID || process.env.SITE_ID) : undefined) ||
@@ -30,79 +39,142 @@ const SITE_ID =
   "default";
 
 export async function apiGet<T>(path: string): Promise<T> {
+  const cid = getCorrelationId();
+  const start = Date.now();
   const sep = path.includes("?") ? "&" : "?";
   const url = `${API_BASE}${path}${sep}siteId=${SITE_ID}`;
-  const res = await fetch(url, {
-    headers: { "Content-Type": "application/json" },
-    signal: AbortSignal.timeout(3000),
-  });
-  if (!res.ok) throw new Error(`API Error: ${res.status} ${res.statusText}`);
-  return res.json();
+  
+  console.log(`[STORE API GET] [Trace: ${cid}] Fetching: ${url}`);
+  try {
+    const res = await fetch(url, {
+      headers: { 
+        "Content-Type": "application/json",
+        "X-Correlation-ID": cid
+      },
+      signal: AbortSignal.timeout(3000),
+    });
+    console.log(`[STORE API GET] [Trace: ${cid}] Status: ${res.status} (${Date.now() - start}ms)`);
+    if (!res.ok) throw new Error(`API Error: ${res.status} ${res.statusText}`);
+    return res.json();
+  } catch (err: any) {
+    console.error(`[STORE API GET ERROR] [Trace: ${cid}] Failed after ${Date.now() - start}ms:`, err.message || err);
+    throw err;
+  }
 }
 
 export async function apiPost<T>(path: string, body: unknown): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-    signal: AbortSignal.timeout(3000),
-  });
-  if (!res.ok) throw new Error(`API Error: ${res.status} ${res.statusText}`);
-  return res.json();
+  const cid = getCorrelationId();
+  const start = Date.now();
+  
+  console.log(`[STORE API POST] [Trace: ${cid}] Fetching: ${API_BASE}${path}`);
+  try {
+    const res = await fetch(`${API_BASE}${path}`, {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        "X-Correlation-ID": cid
+      },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(3000),
+    });
+    console.log(`[STORE API POST] [Trace: ${cid}] Status: ${res.status} (${Date.now() - start}ms)`);
+    if (!res.ok) throw new Error(`API Error: ${res.status} ${res.statusText}`);
+    return res.json();
+  } catch (err: any) {
+    console.error(`[STORE API POST ERROR] [Trace: ${cid}] Failed after ${Date.now() - start}ms:`, err.message || err);
+    throw err;
+  }
 }
 
-// ─── Admin API helpers (JWT auth) ─────────────────────────────────────────────
+// --- Admin API helpers (JWT auth) ---------------------------------------------
 
 function getAdminToken(): string | null {
   if (typeof window === "undefined") return null;
   return localStorage.getItem("admin_jwt");
 }
 
-function adminHeaders(): Record<string, string> {
+function adminHeaders(correlationId: string): Record<string, string> {
   const token = getAdminToken();
   return {
     "Content-Type": "application/json",
+    "X-Correlation-ID": correlationId,
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 }
 
 export async function adminGet<T>(path: string): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
-    headers: adminHeaders(),
-  });
-  if (!res.ok) throw new Error(`Admin API Error: ${res.status} ${res.statusText}`);
-  return res.json();
+  const cid = getCorrelationId();
+  const start = Date.now();
+  console.log(`[STORE ADMIN GET] [Trace: ${cid}] Fetching: ${API_BASE}${path}`);
+  try {
+    const res = await fetch(`${API_BASE}${path}`, {
+      headers: adminHeaders(cid),
+    });
+    console.log(`[STORE ADMIN GET] [Trace: ${cid}] Status: ${res.status} (${Date.now() - start}ms)`);
+    if (!res.ok) throw new Error(`Admin API Error: ${res.status} ${res.statusText}`);
+    return res.json();
+  } catch (err: any) {
+    console.error(`[STORE ADMIN GET ERROR] [Trace: ${cid}] Failed after ${Date.now() - start}ms:`, err.message || err);
+    throw err;
+  }
 }
 
 export async function adminPost<T>(path: string, body: unknown): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
-    method: "POST",
-    headers: adminHeaders(),
-    body: JSON.stringify(body),
-  });
-  if (!res.ok) throw new Error(`Admin API Error: ${res.status} ${res.statusText}`);
-  return res.json();
+  const cid = getCorrelationId();
+  const start = Date.now();
+  console.log(`[STORE ADMIN POST] [Trace: ${cid}] Posting: ${API_BASE}${path}`);
+  try {
+    const res = await fetch(`${API_BASE}${path}`, {
+      method: "POST",
+      headers: adminHeaders(cid),
+      body: JSON.stringify(body),
+    });
+    console.log(`[STORE ADMIN POST] [Trace: ${cid}] Status: ${res.status} (${Date.now() - start}ms)`);
+    if (!res.ok) throw new Error(`Admin API Error: ${res.status} ${res.statusText}`);
+    return res.json();
+  } catch (err: any) {
+    console.error(`[STORE ADMIN POST ERROR] [Trace: ${cid}] Failed after ${Date.now() - start}ms:`, err.message || err);
+    throw err;
+  }
 }
 
 export async function adminPut<T>(path: string, body: unknown): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
-    method: "PUT",
-    headers: adminHeaders(),
-    body: JSON.stringify(body),
-  });
-  if (!res.ok) throw new Error(`Admin API Error: ${res.status} ${res.statusText}`);
-  return res.json();
+  const cid = getCorrelationId();
+  const start = Date.now();
+  console.log(`[STORE ADMIN PUT] [Trace: ${cid}] Putting: ${API_BASE}${path}`);
+  try {
+    const res = await fetch(`${API_BASE}${path}`, {
+      method: "PUT",
+      headers: adminHeaders(cid),
+      body: JSON.stringify(body),
+    });
+    console.log(`[STORE ADMIN PUT] [Trace: ${cid}] Status: ${res.status} (${Date.now() - start}ms)`);
+    if (!res.ok) throw new Error(`Admin API Error: ${res.status} ${res.statusText}`);
+    return res.json();
+  } catch (err: any) {
+    console.error(`[STORE ADMIN PUT ERROR] [Trace: ${cid}] Failed after ${Date.now() - start}ms:`, err.message || err);
+    throw err;
+  }
 }
 
 export async function adminDelete(path: string): Promise<void> {
-  const res = await fetch(`${API_BASE}${path}`, {
-    method: "DELETE",
-    headers: adminHeaders(),
-  });
-  if (!res.ok) throw new Error(`Admin API Error: ${res.status} ${res.statusText}`);
+  const cid = getCorrelationId();
+  const start = Date.now();
+  console.log(`[STORE ADMIN DELETE] [Trace: ${cid}] Deleting: ${API_BASE}${path}`);
+  try {
+    const res = await fetch(`${API_BASE}${path}`, {
+      method: "DELETE",
+      headers: adminHeaders(cid),
+    });
+    console.log(`[STORE ADMIN DELETE] [Trace: ${cid}] Status: ${res.status} (${Date.now() - start}ms)`);
+    if (!res.ok) throw new Error(`Admin API Error: ${res.status} ${res.statusText}`);
+  } catch (err: any) {
+    console.error(`[STORE ADMIN DELETE ERROR] [Trace: ${cid}] Failed after ${Date.now() - start}ms:`, err.message || err);
+    throw err;
+  }
 }
 
-// ─── Public APIs ───────────────────────────────────────────────────────────────
+// --- Public APIs ---------------------------------------------------------------
 
 export const CategoryAPI = {
   getAll: () => apiGet<Category[]>("/categories"),
@@ -163,10 +235,47 @@ export const CheckoutAPI = {
     paymentMethod: string;
     siteId: string;
   }) => apiPost<any>("/checkout/complete", body),
+  createStripeSession: (body: {
+    productId: string;
+    pricingTierName: string;
+    customerEmail: string;
+    siteId: string;
+    successUrl: string;
+    cancelUrl: string;
+  }) => apiPost<any>("/checkout/create-stripe-session", body),
+  confirmStripe: (body: {
+    sessionId: string;
+    siteId: string;
+    customerEmail?: string;
+    productId?: string;
+    pricingTierName?: string;
+  }) => apiPost<any>("/checkout/confirm-stripe", body),
+  createPaypalOrder: (body: {
+    productId: string;
+    pricingTierName: string;
+    customerEmail: string;
+    siteId: string;
+    returnUrl: string;
+    cancelUrl: string;
+  }) => apiPost<any>("/checkout/create-paypal-order", body),
+  capturePaypalOrder: (body: {
+    paypalOrderId: string;
+    siteId: string;
+    customerEmail?: string;
+    productId?: string;
+    pricingTierName?: string;
+  }) => apiPost<any>("/checkout/capture-paypal-order", body),
 };
 
 export const SettingsAPI = {
   get: () => apiGet<any>("/settings"),
+};
+
+export const JobsAPI = {
+  getAll: (status?: string) => {
+    const url = status ? `/jobs?status=${status}` : "/jobs";
+    return apiGet<any[]>(url);
+  },
 };
 
 export const BrandAPI = {
@@ -177,7 +286,7 @@ export const BrandAPI = {
   }
 };
 
-// ─── Admin/Licensing APIs (require JWT) ────────────────────────────────────────────
+// --- Admin/Licensing APIs (require JWT) --------------------------------------------
 
 export const AdminLicenseAPI = {
   getAll: () => adminGet<LicenseKey[]>("/licensing-admin"),
@@ -200,4 +309,43 @@ export const AuthAPI = {
       username,
       password,
     }),
+};
+
+export const SocialProofAPI = {
+  getLogos: (siteId: string = SITE_ID) => apiGet<any[]>(`/social-proof/logos?siteId=${siteId}`),
+  getTestimonials: (siteId: string = SITE_ID) => apiGet<any[]>(`/social-proof/testimonials?siteId=${siteId}`),
+};
+
+export const ToolsAPI = {
+  getAvailableFormats: (siteId: string = SITE_ID) => 
+    apiGet<AvailableFormatsResponse>(`/formats/available`),
+  matchTools: (
+    source: string, 
+    destination: string, 
+    multipleAccounts?: boolean, 
+    requireBatchCsv?: boolean, 
+    requireImpersonation?: boolean, 
+    siteId: string = SITE_ID
+  ) => {
+    let url = `/tools/match?source=${encodeURIComponent(source)}&destination=${encodeURIComponent(destination)}`;
+    if (multipleAccounts !== undefined) url += `&multipleAccounts=${multipleAccounts}`;
+    if (requireBatchCsv !== undefined) url += `&requireBatchCsv=${requireBatchCsv}`;
+    if (requireImpersonation !== undefined) url += `&requireImpersonation=${requireImpersonation}`;
+    return apiGet<ToolMatchResult[]>(url);
+  },
+  /**
+   * Returns the union of capabilities (e.g. "supportsMultipleAccounts") across all products
+   * matching a source -> destination pair for a site.
+   *
+   * Used to dynamically populate the wizard quiz step -- only shows filter questions
+   * that are actually relevant to the matching product set.
+   */
+  getCapabilities: (
+    source: string,
+    destination: string,
+    siteId: string = SITE_ID
+  ): Promise<{ availableCapabilities: string[]; capabilityLabels: Record<string, string>; totalMatchingProducts: number }> => {
+    const url = `/tools/capabilities?source=${encodeURIComponent(source)}&destination=${encodeURIComponent(destination)}`;
+    return apiGet(url);
+  },
 };
