@@ -39,7 +39,7 @@ export default function SearchBar({
         onChange={(e) => setQuery(e.target.value)}
         placeholder={placeholder}
         aria-label="Search"
-        className={`w-full ${sizeClasses[size]} pl-11 pr-28 rounded-xl border border-[#334155] bg-[#0F172A]/80 text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-[#14B8A6]/40 focus:border-transparent transition shadow-sm`}
+        className={`w-full ${sizeClasses[size]} pl-11 pr-28 rounded-xl border border-[#334155] bg-[#0B0F1A]/80 text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-[#6366F1]/40 focus:border-transparent transition shadow-sm`}
       />
       <button
         type="submit"

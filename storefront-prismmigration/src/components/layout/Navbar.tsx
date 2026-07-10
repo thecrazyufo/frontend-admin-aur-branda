@@ -64,6 +64,27 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
     }
   }
 
+  // Symmetrical Hardcoded Safety Fallbacks for FAQ and Security
+  const hasFaq = navItems.some(item => item.label.toLowerCase() === "faq" || item.label.toLowerCase() === "faqs");
+  if (!hasFaq) {
+    const helpIdx = navItems.findIndex(item => item.label.toLowerCase() === "help");
+    if (helpIdx !== -1) {
+      navItems.splice(helpIdx + 1, 0, { label: "FAQ", href: "/faq", enabled: true });
+    } else {
+      navItems.push({ label: "FAQ", href: "/faq", enabled: true });
+    }
+  }
+
+  const hasSecurity = navItems.some(item => item.label.toLowerCase() === "security");
+  if (!hasSecurity) {
+    const clientsIdx = navItems.findIndex(item => item.label.toLowerCase().includes("clients"));
+    if (clientsIdx !== -1) {
+      navItems.splice(clientsIdx + 1, 0, { label: "Security", href: "/security", enabled: true });
+    } else {
+      navItems.push({ label: "Security", href: "/security", enabled: true });
+    }
+  }
+
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
@@ -84,12 +105,12 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
       <nav
         className={`sticky top-0 z-50 transition-all duration-500 border-b ${
           scrolled
-            ? "bg-[#0F172A]/95 backdrop-blur-xl border-[#334155] shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
+            ? "bg-[#0B0F1A]/95 backdrop-blur-xl border-[#334155] shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
             : "bg-[#0A0F1A]/60 backdrop-blur-md border-[#1E2937]/60"
         }`}
       >
         {/* Teal top accent line on scroll */}
-        <div className={`absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#14B8A6]/60 to-transparent transition-opacity duration-500 ${scrolled ? 'opacity-100' : 'opacity-0'}`} />
+        <div className={`absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#6366F1]/60 to-transparent transition-opacity duration-500 ${scrolled ? 'opacity-100' : 'opacity-0'}`} />
         <div className="container-custom">
           <div className="flex items-center justify-between h-[60px]">
             {/* Logo */}
@@ -97,13 +118,13 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
               {logoUrl ? (
                 <img src={logoUrl} alt={siteName} className="w-7 h-7 rounded-md object-contain" />
               ) : (
-                <svg className="w-5 h-5 text-[#14B8A6] filter drop-shadow-[0_0_6px_rgba(20, 184, 166,0.8)] transition-transform group-hover:scale-110" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="8">
+                <svg className="w-5 h-5 text-[#6366F1] filter drop-shadow-[0_0_6px_rgba(99, 102, 241,0.8)] transition-transform group-hover:scale-110" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="8">
                   <polygon points="50,15 15,80 85,80" />
                   <line x1="50" y1="15" x2="50" y2="80" strokeWidth="4" />
                 </svg>
               )}
               <div>
-                <span className="font-bold text-white tracking-tight text-lg group-hover:text-[#14B8A6] transition-colors">
+                <span className="font-bold text-white tracking-tight text-lg group-hover:text-[#6366F1] transition-colors">
                   {siteName || "Prism Migration"}
                 </span>
               </div>
@@ -120,9 +141,9 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
                 >
                   <a
                     href={item.href}
-                    className={`relative flex items-center gap-1 px-3 py-1.5 rounded-md text-[14px] font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#14B8A6] focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
+                    className={`relative flex items-center gap-1 px-3 py-1.5 rounded-md text-[14px] font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6366F1] focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
                       activeDropdown === item.label || currentPath === item.href
-                        ? "text-[#14B8A6] bg-[#14B8A6]/8"
+                        ? "text-[#6366F1] bg-[#6366F1]/8"
                         : "text-[#CBD5E1] hover:text-white hover:bg-[#1E2937]/50"
                     }`}
                     onKeyDown={(e) => {
@@ -143,23 +164,23 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
                     {item.children && (
                       <ChevronDown
                         size={14}
-                        className={`transition-transform text-[#64748B] ${activeDropdown === item.label ? "rotate-180 text-[#14B8A6]" : ""}`}
+                        className={`transition-transform text-[#64748B] ${activeDropdown === item.label ? "rotate-180 text-[#6366F1]" : ""}`}
                       />
                     )}
                     {/* Active page dot indicator */}
                     {currentPath === item.href && !item.children && (
-                      <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#14B8A6]" />
+                      <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#6366F1]" />
                     )}
                   </a>
 
                   {/* Dropdown */}
                   {item.children && activeDropdown === item.label && (
-                    <div className="absolute top-full left-0 mt-1 w-56 bg-[#0F172A] rounded-lg shadow-lg border border-[#334155] py-1.5 animate-fade-in z-50">
+                    <div className="absolute top-full left-0 mt-1 w-56 bg-[#0B0F1A] rounded-lg shadow-lg border border-[#334155] py-1.5 animate-fade-in z-50">
                       {item.children.map((child) => (
                         <a
                           key={child.href}
                           href={child.href}
-                          className="block px-4 py-2 text-[14px] text-[#E2E8F0] hover:text-[#14B8A6] hover:bg-[#1E2937]/40 transition-colors focus-visible:outline-none focus-visible:bg-[#1E2937]/40 focus-visible:text-[#14B8A6]"
+                          className="block px-4 py-2 text-[14px] text-[#E2E8F0] hover:text-[#6366F1] hover:bg-[#1E2937]/40 transition-colors focus-visible:outline-none focus-visible:bg-[#1E2937]/40 focus-visible:text-[#6366F1]"
                           onKeyDown={(e) => {
                             if (e.key === "Escape") {
                               setActiveDropdown(null);
@@ -179,7 +200,7 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
             <div className="hidden lg:flex items-center gap-3">
               <a
                 href="/search"
-                className="p-1.5 text-[#E2E8F0] hover:text-[#14B8A6] hover:bg-[#1E2937]/50 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#14B8A6]"
+                className="p-1.5 text-[#E2E8F0] hover:text-[#6366F1] hover:bg-[#1E2937]/50 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6366F1]"
                 aria-label="Search"
               >
                 <Search size={16} />
@@ -187,31 +208,31 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
               <div className="h-4 w-px bg-[#334155] mx-1"></div>
               <a
                 href="/find-your-tool"
-                className="text-[13px] font-semibold text-[#14B8A6] hover:text-[#0D9488] bg-[#14B8A6]/10 hover:bg-[#14B8A6]/20 border border-[#14B8A6]/20 px-3 py-1.5 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#14B8A6]"
+                className="text-[13px] font-semibold text-white hover:text-white bg-transparent hover:bg-[#6C5CE7]/15 border border-[#6C5CE7]/60 hover:border-[#6C5CE7] px-3 py-1.5 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6C5CE7]"
               >
                 Find Your Tool
               </a>
               {isAdminLoggedIn && (
                 <a
                   href={resolvedAdminUrl}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[#1E2937] border border-[#334155] text-stone-100 rounded-md text-[13px] font-semibold hover:bg-stone-850 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#14B8A6]"
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[#1E2937] border border-[#334155] text-stone-100 rounded-md text-[13px] font-semibold hover:bg-stone-850 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6366F1]"
                 >
                   <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
                   Admin
                 </a>
               )}
               <div className="h-4 w-px bg-[#334155] mx-1"></div>
-              <a href="/products" className="text-[14px] font-medium text-[#E2E8F0] hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#14B8A6]">
+              <a href="/products" className="text-[14px] font-medium text-[#E2E8F0] hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6366F1]">
                 Contact
               </a>
-              <a href="/download" className="bg-[#14B8A6] hover:bg-[#0D9488] text-white font-extrabold text-[13px] py-1.5 px-3.5 rounded-md transition-all duration-300 shadow-[0_0_12px_rgba(20, 184, 166,0.25)] hover:shadow-[0_0_20px_rgba(20, 184, 166,0.5)] transform active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#14B8A6]">
+              <a href="/download" style={{color: '#ffffff'}} className="bg-[#6C5CE7] hover:bg-[#5B4FE0] !text-white text-white font-semibold text-[13px] py-1.5 px-3.5 rounded-md transition-all duration-300 shadow-[0_0_12px_rgba(108,92,231,0.3)] hover:shadow-[0_0_20px_rgba(108,92,231,0.55)] transform active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6C5CE7]">
                 Deploy
               </a>
             </div>
 
             {/* Mobile menu button */}
             <button
-              className="lg:hidden p-1.5 text-[#E2E8F0] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#14B8A6]"
+              className="lg:hidden p-1.5 text-[#E2E8F0] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6366F1]"
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Toggle menu"
             >
@@ -222,12 +243,12 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="lg:hidden bg-[#0F172A]/95 backdrop-blur-md border-t border-[#334155] px-4 py-4 space-y-1">
+          <div className="lg:hidden bg-[#0B0F1A]/95 backdrop-blur-md border-t border-[#334155] px-4 py-4 space-y-1">
             {navItems.map((item) => (
               <div key={item.href}>
                 <a
                   href={item.href}
-                  className="block px-3 py-2 text-[15px] font-medium text-white hover:text-[#14B8A6] hover:bg-[#1E2937]/50 rounded-md"
+                  className="block px-3 py-2 text-[15px] font-medium text-white hover:text-[#6366F1] hover:bg-[#1E2937]/50 rounded-md"
                   onClick={() => setIsOpen(false)}
                 >
                   {item.label}
@@ -238,7 +259,7 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
                       <a
                         key={child.href}
                         href={child.href}
-                        className="block py-2 text-[14px] text-[#E2E8F0] hover:text-[#14B8A6]"
+                        className="block py-2 text-[14px] text-[#E2E8F0] hover:text-[#6366F1]"
                         onClick={() => setIsOpen(false)}
                       >
                         {child.label}
@@ -249,7 +270,7 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
               </div>
             ))}
             <div className="pt-4 flex flex-col gap-2 border-t border-[#334155] mt-4">
-              <a href="/find-your-tool" className="flex items-center justify-center gap-1.5 w-full py-2 bg-[#14B8A6]/10 text-[#14B8A6] border border-[#14B8A6]/25 hover:bg-[#14B8A6]/20 rounded-md text-[14px] font-semibold transition-colors">
+              <a href="/find-your-tool" className="flex items-center justify-center gap-1.5 w-full py-2 bg-[#6366F1]/10 text-[#6366F1] border border-[#6366F1]/25 hover:bg-[#6366F1]/20 rounded-md text-[14px] font-semibold transition-colors">
                 Find Your Tool
               </a>
               {isAdminLoggedIn && (
@@ -262,7 +283,7 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
                   Admin Portal
                 </a>
               )}
-              <a href="/download" className="bg-[#14B8A6] text-white w-full justify-center py-2 text-[14px] font-extrabold rounded-md shadow-[0_0_15px_rgba(20, 184, 166,0.25)]">
+              <a href="/download" style={{color: '#ffffff'}} className="bg-[#6C5CE7] hover:bg-[#5B4FE0] !text-white text-white w-full flex items-center justify-center py-2 text-[14px] font-semibold rounded-md shadow-[0_0_15px_rgba(108,92,231,0.3)]">
                 Deploy Now
               </a>
             </div>

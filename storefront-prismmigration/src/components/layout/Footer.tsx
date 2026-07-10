@@ -76,17 +76,17 @@ export default function Footer({
     : "/admin/login";
 
   return (
-    <footer className="bg-[#0F172A] border-t border-[#334155] pt-16 pb-8 text-[#E2E8F0]">
+    <footer className="bg-[#0B0F1A] border-t border-[#334155] pt-16 pb-8 text-[#E2E8F0]">
       <div className="container-custom">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-16">
           {/* Brand Column */}
           <div className="lg:col-span-2">
             <a href="/" className="flex items-center gap-2 mb-5 group w-fit">
-              <svg className="w-6 h-6 text-[#14B8A6] filter drop-shadow-[0_0_6px_rgba(20, 184, 166,0.8)] transition-transform group-hover:scale-110" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="8">
+              <svg className="w-6 h-6 text-[#6366F1] filter drop-shadow-[0_0_6px_rgba(99, 102, 241,0.8)] transition-transform group-hover:scale-110" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="8">
                 <polygon points="50,15 15,80 85,80" />
                 <line x1="50" y1="15" x2="50" y2="80" strokeWidth="4" />
               </svg>
-              <span className="font-semibold text-white group-hover:text-[#14B8A6] tracking-tight transition-colors">
+              <span className="font-semibold text-white group-hover:text-[#6366F1] tracking-tight transition-colors">
                 {siteName || "Prism Migration"}
               </span>
             </a>
@@ -108,7 +108,7 @@ export default function Footer({
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="w-8 h-8 rounded-md bg-[#1E2937]/40 border border-[#334155] flex items-center justify-center text-[#E2E8F0] hover:text-[#14B8A6] hover:bg-[#1E2937] hover:border-[#475569] transition-all text-xs font-semibold"
+                  className="w-8 h-8 rounded-md bg-[#1E2937]/40 border border-[#334155] flex items-center justify-center text-[#E2E8F0] hover:text-[#6366F1] hover:bg-[#1E2937] hover:border-[#475569] transition-all text-xs font-semibold"
                 >
                   {text}
                 </a>

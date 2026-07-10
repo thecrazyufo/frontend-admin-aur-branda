@@ -142,7 +142,7 @@ export function parseMarkdownToHtml(markdown: string): string {
       closeListIfOpen();
       const content = processInline(trimmed.substring(2));
       if (!inBlockquote) {
-        html += '<blockquote class="border-l-4 border-[#14B8A6] bg-[#14B8A6]/5 px-4 py-2 my-3 rounded-r-lg">';
+        html += '<blockquote class="border-l-4 border-[#6366F1] bg-[#6366F1]/5 px-4 py-2 my-3 rounded-r-lg">';
         inBlockquote = true;
       }
       html += `<p class="text-sm leading-relaxed text-[#E2E8F0]">${content}</p>`;
@@ -198,7 +198,7 @@ export function parseMarkdownToHtml(markdown: string): string {
   closeBlockquoteIfOpen();
 
   if (inCodeBlock && codeContent) {
-    html += `<pre class="bg-[#0F172A] text-emerald-400 text-sm font-mono rounded-xl p-4 my-4 overflow-x-auto whitespace-pre-wrap border border-[#334155]"><code>${escapeHtml(codeContent)}</code></pre>`;
+    html += `<pre class="bg-[#0B0F1A] text-emerald-400 text-sm font-mono rounded-xl p-4 my-4 overflow-x-auto whitespace-pre-wrap border border-[#334155]"><code>${escapeHtml(codeContent)}</code></pre>`;
   }
 
   return html;

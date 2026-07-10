@@ -19,7 +19,7 @@ import { Select } from "@/components/ui/Select";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/Table";
 import { Badge } from "@/components/ui/Badge";
 
-type RegistryTab = "categories" | "source-formats" | "target-formats" | "supported-clients" | "key-features";
+type RegistryTab = "categories" | "formats" | "supported-clients" | "key-features";
 
 export default function GlobalRegistryPage() {
   const params = useParams();
@@ -86,12 +86,9 @@ export default function GlobalRegistryPage() {
       if (activeRegistryTab === "categories") {
         const data = await AdminCategoryAPI.getAll();
         setCategories(data);
-      } else if (activeRegistryTab === "source-formats") {
+      } else if (activeRegistryTab === "formats") {
         const data = await AdminRegistryAPI.getSourceFormats();
         setSourceFormats(data);
-      } else if (activeRegistryTab === "target-formats") {
-        const data = await AdminRegistryAPI.getTargetFormats();
-        setTargetFormats(data);
       } else if (activeRegistryTab === "supported-clients") {
         const data = await AdminRegistryAPI.getSupportedClients();
         setSupportedClients(data);
@@ -146,12 +143,12 @@ export default function GlobalRegistryPage() {
         if (activeRegistryTab === "categories") {
           await AdminCategoryAPI.delete(selectedRegistryItem.id);
           triggerRegistryToast("Category deleted successfully");
-        } else if (activeRegistryTab === "source-formats") {
-          await AdminRegistryAPI.deleteSourceFormat(selectedRegistryItem.id);
-          triggerRegistryToast("Source Format deleted successfully");
-        } else if (activeRegistryTab === "target-formats") {
-          await AdminRegistryAPI.deleteTargetFormat(selectedRegistryItem.id);
-          triggerRegistryToast("Target Format deleted successfully");
+        } else if (activeRegistryTab === "formats") {
+          await Promise.all([
+            AdminRegistryAPI.deleteSourceFormat(selectedRegistryItem.id),
+            AdminRegistryAPI.deleteTargetFormat(selectedRegistryItem.id)
+          ]);
+          triggerRegistryToast("Format deleted successfully");
         } else if (activeRegistryTab === "supported-clients") {
           await AdminRegistryAPI.deleteSupportedClient(selectedRegistryItem.id);
           triggerRegistryToast("Supported Client deleted successfully");
@@ -185,7 +182,7 @@ export default function GlobalRegistryPage() {
             await AdminCategoryAPI.update(selectedRegistryItem.id, payload);
             triggerRegistryToast("Category updated successfully");
           }
-        } else if (activeRegistryTab === "source-formats") {
+        } else if (activeRegistryTab === "formats") {
           const payload: Partial<SourceFormat> = {
             key: keyVal,
             name: registryFormName.trim(),
@@ -196,28 +193,17 @@ export default function GlobalRegistryPage() {
           };
 
           if (registryModalMode === "add") {
-            await AdminRegistryAPI.createSourceFormat(payload);
-            triggerRegistryToast("Source Format created successfully");
+            await Promise.all([
+              AdminRegistryAPI.createSourceFormat(payload),
+              AdminRegistryAPI.createTargetFormat(payload)
+            ]);
+            triggerRegistryToast("Format created successfully");
           } else {
-            await AdminRegistryAPI.updateSourceFormat(selectedRegistryItem.id, payload);
-            triggerRegistryToast("Source Format updated successfully");
-          }
-        } else if (activeRegistryTab === "target-formats") {
-          const payload: Partial<TargetFormat> = {
-            key: keyVal,
-            name: registryFormName.trim(),
-            description: registryFormDescription.trim(),
-            icon: registryFormIcon.trim(),
-            siteId: brandId,
-            supportsMultipleAccounts: registryFormSupportsMultipleAccounts,
-          };
-
-          if (registryModalMode === "add") {
-            await AdminRegistryAPI.createTargetFormat(payload);
-            triggerRegistryToast("Target Format created successfully");
-          } else {
-            await AdminRegistryAPI.updateTargetFormat(selectedRegistryItem.id, payload);
-            triggerRegistryToast("Target Format updated successfully");
+            await Promise.all([
+              AdminRegistryAPI.updateSourceFormat(selectedRegistryItem.id, payload),
+              AdminRegistryAPI.updateTargetFormat(selectedRegistryItem.id, payload)
+            ]);
+            triggerRegistryToast("Format updated successfully");
           }
         } else if (activeRegistryTab === "supported-clients") {
           const payload: Partial<SupportedClient> = {
@@ -301,8 +287,7 @@ export default function GlobalRegistryPage() {
       <div className="flex flex-wrap gap-1.5 border-b border-zinc-200 dark:border-zinc-800 pb-3">
         {[
           { id: "categories", label: "Categories" },
-          { id: "source-formats", label: "Source Formats" },
-          { id: "target-formats", label: "Target Formats" },
+          { id: "formats", label: "Formats" },
           { id: "supported-clients", label: "Supported Clients" },
           { id: "key-features", label: "Key Features" },
         ].map((t) => (
@@ -312,7 +297,7 @@ export default function GlobalRegistryPage() {
             className={cn(
               "px-3 py-1.5 text-xs font-semibold rounded-md border-0 transition-all cursor-pointer",
               activeRegistryTab === t.id
-                ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-950 shadow-sm"
+                ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-955 shadow-sm"
                 : "bg-transparent text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
             )}
           >
@@ -336,7 +321,7 @@ export default function GlobalRegistryPage() {
                     <TableHead className="w-[20%] text-zinc-800 dark:text-zinc-200 font-bold text-[11px] uppercase tracking-wider py-4 px-5">Key / ID</TableHead>
                     <TableHead className="w-[20%] text-zinc-800 dark:text-zinc-200 font-bold text-[11px] uppercase tracking-wider py-4 px-5">Name</TableHead>
                     <TableHead className="w-[30%] text-zinc-800 dark:text-zinc-200 font-bold text-[11px] uppercase tracking-wider py-4 px-5">Description</TableHead>
-                    {(activeRegistryTab === "source-formats" || activeRegistryTab === "target-formats") && (
+                    {activeRegistryTab === "formats" && (
                       <TableHead className="w-[15%] text-zinc-800 dark:text-zinc-200 font-bold text-[11px] uppercase tracking-wider py-4 px-5">Multi-Account</TableHead>
                     )}
                     {activeRegistryTab !== "key-features" && (
@@ -350,11 +335,8 @@ export default function GlobalRegistryPage() {
                   {activeRegistryTab === "categories" && categories.length === 0 && (
                     <TableRow><TableCell colSpan={5} className="text-center p-10 text-zinc-400 text-xs">No categories seeded. Add one to start.</TableCell></TableRow>
                   )}
-                  {activeRegistryTab === "source-formats" && sourceFormats.length === 0 && (
-                    <TableRow><TableCell colSpan={6} className="text-center p-10 text-zinc-400 text-xs">No source formats registered. Add one to start.</TableCell></TableRow>
-                  )}
-                  {activeRegistryTab === "target-formats" && targetFormats.length === 0 && (
-                    <TableRow><TableCell colSpan={6} className="text-center p-10 text-zinc-400 text-xs">No target formats registered. Add one to start.</TableCell></TableRow>
+                  {activeRegistryTab === "formats" && sourceFormats.length === 0 && (
+                    <TableRow><TableCell colSpan={6} className="text-center p-10 text-zinc-400 text-xs">No formats registered. Add one to start.</TableCell></TableRow>
                   )}
                   {activeRegistryTab === "supported-clients" && supportedClients.length === 0 && (
                     <TableRow><TableCell colSpan={5} className="text-center p-10 text-zinc-400 text-xs">No supported clients registered. Add one to start.</TableCell></TableRow>
@@ -391,8 +373,8 @@ export default function GlobalRegistryPage() {
                       </TableRow>
                     ))}
 
-                  {/* Source Formats Row */}
-                  {activeRegistryTab === "source-formats" &&
+                  {/* Formats Row */}
+                  {activeRegistryTab === "formats" &&
                     sourceFormats.map((sf) => (
                       <TableRow key={sf.id} className="border-b border-zinc-200 dark:border-zinc-855 hover:bg-zinc-50 dark:hover:bg-zinc-900/10">
                         <TableCell className="font-mono text-xs text-indigo-600 dark:text-indigo-400 font-semibold px-5 py-3.5">{sf.key}</TableCell>
@@ -417,38 +399,6 @@ export default function GlobalRegistryPage() {
                             Edit
                           </Button>
                           <Button variant="ghost" size="sm" onClick={() => openRegistryDeleteModal(sf)} className="text-red-500 hover:bg-red-505/10 text-xs px-2.5 h-8">
-                            Delete
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-
-                  {/* Target Formats Row */}
-                  {activeRegistryTab === "target-formats" &&
-                    targetFormats.map((tf) => (
-                      <TableRow key={tf.id} className="border-b border-zinc-200 dark:border-zinc-855 hover:bg-zinc-50 dark:hover:bg-zinc-900/10">
-                        <TableCell className="font-mono text-xs text-indigo-600 dark:text-indigo-400 font-semibold px-5 py-3.5">{tf.key}</TableCell>
-                        <TableCell className="font-semibold text-zinc-955 dark:text-zinc-100 px-5 py-3.5">{tf.name}</TableCell>
-                        <TableCell className="text-zinc-505 dark:text-zinc-400 max-w-sm truncate text-xs px-5 py-3.5">{tf.description}</TableCell>
-                        <TableCell className="px-5 py-3.5">
-                          {tf.supportsMultipleAccounts ? (
-                            <Badge className="bg-emerald-505/10 border-emerald-505/20 text-emerald-600 dark:text-emerald-400 border font-semibold text-[10px]">
-                              Supports
-                            </Badge>
-                          ) : (
-                            <Badge variant="outline" className="text-zinc-400 border-zinc-200 dark:border-zinc-805 text-[10px]">
-                              Single Only
-                            </Badge>
-                          )}
-                        </TableCell>
-                        <TableCell className="px-5 py-3.5">
-                          {tf.icon && <Badge variant="outline" className="text-zinc-500 dark:text-zinc-400 border-zinc-200 dark:border-zinc-805 font-mono text-[10px]">{tf.icon}</Badge>}
-                        </TableCell>
-                        <TableCell className="text-right space-x-1 px-5 py-3.5 whitespace-nowrap">
-                          <Button variant="ghost" size="sm" onClick={() => openRegistryEditModal(tf)} className="text-zinc-600 dark:text-zinc-305 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs px-2.5 h-8">
-                            Edit
-                          </Button>
-                          <Button variant="ghost" size="sm" onClick={() => openRegistryDeleteModal(tf)} className="text-red-500 hover:bg-red-505/10 text-xs px-2.5 h-8">
                             Delete
                           </Button>
                         </TableCell>
@@ -586,7 +536,7 @@ export default function GlobalRegistryPage() {
                       </div>
                     )}
 
-                    {(activeRegistryTab === "source-formats" || activeRegistryTab === "target-formats") && (
+                    {activeRegistryTab === "formats" && (
                       <div className="flex items-center justify-between p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 mt-1">
                         <div className="space-y-0.5">
                           <label className="block text-xs font-semibold text-zinc-800 dark:text-zinc-200">

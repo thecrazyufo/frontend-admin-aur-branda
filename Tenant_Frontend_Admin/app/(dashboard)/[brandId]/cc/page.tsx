@@ -411,6 +411,12 @@ function ContentCreatorContent() {
   const [supportedClientsRegistry, setSupportedClientsRegistry] = useState<SupportedClient[]>([]);
   const [keyFeaturesRegistry, setKeyFeaturesRegistry] = useState<KeyFeature[]>([]);
 
+  // Inline dynamic inputs
+  const [inlineSourceText, setInlineSourceText] = useState("");
+  const [inlineTargetText, setInlineTargetText] = useState("");
+  const [inlineClientText, setInlineClientText] = useState("");
+  const [inlineFeatureText, setInlineFeatureText] = useState("");
+
   // Search
   const [search, setSearch] = useState("");
 
@@ -555,6 +561,130 @@ function ContentCreatorContent() {
     setTimeout(() => setToast(null), 3500);
   }
 
+  // Inline Registry dynamic creators
+  async function handleAddInlineSource() {
+    const val = inlineSourceText.trim();
+    if (!val) return;
+    const key = val.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9\-]/g, "");
+    if (!key) return;
+
+    if (sourceFormatsRegistry.some(x => x.key === key)) {
+      showToast("Format already exists in registry!", "error");
+      return;
+    }
+
+    try {
+      const created = await AdminRegistryAPI.createSourceFormat({
+        key,
+        name: val,
+        description: `${val} source format (added inline)`,
+        icon: "mail",
+        siteId: brandId
+      });
+      setSourceFormatsRegistry(prev => [...prev, created]);
+      const current = productModal?.sourceFormats || [];
+      if (productModal) {
+        setProductModal({ ...productModal, sourceFormats: [...current, created.key] });
+      }
+      setInlineSourceText("");
+      showToast(`Added ${val} to registry!`, "success");
+    } catch {
+      showToast("Failed to add format to registry", "error");
+    }
+  }
+
+  async function handleAddInlineTarget() {
+    const val = inlineTargetText.trim();
+    if (!val) return;
+    const key = val.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9\-]/g, "");
+    if (!key) return;
+
+    if (targetFormatsRegistry.some(x => x.key === key)) {
+      showToast("Format already exists in registry!", "error");
+      return;
+    }
+
+    try {
+      const created = await AdminRegistryAPI.createTargetFormat({
+        key,
+        name: val,
+        description: `${val} target format (added inline)`,
+        icon: "mail",
+        siteId: brandId
+      });
+      setTargetFormatsRegistry(prev => [...prev, created]);
+      const current = productModal?.targetFormats || [];
+      if (productModal) {
+        setProductModal({ ...productModal, targetFormats: [...current, created.key] });
+      }
+      setInlineTargetText("");
+      showToast(`Added ${val} to registry!`, "success");
+    } catch {
+      showToast("Failed to add format to registry", "error");
+    }
+  }
+
+  async function handleAddInlineClient() {
+    const val = inlineClientText.trim();
+    if (!val) return;
+    const key = val.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9\-]/g, "");
+    if (!key) return;
+
+    if (supportedClientsRegistry.some(x => x.key === key)) {
+      showToast("Client already exists in registry!", "error");
+      return;
+    }
+
+    try {
+      const created = await AdminRegistryAPI.createSupportedClient({
+        key,
+        name: val,
+        description: `${val} client (added inline)`,
+        icon: "mail",
+        siteId: brandId
+      });
+      setSupportedClientsRegistry(prev => [...prev, created]);
+      const current = productModal?.tags || [];
+      if (productModal) {
+        setProductModal({ ...productModal, tags: [...current, created.key] });
+      }
+      setInlineClientText("");
+      showToast(`Added ${val} to registry!`, "success");
+    } catch {
+      showToast("Failed to add client to registry", "error");
+    }
+  }
+
+  async function handleAddInlineFeature() {
+    const val = inlineFeatureText.trim();
+    if (!val) return;
+    const key = val.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9\-]/g, "");
+    if (!key) return;
+
+    if (keyFeaturesRegistry.some(x => x.key === key)) {
+      showToast("Feature already exists in registry!", "error");
+      return;
+    }
+
+    try {
+      const created = await AdminRegistryAPI.createKeyFeature({
+        key,
+        name: val,
+        description: `${val} feature (added inline)`,
+        siteId: brandId
+      });
+      setKeyFeaturesRegistry(prev => [...prev, created]);
+      const caps = productModal?.capabilities || {};
+      if (productModal) {
+        setProductModal({ ...productModal, capabilities: { ...caps, [created.key]: true } });
+      }
+      setInlineFeatureText("");
+      showToast(`Added ${val} to registry!`, "success");
+    } catch {
+      showToast("Failed to add feature to registry", "error");
+    }
+  }
+
   // Delete Handlers
   async function handleDeleteProduct(id: string, name: string) {
     if (!confirm(`Delete product "${name}"?`)) return;
@@ -658,6 +788,10 @@ function ContentCreatorContent() {
         slug: slugVal,
         category: catVal,
         siteId: brandId,
+        trialDownloadUrl: `/download/trial?product=${slugVal}`,
+        installerUrl: productModal.installerUrl || `https://downloads.datamigratepro.com/installers/${slugVal}-trial.exe`,
+        installationSuccessUrl: `/thank-you-install?product=${slugVal}`,
+        uninstallationSuccessUrl: `/goodbye?product=${slugVal}`,
         enabled: isDraftOnly ? false : (productModal.enabled !== false)
       };
 
@@ -1080,11 +1214,57 @@ function ContentCreatorContent() {
                       </div>
                       <div className="space-y-1.5">
                         <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Product Name</label>
-                        <Input type="text" value={productModal.name || ""} onChange={e => setProductModal({...productModal, name: e.target.value})} required />
+                        <Input 
+                          type="text" 
+                          value={productModal.name || ""} 
+                          onChange={e => {
+                            const name = e.target.value;
+                            const slug = name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+                            if (!productModal.id) {
+                              setProductModal({
+                                ...productModal,
+                                name,
+                                slug,
+                                trialDownloadUrl: `/download/trial?product=${slug}`,
+                                installerUrl: `https://downloads.datamigratepro.com/installers/${slug}-trial.exe`,
+                                installationSuccessUrl: `/thank-you-install?product=${slug}`,
+                                uninstallationSuccessUrl: `/goodbye?product=${slug}`
+                              });
+                            } else {
+                              setProductModal({
+                                ...productModal,
+                                name
+                              });
+                            }
+                          }} 
+                          required 
+                        />
                       </div>
                       <div className="space-y-1.5">
                         <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Slug</label>
-                        <Input type="text" value={productModal.slug || ""} onChange={e => setProductModal({...productModal, slug: e.target.value})} required />
+                        <Input 
+                          type="text" 
+                          value={productModal.slug || ""} 
+                          onChange={e => {
+                            const slug = e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                            if (!productModal.id) {
+                              setProductModal({
+                                ...productModal,
+                                slug,
+                                trialDownloadUrl: `/download/trial?product=${slug}`,
+                                installerUrl: `https://downloads.datamigratepro.com/installers/${slug}-trial.exe`,
+                                installationSuccessUrl: `/thank-you-install?product=${slug}`,
+                                uninstallationSuccessUrl: `/goodbye?product=${slug}`
+                              });
+                            } else {
+                              setProductModal({
+                                ...productModal,
+                                slug
+                              });
+                            }
+                          }} 
+                          required 
+                        />
                       </div>
                       <div className="space-y-1.5">
                         <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Price ($) - Fallback</label>
@@ -1168,16 +1348,8 @@ function ContentCreatorContent() {
                         </Select>
                       </div>
                       <div className="sm:col-span-2 space-y-1.5">
-                        <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Trial Download URL</label>
-                        <Input type="text" value={productModal.trialDownloadUrl || ""} onChange={e => setProductModal({...productModal, trialDownloadUrl: e.target.value})} placeholder="e.g. /download/trial?product=pst-converter" />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Installation Success URL</label>
-                        <Input type="text" value={productModal.installationSuccessUrl || ""} onChange={e => setProductModal({...productModal, installationSuccessUrl: e.target.value})} placeholder="e.g. /thank-you-install" />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Uninstallation Success URL</label>
-                        <Input type="text" value={productModal.uninstallationSuccessUrl || ""} onChange={e => setProductModal({...productModal, uninstallationSuccessUrl: e.target.value})} placeholder="e.g. /goodbye" />
+                        <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Direct EXE Installer URL (Pasted Link)</label>
+                        <Input type="text" value={productModal.installerUrl || ""} onChange={e => setProductModal({...productModal, installerUrl: e.target.value})} placeholder="e.g. https://my-storage.com/installers/pst-converter.exe" />
                       </div>
                       <div className="sm:col-span-2 space-y-1.5">
                         <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Short Description</label>
@@ -1358,34 +1530,55 @@ function ContentCreatorContent() {
                     {/* Supported Clients */}
                     <div className="space-y-1.5">
                       <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Supported Clients</label>
-                      {supportedClientsRegistry.length === 0 ? (
-                        <p className="text-xs text-zinc-500 italic">No supported clients defined in registry.</p>
-                      ) : (
-                        <div className="flex flex-wrap gap-1.5 p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/10">
-                          {supportedClientsRegistry.map(sc => {
-                            const isSelected = (productModal.tags || []).includes(sc.key);
-                            return (
-                              <button
-                                type="button"
-                                key={sc.key}
-                                onClick={() => {
-                                  const current = productModal.tags || [];
-                                  const next = isSelected ? current.filter(x => x !== sc.key) : [...current, sc.key];
-                                  setProductModal({ ...productModal, tags: next });
-                                }}
-                                className={cn(
-                                  "px-2.5 py-1 rounded-full text-xs font-medium border transition-colors cursor-pointer",
-                                  isSelected 
-                                    ? "bg-indigo-600/15 text-indigo-600 dark:text-indigo-400 border-indigo-500/30"
-                                    : "bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-750"
-                                )}
-                              >
-                                {sc.name}
-                              </button>
-                            );
-                          })}
+                      <div className="space-y-2">
+                        {supportedClientsRegistry.length > 0 ? (
+                          <div className="flex flex-wrap gap-1.5 p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/10">
+                            {supportedClientsRegistry.map(sc => {
+                              const isSelected = (productModal.tags || []).includes(sc.key);
+                              return (
+                                <button
+                                  type="button"
+                                  key={sc.key}
+                                  onClick={() => {
+                                    const current = productModal.tags || [];
+                                    const next = isSelected ? current.filter(x => x !== sc.key) : [...current, sc.key];
+                                    setProductModal({ ...productModal, tags: next });
+                                  }}
+                                  className={cn(
+                                    "px-2.5 py-1 rounded-full text-xs font-medium border transition-colors cursor-pointer",
+                                    isSelected 
+                                      ? "bg-indigo-600/15 text-indigo-600 dark:text-indigo-400 border-indigo-500/30"
+                                      : "bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-750"
+                                  )}
+                                >
+                                  {sc.name}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <p className="text-xs text-zinc-500 italic px-1">No supported clients defined. Add one below:</p>
+                        )}
+                        
+                        <div className="flex gap-2">
+                          <Input
+                            type="text"
+                            placeholder="Add client (e.g. Outlook, Apple Mail)..."
+                            value={inlineClientText}
+                            onChange={e => setInlineClientText(e.target.value)}
+                            onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); handleAddInlineClient(); } }}
+                            className="text-xs py-1.5 h-8 flex-1"
+                          />
+                          <Button 
+                            type="button"
+                            onClick={handleAddInlineClient}
+                            variant="outline"
+                            className="px-3 h-8 text-xs font-bold"
+                          >
+                            + Add
+                          </Button>
                         </div>
-                      )}
+                      </div>
                     </div>
 
                     <div className="space-y-1.5">
@@ -1457,34 +1650,55 @@ function ContentCreatorContent() {
                         <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
                           Source Formats <span className="text-zinc-400 font-normal">(select what formats this tool converts FROM)</span>
                         </label>
-                        {sourceFormatsRegistry.length === 0 ? (
-                          <p className="text-xs text-zinc-500 italic">No source formats defined in registry.</p>
-                        ) : (
-                          <div className="flex flex-wrap gap-1.5 p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/10">
-                            {sourceFormatsRegistry.map(sf => {
-                              const isSelected = (productModal.sourceFormats || []).includes(sf.key);
-                              return (
-                                <button
-                                  type="button"
-                                  key={sf.key}
-                                  onClick={() => {
-                                    const current = productModal.sourceFormats || [];
-                                    const next = isSelected ? current.filter(x => x !== sf.key) : [...current, sf.key];
-                                    setProductModal({ ...productModal, sourceFormats: next });
-                                  }}
-                                  className={cn(
-                                    "px-2.5 py-1 rounded-full text-xs font-medium border transition-colors cursor-pointer",
-                                    isSelected 
-                                      ? "bg-indigo-600/15 text-indigo-600 dark:text-indigo-400 border-indigo-500/30"
-                                      : "bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-750"
-                                  )}
-                                >
-                                  {sf.name}
-                                </button>
-                              );
-                            })}
+                        <div className="space-y-2">
+                          {sourceFormatsRegistry.length > 0 ? (
+                            <div className="flex flex-wrap gap-1.5 p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/10">
+                              {sourceFormatsRegistry.map(sf => {
+                                const isSelected = (productModal.sourceFormats || []).includes(sf.key);
+                                return (
+                                  <button
+                                    type="button"
+                                    key={sf.key}
+                                    onClick={() => {
+                                      const current = productModal.sourceFormats || [];
+                                      const next = isSelected ? current.filter(x => x !== sf.key) : [...current, sf.key];
+                                      setProductModal({ ...productModal, sourceFormats: next });
+                                    }}
+                                    className={cn(
+                                      "px-2.5 py-1 rounded-full text-xs font-medium border transition-colors cursor-pointer",
+                                      isSelected 
+                                        ? "bg-indigo-600/15 text-indigo-600 dark:text-indigo-400 border-indigo-500/30"
+                                        : "bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-750"
+                                    )}
+                                  >
+                                    {sf.name}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            <p className="text-xs text-zinc-500 italic px-1">No source formats defined. Add one below:</p>
+                          )}
+
+                          <div className="flex gap-2">
+                            <Input
+                              type="text"
+                              placeholder="Add source format (e.g. PST, OST, MBOX)..."
+                              value={inlineSourceText}
+                              onChange={e => setInlineSourceText(e.target.value)}
+                              onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); handleAddInlineSource(); } }}
+                              className="text-xs py-1.5 h-8 flex-1"
+                            />
+                            <Button 
+                              type="button"
+                              onClick={handleAddInlineSource}
+                              variant="outline"
+                              className="px-3 h-8 text-xs font-bold"
+                            >
+                              + Add
+                            </Button>
                           </div>
-                        )}
+                        </div>
                       </div>
 
                       {/* Target Formats */}
@@ -1492,34 +1706,55 @@ function ContentCreatorContent() {
                         <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
                           Target Formats <span className="text-zinc-400 font-normal">(select what formats this tool converts TO)</span>
                         </label>
-                        {targetFormatsRegistry.length === 0 ? (
-                          <p className="text-xs text-zinc-500 italic">No target formats defined in registry.</p>
-                        ) : (
-                          <div className="flex flex-wrap gap-1.5 p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/10">
-                            {targetFormatsRegistry.map(tf => {
-                              const isSelected = (productModal.targetFormats || []).includes(tf.key);
-                              return (
-                                <button
-                                  type="button"
-                                  key={tf.key}
-                                  onClick={() => {
-                                    const current = productModal.targetFormats || [];
-                                    const next = isSelected ? current.filter(x => x !== tf.key) : [...current, tf.key];
-                                    setProductModal({ ...productModal, targetFormats: next });
-                                  }}
-                                  className={cn(
-                                    "px-2.5 py-1 rounded-full text-xs font-medium border transition-colors cursor-pointer",
-                                    isSelected 
-                                      ? "bg-indigo-600/15 text-indigo-600 dark:text-indigo-400 border-indigo-500/30"
-                                      : "bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-750"
-                                  )}
-                                >
-                                  {tf.name}
-                                </button>
-                              );
-                            })}
+                        <div className="space-y-2">
+                          {targetFormatsRegistry.length > 0 ? (
+                            <div className="flex flex-wrap gap-1.5 p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/10">
+                              {targetFormatsRegistry.map(tf => {
+                                const isSelected = (productModal.targetFormats || []).includes(tf.key);
+                                return (
+                                  <button
+                                    type="button"
+                                    key={tf.key}
+                                    onClick={() => {
+                                      const current = productModal.targetFormats || [];
+                                      const next = isSelected ? current.filter(x => x !== tf.key) : [...current, tf.key];
+                                      setProductModal({ ...productModal, targetFormats: next });
+                                    }}
+                                    className={cn(
+                                      "px-2.5 py-1 rounded-full text-xs font-medium border transition-colors cursor-pointer",
+                                      isSelected 
+                                        ? "bg-indigo-600/15 text-indigo-600 dark:text-indigo-400 border-indigo-500/30"
+                                        : "bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-750"
+                                    )}
+                                  >
+                                    {tf.name}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            <p className="text-xs text-zinc-500 italic px-1">No target formats defined. Add one below:</p>
+                          )}
+
+                          <div className="flex gap-2">
+                            <Input
+                              type="text"
+                              placeholder="Add target format (e.g. PDF, EML, Exchange)..."
+                              value={inlineTargetText}
+                              onChange={e => setInlineTargetText(e.target.value)}
+                              onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); handleAddInlineTarget(); } }}
+                              className="text-xs py-1.5 h-8 flex-1"
+                            />
+                            <Button 
+                              type="button"
+                              onClick={handleAddInlineTarget}
+                              variant="outline"
+                              className="px-3 h-8 text-xs font-bold"
+                            >
+                              + Add
+                            </Button>
                           </div>
-                        )}
+                        </div>
                       </div>
 
                       {/* Capabilities */}
@@ -1530,38 +1765,59 @@ function ContentCreatorContent() {
                           <div className="space-y-2">
                             <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Advanced Capabilities</label>
                             <p className="text-[10px] text-zinc-450 dark:text-zinc-400">Enable features supported by this product to dynamically filter queries in the quiz step.</p>
-                            {keyFeaturesRegistry.length === 0 ? (
-                              <p className="text-xs text-zinc-500 italic">No key features defined in registry.</p>
-                            ) : (
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                {keyFeaturesRegistry.map(kf => {
-                                  const key = kf.key;
-                                  const label = kf.name;
-                                  
-                                  // Conditional rendering: if key is Batch Mode Support (supportsMultipleAccounts) and IMAP is not selected, hide it
-                                  if (key === "supportsMultipleAccounts" && !isImapSelected) {
-                                    return null;
-                                  }
+                            <div className="space-y-2">
+                              {keyFeaturesRegistry.length > 0 ? (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                  {keyFeaturesRegistry.map(kf => {
+                                    const key = kf.key;
+                                    const label = kf.name;
+                                    
+                                    // Conditional rendering: if key is Batch Mode Support (supportsMultipleAccounts) and IMAP is not selected, hide it
+                                    if (key === "supportsMultipleAccounts" && !isImapSelected) {
+                                      return null;
+                                    }
 
-                                  const caps = productModal.capabilities || {};
-                                  const checked = !!caps[key];
-                                  return (
-                                    <label key={key} className="flex items-center gap-2 p-2.5 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 text-xs cursor-pointer select-none hover:border-indigo-300 dark:hover:border-indigo-700 transition-colors">
-                                      <input
-                                        type="checkbox"
-                                        checked={checked}
-                                        className="rounded border-zinc-300 text-indigo-600 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-900 shrink-0"
-                                        onChange={e => {
-                                          const newCaps = { ...(productModal.capabilities || {}), [key]: e.target.checked };
-                                          setProductModal({ ...productModal, capabilities: newCaps });
-                                        }}
-                                      />
-                                      <span className="text-zinc-700 dark:text-zinc-300 font-medium">{label}</span>
-                                    </label>
-                                  );
-                                })}
+                                    const caps = productModal.capabilities || {};
+                                    const checked = !!caps[key];
+                                    return (
+                                      <label key={key} className="flex items-center gap-2 p-2.5 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 text-xs cursor-pointer select-none hover:border-indigo-300 dark:hover:border-indigo-700 transition-colors">
+                                        <input
+                                          type="checkbox"
+                                          checked={checked}
+                                          className="rounded border-zinc-300 text-indigo-600 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-900 shrink-0"
+                                          onChange={e => {
+                                            const newCaps = { ...(productModal.capabilities || {}), [key]: e.target.checked };
+                                            setProductModal({ ...productModal, capabilities: newCaps });
+                                          }}
+                                        />
+                                        <span className="text-zinc-700 dark:text-zinc-300 font-medium">{label}</span>
+                                      </label>
+                                    );
+                                  })}
+                                </div>
+                              ) : (
+                                <p className="text-xs text-zinc-500 italic px-1">No capabilities defined. Add one below:</p>
+                              )}
+
+                              <div className="flex gap-2">
+                                <Input
+                                  type="text"
+                                  placeholder="Add capability (e.g. supportsBatchCsv, supportsImpersonation)..."
+                                  value={inlineFeatureText}
+                                  onChange={e => setInlineFeatureText(e.target.value)}
+                                  onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); handleAddInlineFeature(); } }}
+                                  className="text-xs py-1.5 h-8 flex-1"
+                                />
+                                <Button 
+                                  type="button"
+                                  onClick={handleAddInlineFeature}
+                                  variant="outline"
+                                  className="px-3 h-8 text-xs font-bold"
+                                >
+                                  + Add
+                                </Button>
                               </div>
-                            )}
+                            </div>
                           </div>
                         );
                       })()}
@@ -2176,13 +2432,34 @@ function ContentCreatorContent() {
             <main className="flex-1 max-w-3xl p-8 overflow-y-auto bg-white dark:bg-zinc-900/50 border-x border-zinc-200 dark:border-zinc-850">
               <form onSubmit={e => { e.preventDefault(); saveBlog(false); }} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
+                   <div className="space-y-1.5">
                     <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Blog Title</label>
-                    <Input type="text" value={blogModal.title || ""} onChange={e => setBlogModal({...blogModal, title: e.target.value})} required />
+                    <Input 
+                      type="text" 
+                      value={blogModal.title || ""} 
+                      onChange={e => {
+                        const title = e.target.value;
+                        const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+                        if (!blogModal.id) {
+                          setBlogModal({ ...blogModal, title, slug });
+                        } else {
+                          setBlogModal({ ...blogModal, title });
+                        }
+                      }} 
+                      required 
+                    />
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Slug</label>
-                    <Input type="text" value={blogModal.slug || ""} onChange={e => setBlogModal({...blogModal, slug: e.target.value})} required />
+                    <Input 
+                      type="text" 
+                      value={blogModal.slug || ""} 
+                      onChange={e => {
+                        const slug = e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                        setBlogModal({ ...blogModal, slug });
+                      }} 
+                      required 
+                    />
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Author Name</label>
@@ -3123,54 +3400,84 @@ function ContentCreatorContent() {
       </Card>
 
       {/* QUICK LINKS MODAL */}
-      {quickLinksModal && (
-        <div className="fixed inset-0 bg-black/65 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in" onClick={() => setQuickLinksModal(null)}>
-          <Card className="w-full max-w-xl dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl" onClick={e => e.stopPropagation()}>
-            <CardHeader className="flex flex-row items-center justify-between pb-4 border-b border-zinc-150 dark:border-zinc-800">
-              <div className="space-y-1">
-                <CardTitle>🔗 Quick Product Links</CardTitle>
-                <CardDescription>Copy target URLs for <strong>{quickLinksModal.name}</strong>.</CardDescription>
-              </div>
-              <button className="text-zinc-405 hover:text-zinc-900 dark:hover:text-zinc-100 font-bold border-0 bg-transparent cursor-pointer" onClick={() => setQuickLinksModal(null)}>✕</button>
-            </CardHeader>
-            <CardContent className="py-4 space-y-3 max-h-[450px] overflow-y-auto">
-              <p className="italic text-xs text-zinc-500 dark:text-zinc-400">
-                Configure URL root: <code>{siteUrl}</code>
-              </p>
-              {[
-                { label: "Home Page", url: siteUrl },
-                { label: "Product Page", url: `${siteUrl}/products/${quickLinksModal.slug}` },
-                { label: "Buy Page", url: `${siteUrl}/products/${quickLinksModal.slug}/buy` },
-                { label: "User Guide Page", url: `${siteUrl}/products/${quickLinksModal.slug}/guide` },
-                { label: "Support Page", url: `${siteUrl}/support` },
-                { label: "Upgrade Page", url: `${siteUrl}/upgrade` },
-                { label: "License Activation API", url: `${API_BASE}/license/activate` },
-                { label: "FAQ Section Anchor", url: `${siteUrl}/products/${quickLinksModal.slug}#faq` },
-                { label: "Privacy Policy", url: `${siteUrl}/privacy-policy` },
-                { label: "Terms of Service", url: `${siteUrl}/terms-of-service` },
-                { label: "Refund Policy", url: `${siteUrl}/refund-policy` }
-              ].map((item, idx) => (
-                <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-zinc-100 dark:border-zinc-800 last:border-0 last:pb-0">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 w-36 shrink-0">{item.label}</span>
-                  <span className="text-xs font-mono bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-850 px-2 py-1 rounded truncate flex-1" title={item.url}>{item.url}</span>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="h-7 px-2.5 text-xs shrink-0"
-                    onClick={() => {
-                      navigator.clipboard.writeText(item.url);
-                      setCopiedLink(item.label);
-                      setTimeout(() => setCopiedLink(null), 2000);
-                    }}
-                  >
-                    {copiedLink === item.label ? "Copied!" : "Copy"}
-                  </Button>
+      {quickLinksModal && (() => {
+        const linksList = [
+          { label: "Home Page", url: siteUrl },
+          { label: "Product Page", url: `${siteUrl}/products/${quickLinksModal.slug}` },
+          { label: "Buy Page", url: `${siteUrl}/products/${quickLinksModal.slug}/buy` },
+          { label: "Trial Download Page", url: `${siteUrl}/download?product=${quickLinksModal.slug}` },
+          { label: "Direct EXE Download Link", url: quickLinksModal.installerUrl || `https://downloads.datamigratepro.com/installers/${quickLinksModal.slug}-trial.exe` },
+          { label: "Installation Success Page", url: `${siteUrl}/thank-you-install?product=${quickLinksModal.slug}` },
+          { label: "Uninstallation Success Page", url: `${siteUrl}/goodbye?product=${quickLinksModal.slug}` },
+          { label: "User Guide (Help Page)", url: `${siteUrl}/help/${quickLinksModal.slug}-user-guide` },
+          { label: "Support Page", url: `${siteUrl}/support` },
+          { label: "Upgrade Page", url: `${siteUrl}/upgrade` },
+          { label: "License Activation API", url: `${API_BASE}/license/activate` },
+          { label: "FAQ Section Anchor", url: `${siteUrl}/products/${quickLinksModal.slug}#faq` },
+          { label: "Privacy Policy", url: `${siteUrl}/privacy-policy` },
+          { label: "Terms of Service", url: `${siteUrl}/terms-of-service` },
+          { label: "Refund Policy", url: `${siteUrl}/refund-policy` }
+        ];
+
+        const handleCopyAll = () => {
+          const text = linksList.map(item => `${item.label}:\n${item.url}`).join("\n\n");
+          navigator.clipboard.writeText(text);
+          setCopiedLink("all");
+          setTimeout(() => setCopiedLink(null), 2000);
+        };
+
+        return (
+          <div className="fixed inset-0 bg-black/65 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in" onClick={() => setQuickLinksModal(null)}>
+            <Card className="w-full max-w-2xl dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl flex flex-col max-h-[85vh]" onClick={e => e.stopPropagation()}>
+              <CardHeader className="flex flex-row items-center justify-between pb-4 border-b border-zinc-150 dark:border-zinc-800 shrink-0">
+                <div className="space-y-1">
+                  <CardTitle className="text-base flex items-center gap-2">🔗 Quick Product Links</CardTitle>
+                  <CardDescription className="text-xs">Copy target URLs for <strong>{quickLinksModal.name}</strong>.</CardDescription>
                 </div>
-              ))}
-            </CardContent>
-          </Card>
-        </div>
-      )}
+                <div className="flex items-center gap-3">
+                  <Button 
+                    size="sm" 
+                    className="h-8 px-3 text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition-all"
+                    onClick={handleCopyAll}
+                  >
+                    {copiedLink === "all" ? "Copied All!" : "Copy All Links"}
+                  </Button>
+                  <button className="text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 font-bold border-0 bg-transparent cursor-pointer text-sm p-1" onClick={() => setQuickLinksModal(null)}>✕</button>
+                </div>
+              </CardHeader>
+              <CardContent className="py-4 space-y-4 overflow-y-auto flex-1">
+                <p className="italic text-xs text-zinc-500 dark:text-zinc-400">
+                  Configure URL root: <code>{siteUrl}</code>
+                </p>
+                <div className="space-y-3">
+                  {linksList.map((item, idx) => (
+                    <div key={idx} className="flex items-center justify-between gap-4 pb-3 border-b border-zinc-100 dark:border-zinc-800/60 last:border-0 last:pb-0">
+                      <div className="flex-1 min-w-0">
+                        <div className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-1">{item.label}</div>
+                        <div className="text-xs font-mono text-zinc-800 dark:text-zinc-200 break-all select-all font-semibold leading-relaxed bg-zinc-50 dark:bg-zinc-950 p-2 rounded border border-zinc-200 dark:border-zinc-850">
+                          {item.url}
+                        </div>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-8 px-2.5 text-xs shrink-0 self-end mb-1"
+                        onClick={() => {
+                          navigator.clipboard.writeText(item.url);
+                          setCopiedLink(item.label);
+                          setTimeout(() => setCopiedLink(null), 2000);
+                        }}
+                      >
+                        {copiedLink === item.label ? "Copied!" : "Copy"}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        );
+      })()}
     </div>
   );
 }

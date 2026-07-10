@@ -61,6 +61,9 @@ export interface Product {
   features: string[];
   platforms: string[];
   supportedFormats: string[];
+  sourceFormats?: string[];    // Input formats this tool accepts (e.g. ["pst", "ost"])
+  targetFormats?: string[];    // Output/destination formats (e.g. ["gmail", "exchange"])
+  capabilities?: Record<string, boolean>; // e.g. {supportsBatchCsv: true}
   screenshots: ProductScreenshot[];
   pricing: PricingTier[];
   systemRequirements: SystemRequirement;
@@ -77,6 +80,7 @@ export interface Product {
   version: string;
   lastUpdated: string;
   trialDownloadUrl?: string;
+  installerUrl?: string;
   installationSuccessUrl?: string;
   uninstallationSuccessUrl?: string;
   enabled?: boolean;

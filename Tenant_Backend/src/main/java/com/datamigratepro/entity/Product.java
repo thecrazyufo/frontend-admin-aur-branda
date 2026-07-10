@@ -46,6 +46,7 @@ public class Product {
     private String version;
     private String lastUpdated;
     private String trialDownloadUrl;
+    private String installerUrl;
     private String installationSuccessUrl;
     private String uninstallationSuccessUrl;
 

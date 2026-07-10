@@ -4,7 +4,8 @@ import type { AvailableFormatsResponse, FormatOption, ToolMatchResult } from '@/
 import { 
   ArrowRight, FileType, Mail, Cloud, Database, 
   FileText, Search, AlertCircle, CheckCircle2,
-  ChevronLeft, Loader2
+  ChevronLeft, Loader2, Users, FileSpreadsheet, ShieldAlert,
+  Files, Calendar
 } from 'lucide-react';
 
 const IconMap: Record<string, React.ReactNode> = {
@@ -48,18 +49,18 @@ function PrismRefractionVisual({
   const N = displayTargets.length;
 
   return (
-    <div className="w-full bg-[#0F172A] rounded-xl p-4 my-4 border border-[#334155] relative overflow-hidden">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-[#14B8A6]/5 rounded-full blur-2xl pointer-events-none" />
+    <div className="w-full bg-[#0B0F1A] rounded-xl p-4 my-4 border border-[#334155] relative overflow-hidden">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-[#6366F1]/5 rounded-full blur-2xl pointer-events-none" />
 
       <svg viewBox="0 0 600 160" className="w-full h-auto select-none overflow-visible">
         <defs>
           <linearGradient id="inputGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#14B8A6" stopOpacity="0.2" />
-            <stop offset="100%" stopColor="#14B8A6" />
+            <stop offset="0%" stopColor="#6366F1" stopOpacity="0.2" />
+            <stop offset="100%" stopColor="#6366F1" />
           </linearGradient>
           <linearGradient id="prismGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#14B8A6" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#0D9488" stopOpacity="0.8" />
+            <stop offset="0%" stopColor="#6366F1" stopOpacity="0.8" />
+            <stop offset="100%" stopColor="#4F46E5" stopOpacity="0.8" />
           </linearGradient>
           <filter id="activeGlow" x="-20%" y="-20%" width="140%" height="140%">
             <feGaussianBlur stdDeviation="3" result="blur" />
@@ -69,7 +70,7 @@ function PrismRefractionVisual({
 
         {/* Source format badge */}
         <g transform="translate(10, 65)">
-          <rect x="0" y="0" width="75" height="30" rx="6" fill="#0e0e0e" stroke="#14B8A6" strokeWidth="1.5" />
+          <rect x="0" y="0" width="75" height="30" rx="6" fill="#0e0e0e" stroke="#6366F1" strokeWidth="1.5" />
           <text x="37.5" y="19" fill="#FFFFFF" fontSize="10" fontWeight="bold" textAnchor="middle" className="uppercase">
             {sourceLabel}
           </text>
@@ -85,7 +86,7 @@ function PrismRefractionVisual({
         <polygon 
           points="250,30 290,110 210,110" 
           fill="url(#prismGrad)" 
-          stroke="#14B8A6" 
+          stroke="#6366F1" 
           strokeWidth="1.5" 
           strokeLinejoin="round" 
           opacity="0.85"
@@ -101,8 +102,8 @@ function PrismRefractionVisual({
           const endY = N === 1 ? 80 : 25 + (i * (110 / (N - 1)));
           const endX = 475;
 
-          const spectrumColors = ["#f87171", "#F59E0B", "#14B8A6", "#F59E0B", "#C026D3"];
-          const rayColor = isActive ? "#14B8A6" : spectrumColors[i % spectrumColors.length];
+          const spectrumColors = ["#f87171", "#F97316", "#6366F1", "#F97316", "#C026D3"];
+          const rayColor = isActive ? "#6366F1" : spectrumColors[i % spectrumColors.length];
           const pathD = `M 275 80 C 335 ${80 + (endY - startY)/3}, 395 ${endY}, ${endX} ${endY}`;
 
           return (
@@ -132,7 +133,7 @@ function PrismRefractionVisual({
                   height="26" 
                   rx="6" 
                   fill={isActive ? "#1c1917" : "#0e0e0e"} 
-                  stroke={isActive ? "#14B8A6" : "#262626"} 
+                  stroke={isActive ? "#6366F1" : "#262626"} 
                   strokeWidth={isActive ? 1.5 : 1}
                   filter={isActive ? "url(#activeGlow)" : ""}
                 />
@@ -266,9 +267,9 @@ export default function FindYourToolWizard() {
           <button 
             key={opt.key}
             onClick={() => onSelect(opt)}
-            className="flex flex-col items-center p-6 bg-[#1E2937]/30 border border-[#334155] hover:border-[#14B8A6]/30 rounded-xl transition-all text-left w-full group animate-in fade-in zoom-in-95 duration-200 cursor-pointer"
+            className="flex flex-col items-center p-6 bg-[#1E2937]/30 border border-[#334155] hover:border-[#6366F1]/30 rounded-xl transition-all text-left w-full group animate-in fade-in zoom-in-95 duration-200 cursor-pointer"
           >
-            <div className="w-16 h-16 rounded-full bg-[#0F172A] border border-[#334155] flex items-center justify-center mb-4 group-hover:bg-[#14B8A6]/10 transition-colors">
+            <div className="w-16 h-16 rounded-full bg-[#0B0F1A] border border-[#334155] flex items-center justify-center mb-4 group-hover:bg-[#6366F1]/10 transition-colors">
               {IconMap[opt.icon] || IconMap['file']}
             </div>
             <h3 className="font-semibold text-white text-sm">{opt.label}</h3>
@@ -282,7 +283,7 @@ export default function FindYourToolWizard() {
   if (loadingFormats) {
     return (
       <div className="flex flex-col items-center justify-center py-24">
-        <Loader2 className="w-8 h-8 animate-spin text-[#14B8A6] mb-4" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#6366F1] mb-4" />
         <p className="text-[#94A3B8]">Loading available platforms...</p>
       </div>
     );
@@ -293,30 +294,30 @@ export default function FindYourToolWizard() {
       
       {/* Wizard Header / Breadcrumbs */}
       <div className="flex items-center justify-center mb-12 space-x-2 sm:space-x-4">
-        <div className={`flex items-center ${step === 1 ? 'text-[#14B8A6] font-bold' : 'text-[#94A3B8]'}`}>
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center border-[#334155] mr-2 ${step === 1 ? 'border-[#14B8A6] bg-[#14B8A6]/10 text-[#14B8A6]' : 'border-[#334155] text-stone-500'}`}>1</div>
+        <div className={`flex items-center ${step === 1 ? 'text-[#6366F1] font-bold' : 'text-[#94A3B8]'}`}>
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center border-[#334155] mr-2 ${step === 1 ? 'border-[#6366F1] bg-[#6366F1]/10 text-[#6366F1]' : 'border-[#334155] text-stone-500'}`}>1</div>
           <span className="hidden sm:inline">Source</span>
         </div>
-        <div className={`w-12 h-0.5 ${step === 2 || step === 'questions' || step === 3 ? 'bg-[#14B8A6]' : 'bg-[#1E2937]'}`}></div>
-        <div className={`flex items-center ${step === 2 ? 'text-[#14B8A6] font-bold' : 'text-[#94A3B8]'}`}>
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center border-[#334155] mr-2 ${step === 2 ? 'border-[#14B8A6] bg-[#14B8A6]/10 text-[#14B8A6]' : 'border-[#334155] text-stone-500'}`}>2</div>
+        <div className={`w-12 h-0.5 ${step === 2 || step === 'questions' || step === 3 ? 'bg-[#6366F1]' : 'bg-[#1E2937]'}`}></div>
+        <div className={`flex items-center ${step === 2 ? 'text-[#6366F1] font-bold' : 'text-[#94A3B8]'}`}>
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center border-[#334155] mr-2 ${step === 2 ? 'border-[#6366F1] bg-[#6366F1]/10 text-[#6366F1]' : 'border-[#334155] text-stone-500'}`}>2</div>
           <span className="hidden sm:inline">Destination</span>
         </div>
         
         {/* Dynamic Questions Breadcrumb — only show if capabilities exist */}
         {availableCapabilities.length > 0 && (
           <>
-            <div className={`w-12 h-0.5 ${step === 'questions' || step === 3 ? 'bg-[#14B8A6]' : 'bg-[#1E2937]'}`}></div>
-            <div className={`flex items-center ${step === 'questions' ? 'text-[#14B8A6] font-bold' : 'text-[#94A3B8]'}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center border-[#334155] mr-2 ${step === 'questions' ? 'border-[#14B8A6] bg-[#14B8A6]/10 text-[#14B8A6]' : 'border-[#334155] text-stone-500'}`}>?</div>
+            <div className={`w-12 h-0.5 ${step === 'questions' || step === 3 ? 'bg-[#6366F1]' : 'bg-[#1E2937]'}`}></div>
+            <div className={`flex items-center ${step === 'questions' ? 'text-[#6366F1] font-bold' : 'text-[#94A3B8]'}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center border-[#334155] mr-2 ${step === 'questions' ? 'border-[#6366F1] bg-[#6366F1]/10 text-[#6366F1]' : 'border-[#334155] text-stone-500'}`}>?</div>
               <span className="hidden sm:inline">Filters</span>
             </div>
           </>
         )}
 
-        <div className={`w-12 h-0.5 ${step === 3 ? 'bg-[#14B8A6]' : 'bg-[#1E2937]'}`}></div>
-        <div className={`flex items-center ${step === 3 ? 'text-[#14B8A6] font-bold' : 'text-[#94A3B8]'}`}>
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center border-[#334155] mr-2 ${step === 3 ? 'border-[#14B8A6] bg-[#14B8A6]/10 text-[#14B8A6]' : 'border-[#334155] text-stone-500'}`}>3</div>
+        <div className={`w-12 h-0.5 ${step === 3 ? 'bg-[#6366F1]' : 'bg-[#1E2937]'}`}></div>
+        <div className={`flex items-center ${step === 3 ? 'text-[#6366F1] font-bold' : 'text-[#94A3B8]'}`}>
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center border-[#334155] mr-2 ${step === 3 ? 'border-[#6366F1] bg-[#6366F1]/10 text-[#6366F1]' : 'border-[#334155] text-stone-500'}`}>3</div>
           <span className="hidden sm:inline">Results</span>
         </div>
       </div>
@@ -336,12 +337,12 @@ export default function FindYourToolWizard() {
       {step === 2 && source && (
         <div className="animate-in fade-in slide-in-from-right-4 duration-500">
           <div className="mb-6">
-            <button onClick={() => setStep(1)} className="flex items-center text-[#94A3B8] hover:text-[#14B8A6] text-sm font-medium transition-colors cursor-pointer bg-transparent border-[#334155]">
+            <button onClick={() => setStep(1)} className="flex items-center text-[#94A3B8] hover:text-[#6366F1] text-sm font-medium transition-colors cursor-pointer bg-transparent border-[#334155]">
               <ChevronLeft className="w-4 h-4 mr-1" /> Back
             </button>
           </div>
           <div className="text-center mb-8">
-            <div className="inline-flex items-center bg-[#14B8A6]/10 border border-[#14B8A6]/20 text-[#14B8A6] px-4 py-1.5 rounded-full text-sm font-medium mb-4">
+            <div className="inline-flex items-center bg-[#6366F1]/10 border border-[#6366F1]/20 text-[#6366F1] px-4 py-1.5 rounded-full text-sm font-medium mb-4">
               Source: {source.label}
             </div>
             <h2 className="text-3xl font-bold text-white tracking-tight">Where are you migrating to?</h2>
@@ -349,7 +350,7 @@ export default function FindYourToolWizard() {
           </div>
           {loadingCapabilities ? (
             <div className="flex flex-col items-center justify-center py-12">
-              <Loader2 className="w-8 h-8 animate-spin text-[#14B8A6] mb-4" />
+              <Loader2 className="w-8 h-8 animate-spin text-[#6366F1] mb-4" />
               <p className="text-[#94A3B8]">Checking compatible tools...</p>
             </div>
           ) : (
@@ -362,7 +363,7 @@ export default function FindYourToolWizard() {
       {step === 'questions' && source && target && (
         <div className="animate-in fade-in slide-in-from-right-4 duration-500 max-w-xl mx-auto">
           <div className="mb-6">
-            <button onClick={() => setStep(2)} className="flex items-center text-[#94A3B8] hover:text-[#14B8A6] text-sm font-medium transition-colors cursor-pointer bg-transparent border-[#334155]">
+            <button onClick={() => setStep(2)} className="flex items-center text-[#94A3B8] hover:text-[#6366F1] text-sm font-medium transition-colors cursor-pointer bg-transparent border-[#334155]">
               <ChevronLeft className="w-4 h-4 mr-1" /> Back
             </button>
           </div>
@@ -384,12 +385,12 @@ export default function FindYourToolWizard() {
                   onClick={() => setSelectedCapabilities(prev => ({ ...prev, [capKey]: !prev[capKey] }))}
                   className={`w-full flex items-center gap-3 p-4 border rounded-xl text-left transition-all cursor-pointer ${
                     isSelected
-                      ? 'border-[#14B8A6] bg-[#14B8A6]/10 text-white'
-                      : 'border-[#334155] bg-[#0F172A] hover:bg-[#1E2937] text-[#E2E8F0]'
+                      ? 'border-[#6366F1] bg-[#6366F1]/10 text-white'
+                      : 'border-[#334155] bg-[#0B0F1A] hover:bg-[#1E2937] text-[#E2E8F0]'
                   }`}
                 >
                   <div className={`w-5 h-5 rounded border-[#334155] flex items-center justify-center shrink-0 transition-colors ${
-                    isSelected ? 'border-[#14B8A6] bg-[#14B8A6]' : 'border-stone-700'
+                    isSelected ? 'border-[#6366F1] bg-[#6366F1]' : 'border-stone-700'
                   }`}>
                     {isSelected && (
                       <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
@@ -414,7 +415,7 @@ export default function FindYourToolWizard() {
               </button>
               <button
                 onClick={handleQuestionsSubmit}
-                className="flex-1 bg-[#14B8A6] hover:bg-[#0D9488] text-white font-extrabold py-3 rounded-xl transition-colors shadow-[0_0_15px_rgba(20, 184, 166,0.25)] text-xs cursor-pointer"
+                className="flex-1 bg-[#6366F1] hover:bg-[#4F46E5] text-white font-extrabold py-3 rounded-xl transition-colors shadow-[0_0_15px_rgba(99, 102, 241,0.25)] text-xs cursor-pointer"
               >
                 Find My Tool
               </button>
@@ -435,16 +436,16 @@ export default function FindYourToolWizard() {
                   setStep(2);
                 }
               }} 
-              className="flex items-center text-[#94A3B8] hover:text-[#14B8A6] text-sm font-medium transition-colors cursor-pointer bg-transparent border-[#334155]"
+              className="flex items-center text-[#94A3B8] hover:text-[#6366F1] text-sm font-medium transition-colors cursor-pointer bg-transparent border-[#334155]"
             >
               <ChevronLeft className="w-4 h-4 mr-1" /> Back
             </button>
-            <button onClick={reset} className="text-sm font-bold text-[#14B8A6] hover:underline cursor-pointer bg-transparent border-[#334155]">
+            <button onClick={reset} className="text-sm font-bold text-[#6366F1] hover:underline cursor-pointer bg-transparent border-[#334155]">
               Start Over
             </button>
           </div>
 
-          <div className="bg-[#0F172A] rounded-xl p-6 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 mb-10 border border-[#334155]">
+          <div className="bg-[#0B0F1A] rounded-xl p-6 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 mb-10 border border-[#334155]">
             <div className="flex flex-col items-center text-center">
               <div className="w-12 h-12 rounded-full bg-[#1E2937] flex items-center justify-center mb-2 shadow-sm border border-[#334155]">
                 {IconMap[source.icon] || IconMap['file']}
@@ -462,14 +463,14 @@ export default function FindYourToolWizard() {
 
           {loadingMatches ? (
             <div className="flex flex-col items-center justify-center py-12">
-              <Loader2 className="w-8 h-8 animate-spin text-[#14B8A6] mb-4" />
+              <Loader2 className="w-8 h-8 animate-spin text-[#6366F1] mb-4" />
               <p className="text-[#94A3B8]">Finding the best tools for your migration...</p>
             </div>
           ) : matches.length > 0 ? (
             <div className="space-y-6">
               <h3 className="text-lg font-bold text-white border-b border-[#334155] pb-2">Recommended Tools ({matches.length})</h3>
               {matches.map((match, idx) => (
-                <div key={match.product.id} className={`bg-[#1E2937]/30 backdrop-blur rounded-xl border ${match.matchType === 'PERFECT_MATCH' ? 'border-emerald-500/30 shadow-md ring-1 ring-emerald-500/10' : 'border-[#334155] shadow-sm'} p-6 flex flex-col md:flex-row gap-6 relative overflow-hidden transition-all hover:border-[#14B8A6]/30`}>
+                <div key={match.product.id} className={`bg-[#1E2937]/30 backdrop-blur rounded-xl border ${match.matchType === 'PERFECT_MATCH' ? 'border-emerald-500/30 shadow-md ring-1 ring-emerald-500/10' : 'border-[#334155] shadow-sm'} p-6 flex flex-col md:flex-row gap-6 relative overflow-hidden transition-all hover:border-[#6366F1]/30`}>
                   
                   {/* Badge */}
                   {match.matchType === 'PERFECT_MATCH' && (
@@ -487,7 +488,7 @@ export default function FindYourToolWizard() {
                     <div className="flex items-center gap-3 mb-2">
                       <h4 className="text-base font-bold text-white">{match.product.name}</h4>
                       {match.matchType !== 'PERFECT_MATCH' && match.matchType !== 'EXACT' && (
-                        <span className="bg-[#0F172A] border border-[#334155] text-stone-450 text-[10px] px-2 py-0.5 rounded font-bold">
+                        <span className="bg-[#0B0F1A] border border-[#334155] text-stone-450 text-[10px] px-2 py-0.5 rounded font-bold">
                           {match.score}% Compatible
                         </span>
                       )}
@@ -497,18 +498,38 @@ export default function FindYourToolWizard() {
                     {/* Render capabilities tags */}
                     <div className="flex flex-wrap gap-2 mb-4">
                       {match.product.capabilities?.supportsMultipleAccounts && (
-                        <span className="bg-[#0F172A] border border-[#334155] text-[#E2E8F0] text-[10px] px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
-                          <Users className="w-3 h-3 text-[#14B8A6]" /> Batch Migration
+                        <span className="bg-[#0B0F1A] border border-[#334155] text-[#E2E8F0] text-[10px] px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
+                          <Users className="w-3 h-3 text-[#6366F1]" /> Batch Migration
                         </span>
                       )}
                       {match.product.capabilities?.supportsBatchCsv && (
-                        <span className="bg-[#0F172A] border border-[#334155] text-[#E2E8F0] text-[10px] px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
-                          <FileSpreadsheet className="w-3 h-3 text-[#14B8A6]" /> CSV Import
+                        <span className="bg-[#0B0F1A] border border-[#334155] text-[#E2E8F0] text-[10px] px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
+                          <FileSpreadsheet className="w-3 h-3 text-[#6366F1]" /> CSV Import
                         </span>
                       )}
                       {match.product.capabilities?.supportsImpersonation && (
-                        <span className="bg-[#0F172A] border border-[#334155] text-[#E2E8F0] text-[10px] px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
-                          <ShieldAlert className="w-3 h-3 text-[#14B8A6]" /> Impersonation
+                        <span className="bg-[#0B0F1A] border border-[#334155] text-[#E2E8F0] text-[10px] px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
+                          <ShieldAlert className="w-3 h-3 text-[#6366F1]" /> Impersonation
+                        </span>
+                      )}
+                      {match.product.capabilities?.supportsMultipleFiles && (
+                        <span className="bg-[#0B0F1A] border border-[#334155] text-[#E2E8F0] text-[10px] px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
+                          <Files className="w-3 h-3 text-[#6366F1]" /> Convert Multiple Files
+                        </span>
+                      )}
+                      {match.product.capabilities?.extractEmails && (
+                        <span className="bg-[#0B0F1A] border border-[#334155] text-[#E2E8F0] text-[10px] px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
+                          <Mail className="w-3 h-3 text-[#6366F1]" /> Migrate Emails
+                        </span>
+                      )}
+                      {match.product.capabilities?.extractContacts && (
+                        <span className="bg-[#0B0F1A] border border-[#334155] text-[#E2E8F0] text-[10px] px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
+                          <Users className="w-3 h-3 text-[#6366F1]" /> Migrate Contacts
+                        </span>
+                      )}
+                      {match.product.capabilities?.extractCalendars && (
+                        <span className="bg-[#0B0F1A] border border-[#334155] text-[#E2E8F0] text-[10px] px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
+                          <Calendar className="w-3 h-3 text-[#6366F1]" /> Migrate Calendars
                         </span>
                       )}
                     </div>
@@ -521,18 +542,18 @@ export default function FindYourToolWizard() {
                       allTargets={match.product.targetFormats || []} 
                     />
 
-                    <div className="bg-[#0F172A] rounded-lg p-3 inline-flex items-center text-xs text-[#E2E8F0] border border-[#334155]">
-                      <Search className="w-4 h-4 text-[#14B8A6] mr-2 shrink-0" />
+                    <div className="bg-[#0B0F1A] rounded-lg p-3 inline-flex items-center text-xs text-[#E2E8F0] border border-[#334155]">
+                      <Search className="w-4 h-4 text-[#6366F1] mr-2 shrink-0" />
                       <span>{match.matchReason}</span>
                     </div>
                   </div>
                   
                   <div className="flex flex-col justify-center shrink-0 border-t md:border-t-0 md:border-l border-[#334155] pt-4 md:pt-0 md:pl-6 gap-3">
-                    <a href={`/products/${match.product.slug}`} className="bg-[#14B8A6] hover:bg-[#0D9488] text-white font-extrabold py-2.5 px-6 rounded-lg text-center transition-all duration-300 shadow-[0_0_15px_rgba(20, 184, 166,0.25)] text-xs">
+                    <a href={`/products/${match.product.slug}`} className="bg-[#6366F1] hover:bg-[#4F46E5] text-white font-extrabold py-2.5 px-6 rounded-lg text-center transition-all duration-300 shadow-[0_0_15px_rgba(99, 102, 241,0.25)] text-xs">
                       View Details
                     </a>
                     {match.product.downloadUrl && (
-                      <a href={match.product.downloadUrl} className="bg-[#0F172A] border border-[#334155] hover:bg-[#1E2937] text-stone-350 font-bold py-2.5 px-6 rounded-lg text-center transition-colors text-xs">
+                      <a href={match.product.downloadUrl} className="bg-[#0B0F1A] border border-[#334155] hover:bg-[#1E2937] text-stone-350 font-bold py-2.5 px-6 rounded-lg text-center transition-colors text-xs">
                         Free Trial
                       </a>
                     )}
@@ -548,7 +569,7 @@ export default function FindYourToolWizard() {
                 We couldn't find an automated tool that meets all your selected filter criteria. 
                 Try restarting the search without advanced filters or contact our support team.
               </p>
-              <button onClick={reset} className="bg-[#14B8A6] hover:bg-[#0D9488] text-white font-extrabold py-2 px-6 rounded-lg transition-all duration-300 shadow-[0_0_15px_rgba(20, 184, 166,0.25)] cursor-pointer text-xs">
+              <button onClick={reset} className="bg-[#6366F1] hover:bg-[#4F46E5] text-white font-extrabold py-2 px-6 rounded-lg transition-all duration-300 shadow-[0_0_15px_rgba(99, 102, 241,0.25)] cursor-pointer text-xs">
                 Try Another Search
               </button>
             </div>

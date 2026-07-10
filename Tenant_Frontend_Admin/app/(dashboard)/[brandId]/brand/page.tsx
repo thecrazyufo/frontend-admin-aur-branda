@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState, FormEvent } from"react";
-import { useParams } from"next/navigation";
+import { useEffect, useState, FormEvent } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useTheme } from"@/app/(dashboard)/layout";
 import { AdminSettingsAPI } from"@/services/api";
 import { Button } from"@/components/ui/Button";
@@ -235,77 +235,141 @@ const defaultNav: NavItem[] = [
 ];
 
 export default function BrandManagerPage() {
- const params = useParams();
- const brandId = (params?.brandId as string) ||"";
- const { theme: adminTheme } = useTheme();
+  const params = useParams();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
- const [activeTab, setActiveTab] = useState<BrandTab>("identity");
- const [settings, setSettings] = useState<SiteSettings | null>(null);
- const [loading, setLoading] = useState(true);
- const [saving, setSaving] = useState(false);
- const [toast, setToast] = useState<{ msg: string; type:"success" |"error" } | null>(null);
+  const brandId = (params?.brandId as string) || "";
+  const { theme: adminTheme } = useTheme();
 
- useEffect(() => { loadSettings(); }, [brandId]);
+  const activeTab = (searchParams.get("tab") as BrandTab) || "identity";
+  const setActiveTab = (tab: BrandTab) => {
+    router.push(`/${brandId}/brand?tab=${tab}`);
+  };
 
- async function loadSettings() {
- try {
- setLoading(true);
- const data = await AdminSettingsAPI.get();
- setSettings({
- id: data.id ||"",
- siteId: data.siteId || brandId,
- name: data.name ||"",
- tagline: data.tagline ||"",
- description: data.description ||"",
- url: data.url ||"",
- email: data.email ||"",
- phone: data.phone ||"",
- address: data.address ||"",
- socials: {
- twitter: data.socials?.twitter ||"",
- linkedin: data.socials?.linkedin ||"",
- youtube: data.socials?.youtube ||"",
- facebook: data.socials?.facebook ||"",
- github: data.socials?.github ||"",
- },
- theme: data.theme || { ...defaultTheme },
- mainNavigation: data.mainNavigation || [...defaultNav],
- hero: data.hero || { ...defaultHero },
- announcement: data.announcement || { ...defaultAnnouncement },
- aboutPage: data.aboutPage || { ...defaultAbout },
- careersPage: data.careersPage || { ...defaultCareers },
- clientsPage: data.clientsPage || { ...defaultClients },
- legalPages: data.legalPages || {},
- pricingComparison: data.pricingComparison || [],
- pricingFaqs: data.pricingFaqs || [],
- });
- } catch {
- showToast("Failed to load brand settings","error");
- } finally {
- setLoading(false);
- }
- }
+  const [settings, setSettings] = useState<SiteSettings | null>(null);
+  const [originalSettings, setOriginalSettings] = useState<string>("");
+  const [isDirty, setIsDirty] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
 
- function showToast(msg: string, type:"success" |"error") {
- setToast({ msg, type });
- setTimeout(() => setToast(null), 4000);
- }
+  useEffect(() => { loadSettings(); }, [brandId]);
 
- async function handleSave(e?: FormEvent) {
- if (e) e.preventDefault();
- if (!settings) return;
- try {
- setSaving(true);
- const payload = { ...settings, siteId: brandId };
- const updated = await AdminSettingsAPI.update(payload);
- setSettings(prev => prev ? { ...prev, id: updated.id } : prev);
- showToast("Brand settings saved successfully!","success");
- } catch {
- showToast("Failed to save settings. Please try again.","error");
- } finally {
- setSaving(false);
- }
- }
+  useEffect(() => {
+    if (!settings || !originalSettings) {
+      setIsDirty(false);
+      return;
+    }
+    const currentStr = JSON.stringify(settings);
+    setIsDirty(currentStr !== originalSettings);
+  }, [settings, originalSettings]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isDirty) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [isDirty]);
+
+  async function loadSettings() {
+    try {
+      setLoading(true);
+      const data = await AdminSettingsAPI.get();
+      const defaultState = {
+        id: data.id || "",
+        siteId: data.siteId || brandId,
+        name: data.name || "",
+        tagline: data.tagline || "",
+        description: data.description || "",
+        url: data.url || "",
+        email: data.email || "",
+        phone: data.phone || "",
+        address: data.address || "",
+        socials: {
+          twitter: data.socials?.twitter || "",
+          linkedin: data.socials?.linkedin || "",
+          youtube: data.socials?.youtube || "",
+          facebook: data.socials?.facebook || "",
+          github: data.socials?.github || "",
+        },
+        theme: data.theme || { ...defaultTheme },
+        mainNavigation: data.mainNavigation || [...defaultNav],
+        hero: data.hero || { ...defaultHero },
+        announcement: data.announcement || { ...defaultAnnouncement },
+        aboutPage: data.aboutPage || { ...defaultAbout },
+        careersPage: data.careersPage || { ...defaultCareers },
+        clientsPage: data.clientsPage || { ...defaultClients },
+        legalPages: data.legalPages || {},
+        pricingComparison: data.pricingComparison || [],
+        pricingFaqs: data.pricingFaqs || [],
+      };
+      setSettings(defaultState);
+      setOriginalSettings(JSON.stringify(defaultState));
+    } catch {
+      // If settings don't exist yet (e.g., truncated/new database), initialize with clean defaults
+      const defaultStateFallback = {
+        id: "",
+        siteId: brandId,
+        name: brandId === "brandA" ? "Prism Migration" : brandId.toUpperCase(),
+        tagline: "Enterprise Mailbox & Database Migrators",
+        description: "Automated migration tools built to run locally.",
+        url: `https://${brandId}.thecrazyufo.in`,
+        email: `support@${brandId}.local`,
+        phone: "",
+        address: "",
+        socials: {
+          twitter: "",
+          linkedin: "",
+          youtube: "",
+          facebook: "",
+          github: "",
+        },
+        theme: { ...defaultTheme },
+        mainNavigation: [...defaultNav],
+        hero: { ...defaultHero },
+        announcement: { ...defaultAnnouncement },
+        aboutPage: { ...defaultAbout },
+        careersPage: { ...defaultCareers },
+        clientsPage: { ...defaultClients },
+        legalPages: {},
+        pricingComparison: [],
+        pricingFaqs: [],
+      };
+      setSettings(defaultStateFallback);
+      setOriginalSettings(JSON.stringify(defaultStateFallback));
+      showToast("Initialized with default brand settings template.", "success");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function showToast(msg: string, type: "success" | "error") {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 4000);
+  }
+
+  async function handleSave(e?: FormEvent) {
+    if (e) e.preventDefault();
+    if (!settings) return;
+    try {
+      setSaving(true);
+      const payload = { ...settings, siteId: brandId };
+      const updated = await AdminSettingsAPI.update(payload);
+      const savedState = { ...settings, id: updated.id };
+      setSettings(savedState);
+      setOriginalSettings(JSON.stringify(savedState));
+      showToast("Brand settings saved successfully!", "success");
+    } catch {
+      showToast("Failed to save settings. Please try again.", "error");
+    } finally {
+      setSaving(false);
+    }
+  }
 
  function updateField<K extends keyof SiteSettings>(field: K, value: SiteSettings[K]) {
  if (!settings) return;
@@ -378,102 +442,102 @@ export default function BrandManagerPage() {
  setSettings({ ...settings, mainNavigation: nav });
  }
 
- const tabs: { id: BrandTab; label: string }[] = [
- { id:"identity", label:"Identity" },
- { id:"theme", label:"Theme & Branding" },
- { id:"navigation", label:"Navigation Links" },
- { id:"hero", label:"Home Hero Block" },
- { id:"contact", label:"Support & Socials" },
- { id:"legal", label:"Legal Pages" },
- { id:"announcement", label:"Announcement Bar" },
- { id:"pricing", label:"Pricing Matrix" },
- { id:"about", label:"About Page Config" },
- { id:"trust", label:"🤝 Company & Trust" },
- { id:"careers", label:"💼 Careers Page" },
- { id:"clients", label:"👥 Our Clients" },
- ];
+  const tabGroups: { groupTitle: string; items: { id: BrandTab; label: string }[] }[] = [
+    {
+      groupTitle: "Core Identity & Style",
+      items: [
+        { id: "identity", label: "🏠 Identity & Profile" },
+        { id: "theme", label: "🎨 Theme & Branding" },
+        { id: "contact", label: "📞 Support & Socials" },
+      ]
+    },
+    {
+      groupTitle: "Navigation & Headers",
+      items: [
+        { id: "navigation", label: "🔗 Navigation Links" },
+        { id: "announcement", label: "📢 Announcement Bar" },
+      ]
+    },
+    {
+      groupTitle: "Homepage Sections",
+      items: [
+        { id: "hero", label: "✨ Home Hero Block" },
+        { id: "trust", label: "🤝 Company & Trust" },
+      ]
+    },
+    {
+      groupTitle: "Subpage Templates",
+      items: [
+        { id: "pricing", label: "💳 Pricing Matrix" },
+        { id: "about", label: "ℹ️ About Page Config" },
+        { id: "careers", label: "💼 Careers Page" },
+        { id: "clients", label: "👥 Our Clients" },
+        { id: "legal", label: "⚖️ Legal & Policies" },
+      ]
+    }
+  ];
 
- if (loading) {
- return (
- <div className="flex flex-col items-center justify-center py-20 gap-3 text-zinc-500">
- <span className="w-8 h-8 rounded-full border-3 border-zinc-205 border-t-blue-500 animate-spin" />
- <span className="text-xs font-semibold">Loading brand settings...</span>
- </div>
- );
- }
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 gap-3 text-zinc-500">
+        <span className="w-8 h-8 rounded-full border-3 border-zinc-205 border-t-blue-500 animate-spin" />
+        <span className="text-xs font-semibold">Loading brand settings...</span>
+      </div>
+    );
+  }
 
- if (!settings) {
- return (
- <div className="flex justify-center items-center py-20 text-zinc-500">
- <span className="text-xs font-semibold">No brand settings found. Contact the Super Admin.</span>
- </div>
- );
- }
+  if (!settings) {
+    return (
+      <div className="flex justify-center items-center py-20 text-zinc-500">
+        <span className="text-xs font-semibold">No brand settings found. Contact the Super Admin.</span>
+      </div>
+    );
+  }
 
- return (
- <div className="space-y-6 max-w-6xl mx-auto">
- {toast && (
- <div className={cn(
-"fixed top-6 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-lg border text-sm font-semibold shadow-lg backdrop-blur-md animate-fade-in",
- toast.type ==="success" ?"border-emerald-500/20 bg-emerald-500/10 text-emerald-600" :"border-red-500/20 bg-red-500/10 text-red-600"
- )}>
- <span>{toast.type ==="success" ?"✅" :"❌"}</span>
- <span>{toast.msg}</span>
- </div>
- )}
+  return (
+    <div className="space-y-6 max-w-6xl mx-auto">
+      {toast && (
+        <div className={cn(
+          "fixed top-6 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-lg border text-sm font-semibold shadow-lg backdrop-blur-md animate-fade-in",
+          toast.type === "success" ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-600" : "border-red-500/20 bg-red-500/10 text-red-600"
+        )}>
+          <span>{toast.type === "success" ? "✅" : "❌"}</span>
+          <span>{toast.msg}</span>
+        </div>
+      )}
 
- <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-zinc-200 pb-5 gap-4">
- <div className="space-y-1">
- <h1 className="text-xl font-bold tracking-tight text-zinc-900">Brand Manager</h1>
- <p className="text-xs text-zinc-500 font-medium">
- Configure identity, navigation, legal policies, and announcements for{""}
- <span className="bg-blue-500/10 text-blue-600 px-2 py-0.5 rounded-md font-mono text-[11px] font-bold">
- {brandId}
- </span>
- </p>
- </div>
- <Button
- onClick={() => handleSave()}
- disabled={saving}
- size="sm"
- className="h-9 px-4 shadow-sm"
- >
- {saving ? (
- <span className="w-4 h-4 rounded-full border-2 border-zinc-200 border-t-transparent animate-spin" />
- ) : (
- <>
- <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0">
- <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
- <polyline points="17 21 17 13 7 13 7 21" />
- <polyline points="7 3 7 8 15 8" />
- </svg>
- Save Brand Changes
- </>
- )}
- </Button>
- </div>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-zinc-200 pb-5 gap-4">
+        <div className="space-y-1">
+          <h1 className="text-xl font-bold tracking-tight text-zinc-900">Brand Manager</h1>
+          <p className="text-xs text-zinc-500 font-medium">
+            Configure identity, navigation, legal policies, and announcements for{" "}
+            <span className="bg-blue-500/10 text-blue-600 px-2 py-0.5 rounded-md font-mono text-[11px] font-bold">
+              {brandId}
+            </span>
+          </p>
+        </div>
+        <Button
+          onClick={() => handleSave()}
+          disabled={saving}
+          size="sm"
+          className="h-9 px-4 shadow-sm"
+        >
+          {saving ? (
+            <span className="w-4 h-4 rounded-full border-2 border-zinc-200 border-t-transparent animate-spin" />
+          ) : (
+            <>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                <polyline points="17 21 17 13 7 13 7 21" />
+                <polyline points="7 3 7 8 15 8" />
+              </svg>
+              Save Brand Changes
+            </>
+          )}
+        </Button>
+      </div>
 
- <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 items-start mt-6">
- {/* Left Sidebar Tabs */}
- <aside className="flex flex-row md:flex-col gap-1 overflow-x-auto pb-2 md:pb-0 md:sticky md:top-20">
- {tabs.map(t => (
- <button
- key={t.id}
- onClick={() => setActiveTab(t.id)}
- className={cn(
-"flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-left transition-all whitespace-nowrap cursor-pointer",
- activeTab === t.id
- ?"text-blue-600 bg-blue-50/50"
- :"text-zinc-500 hover:text-foreground hover:bg-muted"
- )}
- >
- {t.label}
- </button>
- ))}
- </aside>
-
- {/* Right Content */}
- <main className="flex-1 max-w-3xl space-y-6">
+ <main className="space-y-6">
  {/* IDENTITY TAB */}
  {activeTab ==="identity" && (
  <Card className=" border border-zinc-200 shadow-sm">
@@ -1592,8 +1656,27 @@ export default function BrandManagerPage() {
  </Card>
  </div>
  )}
- </main>
- </div>
- </div>
+  </main>
+
+  {/* Unsaved Changes Floating Banner */}
+  {isDirty && (
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-4 px-5 py-3 rounded-full border border-amber-500/20 bg-zinc-950/95 text-white text-xs font-semibold shadow-2xl backdrop-blur-md animate-fade-in ring-1 ring-amber-500/30">
+      <span className="flex items-center gap-1.5 text-amber-400">
+        <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
+        Unsaved Changes
+      </span>
+      <div className="w-[1px] h-4 bg-zinc-800" />
+      <span className="text-zinc-400">You have unsaved edits in this brand settings.</span>
+      <Button
+        onClick={() => handleSave()}
+        disabled={saving}
+        size="sm"
+        className="h-7 px-3.5 bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-zinc-950 font-bold rounded-full transition-all text-[11px] shadow-lg shadow-amber-500/20 cursor-pointer"
+      >
+        {saving ? "Saving..." : "Save Now"}
+      </Button>
+    </div>
+  )}
+  </div>
  );
 }

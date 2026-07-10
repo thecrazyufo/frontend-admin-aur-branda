@@ -70,7 +70,7 @@ export default function ContactForm() {
               id="contact-firstname"
               type="text"
               required
-              className="w-full h-11 px-4 rounded-lg border border-[#334155] text-xs text-white bg-[#0F172A]/80 focus:outline-none focus:ring-2 focus:ring-[#14B8A6]/40 focus:border-transparent transition-all"
+              className="w-full h-11 px-4 rounded-lg border border-[#334155] text-xs text-white bg-[#0B0F1A]/80 focus:outline-none focus:ring-2 focus:ring-[#6366F1]/40 focus:border-transparent transition-all"
               placeholder="John"
               value={formData.firstName}
               onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
@@ -81,7 +81,7 @@ export default function ContactForm() {
             <input
               id="contact-lastname"
               type="text"
-              className="w-full h-11 px-4 rounded-lg border border-[#334155] text-xs text-white bg-[#0F172A]/80 focus:outline-none focus:ring-2 focus:ring-[#14B8A6]/40 focus:border-transparent transition-all"
+              className="w-full h-11 px-4 rounded-lg border border-[#334155] text-xs text-white bg-[#0B0F1A]/80 focus:outline-none focus:ring-2 focus:ring-[#6366F1]/40 focus:border-transparent transition-all"
               placeholder="Doe"
               value={formData.lastName}
               onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
@@ -94,7 +94,7 @@ export default function ContactForm() {
             id="contact-email"
             type="email"
             required
-            className="w-full h-11 px-4 rounded-lg border border-[#334155] text-xs text-white bg-[#0F172A]/80 focus:outline-none focus:ring-2 focus:ring-[#14B8A6]/40 focus:border-transparent transition-all"
+            className="w-full h-11 px-4 rounded-lg border border-[#334155] text-xs text-white bg-[#0B0F1A]/80 focus:outline-none focus:ring-2 focus:ring-[#6366F1]/40 focus:border-transparent transition-all"
             placeholder="john@example.com"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -104,15 +104,15 @@ export default function ContactForm() {
           <label className="block text-xs font-bold text-[#94A3B8] mb-1.5">Subject</label>
           <select
             id="contact-subject"
-            className="w-full h-11 px-4 rounded-lg border border-[#334155] text-xs text-white bg-[#0F172A]/80 focus:outline-none focus:ring-2 focus:ring-[#14B8A6]/40 focus:border-transparent transition-all"
+            className="w-full h-11 px-4 rounded-lg border border-[#334155] text-xs text-white bg-[#0B0F1A]/80 focus:outline-none focus:ring-2 focus:ring-[#6366F1]/40 focus:border-transparent transition-all"
             value={formData.subject}
             onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
           >
-            <option className="bg-[#0F172A]">Technical Support</option>
-            <option className="bg-[#0F172A]">License Activation</option>
-            <option className="bg-[#0F172A]">Billing / Payment</option>
-            <option className="bg-[#0F172A]">Sales Inquiry</option>
-            <option className="bg-[#0F172A]">Other</option>
+            <option className="bg-[#0B0F1A]">Technical Support</option>
+            <option className="bg-[#0B0F1A]">License Activation</option>
+            <option className="bg-[#0B0F1A]">Billing / Payment</option>
+            <option className="bg-[#0B0F1A]">Sales Inquiry</option>
+            <option className="bg-[#0B0F1A]">Other</option>
           </select>
         </div>
         <div>
@@ -121,7 +121,7 @@ export default function ContactForm() {
             id="contact-message"
             rows={5}
             required
-            className="w-full px-4 py-3 rounded-lg border border-[#334155] text-xs text-white bg-[#0F172A]/80 focus:outline-none focus:ring-2 focus:ring-[#14B8A6]/40 focus:border-transparent resize-none transition-all"
+            className="w-full px-4 py-3 rounded-lg border border-[#334155] text-xs text-white bg-[#0B0F1A]/80 focus:outline-none focus:ring-2 focus:ring-[#6366F1]/40 focus:border-transparent resize-none transition-all"
             placeholder="Describe your issue or question..."
             value={formData.message}
             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
@@ -131,7 +131,7 @@ export default function ContactForm() {
           id="contact-submit"
           type="submit"
           disabled={loading}
-          className="w-full text-center bg-[#14B8A6] hover:bg-[#0D9488] text-black text-xs font-bold py-3 px-6 rounded-lg transition-all duration-300 shadow-[0_0_15px_rgba(20, 184, 166,0.25)] cursor-pointer disabled:opacity-50"
+          className="w-full text-center bg-[#6366F1] hover:bg-[#4F46E5] text-black text-xs font-bold py-3 px-6 rounded-lg transition-all duration-300 shadow-[0_0_15px_rgba(99, 102, 241,0.25)] cursor-pointer disabled:opacity-50"
         >
           {loading ? "Sending..." : "Send Message"}
         </button>

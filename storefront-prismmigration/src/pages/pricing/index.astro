@@ -52,14 +52,14 @@ const getLowestPaidPlan = (product: any) => {
   <script type="application/ld+json" set:html={JSON.stringify(generateFAQSchema(dynamicFaqs))} />
 
   {/* Header */}
-  <section class="bg-[#0F172A] py-16 text-center tech-grid border-b border-[#334155] relative overflow-hidden">
+  <section class="bg-[#0B0F1A] py-16 text-center tech-grid border-b border-[#334155] relative overflow-hidden">
     <!-- Ambient refraction glow background -->
     <div class="absolute inset-0 pointer-events-none overflow-hidden">
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] bg-[#14B8A6]/5 blur-[90px] rounded-full"></div>
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] bg-[#6366F1]/5 blur-[90px] rounded-full"></div>
     </div>
 
     <div class="container-custom relative z-10">
-      <span class="inline-block text-[10px] font-bold uppercase tracking-widest text-[#14B8A6] bg-[#14B8A6]/15 border border-[#14B8A6]/25 px-3 py-1 rounded mb-4">
+      <span class="inline-block text-[10px] font-bold uppercase tracking-widest text-[#6366F1] bg-[#6366F1]/15 border border-[#6366F1]/25 px-3 py-1 rounded mb-4">
         Pricing Directory
       </span>
       <h1 class="text-white font-extrabold text-3xl md:text-3xl tracking-tight mb-4">Flexible Licensing Options</h1>
@@ -70,7 +70,7 @@ const getLowestPaidPlan = (product: any) => {
   </section>
 
   {/* Pricing Directory Catalog */}
-  <section class="bg-[#0F172A] py-16 relative min-h-[400px]">
+  <section class="bg-[#0B0F1A] py-16 relative min-h-[400px]">
     <div class="container-custom">
       {errorLoading ? (
         <div class="text-center py-20 bg-[#1E2937]/10 rounded-2xl border border-[#334155] p-8">
@@ -81,7 +81,7 @@ const getLowestPaidPlan = (product: any) => {
           {groupedProducts.map(group => (
             <div>
               <h2 class="text-xs font-bold text-white uppercase tracking-wider mb-6 border-b border-[#334155] pb-3 flex items-center gap-2">
-                <span class="text-[#14B8A6]">{group.category.label}</span>
+                <span class="text-[#6366F1]">{group.category.label}</span>
                 <span class="text-[10px] text-[#94A3B8] font-mono font-semibold">({group.products.length} {group.products.length !== 1 ? 'tools' : 'tool'})</span>
               </h2>
               
@@ -89,7 +89,7 @@ const getLowestPaidPlan = (product: any) => {
                 {group.products.map(p => {
                   const plan = getLowestPaidPlan(p);
                   return (
-                    <div class="bg-[#1E2937]/20 backdrop-blur rounded-xl border border-[#334155] p-5 hover:border-[#14B8A6]/20 transition-all duration-300 flex flex-col justify-between shadow-lg">
+                    <div class="bg-[#1E2937]/20 backdrop-blur rounded-xl border border-[#334155] p-5 hover:border-[#6366F1]/20 transition-all duration-300 flex flex-col justify-between shadow-lg">
                       <div>
                         <h3 class="font-bold text-white text-sm mb-1.5 tracking-tight">{p.name}</h3>
                         <p class="text-[11px] text-[#94A3B8] leading-relaxed mb-4 line-clamp-2">{p.shortDescription}</p>
@@ -109,7 +109,7 @@ const getLowestPaidPlan = (product: any) => {
                             <span class="text-[#94A3B8] text-[11px] font-semibold">Free / Contact Us</span>
                           )}
                         </div>
-                        <a href={`/products/${p.slug}`} class="bg-[#14B8A6]/10 hover:bg-[#14B8A6]/20 text-[#14B8A6] border border-[#14B8A6]/20 text-[10px] font-extrabold uppercase tracking-wider py-2 px-3.5 rounded transition-all duration-300">
+                        <a href={`/products/${p.slug}`} class="bg-[#6366F1]/10 hover:bg-[#6366F1]/20 text-[#6366F1] border border-[#6366F1]/20 text-[10px] font-extrabold uppercase tracking-wider py-2 px-3.5 rounded transition-all duration-300">
                           View Tiers
                         </a>
                       </div>
@@ -129,15 +129,15 @@ const getLowestPaidPlan = (product: any) => {
       {/* Guarantees Strip */}
       <div class="mt-20 flex flex-wrap items-center justify-center gap-8 py-6 border-t border-[#334155] text-[11px] text-[#E2E8F0] font-mono">
         <div class="flex items-center gap-2">
-          <ShieldCheck size={14} class="text-[#14B8A6]" />
+          <ShieldCheck size={14} class="text-[#6366F1]" />
           30-Day Money-Back Guarantee
         </div>
         <div class="flex items-center gap-2">
-          <CreditCard size={14} class="text-[#14B8A6]" />
+          <CreditCard size={14} class="text-[#6366F1]" />
           Secure Payment Processing
         </div>
         <div class="flex items-center gap-2">
-          <HelpCircle size={14} class="text-[#14B8A6]" />
+          <HelpCircle size={14} class="text-[#6366F1]" />
           Free Setup Assistance
         </div>
       </div>
@@ -145,13 +145,13 @@ const getLowestPaidPlan = (product: any) => {
   </section>
 
   {/* FAQ Section */}
-  <section class="bg-[#0F172A] py-16 border-t border-[#334155] tech-grid">
+  <section class="bg-[#0B0F1A] py-16 border-t border-[#334155] tech-grid">
     <div class="container-custom max-w-3xl">
       <SectionHeader eyebrow="FAQ" title="Licensing FAQ" centered class="mb-10" />
 
       <div class="space-y-4">
         {dynamicFaqs.map((faq) => (
-          <div class="bg-[#1E2937]/30 backdrop-blur rounded-xl border border-[#334155] p-6 shadow-2xl hover:border-[#14B8A6]/30 transition-colors">
+          <div class="bg-[#1E2937]/30 backdrop-blur rounded-xl border border-[#334155] p-6 shadow-2xl hover:border-[#6366F1]/30 transition-colors">
             <h3 class="font-bold text-white text-sm mb-2">{faq.question}</h3>
             <p class="text-xs text-[#E5E5E5] leading-relaxed">{faq.answer}</p>
           </div>

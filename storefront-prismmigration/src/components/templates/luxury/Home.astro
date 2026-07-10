@@ -1,6 +1,7 @@
 ---
 import type { Product } from "@/types/product";
 import type { Category } from "@/services/api";
+import ProductCard from "@/components/common/ProductCard";
 
 interface Testimonial {
   authorName: string;
@@ -46,250 +47,412 @@ const categoryIconMap: Record<string, string> = {
 };
 
 const categoryColorMap: Record<string, { text: string; bg: string; border: string; glow: string }> = {
-  "email-migration": { text: "text-[#14B8A6]", bg: "bg-[#14B8A6]/10", border: "border-[#14B8A6]/20", glow: "shadow-[0_0_15px_rgba(20, 184, 166,0.15)]" },
+  "email-migration": { text: "text-[#6366F1]", bg: "bg-[#6366F1]/10", border: "border-[#6366F1]/20", glow: "shadow-[0_0_15px_rgba(99, 102, 241,0.15)]" },
   "backup": { text: "text-[#3b82f6]", bg: "bg-[#3b82f6]/10", border: "border-[#3b82f6]/20", glow: "shadow-[0_0_15px_rgba(59,130,246,0.15)]" },
-  "file-converter": { text: "text-[#10b981]", bg: "bg-[#10b981]/10", border: "border-[#10b981]/20", glow: "shadow-[0_0_15px_rgba(20, 184, 166,0.15)]" },
+  "file-converter": { text: "text-[#10b981]", bg: "bg-[#10b981]/10", border: "border-[#10b981]/20", glow: "shadow-[0_0_15px_rgba(99, 102, 241,0.15)]" },
   "cloud-migration": { text: "text-[#a855f7]", bg: "bg-[#a855f7]/10", border: "border-[#a855f7]/20", glow: "shadow-[0_0_15px_rgba(168,85,247,0.15)]" },
   "mailbox-recovery": { text: "text-[#ef4444]", bg: "bg-[#ef4444]/10", border: "border-[#ef4444]/20", glow: "shadow-[0_0_15px_rgba(239,68,68,0.15)]" },
 };
 ---
 
 <!-- Sleek SaaS Hero Section (Premium Dark Theme) -->
-<section class="relative overflow-hidden bg-[#0F172A] pt-6 pb-10 md:pt-8 md:pb-12 tech-grid">
+<section class="relative overflow-hidden bg-[#0B0F1A] pt-6 pb-10 md:pt-8 md:pb-12 tech-grid">
   <!-- Cinematic Glowing Lights & Mesh Gradients -->
   <div class="absolute inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
-    <!-- Center light source -->
-    <div class="absolute top-[20%] left-1/2 -translate-x-1/2 w-[60%] h-[60%] rounded-full bg-gradient-to-br from-[#14B8A6]/10 to-indigo-900/10 blur-[140px] opacity-60"></div>
+    <!-- Center light source (warm coral/violet gradient blend) -->
+    <div class="absolute top-[18%] left-1/2 -translate-x-1/2 w-[65%] h-[60%] rounded-full bg-gradient-to-br from-[#FB923C]/18 via-[#A855F7]/12 to-transparent blur-[140px] opacity-90"></div>
     <!-- Bottom light source -->
-    <div class="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-[#0F172A] to-transparent z-10"></div>
+    <div class="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-[#0B0F1A] to-transparent z-10"></div>
   </div>
 
   <!-- Giant Glass Prism & Refraction Rays SVG (Stretches from left to right corner) -->
   <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden flex items-center justify-center" aria-hidden="true">
     <svg class="w-[135%] h-[115%] md:w-[125%] md:h-[105%] opacity-[0.55] scale-100 md:scale-105" viewBox="0 0 1200 600" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <!-- Light Beam Gradients for Left-side Input Streams -->
+        <!-- Light Beam Gradients for Left-side Input Streams (low opacity — stay behind text) -->
         <linearGradient id="rayGmailSource" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="#ef4444" stop-opacity="0" />
-          <stop offset="100%" stop-color="#ef4444" stop-opacity="0.65" />
+          <stop offset="0%" stop-color="#FB923C" stop-opacity="0" />
+          <stop offset="100%" stop-color="#F472B6" stop-opacity="0.25" />
         </linearGradient>
         <linearGradient id="rayOutlookSource" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="#3b82f6" stop-opacity="0" />
-          <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.65" />
+          <stop offset="0%" stop-color="#6366F1" stop-opacity="0" />
+          <stop offset="100%" stop-color="#6366F1" stop-opacity="0.25" />
         </linearGradient>
         <linearGradient id="rayThunderbirdSource" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="#F59E0B" stop-opacity="0" />
-          <stop offset="100%" stop-color="#F59E0B" stop-opacity="0.65" />
+          <stop offset="0%" stop-color="#FB923C" stop-opacity="0" />
+          <stop offset="100%" stop-color="#FB923C" stop-opacity="0.25" />
         </linearGradient>
         <linearGradient id="rayFileSource" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="#14B8A6" stop-opacity="0" />
-          <stop offset="100%" stop-color="#14B8A6" stop-opacity="0.65" />
+          <stop offset="0%" stop-color="#F472B6" stop-opacity="0" />
+          <stop offset="100%" stop-color="#FB923C" stop-opacity="0.25" />
         </linearGradient>
         <linearGradient id="rayCloudSource" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="#a855f7" stop-opacity="0" />
-          <stop offset="100%" stop-color="#a855f7" stop-opacity="0.65" />
+          <stop offset="0%" stop-color="#6366F1" stop-opacity="0" />
+          <stop offset="100%" stop-color="#6366F1" stop-opacity="0.25" />
         </linearGradient>
 
-        <!-- Rainbow Refracted Rays (Gold, Cyan, Purple, Blue) for Right-side Output -->
+        <!-- Right-side Refracted Output Rays: 2 saturated (indigo + coral), 2 desaturated texture -->
+        <!-- SATURATED #1: Indigo anchor -->
         <linearGradient id="rayGold" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="#14B8A6" stop-opacity="0.95" />
-          <stop offset="100%" stop-color="#14B8A6" stop-opacity="0" />
+          <stop offset="0%" stop-color="#6C5CE7" stop-opacity="0.95" />
+          <stop offset="100%" stop-color="#6C5CE7" stop-opacity="0" />
         </linearGradient>
+        <!-- DESATURATED texture — near-neutral gray-violet -->
         <linearGradient id="rayCyan" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.95" />
-          <stop offset="100%" stop-color="#F59E0B" stop-opacity="0" />
+          <stop offset="0%" stop-color="#6B7280" stop-opacity="0.25" />
+          <stop offset="100%" stop-color="#6B7280" stop-opacity="0" />
         </linearGradient>
+        <!-- SATURATED #2: Coral-amber anchor -->
         <linearGradient id="rayPurple" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="#a855f7" stop-opacity="0.95" />
-          <stop offset="100%" stop-color="#a855f7" stop-opacity="0" />
+          <stop offset="0%" stop-color="#FB923C" stop-opacity="0.95" />
+          <stop offset="100%" stop-color="#F472B6" stop-opacity="0" />
         </linearGradient>
+        <!-- DESATURATED texture — near-neutral gray-violet -->
         <linearGradient id="rayBlue" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.95" />
-          <stop offset="100%" stop-color="#3b82f6" stop-opacity="0" />
+          <stop offset="0%" stop-color="#6B7280" stop-opacity="0.20" />
+          <stop offset="100%" stop-color="#6B7280" stop-opacity="0" />
         </linearGradient>
 
         <!-- Glass Prism 3D Gradient -->
         <linearGradient id="prismFaceLeft" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#14B8A6" stop-opacity="0.35" />
-          <stop offset="100%" stop-color="#854d0e" stop-opacity="0.05" />
+          <stop offset="0%" stop-color="#6366F1" stop-opacity="0.35" />
+          <stop offset="100%" stop-color="#312E81" stop-opacity="0.05" />
         </linearGradient>
         <linearGradient id="prismFaceRight" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stop-color="#ffffff" stop-opacity="0.2" />
-          <stop offset="100%" stop-color="#14B8A6" stop-opacity="0.02" />
+          <stop offset="100%" stop-color="#6366F1" stop-opacity="0.02" />
         </linearGradient>
+
+        <!-- Radial glow behind pyramid/headline -->
+        <radialGradient id="coralVioletGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#FB923C" stop-opacity="0.18" />
+          <stop offset="60%" stop-color="#A855F7" stop-opacity="0.12" />
+          <stop offset="100%" stop-color="#A855F7" stop-opacity="0" />
+        </radialGradient>
         
-        <!-- Glow Filter -->
-        <filter id="cinematicGlow" x="-25%" y="-25%" width="150%" height="150%">
-          <feGaussianBlur stdDeviation="11" result="blur" />
+        <!-- Glow Filter — generic soft -->
+        <filter id="cinematicGlow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="8" result="blur" />
           <feComposite in="SourceGraphic" in2="blur" operator="over" />
         </filter>
         <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
           <feGaussianBlur stdDeviation="20" result="blur" />
           <feComposite in="SourceGraphic" in2="blur" operator="over" />
         </filter>
+        <!-- Per-icon vivid glow filters -->
+        <filter id="glowRose" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="6" result="b" />
+          <feFlood flood-color="#FB7185" flood-opacity="0.8" result="c" />
+          <feComposite in="c" in2="b" operator="in" result="g" />
+          <feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="glowBlue" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="6" result="b" />
+          <feFlood flood-color="#60A5FA" flood-opacity="0.8" result="c" />
+          <feComposite in="c" in2="b" operator="in" result="g" />
+          <feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="glowIndigo" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="6" result="b" />
+          <feFlood flood-color="#818CF8" flood-opacity="0.8" result="c" />
+          <feComposite in="c" in2="b" operator="in" result="g" />
+          <feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="glowTeal" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="6" result="b" />
+          <feFlood flood-color="#2DD4BF" flood-opacity="0.8" result="c" />
+          <feComposite in="c" in2="b" operator="in" result="g" />
+          <feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="glowAmber" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="6" result="b" />
+          <feFlood flood-color="#FCD34D" flood-opacity="0.8" result="c" />
+          <feComposite in="c" in2="b" operator="in" result="g" />
+          <feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="glowViolet" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="6" result="b" />
+          <feFlood flood-color="#C084FC" flood-opacity="0.8" result="c" />
+          <feComposite in="c" in2="b" operator="in" result="g" />
+          <feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="glowOrange" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="6" result="b" />
+          <feFlood flood-color="#FB923C" flood-opacity="0.8" result="c" />
+          <feComposite in="c" in2="b" operator="in" result="g" />
+          <feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
 
-        <!-- PDF Document Icon -->
+        <!-- PDF Document Icon — vivid rose fill -->
         <g id="pdfIcon">
-          <rect x="-9" y="-12" width="18" height="24" rx="3" fill="#ffffff" stroke="#14B8A6" stroke-width="1.5" />
-          <path d="M 3 -12 L 9 -6 L 3 -6 Z" fill="#14B8A6" />
-          <text x="0" y="7" fill="#14B8A6" font-size="7" font-family="monospace" text-anchor="middle" font-weight="black">PDF</text>
+          <rect x="-11" y="-14" width="22" height="28" rx="4" fill="#FB7185" />
+          <rect x="-11" y="-14" width="22" height="28" rx="4" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity="0.6" />
+          <path d="M 3 -14 L 11 -7 L 3 -7 Z" fill="#ffffff" fill-opacity="0.5" />
+          <text x="0" y="9" fill="#ffffff" font-size="8" font-family="monospace" text-anchor="middle" font-weight="900">PDF</text>
         </g>
 
-        <!-- DOCX Document Icon -->
+        <!-- DOCX Document Icon — vivid sky blue fill -->
         <g id="docxIcon">
-          <rect x="-9" y="-12" width="18" height="24" rx="3" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5" />
-          <path d="M 3 -12 L 9 -6 L 3 -6 Z" fill="#3b82f6" />
-          <text x="0" y="7" fill="#3b82f6" font-size="6" font-family="monospace" text-anchor="middle" font-weight="black">DOCX</text>
+          <rect x="-11" y="-14" width="22" height="28" rx="4" fill="#3B82F6" />
+          <rect x="-11" y="-14" width="22" height="28" rx="4" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity="0.6" />
+          <path d="M 3 -14 L 11 -7 L 3 -7 Z" fill="#ffffff" fill-opacity="0.5" />
+          <text x="0" y="9" fill="#ffffff" font-size="7" font-family="monospace" text-anchor="middle" font-weight="900">DOCX</text>
         </g>
 
-        <!-- Email Envelope Icon -->
+        <!-- Email Envelope Icon — vivid indigo fill -->
         <g id="emailIcon">
-          <rect x="-10" y="-8" width="20" height="16" rx="2" fill="#ffffff" stroke="#F59E0B" stroke-width="1.5" />
-          <path d="M -10 -8 L 0 0 L 10 -8" stroke="#F59E0B" stroke-width="1.5" fill="none" stroke-linejoin="round" />
+          <rect x="-12" y="-9" width="24" height="18" rx="3" fill="#6C5CE7" />
+          <rect x="-12" y="-9" width="24" height="18" rx="3" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity="0.6" />
+          <path d="M -12 -9 L 0 2 L 12 -9" stroke="#ffffff" stroke-width="1.8" fill="none" stroke-linejoin="round" />
         </g>
 
-        <!-- Cloud Storage Icon -->
+        <!-- Cloud Storage Icon — vivid sky fill -->
         <g id="cloudIcon">
-          <path d="M -7 3 C -9.5 3, -11.5 1, -11.5 -1.5 C -11.5 -4, -9.5 -6, -7 -6 C -6.2 -9, -3.5 -10, 0 -10 C 4.5 -10, 6.5 -7, 6.5 -5.5 C 8.5 -5.5, 11 -4, 11 -1.5 C 11 1.5, 8.5 3, 5.5 3 Z" fill="#ffffff" stroke="#F59E0B" stroke-width="1.5" stroke-linejoin="round" />
+          <path d="M -8 4 C -11 4, -13 2, -13 -1.5 C -13 -5, -10.5 -7.5, -7 -7.5 C -6 -10.5, -3 -12, 1 -12 C 5.5 -12, 8 -9, 8 -6.5 C 10.5 -6.5, 13 -4.5, 13 -1.5 C 13 2, 10 4, 6.5 4 Z" fill="#60A5FA" />
+          <path d="M -8 4 C -11 4, -13 2, -13 -1.5 C -13 -5, -10.5 -7.5, -7 -7.5 C -6 -10.5, -3 -12, 1 -12 C 5.5 -12, 8 -9, 8 -6.5 C 10.5 -6.5, 13 -4.5, 13 -1.5 C 13 2, 10 4, 6.5 4 Z" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity="0.6" />
         </g>
 
-        <!-- Folder Directory Icon -->
+        <!-- Folder Directory Icon — vivid violet fill -->
         <g id="folderIcon">
-          <path d="M -10 6 L -10 -8 L -4 -8 L -1 -5 L 8 -5 L 8 6 Z" fill="#ffffff" stroke="#a855f7" stroke-width="1.5" stroke-linejoin="round" />
+          <path d="M -12 7 L -12 -9 L -4 -9 L -1 -5 L 10 -5 L 10 7 Z" fill="#A855F7" />
+          <path d="M -12 7 L -12 -9 L -4 -9 L -1 -5 L 10 -5 L 10 7 Z" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity="0.6" stroke-linejoin="round" />
         </g>
 
-        <!-- Outlook Icon -->
+        <!-- Outlook Icon — authentic Microsoft Outlook (blue + O circle) -->
         <g id="outlookIcon">
-          <rect x="-9" y="-9" width="18" height="18" rx="3" fill="#ffffff" stroke="#2563eb" stroke-width="1.5" />
-          <text x="0" y="4.5" fill="#2563eb" font-size="10" font-family="sans-serif" font-weight="black" text-anchor="middle">O</text>
+          <!-- Microsoft blue card -->
+          <rect x="-13" y="-12" width="26" height="24" rx="4" fill="#0078D4"/>
+          <!-- White document shape (behind the O) -->
+          <rect x="0" y="-9" width="12" height="18" rx="2" fill="white" opacity="0.92"/>
+          <!-- Subtle document lines -->
+          <line x1="2" y1="-5" x2="10" y2="-5" stroke="#0078D4" stroke-width="1.2" opacity="0.4"/>
+          <line x1="2" y1="-1" x2="10" y2="-1" stroke="#0078D4" stroke-width="1.2" opacity="0.4"/>
+          <line x1="2" y1="3" x2="10" y2="3" stroke="#0078D4" stroke-width="1.2" opacity="0.4"/>
+          <line x1="2" y1="7" x2="10" y2="7" stroke="#0078D4" stroke-width="1.2" opacity="0.4"/>
+          <!-- Blue O circle overlapping document -->
+          <circle cx="-3.5" cy="1" r="7.5" fill="#0078D4"/>
+          <!-- White O ring (the letter O) -->
+          <circle cx="-3.5" cy="1" r="4.5" fill="none" stroke="white" stroke-width="2.5"/>
         </g>
 
-        <!-- Gmail Icon -->
+        <!-- Gmail Icon — authentic Google Gmail M envelope -->
         <g id="gmailIcon">
-          <rect x="-9" y="-9" width="18" height="18" rx="3" fill="#ffffff" stroke="#ea4335" stroke-width="1.5" />
-          <path d="M -9 -9 L 0 -1 L 9 -9" stroke="#ea4335" stroke-width="1.5" fill="none" stroke-linejoin="round" />
-          <text x="0" y="6" fill="#ea4335" font-size="6.5" font-family="monospace" text-anchor="middle" font-weight="bold">M</text>
+          <!-- White card background -->
+          <rect x="-13" y="-12" width="26" height="24" rx="4" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="0.5"/>
+          <!-- Red envelope body -->
+          <rect x="-11" y="-9" width="22" height="19" rx="1" fill="#EA4335"/>
+          <!-- Fold shadow triangles (darker red) for depth -->
+          <path d="M -11,-9 L 0,-1 L -11,-1 Z" fill="#C5221F" opacity="0.4"/>
+          <path d="M 11,-9 L 0,-1 L 11,-1 Z" fill="#C5221F" opacity="0.4"/>
+          <!-- White M crease line (the iconic Gmail M) -->
+          <path d="M -11,-9 L 0,-1 L 11,-9" fill="none" stroke="white" stroke-width="2.5" stroke-linejoin="round"/>
         </g>
 
-        <!-- Thunderbird Icon -->
+        <!-- Thunderbird Icon — vivid teal fill -->
         <g id="thunderbirdIcon">
-          <rect x="-9" y="-9" width="18" height="18" rx="3" fill="#ffffff" stroke="#00bcd4" stroke-width="1.5" />
-          <text x="0" y="4.5" fill="#00bcd4" font-size="10" font-family="sans-serif" font-weight="black" text-anchor="middle">T</text>
+          <rect x="-11" y="-11" width="22" height="22" rx="4" fill="#14B8A6" />
+          <rect x="-11" y="-11" width="22" height="22" rx="4" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity="0.6" />
+          <text x="0" y="5.5" fill="#ffffff" font-size="13" font-family="sans-serif" font-weight="900" text-anchor="middle">T</text>
         </g>
 
-        <!-- PST Tag -->
+        <!-- PST Tag — vivid amber fill -->
         <g id="pstIcon">
-          <rect x="-10" y="-8" width="20" height="16" rx="2" fill="#ffffff" stroke="#14B8A6" stroke-width="1.5" />
-          <text x="0" y="4" fill="#14B8A6" font-size="7" font-family="monospace" text-anchor="middle" font-weight="black">PST</text>
+          <rect x="-12" y="-9" width="24" height="18" rx="3" fill="#F59E0B" />
+          <rect x="-12" y="-9" width="24" height="18" rx="3" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity="0.6" />
+          <text x="0" y="5" fill="#ffffff" font-size="8" font-family="monospace" text-anchor="middle" font-weight="900">PST</text>
         </g>
 
-        <!-- EML Tag -->
+        <!-- EML Tag — vivid emerald fill -->
         <g id="emlIcon">
-          <rect x="-10" y="-8" width="20" height="16" rx="2" fill="#ffffff" stroke="#10b981" stroke-width="1.5" />
-          <text x="0" y="4" fill="#10b981" font-size="7" font-family="monospace" text-anchor="middle" font-weight="black">EML</text>
+          <rect x="-12" y="-9" width="24" height="18" rx="3" fill="#10B981" />
+          <rect x="-12" y="-9" width="24" height="18" rx="3" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity="0.6" />
+          <text x="0" y="5" fill="#ffffff" font-size="8" font-family="monospace" text-anchor="middle" font-weight="900">EML</text>
         </g>
 
-        <!-- MBOX Tag -->
+        <!-- MBOX Tag — vivid orange fill -->
         <g id="mboxIcon">
-          <rect x="-11" y="-8" width="22" height="16" rx="2" fill="#ffffff" stroke="#8b5cf6" stroke-width="1.5" />
-          <text x="0" y="4" fill="#8b5cf6" font-size="6.5" font-family="monospace" text-anchor="middle" font-weight="black">MBOX</text>
+          <rect x="-13" y="-9" width="26" height="18" rx="3" fill="#FB923C" />
+          <rect x="-13" y="-9" width="26" height="18" rx="3" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity="0.6" />
+          <text x="0" y="5" fill="#ffffff" font-size="7.5" font-family="monospace" text-anchor="middle" font-weight="900">MBOX</text>
         </g>
 
-        <!-- Server Cabinet Icon -->
+        <!-- Google Icon — authentic multicolor Google G -->
+        <g id="googleIcon">
+          <!-- White circle background -->
+          <circle cx="0" cy="0" r="12.5" fill="white" stroke="#E5E7EB" stroke-width="0.5"/>
+          <!-- Google G: 4 colored arc segments going clockwise from lower gap (~4 o'clock) -->
+          <!-- Yellow: 4 o'clock → 6 o'clock (60°) -->
+          <path d="M 8.2,4.75 A 9.5,9.5 0 0 1 0,9.5" fill="none" stroke="#FBBC05" stroke-width="3.6" stroke-linecap="butt"/>
+          <!-- Green: 6 o'clock → 9 o'clock (90°) -->
+          <path d="M 0,9.5 A 9.5,9.5 0 0 1 -9.5,0" fill="none" stroke="#34A853" stroke-width="3.6" stroke-linecap="butt"/>
+          <!-- Blue: 9 o'clock → 1 o'clock over top (120°) -->
+          <path d="M -9.5,0 A 9.5,9.5 0 0 1 4.75,-8.2" fill="none" stroke="#4285F4" stroke-width="3.6" stroke-linecap="butt"/>
+          <!-- Red: 1 o'clock → upper gap ~2 o'clock (30°) -->
+          <path d="M 4.75,-8.2 A 9.5,9.5 0 0 1 8.2,-4.75" fill="none" stroke="#EA4335" stroke-width="3.6" stroke-linecap="butt"/>
+          <!-- White inner circle (creates the G ring/donut hole) -->
+          <circle cx="0" cy="0" r="6.2" fill="white"/>
+          <!-- Blue horizontal arm of the G (fills the gap from center to outer ring) -->
+          <rect x="0" y="-1.8" width="10.5" height="3.6" fill="#4285F4"/>
+        </g>
+
+        <!-- Microsoft Icon — authentic Windows/Microsoft 4-colored squares logo -->
+        <g id="microsoftIcon">
+          <!-- White card background -->
+          <rect x="-13" y="-12" width="26" height="24" rx="4" fill="white" stroke="#E5E7EB" stroke-width="0.5"/>
+          <!-- Red square: top-left -->
+          <rect x="-11.5" y="-10.5" width="10.5" height="10" fill="#F25022"/>
+          <!-- Green square: top-right -->
+          <rect x="1" y="-10.5" width="10.5" height="10" fill="#7FBA00"/>
+          <!-- Blue square: bottom-left -->
+          <rect x="-11.5" y="1" width="10.5" height="9" fill="#00A4EF"/>
+          <!-- Yellow square: bottom-right -->
+          <rect x="1" y="1" width="10.5" height="9" fill="#FFB900"/>
+        </g>
+
+        <!-- Server Cabinet Icon — vivid slate-violet fill -->
         <g id="serverIcon">
-          <rect x="-10" y="-12" width="20" height="24" rx="2" fill="#ffffff" stroke="#14B8A6" stroke-width="1.5" />
-          <line x1="-10" y1="-4" x2="10" y2="-4" stroke="#14B8A6" stroke-width="1.2" />
-          <line x1="-10" y1="4" x2="10" y2="4" stroke="#14B8A6" stroke-width="1.2" />
-          <circle cx="-5" cy="-8" r="1.5" fill="#10b981" />
-          <circle cx="-5" cy="0" r="1.5" fill="#10b981" />
-          <circle cx="-5" cy="8" r="1.5" fill="#10b981" />
+          <rect x="-12" y="-14" width="24" height="28" rx="3" fill="#6C5CE7" />
+          <rect x="-12" y="-14" width="24" height="28" rx="3" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity="0.6" />
+          <line x1="-12" y1="-5" x2="12" y2="-5" stroke="#ffffff" stroke-width="1" stroke-opacity="0.5" />
+          <line x1="-12" y1="4" x2="12" y2="4" stroke="#ffffff" stroke-width="1" stroke-opacity="0.5" />
+          <circle cx="-5" cy="-9.5" r="2" fill="#34D399" />
+          <circle cx="-5" cy="-0.5" r="2" fill="#FCD34D" />
+          <circle cx="-5" cy="8" r="2" fill="#FB7185" />
         </g>
       </defs>
 
       <!-- Background Grid Pattern -->
       <g opacity="0.2">
-        <path d="M 0 100 L 1200 100 M 0 200 L 1200 200 M 0 300 L 1200 300 M 0 400 L 1200 400 M 0 500 L 1200 500" stroke="#14B8A6" stroke-width="0.5" />
-        <path d="M 100 0 L 100 600 M 200 0 L 200 600 M 300 0 L 300 600 M 400 0 L 400 600 M 500 0 L 500 600 M 600 0 L 600 600 M 700 0 L 700 600 M 800 0 L 800 600 M 900 0 L 900 600 M 1000 0 L 1000 600 M 1100 0 L 1100 600" stroke="#14B8A6" stroke-width="0.5" />
+        <path d="M 0 100 L 1200 100 M 0 200 L 1200 200 M 0 300 L 1200 300 M 0 400 L 1200 400 M 0 500 L 1200 500" stroke="#6366F1" stroke-width="0.5" />
+        <path d="M 100 0 L 100 600 M 200 0 L 200 600 M 300 0 L 300 600 M 400 0 L 400 600 M 500 0 L 500 600 M 600 0 L 600 600 M 700 0 L 700 600 M 800 0 L 800 600 M 900 0 L 900 600 M 1000 0 L 1000 600 M 1100 0 L 1100 600" stroke="#6366F1" stroke-width="0.5" />
       </g>
 
       <!-- Faint Tech Circuit Lines -->
-      <g stroke="#14B8A6" stroke-width="0.8" opacity="0.12" fill="none">
+      <g stroke="#6366F1" stroke-width="0.8" opacity="0.12" fill="none">
         <path d="M 50 150 L 180 150 L 240 210 M 240 210 L 240 380" />
-        <circle cx="240" cy="380" r="3" fill="#14B8A6" />
+        <circle cx="240" cy="380" r="3" fill="#6366F1" />
         <path d="M 1150 450 L 1020 450 L 960 390 M 960 390 L 960 220" />
-        <circle cx="960" cy="220" r="3" fill="#14B8A6" />
+        <circle cx="960" cy="220" r="3" fill="#6366F1" />
       </g>
 
       <!-- ================= LEFT SIDE INPUT PATH FLOWS ================= -->
+      <!-- Opacity 0.45 — visible streaks that fade before reaching the central text zone -->
       <!-- Gmail Input path -->
-      <path d="M 0 140 Q 210 180, 425 290" stroke="url(#rayGmailSource)" stroke-width="3" opacity="0.7" />
+      <path d="M 0 140 Q 210 180, 425 290" stroke="url(#rayGmailSource)" stroke-width="3" opacity="0.45" />
       <!-- Outlook Input path -->
-      <path d="M 0 230 Q 210 250, 411 310" stroke="url(#rayOutlookSource)" stroke-width="3.5" opacity="0.7" />
+      <path d="M 0 230 Q 210 250, 411 310" stroke="url(#rayOutlookSource)" stroke-width="3.5" opacity="0.45" />
       <!-- Thunderbird Input path -->
-      <path d="M 0 320 L 403 320" stroke="url(#rayThunderbirdSource)" stroke-width="3" opacity="0.7" />
+      <path d="M 0 320 L 403 320" stroke="url(#rayThunderbirdSource)" stroke-width="3" opacity="0.45" />
       <!-- Files Input path -->
-      <path d="M 0 410 Q 210 390, 396 330" stroke="url(#rayFileSource)" stroke-width="4" opacity="0.7" />
+      <path d="M 0 410 Q 210 390, 396 330" stroke="url(#rayFileSource)" stroke-width="4" opacity="0.45" />
       <!-- Cloud Input path -->
-      <path d="M 0 500 Q 210 450, 381 350" stroke="url(#rayCloudSource)" stroke-width="3" opacity="0.7" />
+      <path d="M 0 500 Q 210 450, 381 350" stroke="url(#rayCloudSource)" stroke-width="3" opacity="0.45" />
       <!-- MBOX Input path -->
-      <path d="M 0 500 Q 210 450, 381 350" stroke="url(#rayCloudSource)" stroke-width="3" opacity="0.7" />
+      <path d="M 0 500 Q 210 450, 381 350" stroke="url(#rayCloudSource)" stroke-width="3" opacity="0.45" />
 
-      <!-- Moving Input Icons (flowing smoothly into the left interface of the prism) -->
-      <!-- Gmail Icon -->
+      <!-- Moving Input Icons — vivid fills, large scale, per-icon glow, pulsing -->
+      <!-- Gmail Icon —  rose glow -->
       <g>
         <animateMotion dur="6s" repeatCount="indefinite" path="M 0 140 Q 210 180, 425 290" />
-        <animate attributeName="opacity" values="1;1;0" dur="6s" repeatCount="indefinite" />
-        <use href="#gmailIcon" filter="url(#cinematicGlow)" />
+        <animate attributeName="opacity" values="0;0;0.95;0.95;0" keyTimes="0;0.05;0.2;0.85;1" dur="6s" repeatCount="indefinite" />
+        <g filter="url(#glowRose)">
+          <use href="#gmailIcon" transform="scale(1.5)" />
+        </g>
       </g>
-      <!-- Outlook Icon -->
+      <!-- Outlook Icon — blue glow -->
       <g>
         <animateMotion dur="5s" repeatCount="indefinite" path="M 0 230 Q 210 250, 411 310" />
-        <animate attributeName="opacity" values="1;1;0" dur="5s" repeatCount="indefinite" />
-        <use href="#outlookIcon" filter="url(#cinematicGlow)" />
+        <animate attributeName="opacity" values="0;0;0.95;0.95;0" keyTimes="0;0.05;0.2;0.85;1" dur="5s" repeatCount="indefinite" />
+        <g filter="url(#glowBlue)">
+          <use href="#outlookIcon" transform="scale(1.5)" />
+        </g>
       </g>
-      <!-- Thunderbird Icon -->
+      <!-- Thunderbird stream — now Google (green glow) -->
       <g>
         <animateMotion dur="7s" repeatCount="indefinite" path="M 0 320 L 403 320" />
-        <animate attributeName="opacity" values="1;1;0" dur="7s" repeatCount="indefinite" />
-        <use href="#thunderbirdIcon" filter="url(#cinematicGlow)" />
+        <animate attributeName="opacity" values="0;0;0.95;0.95;0" keyTimes="0;0.05;0.2;0.85;1" dur="7s" repeatCount="indefinite" />
+        <g filter="url(#glowBlue)">
+          <use href="#googleIcon" transform="scale(1.5)" />
+        </g>
       </g>
-      <!-- PST File Icon -->
+      <!-- PST File Icon — amber glow -->
       <g>
         <animateMotion dur="5.5s" repeatCount="indefinite" path="M 0 410 Q 210 390, 396 330" />
-        <animate attributeName="opacity" values="1;1;0" dur="5.5s" repeatCount="indefinite" />
-        <use href="#pstIcon" filter="url(#cinematicGlow)" />
+        <animate attributeName="opacity" values="0;0;0.95;0.95;0" keyTimes="0;0.05;0.2;0.85;1" dur="5.5s" repeatCount="indefinite" />
+        <g filter="url(#glowAmber)">
+          <use href="#pstIcon" transform="scale(1.5)" />
+        </g>
       </g>
-      <!-- EML File Icon -->
+      <!-- EML File Icon — teal glow, offset phase -->
       <g>
         <animateMotion dur="8s" repeatCount="indefinite" path="M 0 410 Q 210 390, 396 330" keyTimes="0;0.5;1" keyPoints="0;0.5;1" />
-        <animate attributeName="opacity" values="1;1;0" dur="8s" repeatCount="indefinite" />
-        <use href="#emlIcon" filter="url(#cinematicGlow)" />
+        <animate attributeName="opacity" values="0;0;0.95;0.95;0" keyTimes="0;0.05;0.2;0.85;1" dur="8s" repeatCount="indefinite" />
+        <g filter="url(#glowTeal)">
+          <use href="#emlIcon" transform="scale(1.5)" />
+        </g>
       </g>
-      <!-- Cloud Source Icon -->
+      <!-- Cloud Source Icon — blue glow -->
       <g>
         <animateMotion dur="6.5s" repeatCount="indefinite" path="M 0 500 Q 210 450, 381 350" />
-        <animate attributeName="opacity" values="1;1;0" dur="6.5s" repeatCount="indefinite" />
-        <use href="#cloudIcon" filter="url(#cinematicGlow)" />
+        <animate attributeName="opacity" values="0;0;0.95;0.95;0" keyTimes="0;0.05;0.2;0.85;1" dur="6.5s" repeatCount="indefinite" />
+        <g filter="url(#glowBlue)">
+          <use href="#cloudIcon" transform="scale(1.5)" />
+        </g>
       </g>
-      <!-- MBOX Source Icon -->
+      <!-- MBOX Source Icon — orange glow, offset phase -->
       <g>
         <animateMotion dur="7.2s" repeatCount="indefinite" path="M 0 500 Q 210 450, 381 350" keyTimes="0;0.5;1" keyPoints="0;0.5;1" />
-        <animate attributeName="opacity" values="1;1;0" dur="7.2s" repeatCount="indefinite" />
-        <use href="#mboxIcon" filter="url(#cinematicGlow)" />
+        <animate attributeName="opacity" values="0;0;0.95;0.95;0" keyTimes="0;0.05;0.2;0.85;1" dur="7.2s" repeatCount="indefinite" />
+        <g filter="url(#glowOrange)">
+          <use href="#mboxIcon" transform="scale(1.5)" />
+        </g>
       </g>
 
       <!-- ================= 2. CENTRAL 3D GLASS PRISM ================= -->
-      <!-- Prism Shadow backdrop glow -->
-      <polygon points="600,50 938,509 262,509" fill="#ffffff" opacity="0.35" filter="url(#softGlow)" />
+      <!-- Subtle warm glow accent behind the pyramid (radial gradient coral-violet) -      <!-- Prism Shadow backdrop glow -->
+      <polygon points="600,150 938,539 262,539" fill="#ffffff" opacity="0.35" filter="url(#softGlow)" />
       <!-- Left glass facet -->
-      <polygon points="600,50 600,509 262,509" fill="url(#prismFaceLeft)" stroke="#14B8A6" stroke-width="1.8" />
+      <polygon points="600,150 600,539 262,539" fill="url(#prismFaceLeft)" stroke="#6366F1" stroke-width="1.8" />
       <!-- Right glass facet -->
-      <polygon points="600,50 938,509 600,509" fill="url(#prismFaceRight)" stroke="#ffffff" stroke-width="1" opacity="0.8" />
+      <polygon points="600,150 938,539 600,539" fill="url(#prismFaceRight)" stroke="#ffffff" stroke-width="1" opacity="0.8" />
       <!-- Prism Base highlight -->
-      <line x1="262" y1="509" x2="938" y2="509" stroke="#14B8A6" stroke-width="2.5" filter="url(#cinematicGlow)" />
+      <line x1="262" y1="539" x2="938" y2="539" stroke="#6366F1" stroke-width="2.5" filter="url(#cinematicGlow)" />
+ 
+      <!-- Central Prism Corner Commitments (Integrated directly around the 3D Prism vertices) -->
+      <!-- Vertex Glowing Dots -->
+      <circle cx="600" cy="150" r="5" fill="#6C5CE7" filter="url(#softGlow)" />
+      <circle cx="600" cy="150" r="2.5" fill="#ffffff" />
+      
+      <circle cx="262" cy="539" r="5" fill="#6C5CE7" filter="url(#softGlow)" />
+      <circle cx="262" cy="539" r="2.5" fill="#ffffff" />
+
+      <circle cx="938" cy="539" r="5" fill="#6C5CE7" filter="url(#softGlow)" />
+      <circle cx="938" cy="539" r="2.5" fill="#ffffff" />
+
+      <!-- Top Corner Commitment (100% Private & Local Run) — Placed OUTSIDE/ABOVE the prism apex, safely below navbar -->
+      <g>
+        <line x1="600" y1="150" x2="600" y2="105" stroke="#6C5CE7" stroke-width="1.2" stroke-dasharray="2,2" />
+        <rect x="490" y="81" width="220" height="24" rx="12" fill="#0B0F1A" fill-opacity="0.95" stroke="#6C5CE7" stroke-width="1.2" />
+        <text x="600" y="96.5" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="9.5" font-weight="800" text-anchor="middle" letter-spacing="0.05em">100% PRIVATE & LOCAL RUN</text>
+      </g>
+
+      <!-- Bottom-Left Corner Commitment (Byte-Perfect Checksum Verification) — Placed OUTSIDE/DIAGONAL -->
+      <g>
+        <line x1="262" y1="539" x2="212" y2="564" stroke="#6C5CE7" stroke-width="1.2" stroke-dasharray="2,2" />
+        <rect x="102" y="552" width="220" height="24" rx="12" fill="#0B0F1A" fill-opacity="0.95" stroke="#6C5CE7" stroke-width="1.2" />
+        <text x="212" y="567.5" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="9.5" font-weight="800" text-anchor="middle" letter-spacing="0.05em">BYTE-PERFECT VERIFICATION</text>
+      </g>
+
+      <!-- Bottom-Right Corner Commitment (Lifetime License Keys) — Placed OUTSIDE/DIAGONAL -->
+      <g>
+        <line x1="938" y1="539" x2="988" y2="564" stroke="#6C5CE7" stroke-width="1.2" stroke-dasharray="2,2" />
+        <rect x="878" y="552" width="220" height="24" rx="12" fill="#0B0F1A" fill-opacity="0.95" stroke="#6C5CE7" stroke-width="1.2" />
+        <text x="988" y="567.5" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="9.5" font-weight="800" text-anchor="middle" letter-spacing="0.05em">LIFETIME LICENSE KEYS</text>
+      </g>ze="9.5" font-weight="800" text-anchor="middle" letter-spacing="0.05em">LIFETIME LICENSE KEYS</text>
+      </g>
 
       <!-- Transformation Zone inside the Prism -->
-      <circle cx="600" cy="320" r="22" fill="#14B8A6" opacity="0.3" filter="url(#softGlow)">
+      <circle cx="600" cy="320" r="22" fill="#6366F1" opacity="0.3" filter="url(#softGlow)">
         <animate attributeName="r" values="12;28;12" dur="3s" repeatCount="indefinite" />
       </circle>
       <circle cx="600" cy="320" r="12" fill="#ffffff" opacity="0.6" filter="url(#cinematicGlow)">
@@ -306,58 +469,74 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
       <!-- Blue Ray (Bottom-Right) -->
       <path d="M 600 320 C 720 380, 880 440, 1200 450" stroke="url(#rayBlue)" stroke-width="15" filter="url(#cinematicGlow)" />
 
-      <!-- Moving Output Icons (scattering outwards showing successful migration) -->
-      <!-- PDF Document on Gold Ray -->
+      <!-- Moving Output Icons — vivid fills, large scale, per-icon glow -->
+      <!-- PDF Document on Indigo Ray — rose glow -->
       <g>
         <animateMotion dur="5.5s" repeatCount="indefinite" path="M 600 320 C 720 280, 880 200, 1200 120" />
-        <animate attributeName="opacity" values="0;1;1;0" dur="5.5s" repeatCount="indefinite" />
-        <use href="#pdfIcon" filter="url(#cinematicGlow)" />
+        <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.15;0.8;1" dur="5.5s" repeatCount="indefinite" />
+        <g filter="url(#glowRose)">
+          <use href="#pdfIcon" transform="scale(1.6)" />
+        </g>
       </g>
-      <!-- Office 365 / Outlook on Gold Ray -->
+      <!-- Office 365 / Outlook on Indigo Ray — blue glow, staggered -->
       <g>
         <animateMotion dur="7.2s" repeatCount="indefinite" path="M 600 320 C 720 280, 880 200, 1200 120" keyTimes="0;0.5;1" keyPoints="0;0.5;1" />
-        <animate attributeName="opacity" values="0;1;1;0" dur="7.2s" repeatCount="indefinite" />
-        <use href="#outlookIcon" filter="url(#cinematicGlow)" />
+        <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.15;0.8;1" dur="7.2s" repeatCount="indefinite" />
+        <g filter="url(#glowBlue)">
+          <use href="#outlookIcon" transform="scale(1.6)" />
+        </g>
       </g>
 
-      <!-- Email Envelope on Cyan Ray -->
+      <!-- Email Envelope on desaturated Cyan Ray — indigo glow -->
       <g>
         <animateMotion dur="6.8s" repeatCount="indefinite" path="M 600 320 C 720 300, 880 270, 1200 230" />
-        <animate attributeName="opacity" values="0;1;1;0" dur="6.8s" repeatCount="indefinite" />
-        <use href="#emailIcon" filter="url(#cinematicGlow)" />
+        <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.15;0.8;1" dur="6.8s" repeatCount="indefinite" />
+        <g filter="url(#glowIndigo)">
+          <use href="#emailIcon" transform="scale(1.6)" />
+        </g>
       </g>
-      <!-- Gmail Destination on Cyan Ray -->
+      <!-- Gmail Destination on desaturated Cyan Ray — rose glow, staggered -->
       <g>
         <animateMotion dur="8.5s" repeatCount="indefinite" path="M 600 320 C 720 300, 880 270, 1200 230" keyTimes="0;0.4;1" keyPoints="0;0.4;1" />
-        <animate attributeName="opacity" values="0;1;1;0" dur="8.5s" repeatCount="indefinite" />
-        <use href="#gmailIcon" filter="url(#cinematicGlow)" />
+        <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.15;0.8;1" dur="8.5s" repeatCount="indefinite" />
+        <g filter="url(#glowRose)">
+          <use href="#gmailIcon" transform="scale(1.6)" />
+        </g>
       </g>
 
-      <!-- Cloud Storage on Purple Ray -->
+      <!-- Cloud Storage on Coral Ray — blue glow -->
       <g>
         <animateMotion dur="8.2s" repeatCount="indefinite" path="M 600 320 C 720 340, 880 370, 1200 340" />
-        <animate attributeName="opacity" values="0;1;1;0" dur="8.2s" repeatCount="indefinite" />
-        <use href="#cloudIcon" filter="url(#cinematicGlow)" />
+        <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.15;0.8;1" dur="8.2s" repeatCount="indefinite" />
+        <g filter="url(#glowBlue)">
+          <use href="#cloudIcon" transform="scale(1.6)" />
+        </g>
       </g>
 
-      <!-- Folder Directory on Blue Ray -->
+      <!-- Folder Directory on desaturated Blue Ray — violet glow -->
       <g>
         <animateMotion dur="7.4s" repeatCount="indefinite" path="M 600 320 C 720 380, 880 440, 1200 450" />
-        <animate attributeName="opacity" values="0;1;1;0" dur="7.4s" repeatCount="indefinite" />
-        <use href="#folderIcon" filter="url(#cinematicGlow)" />
+        <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.15;0.8;1" dur="7.4s" repeatCount="indefinite" />
+        <g filter="url(#glowViolet)">
+          <use href="#folderIcon" transform="scale(1.6)" />
+        </g>
       </g>
-      <!-- Server Cabinet Destination on Blue Ray -->
+      <!-- Server Cabinet Destination on desaturated Blue Ray — indigo glow, staggered -->
       <g>
         <animateMotion dur="9.2s" repeatCount="indefinite" path="M 600 320 C 720 380, 880 440, 1200 450" keyTimes="0;0.5;1" keyPoints="0;0.5;1" />
-        <animate attributeName="opacity" values="0;1;1;0" dur="9.2s" repeatCount="indefinite" />
-        <use href="#serverIcon" filter="url(#cinematicGlow)" />
+        <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.15;0.8;1" dur="9.2s" repeatCount="indefinite" />
+        <g filter="url(#glowIndigo)">
+          <use href="#serverIcon" transform="scale(1.6)" />
+        </g>
       </g>
 
-      <!-- DOCX Document on Gold/Cyan Ray -->
+      <!-- Microsoft Icon on Gold Ray — blue glow -->
       <g>
         <animateMotion dur="9s" repeatCount="indefinite" path="M 600 320 C 720 260, 920 180, 1200 150" />
-        <animate attributeName="opacity" values="0;1;1;0" dur="9s" repeatCount="indefinite" />
-        <use href="#docxIcon" filter="url(#cinematicGlow)" />
+        <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.15;0.8;1" dur="9s" repeatCount="indefinite" />
+        <g filter="url(#glowBlue)">
+          <use href="#microsoftIcon" transform="scale(1.6)" />
+        </g>
       </g>
 
       <!-- ================= 5. BINARY & PHOTON PARTICLES ================= -->
@@ -367,11 +546,11 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
       </g>
       <g>
         <animateMotion dur="5.2s" repeatCount="indefinite" path="M 600 320 C 700 330, 900 390, 1200 420" />
-        <text fill="#14B8A6" font-family="monospace" font-size="14" font-weight="black" opacity="0.9">1</text>
+        <text fill="#6366F1" font-family="monospace" font-size="14" font-weight="black" opacity="0.9">1</text>
       </g>
       <g>
         <animateMotion dur="3.8s" repeatCount="indefinite" path="M 600 320 C 750 310, 950 320, 1200 310" />
-        <text fill="#F59E0B" font-family="monospace" font-size="13" font-weight="black" opacity="0.9">1</text>
+        <text fill="#FCD34D" font-family="monospace" font-size="13" font-weight="black" opacity="0.9">1</text>
       </g>
       <g>
         <animateMotion dur="6s" repeatCount="indefinite" path="M 600 320 C 750 350, 950 420, 1200 470" />
@@ -381,13 +560,13 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
       <!-- Transforming Data Packets (Pulsing circles on left-to-prism paths) -->
       <g>
         <animateMotion dur="3.5s" repeatCount="indefinite" path="M 0 320 L 403 320" />
-        <circle r="6" fill="#14B8A6" filter="url(#cinematicGlow)">
+        <circle r="6" fill="#6366F1" filter="url(#cinematicGlow)">
           <animate attributeName="r" values="3;7;3" dur="1.5s" repeatCount="indefinite" />
         </circle>
       </g>
       <g>
         <animateMotion dur="4.2s" repeatCount="indefinite" path="M 0 230 Q 210 250, 411 310" />
-        <circle r="5" fill="#3b82f6" filter="url(#cinematicGlow)">
+        <circle r="5" fill="#22D3EE" filter="url(#cinematicGlow)">
           <animate attributeName="r" values="2;5;2" dur="1.2s" repeatCount="indefinite" />
         </circle>
       </g>
@@ -403,66 +582,57 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
   <div class="container-custom relative z-10 mx-auto px-4">
     <!-- Clean, Highly Readable Text Overlay (Directly on Prism/Ray Background) -->
     <div class="max-w-5xl mx-auto relative z-10 flex flex-col items-center text-center space-y-4 md:space-y-6 pt-1 pb-6 md:pb-8 lg:pb-10">
-      
-      <!-- Welcome Badge -->
-      <div class="animate-fade-up inline-flex items-center gap-2 text-[10px] tracking-[0.25em] text-[#14B8A6] uppercase font-bold bg-[#14B8A6]/10 border border-[#14B8A6]/25 px-4 py-1.5 rounded-full shadow-inner backdrop-blur-md">
-        <span class="w-1.5 h-1.5 rounded-full bg-[#14B8A6] animate-ping"></span>
-        <span>WELCOME TO PRISM MIGRATION</span>
+      <!-- Welcome Badge — Dynamic -->
+      <div class="animate-fade-up inline-flex items-center gap-2 text-[10px] tracking-[0.25em] text-[#A855F7] uppercase font-bold bg-[#A855F7]/10 border border-[#A855F7]/25 px-4 py-1.5 rounded-full shadow-inner backdrop-blur-md">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#A855F7] animate-ping"></span>
+        <span>{settings.hero?.badgeText || "WELCOME TO PRISM MIGRATION"}</span>
       </div>
-
+ 
       <!-- Title / Headline Overlay (Enhanced Shadows for Direct Overlay legibility) -->
       <div class="animate-fade-up animate-fade-up-delay-1 space-y-4 max-w-4xl mx-auto">
         <!-- Glass backdrop for legibility over the prism SVG -->
-        <div class="relative inline-block px-6 py-3 rounded-2xl bg-[#0F172A]/30 backdrop-blur-[2px]">
+        <div class="relative inline-block px-6 py-3 rounded-2xl bg-[#0B0F1A]/30 backdrop-blur-[2px]">
           <span class="text-5xl sm:text-7xl md:text-8xl lg:text-8.5xl font-black tracking-tight text-white block drop-shadow-[0_4px_20px_rgba(0,0,0,0.98)] bg-clip-text bg-gradient-to-b from-white via-zinc-100 to-zinc-300">
-            Prism Migration
+            {settings?.name || "Prism Migration"}
           </span>
         </div>
-        <h1 class="text-xl sm:text-3xl md:text-4.5xl lg:text-5.5xl font-black leading-tight tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-zinc-100 via-teal-200 to-[#14B8A6] drop-shadow-[0_4px_12px_rgba(0,0,0,1)]">
-          Migrate Data at Lightning Speed Without Losing a Single Byte.
+        <h1 class="text-xl sm:text-3xl md:text-4.5xl lg:text-5.5xl font-black leading-tight tracking-tight !text-transparent !bg-clip-text bg-gradient-to-r from-[#F0ABFC] to-[#A855F7] drop-shadow-[0_4px_12px_rgba(0,0,0,1)]">
+          {settings.hero?.headline || "Migrate Data at Lightning Speed Without Losing a Single Byte."}
         </h1>
       </div>
-
-      <!-- Subheadline Description -->
+ 
+      <!-- Subheadline Description — Dynamic -->
       <p class="text-xs sm:text-sm md:text-base text-[#E2E8F0] max-w-2xl mx-auto leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,1)] font-medium">
-        Eliminate downtime and secure your enterprise data. Our automated migration tools handle emails, files, and cloud transfers in seconds — saving you thousands in IT hours.
+        {settings.hero?.subheadline || "Eliminate downtime and secure your enterprise data. Our automated migration tools handle emails, files, and cloud transfers in seconds — saving you thousands in IT hours."}
       </p>
-
-      <!-- Three Checkmarks in 3 Columns with Good Spacing -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-[#E2E8F0] pt-2 font-semibold max-w-2xl w-full mx-auto">
-        <div class="flex items-center justify-center gap-1.5 drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
-          <span class="text-[#14B8A6] text-base font-bold">✓</span> 100% Private & Local Run
-        </div>
-        <div class="flex items-center justify-center gap-1.5 drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
-          <span class="text-[#14B8A6] text-base font-bold">✓</span> Byte-Perfect Checksum Verification
-        </div>
-        <div class="flex items-center justify-center gap-1.5 drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
-          <span class="text-[#14B8A6] text-base font-bold">✓</span> Lifetime License Keys
-        </div>
-      </div>
-
-      <!-- CTA Buttons -->
+ 
+      <!-- CTA Buttons — Dynamic values from database settings -->
       <div class="animate-fade-up animate-fade-up-delay-3 flex flex-col sm:flex-row items-center justify-center gap-3 pt-3 w-full max-w-md mx-auto relative z-20">
         <a 
-          href="/products" 
-          class="group w-full sm:w-auto inline-flex items-center justify-center gap-2 text-center bg-[#14B8A6] hover:bg-[#0D9488] text-black text-xs font-bold py-2.5 px-6 rounded-lg transition-all duration-300 shadow-[0_0_15px_rgba(20,184,166,0.3)] hover:shadow-[0_0_24px_rgba(20,184,166,0.55)] transform active:scale-95 cursor-pointer will-change-transform"
+          href={settings.hero?.ctaPrimaryHref || "/products"} 
+          class="group w-full sm:w-auto inline-flex items-center justify-center gap-2 text-center bg-[#6C5CE7] hover:bg-[#5B4FE0] text-white text-xs font-semibold py-2.5 px-6 rounded-lg transition-all duration-300 shadow-[0_0_15px_rgba(108,92,231,0.35)] hover:shadow-[0_0_24px_rgba(108,92,231,0.6)] transform active:scale-95 cursor-pointer will-change-transform"
         >
-          Discover Utilities
+          {settings.hero?.ctaPrimaryText || "Discover Utilities"}
           <svg class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
         </a>
         <a 
-          href="/download" 
-          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-center border border-[#14B8A6]/40 hover:border-[#14B8A6] bg-[#1E2937]/40 hover:bg-[#14B8A6]/10 text-[#14B8A6] hover:text-white text-xs font-semibold py-2.5 px-6 rounded-lg transition-all duration-300 backdrop-blur-sm cursor-pointer will-change-transform"
+          href={settings.hero?.ctaSecondaryHref || "/download"} 
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-center border border-[#6C5CE7]/65 hover:border-[#6C5CE7] bg-[#6C5CE7]/10 hover:bg-[#6C5CE7]/20 text-[#A5B4FC] hover:text-white text-xs font-semibold py-2.5 px-6 rounded-lg transition-all duration-300 backdrop-blur-sm cursor-pointer will-change-transform"
         >
           <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v7m0 0-3-3m3 3 3-3M3 13h10"/></svg>
+          {settings.hero?.ctaSecondaryText || "Free Trial Installer"}
+        </a>
+      </div>e="currentColor" stroke-width="2"><path d="M8 3v7m0 0-3-3m3 3 3-3M3 13h10"/></svg>
           Free Trial Installer
         </a>
       </div>
 
+
+
     </div>
 
-    <!-- Minimal Horizontal Stats Grid (Dark styled) -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 mt-6 border-t border-[#334155]/60 max-w-3xl mx-auto">
+    <!-- Stats Grid — dark backdrop prevents streak-over-stats contrast failures -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 mt-6 border-t border-[#334155]/60 max-w-3xl mx-auto bg-[#0B0F1A]/40 backdrop-blur-sm rounded-xl px-4 py-3">
       {siteStats.slice(0, 4).map((stat: any) => (
         <div class="text-center space-y-0.5">
           <div class="text-xl md:text-3xl font-extrabold text-white">{stat.value}</div>
@@ -473,13 +643,13 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
   </div>
   
   <!-- Section Divider -->
-  <div class="h-px bg-gradient-to-r from-transparent via-[#14B8A6]/15 to-transparent mt-8"></div>
+  <div class="h-px bg-gradient-to-r from-transparent via-[#6366F1]/15 to-transparent mt-8"></div>
 </section>
 
 <!-- Section I: Architectural Principles -->
-<section class="bg-[#0F172A] py-20 tech-grid relative overflow-hidden">
+<section class="bg-[#0B0F1A] py-20 tech-grid relative overflow-hidden">
   {/* Connected glow from hero */}
-  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-48 bg-[#14B8A6]/3 blur-[90px] pointer-events-none"></div>
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-48 bg-[#6366F1]/3 blur-[90px] pointer-events-none"></div>
   <div class="container-custom mx-auto px-4 relative z-10">
     <div class="text-center mb-16 animate-fade-up">
       <span class="overline-pill mb-4 mx-auto">Integrity First</span>
@@ -489,36 +659,36 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 lg:gap-12">
       <!-- Principle 1 -->
-      <div class="bg-gradient-to-b from-[#14B8A6]/5 to-[#0F172A]/20 border border-[#334155] border-l-2 border-l-[#14B8A6] p-8 rounded-xl relative overflow-hidden group hover:border-[#14B8A6]/40 hover:bg-[#14B8A6]/10 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1">
+      <div class="bg-gradient-to-b from-[#6366F1]/5 to-[#0B0F1A]/20 border border-[#334155] border-l-2 border-l-[#6366F1] p-8 rounded-xl relative overflow-hidden group hover:border-[#6366F1]/40 hover:bg-[#6366F1]/10 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1">
         <div class="flex items-center justify-between mb-5 relative z-10">
-          <span class="font-mono text-3xl font-extrabold text-[#14B8A6] drop-shadow-[0_0_15px_rgba(20, 184, 166,0.35)] select-none">01</span>
+          <span class="font-mono text-3xl font-extrabold text-[#6366F1] drop-shadow-[0_0_15px_rgba(99, 102, 241,0.35)] select-none">01</span>
           <span class="text-[8px] font-mono font-extrabold text-zinc-500 tracking-wider">SOVEREIGNTY</span>
         </div>
-        <h3 class="text-sm sm:text-base font-bold text-[#E2E8F0] mb-2.5 relative z-10 group-hover:text-[#14B8A6] transition-colors">Completely Private Run</h3>
+        <h3 class="text-sm sm:text-base font-bold text-[#E2E8F0] mb-2.5 relative z-10 group-hover:text-[#6366F1] transition-colors">Completely Private Run</h3>
         <p class="text-xs text-[#E2E8F0] leading-relaxed relative z-10">
           Your credentials and databases remain inside your security perimeter. The package compiles and runs locally on your servers, eliminating middle-man cloud risk.
         </p>
       </div>
 
       <!-- Principle 2 -->
-      <div class="bg-gradient-to-b from-[#1E2937]/10 to-[#0F172A]/20 border border-[#334155] border-l-2 border-l-[#14B8A6] p-8 rounded-xl relative overflow-hidden group hover:border-[#14B8A6]/40 hover:bg-[#1E2937]/30 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1">
+      <div class="bg-gradient-to-b from-[#1E2937]/10 to-[#0B0F1A]/20 border border-[#334155] border-l-2 border-l-[#6366F1] p-8 rounded-xl relative overflow-hidden group hover:border-[#6366F1]/40 hover:bg-[#1E2937]/30 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1">
         <div class="flex items-center justify-between mb-5 relative z-10">
-          <span class="font-mono text-3xl font-extrabold text-[#14B8A6] drop-shadow-[0_0_15px_rgba(20, 184, 166,0.35)] select-none">02</span>
+          <span class="font-mono text-3xl font-extrabold text-[#6366F1] drop-shadow-[0_0_15px_rgba(99, 102, 241,0.35)] select-none">02</span>
           <span class="text-[8px] font-mono font-bold text-zinc-500 tracking-wider">FIDELITY</span>
         </div>
-        <h3 class="text-sm sm:text-base font-bold text-[#E2E8F0] mb-2.5 relative z-10 group-hover:text-[#14B8A6] transition-colors">Byte-Perfect Delivery</h3>
+        <h3 class="text-sm sm:text-base font-bold text-[#E2E8F0] mb-2.5 relative z-10 group-hover:text-[#6366F1] transition-colors">Byte-Perfect Delivery</h3>
         <p class="text-xs text-[#E2E8F0] leading-relaxed relative z-10">
           Every document mapping is double-checksum validated. Read, write, and folder mapping structures are preserved with absolute structural fidelity.
         </p>
       </div>
 
       <!-- Principle 3 -->
-      <div class="bg-gradient-to-b from-[#F59E0B]/5 to-[#0F172A]/20 border border-[#334155] border-l-2 border-l-[#14B8A6] p-8 rounded-xl relative overflow-hidden group hover:border-[#14B8A6]/40 hover:bg-[#F59E0B]/10 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1">
+      <div class="bg-gradient-to-b from-[#F97316]/5 to-[#0B0F1A]/20 border border-[#334155] border-l-2 border-l-[#6366F1] p-8 rounded-xl relative overflow-hidden group hover:border-[#6366F1]/40 hover:bg-[#F97316]/10 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1">
         <div class="flex items-center justify-between mb-5 relative z-10">
-          <span class="font-mono text-3xl font-extrabold text-[#14B8A6] drop-shadow-[0_0_15px_rgba(20, 184, 166,0.35)] select-none">03</span>
+          <span class="font-mono text-3xl font-extrabold text-[#6366F1] drop-shadow-[0_0_15px_rgba(99, 102, 241,0.35)] select-none">03</span>
           <span class="text-[8px] font-mono font-bold text-zinc-500 tracking-wider">ASYNCHRONY</span>
         </div>
-        <h3 class="text-sm sm:text-base font-bold text-[#E2E8F0] mb-2.5 relative z-10 group-hover:text-[#14B8A6] transition-colors">Engineered Velocity</h3>
+        <h3 class="text-sm sm:text-base font-bold text-[#E2E8F0] mb-2.5 relative z-10 group-hover:text-[#6366F1] transition-colors">Engineered Velocity</h3>
         <p class="text-xs text-[#E2E8F0] leading-relaxed relative z-10">
           Utilizes advanced multi-threaded channels to queue and stream files asynchronously, safely maximizing connection bandwidth while protecting host APIs.
         </p>
@@ -527,11 +697,11 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
   </div>
   
   <!-- Section Divider -->
-  <div class="h-px bg-gradient-to-r from-transparent via-[#14B8A6]/15 to-transparent mt-20"></div>
+  <div class="h-px bg-gradient-to-r from-transparent via-[#6366F1]/15 to-transparent mt-20"></div>
 </section>
 
 <!-- Section II: Pristine Software Collection (Grid Showcase) -->
-<section class="bg-[#0F172A] py-20 relative">
+<section class="bg-[#0B0F1A] py-20 relative">
   <div class="container-custom mx-auto px-4">
     <div class="text-center mb-16 animate-fade-up">
       <span class="overline-pill mb-4 mx-auto">Production Grade</span>
@@ -541,110 +711,19 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
 
     {featured.length > 0 ? (
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {featured.map((product: Product, i: number) => {
-          const lowestPaidPrice = product.pricing?.find((p: any) => p.price > 0)?.price || 49.00;
-          return (
-            <div class={`animate-fade-up animate-fade-up-delay-${Math.min(i + 1, 6)} bg-[#0F172A]/80 backdrop-blur-xl border border-[#334155] rounded-xl p-6 md:p-8 shadow-2xl flex flex-col justify-between relative overflow-hidden group hover:border-[#14B8A6]/40 hover:bg-[#1E2937]/60 transition-all duration-300 hover:shadow-[0_0_40px_rgba(20,184,166,0.10)] hover:scale-[1.02] hover:-translate-y-1.5 will-change-transform min-h-[360px]`}>
-              <!-- Gradient top accent line —— appears on hover -->
-              <div class="card-accent-line"></div>
-
-              {/* Floating neon background accents */}
-              <div class="absolute -left-10 top-1/4 w-20 h-20 bg-[#F59E0B]/5 blur-2xl rounded-full group-hover:scale-150 transition-transform duration-700 pointer-events-none"></div>
-              <div class="absolute -right-10 bottom-1/4 w-20 h-20 bg-[#C026D3]/5 blur-2xl rounded-full group-hover:scale-150 transition-transform duration-700 pointer-events-none"></div>
-
-              <div>
-                <!-- Top Meta Row -->
-                <div class="flex items-center justify-between mb-4">
-                  {(() => {
-                    const colors = categoryColorMap[product.category] || { text: "text-[#14B8A6]", bg: "bg-[#14B8A6]/10", border: "border-[#14B8A6]/20", glow: "shadow-[0_0_15px_rgba(20, 184, 166,0.05)]" };
-                    return (
-                      <div class="flex items-center gap-3">
-                        <div class={`w-12 h-12 rounded-xl bg-[#0F172A] border border-[#334155] flex items-center justify-center text-xl transition-all ${colors.text} ${colors.glow} group-hover:border-[#14B8A6]/30`}>
-                          {categoryIconMap[product.category] || "📦"}
-                        </div>
-                        <span class={`text-[9px] tracking-wider uppercase font-bold ${colors.text} ${colors.bg} px-2.5 py-0.5 rounded border ${colors.border} font-mono`}>
-                          {product.category.replace('-', ' ')}
-                        </span>
-                      </div>
-                    );
-                  })()}
-                  <span class="text-[9px] font-mono text-zinc-500 font-semibold">
-                    v{product.version || "1.0.0"}
-                  </span>
-                </div>
-
-                <!-- Product Title -->
-                <h3 class="text-base sm:text-lg font-bold text-[#E2E8F0] mb-2.5 group-hover:text-[#14B8A6] transition-colors">
-                  <a href={`/products/${product.slug}`} class="text-inherit hover:underline">
-                    {product.name}
-                  </a>
-                </h3>
-                
-                <p class="text-[12px] text-[#E2E8F0] leading-relaxed mb-4 line-clamp-2">
-                  {product.shortDescription || product.description}
-                </p>
-
-                <!-- Technical Spec Table (Compact & Monospaced) -->
-                <div class="border-y border-[#334155]/60 py-3.5 mb-4">
-                  <div class="grid grid-cols-2 gap-y-2 text-[10px] font-mono">
-                    <div class="text-zinc-500 font-semibold uppercase tracking-wider">Target Platform</div>
-                    <div class="text-[#E2E8F0] text-right font-bold truncate max-w-[130px] ml-auto">{product.platforms?.join(', ') || "Universal Desktop"}</div>
-
-                    <div class="text-zinc-500 font-semibold uppercase tracking-wider">Encryption</div>
-                    <div class="text-[#E2E8F0] text-right font-bold">TLS 1.3 / AES-256</div>
-
-                    <div class="text-zinc-500 font-semibold uppercase tracking-wider">Formats</div>
-                    <div class="text-[#F59E0B] text-right font-bold truncate max-w-[130px] ml-auto" title={product.supportedFormats?.join(', ')}>
-                      {product.supportedFormats?.slice(0, 3).join(', ') || "PST, EML, MSG"}
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Key Features List -->
-                <div class="mb-5">
-                  <div class="text-[9px] font-mono uppercase tracking-wider text-zinc-500 mb-2">Engine Features</div>
-                  <ul class="space-y-1.5 text-[11px] text-[#E5E5E5]">
-                    {product.features?.slice(0, 2).map((feat: string) => (
-                      <li class="flex items-center gap-2">
-                        <svg class="w-3.5 h-3.5 shrink-0 text-[#14B8A6]" viewBox="0 0 16 16" fill="none">
-                          <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.35"/>
-                          <path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        <span class="truncate text-[#94A3B8]">{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              <!-- Pricing and Actions Footer -->
-              <div class="border-t border-[#334155]/60 pt-4 mt-auto flex items-center justify-between relative z-10">
-                <div>
-                  <div class="text-[8px] uppercase tracking-wider text-zinc-500 font-bold">Starting at</div>
-                  <div class="text-xl font-black text-white font-mono">${lowestPaidPrice.toFixed(2)}</div>
-                </div>
-                <div class="flex items-center gap-2">
-                  <a href={`/download?product=${product.slug}`} class="border border-[#334155] hover:border-[#14B8A6]/60 bg-[#1E2937]/50 hover:bg-[#14B8A6]/10 text-[#94A3B8] hover:text-[#14B8A6] py-2 px-3.5 rounded-lg text-[11px] min-h-[34px] flex items-center justify-center font-bold transition-all duration-300 will-change-transform">
-                    Trial
-                  </a>
-                  <a href={`/checkout?product=${product.slug}&tier=Standard`} class="bg-[#14B8A6] hover:bg-[#0D9488] text-black py-2 px-3.5 rounded-lg text-[11px] min-h-[34px] flex items-center justify-center font-extrabold transition-all duration-300 shadow-[0_0_12px_rgba(20,184,166,0.25)] hover:shadow-[0_0_20px_rgba(20,184,166,0.45)] will-change-transform">
-                    Buy Key
-                  </a>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+        {featured.map((product: Product) => (
+          <ProductCard product={product} client:load />
+        ))}
       </div>
     ) : (
-      <div class="flex flex-col items-center justify-center text-center py-20 px-6 border border-dashed border-[#14B8A6]/20 rounded-3xl bg-[#1E2937]/40 max-w-xl mx-auto my-6 relative overflow-hidden transition-all duration-300 group hover:border-[#14B8A6]/50 hover:shadow-xl hover:shadow-[rgba(0,0,0,0.3)]">
+      <div class="flex flex-col items-center justify-center text-center py-20 px-6 border border-dashed border-[#6366F1]/20 rounded-3xl bg-[#1E2937]/40 max-w-xl mx-auto my-6 relative overflow-hidden transition-all duration-300 group hover:border-[#6366F1]/50 hover:shadow-xl hover:shadow-[rgba(0,0,0,0.3)]">
         {/* Subtle Backing Glow */}
-        <div class="absolute -top-12 -left-12 w-28 h-28 bg-[#14B8A6]/5 rounded-full blur-2xl pointer-events-none"></div>
-        <div class="absolute -bottom-12 -right-12 w-28 h-28 bg-[#14B8A6]/5 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="absolute -top-12 -left-12 w-28 h-28 bg-[#6366F1]/5 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="absolute -bottom-12 -right-12 w-28 h-28 bg-[#6366F1]/5 rounded-full blur-2xl pointer-events-none"></div>
         
         {/* Cloud Disconnected Icon */}
-        <div class="relative w-16 h-16 bg-[rgba(255,255,255,0.01)] border border-[#14B8A6]/15 rounded-2xl flex items-center justify-center mb-6 shadow-sm group-hover:scale-105 transition-transform duration-300">
-          <svg class="w-7 h-7 text-[#94A3B8] group-hover:text-[#14B8A6] transition-colors duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <div class="relative w-16 h-16 bg-[rgba(255,255,255,0.01)] border border-[#6366F1]/15 rounded-2xl flex items-center justify-center mb-6 shadow-sm group-hover:scale-105 transition-transform duration-300">
+          <svg class="w-7 h-7 text-[#94A3B8] group-hover:text-[#6366F1] transition-colors duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M17.5 19A3.5 3.5 0 0 0 21 15.5c0-2.79-2.54-4.5-5-4.5-.42 0-.83.04-1.24.12C14 7.74 11.46 5 8 5c-3.87 0-7 3.13-7 7 0 2.22 1.03 4.2 2.65 5.5"/>
             <path d="M12 11v6m0 0-3-3m3 3 3-3" class="animate-bounce" style="animation-duration: 2s;"/>
             <path d="M22 2 2 22" class="stroke-red-500/80" stroke-width="2"/>
@@ -663,7 +742,7 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
         {/* Action Button */}
         <button 
           onclick="window.location.reload()" 
-          class="cursor-pointer select-none px-5 py-2 bg-[#14B8A6] hover:bg-[#0D9488] text-black rounded-lg text-[12px] font-extrabold transition-all duration-150 active:scale-[0.98] border-[#334155] flex items-center gap-1.5 shadow-[0_0_15px_rgba(20, 184, 166,0.15)]"
+          class="cursor-pointer select-none px-5 py-2 bg-[#6366F1] hover:bg-[#4F46E5] text-black rounded-lg text-[12px] font-extrabold transition-all duration-150 active:scale-[0.98] border-[#334155] flex items-center gap-1.5 shadow-[0_0_15px_rgba(99, 102, 241,0.15)]"
         >
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
@@ -678,17 +757,17 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
   </div>
   
   <!-- Section Divider -->
-  <div class="h-px bg-gradient-to-r from-transparent via-[#14B8A6]/15 to-transparent mt-20"></div>
+  <div class="h-px bg-gradient-to-r from-transparent via-[#6366F1]/15 to-transparent mt-20"></div>
 </section>
 
 
 
 <!-- Section IV: Category Suites -->
 {categories.length > 0 && (
-  <section class="bg-[#0F172A] py-20 tech-grid relative overflow-hidden">
+  <section class="bg-[#0B0F1A] py-20 tech-grid relative overflow-hidden">
     <!-- Subtle Cyan Backlight -->
     <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[200px] bg-[#F59E0B]/3 blur-[120px] rounded-full"></div>
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[200px] bg-[#F97316]/3 blur-[120px] rounded-full"></div>
     </div>
     <div class="container-custom mx-auto px-4">
       <div class="text-center mb-16 animate-fade-up">
@@ -701,18 +780,18 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
         {categories.map((cat: Category) => (
           <a
             href={`/products?category=${cat.id}`}
-            class="group bg-[#1E2937]/30 backdrop-blur border border-[#334155] p-6 rounded-xl transition-all duration-300 hover:border-[#F59E0B]/60 hover:bg-[#1E2937]/50 flex flex-col justify-between min-h-[170px] relative overflow-hidden hover:scale-[1.02] hover:-translate-y-1"
+            class="group bg-[#1E2937]/30 backdrop-blur border border-[#334155] p-6 rounded-xl transition-all duration-300 hover:border-[#F97316]/60 hover:bg-[#1E2937]/50 flex flex-col justify-between min-h-[170px] relative overflow-hidden hover:scale-[1.02] hover:-translate-y-1"
           >
             <!-- Top meta row with side-by-side icon/title alignment -->
             <div class="flex items-center gap-3.5 mb-3 relative z-10">
-              <div class="w-10 h-10 rounded-xl bg-[#0F172A] border border-[#334155] flex items-center justify-center text-lg shadow-[0_0_10px_rgba(245, 158, 11,0.05)] group-hover:border-[#F59E0B]/40 transition-all duration-300 shrink-0">
+              <div class="w-10 h-10 rounded-xl bg-[#0B0F1A] border border-[#334155] flex items-center justify-center text-lg shadow-[0_0_10px_rgba(249, 115, 22,0.05)] group-hover:border-[#F97316]/40 transition-all duration-300 shrink-0">
                 <span class="group-hover:scale-110 transition-transform">{iconMap[cat.icon] || "📦"}</span>
               </div>
               <div class="space-y-1">
-                <h3 class="text-sm font-bold text-white group-hover:text-[#F59E0B] transition-colors leading-tight">
+                <h3 class="text-sm font-bold text-white group-hover:text-[#F97316] transition-colors leading-tight">
                   {cat.label}
                 </h3>
-                <span class="text-[9px] uppercase tracking-wider text-[#F59E0B] bg-[#F59E0B]/10 px-2 py-0.5 rounded font-mono font-bold border border-[#F59E0B]/20 shadow-[0_0_10px_rgba(245, 158, 11,0.05)] inline-block">
+                <span class="text-[9px] uppercase tracking-wider text-[#F97316] bg-[#F97316]/10 px-2 py-0.5 rounded font-mono font-bold border border-[#F97316]/20 shadow-[0_0_10px_rgba(249, 115, 22,0.05)] inline-block">
                   {cat.count} files
                 </span>
               </div>
@@ -724,7 +803,7 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
               </p>
             </div>
             
-            <div class="flex items-center gap-1.5 text-[9px] uppercase tracking-wider font-bold text-[#94A3B8] group-hover:text-[#F59E0B] pt-3.5 mt-3.5 border-t border-[#334155]/60 transition-colors relative z-10">
+            <div class="flex items-center gap-1.5 text-[9px] uppercase tracking-wider font-bold text-[#94A3B8] group-hover:text-[#F97316] pt-3.5 mt-3.5 border-t border-[#334155]/60 transition-colors relative z-10">
               Discover suite <span class="transform group-hover:translate-x-1 transition-transform">→</span>
             </div>
           </a>
@@ -733,14 +812,14 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
     </div>
     
     <!-- Section Divider -->
-    <div class="h-px bg-gradient-to-r from-transparent via-[#14B8A6]/15 to-transparent mt-20"></div>
+    <div class="h-px bg-gradient-to-r from-transparent via-[#6366F1]/15 to-transparent mt-20"></div>
   </section>
 )}
 
 <!-- Section: Clients Marquee (Stripe-style animated logo strip) -->
-<section class="bg-[#0F172A] py-14 relative overflow-hidden">
+<section class="bg-[#0B0F1A] py-14 relative overflow-hidden">
   <!-- Subtle glow behind logos -->
-  <div class="absolute inset-0 bg-gradient-to-r from-[#0F172A] via-[#14B8A6]/3 to-[#0F172A] pointer-events-none"></div>
+  <div class="absolute inset-0 bg-gradient-to-r from-[#0B0F1A] via-[#6366F1]/3 to-[#0B0F1A] pointer-events-none"></div>
   <div class="container-custom mx-auto px-4 text-center mb-8">
     <p class="text-[10px] md:text-[11px] font-bold uppercase tracking-widest text-zinc-500">
       Trusted by 50,000+ engineers at leading organizations
@@ -774,10 +853,10 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
 </section>
 
 <!-- Section Divider -->
-<div class="h-px bg-gradient-to-r from-transparent via-[#14B8A6]/15 to-transparent mt-14"></div>
+<div class="h-px bg-gradient-to-r from-transparent via-[#6366F1]/15 to-transparent mt-14"></div>
 
 <!-- Section V: Guest Reviews (Endorsements) -->
-<section class="bg-[#0F172A] py-20 tech-grid">
+<section class="bg-[#0B0F1A] py-20 tech-grid">
   <div class="container-custom mx-auto px-4">
     <div class="text-center mb-16 animate-fade-up">
       <span class="overline-pill mb-4 mx-auto">Verified Reviews</span>
@@ -787,7 +866,7 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
       {testimonials.map((t: Testimonial, i: number) => (
-        <div class={`animate-fade-up animate-fade-up-delay-${Math.min(i + 1, 4)} bg-[#0F172A]/70 backdrop-blur border border-[#334155] p-6 md:p-8 rounded-xl relative flex flex-col justify-between min-h-[220px] shadow-xl transition-all duration-300 hover:border-[#14B8A6]/30 hover:bg-[#1E2937]/50 hover:scale-[1.01] hover:-translate-y-1 will-change-transform`}>
+        <div class={`animate-fade-up animate-fade-up-delay-${Math.min(i + 1, 4)} bg-[#0B0F1A]/70 backdrop-blur border border-[#334155] p-6 md:p-8 rounded-xl relative flex flex-col justify-between min-h-[220px] shadow-xl transition-all duration-300 hover:border-[#6366F1]/30 hover:bg-[#1E2937]/50 hover:scale-[1.01] hover:-translate-y-1 will-change-transform`}>
           <!-- Gradient top accent -->
           <div class="card-accent-line group-hover:opacity-100"></div>
           <div>
@@ -795,14 +874,14 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
             <div class="star-rating mb-3">
               <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
             </div>
-            <span class="text-5xl font-serif text-[#14B8A6]/25 block -mt-2 -ml-1 select-none leading-none mb-1">“</span>
+            <span class="text-5xl font-serif text-[#6366F1]/25 block -mt-2 -ml-1 select-none leading-none mb-1">“</span>
             <p class="text-[13px] leading-relaxed text-[#CBD5E1] mb-4">
               {t.content}
             </p>
           </div>
           <div class="flex items-center gap-3 pt-4 border-t border-[#1E2937]">
             <!-- Avatar with gradient background -->
-            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-[#14B8A6] to-[#0D9488] border border-[#14B8A6]/30 flex items-center justify-center text-white text-[12px] font-black shrink-0">
+            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-[#6366F1] to-[#4F46E5] border border-[#6366F1]/30 flex items-center justify-center text-white text-[12px] font-black shrink-0">
               {t.authorName?.charAt(0) || 'U'}
             </div>
             <div class="min-w-0 flex-1">
@@ -819,19 +898,19 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
   </div>
   
   <!-- Section Divider -->
-  <div class="h-px bg-gradient-to-r from-transparent via-[#14B8A6]/15 to-transparent mt-20"></div>
+  <div class="h-px bg-gradient-to-r from-transparent via-[#6366F1]/15 to-transparent mt-20"></div>
 </section>
 
 <!-- Acquisition Portal CTA -->
-<section class="bg-[#0F172A] py-20 relative overflow-hidden">
+<section class="bg-[#0B0F1A] py-20 relative overflow-hidden">
   <!-- Glowing bloom -->
   <div class="absolute inset-0 pointer-events-none overflow-hidden">
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[300px] bg-gradient-to-r from-[#14B8A6]/10 to-[#F59E0B]/6 blur-[120px] rounded-full"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[300px] bg-gradient-to-r from-[#6366F1]/10 to-[#F97316]/6 blur-[120px] rounded-full"></div>
   </div>
 
   <div class="container-custom relative z-10 text-center mx-auto px-4">
     <!-- CTA card with animated corner brackets -->
-    <div class="corner-bracket relative border border-[#334155]/80 hover:border-[#14B8A6]/30 transition-colors duration-500 p-8 md:p-12 lg:p-16 bg-gradient-to-b from-[#1E2937]/30 to-[#0F172A]/60 backdrop-blur rounded-2xl shadow-2xl">
+    <div class="corner-bracket relative border border-[#334155]/80 hover:border-[#6366F1]/30 transition-colors duration-500 p-8 md:p-12 lg:p-16 bg-gradient-to-b from-[#1E2937]/30 to-[#0B0F1A]/60 backdrop-blur rounded-2xl shadow-2xl">
 
       <span class="overline-pill mb-5 mx-auto">Acquisition Portal</span>
       <h2 class="text-3xl md:text-4xl text-white font-extrabold mb-4 mt-5 leading-tight tracking-tight">
@@ -841,26 +920,26 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
         Evaluate any tool locally without financial commitment. Full-featured trial with no time limit — acquire a license key when you're ready to deploy.
       </p>
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
-        <a href="/download" class="group inline-flex items-center justify-center gap-2 w-full sm:w-auto text-center bg-[#14B8A6] hover:bg-[#0D9488] text-black text-sm font-extrabold py-3 px-8 rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(20,184,166,0.35)] hover:shadow-[0_0_30px_rgba(20,184,166,0.55)] transform active:scale-95 cursor-pointer will-change-transform">
+        <a href="/download" class="group inline-flex items-center justify-center gap-2 w-full sm:w-auto text-center bg-[#6366F1] hover:bg-[#4F46E5] text-black text-sm font-extrabold py-3 px-8 rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(20,184,166,0.35)] hover:shadow-[0_0_30px_rgba(20,184,166,0.55)] transform active:scale-95 cursor-pointer will-change-transform">
           Download Free Trial
           <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 3v7m0 0-3-3m3 3 3-3M3 13h10"/></svg>
         </a>
-        <a href="/products" class="inline-flex items-center justify-center gap-2 w-full sm:w-auto text-center border border-[#334155] hover:border-[#14B8A6]/60 bg-[#1E2937]/30 hover:bg-[#14B8A6]/8 text-[#94A3B8] hover:text-[#14B8A6] text-sm font-semibold py-3 px-8 rounded-lg transition-all duration-300 cursor-pointer will-change-transform">
+        <a href="/products" class="inline-flex items-center justify-center gap-2 w-full sm:w-auto text-center border border-[#334155] hover:border-[#6366F1]/60 bg-[#1E2937]/30 hover:bg-[#6366F1]/8 text-[#94A3B8] hover:text-[#6366F1] text-sm font-semibold py-3 px-8 rounded-lg transition-all duration-300 cursor-pointer will-change-transform">
           Browse Collection
         </a>
       </div>
       <!-- Trust signals -->
       <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[11px] text-[#475569] font-medium">
         <span class="flex items-center gap-1.5">
-          <svg class="w-3.5 h-3.5 text-[#14B8A6]" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 4L6 11l-3-3"/></svg>
+          <svg class="w-3.5 h-3.5 text-[#6366F1]" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 4L6 11l-3-3"/></svg>
           30-day money-back guarantee
         </span>
         <span class="flex items-center gap-1.5">
-          <svg class="w-3.5 h-3.5 text-[#14B8A6]" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 4L6 11l-3-3"/></svg>
+          <svg class="w-3.5 h-3.5 text-[#6366F1]" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 4L6 11l-3-3"/></svg>
           No credit card required
         </span>
         <span class="flex items-center gap-1.5">
-          <svg class="w-3.5 h-3.5 text-[#14B8A6]" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 4L6 11l-3-3"/></svg>
+          <svg class="w-3.5 h-3.5 text-[#6366F1]" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 4L6 11l-3-3"/></svg>
           Runs 100% locally — zero cloud dependency
         </span>
       </div>
@@ -870,11 +949,11 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
 
 <style>
   .tech-grid {
-    background-color: #0F172A;
+    background-color: #0B0F1A;
     background-size: 60px 60px;
     background-image: 
-      linear-gradient(to right, rgba(20, 184, 166, 0.02) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(20, 184, 166, 0.02) 1px, transparent 1px);
+      linear-gradient(to right, rgba(99, 102, 241, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(99, 102, 241, 0.02) 1px, transparent 1px);
   }
 
   @keyframes data-flow-line {

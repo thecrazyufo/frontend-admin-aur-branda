@@ -62,7 +62,7 @@ const pricingList = (product.pricing && product.pricing.length > 0 ? product.pri
     </div>
   </section>
 
-  <section class="section bg-[#0F172A]">
+  <section class="section bg-[#0B0F1A]">
     <div class="container-custom">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         {/* Pricing Selection */}
@@ -70,9 +70,9 @@ const pricingList = (product.pricing && product.pricing.length > 0 ? product.pri
           <h2 class="text-xl font-bold text-white mb-2">Choose Your Licensing Plan</h2>
           
           {pricingList.map((tier) => (
-            <div class={`bg-[#1E2937]/30 backdrop-blur rounded-2xl border p-6 transition-all relative ${tier.popular ? "border-[#14B8A6] shadow-[0_0_30px_rgba(20, 184, 166,0.15)] bg-[#1E2937]/50" : "border-[#334155] shadow-sm"}`}>
+            <div class={`bg-[#1E2937]/30 backdrop-blur rounded-2xl border p-6 transition-all relative ${tier.popular ? "border-[#6366F1] shadow-[0_0_30px_rgba(99, 102, 241,0.15)] bg-[#1E2937]/50" : "border-[#334155] shadow-sm"}`}>
               {tier.popular && (
-                <span class="absolute -top-3 right-6 bg-[#14B8A6] text-stone-950 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow">
+                <span class="absolute -top-3 right-6 bg-[#6366F1] text-stone-950 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow">
                   Most Popular
                 </span>
               )}
@@ -81,7 +81,7 @@ const pricingList = (product.pricing && product.pricing.length > 0 ? product.pri
                 <div class="flex-1">
                   <h3 class="text-lg font-bold text-white">{tier.name}</h3>
                   {tier.mailboxes && (
-                    <span class="text-xs bg-[#0F172A] border border-[#334155] text-[#94A3B8] px-2 py-0.5 rounded-full font-medium mt-1 inline-block">
+                    <span class="text-xs bg-[#0B0F1A] border border-[#334155] text-[#94A3B8] px-2 py-0.5 rounded-full font-medium mt-1 inline-block">
                       {tier.mailboxes}
                     </span>
                   )}
@@ -116,9 +116,9 @@ const pricingList = (product.pricing && product.pricing.length > 0 ? product.pri
           ))}
 
           {/* Secure Purchase Info Card */}
-          <div class="bg-[#14B8A6]/5 border border-[#14B8A6]/20 rounded-2xl p-6">
+          <div class="bg-[#6366F1]/5 border border-[#6366F1]/20 rounded-2xl p-6">
             <div class="flex items-start gap-4">
-              <div class="w-10 h-10 rounded-xl bg-[#14B8A6]/10 flex items-center justify-center text-[#14B8A6] shrink-0 border border-[#14B8A6]/20">
+              <div class="w-10 h-10 rounded-xl bg-[#6366F1]/10 flex items-center justify-center text-[#6366F1] shrink-0 border border-[#6366F1]/20">
                 <ShieldCheck size={20} />
               </div>
               <div>
@@ -146,7 +146,7 @@ const pricingList = (product.pricing && product.pricing.length > 0 ? product.pri
                 </div>
               </li>
               <li class="flex items-start gap-3">
-                <CreditCard size={16} className="text-[#14B8A6] mt-0.5 shrink-0" />
+                <CreditCard size={16} className="text-[#6366F1] mt-0.5 shrink-0" />
                 <div>
                   <p class="text-sm font-semibold text-white">Instant Key Delivery</p>
                   <p class="text-xs text-[#94A3B8]">License keys sent automatically via email.</p>
@@ -155,10 +155,10 @@ const pricingList = (product.pricing && product.pricing.length > 0 ? product.pri
             </ul>
 
             <div class="mt-6 pt-6 border-t border-[#334155] flex justify-center gap-3">
-              <div class="w-10 h-6 bg-[#0F172A] rounded flex items-center justify-center font-bold text-[9px] text-stone-500 border border-[#334155]">VISA</div>
-              <div class="w-10 h-6 bg-[#0F172A] rounded flex items-center justify-center font-bold text-[9px] text-stone-500 border border-[#334155]">MC</div>
-              <div class="w-10 h-6 bg-[#0F172A] rounded flex items-center justify-center font-bold text-[9px] text-stone-500 border border-[#334155]">DISC</div>
-              <div class="w-10 h-6 bg-[#0F172A] rounded flex items-center justify-center font-bold text-[9px] text-stone-500 border border-[#334155]">AMEX</div>
+              <div class="w-10 h-6 bg-[#0B0F1A] rounded flex items-center justify-center font-bold text-[9px] text-stone-500 border border-[#334155]">VISA</div>
+              <div class="w-10 h-6 bg-[#0B0F1A] rounded flex items-center justify-center font-bold text-[9px] text-stone-500 border border-[#334155]">MC</div>
+              <div class="w-10 h-6 bg-[#0B0F1A] rounded flex items-center justify-center font-bold text-[9px] text-stone-500 border border-[#334155]">DISC</div>
+              <div class="w-10 h-6 bg-[#0B0F1A] rounded flex items-center justify-center font-bold text-[9px] text-stone-500 border border-[#334155]">AMEX</div>
             </div>
           </div>
 

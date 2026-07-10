@@ -1310,7 +1310,11 @@ public class DevDatabaseSeeder implements CommandLineRunner {
             new KeyFeature("kf-batch", "supportsMultipleAccounts", "Batch Migration", "Perform multiple migrations simultaneously", "brandA"),
             new KeyFeature("kf-filters", "supportsBatchCsv", "Batch CSV Import", "Filter and import migrations via a CSV file list", "brandA"),
             new KeyFeature("kf-preview", "supportsIncrementalSync", "Incremental Sync", "Migrate only new or modified items on subsequent runs", "brandA"),
-            new KeyFeature("kf-impersonation", "supportsImpersonation", "Domain Impersonation", "Administrator level domain impersonation for office migrations", "brandA")
+            new KeyFeature("kf-impersonation", "supportsImpersonation", "Domain Impersonation", "Administrator level domain impersonation for office migrations", "brandA"),
+            new KeyFeature("kf-multiple-files", "supportsMultipleFiles", "Multiple Files Support", "Allows selecting and converting multiple files simultaneously", "brandA"),
+            new KeyFeature("kf-extract-emails", "extractEmails", "Extract Emails", "Extracts and migrates all email folders (Inbox, Sent, Drafts, etc.)", "brandA"),
+            new KeyFeature("kf-extract-contacts", "extractContacts", "Extract Contacts", "Extracts and migrates contact lists, address books, and distribution lists", "brandA"),
+            new KeyFeature("kf-extract-calendars", "extractCalendars", "Extract Calendars", "Extracts and migrates calendar events, schedules, and meetings", "brandA")
         ));
     }
 

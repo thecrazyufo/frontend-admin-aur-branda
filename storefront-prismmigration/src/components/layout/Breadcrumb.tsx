@@ -7,11 +7,11 @@ interface BreadcrumbProps {
 
 export default function Breadcrumb({ items }: BreadcrumbProps) {
   return (
-    <nav aria-label="Breadcrumb" className="py-3 border-b border-[#334155] bg-[#0F172A]/40 backdrop-blur-sm">
+    <nav aria-label="Breadcrumb" className="py-3 border-b border-[#334155] bg-[#0B0F1A]/40 backdrop-blur-sm">
       <div className="container-custom">
         <ol className="flex items-center gap-1.5 text-sm flex-wrap">
           <li>
-            <a href="/" className="flex items-center text-[#94A3B8] hover:text-[#14B8A6] transition-colors">
+            <a href="/" className="flex items-center text-[#94A3B8] hover:text-[#6366F1] transition-colors">
               <Home size={14} />
             </a>
           </li>
@@ -19,7 +19,7 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
             <li key={index} className="flex items-center gap-1.5">
               <ChevronRight size={13} className="text-stone-600" />
               {item.href && index < items.length - 1 ? (
-                <a href={item.href} className="text-[#94A3B8] hover:text-[#14B8A6] transition-colors">
+                <a href={item.href} className="text-[#94A3B8] hover:text-[#6366F1] transition-colors">
                   {item.label}
                 </a>
               ) : (

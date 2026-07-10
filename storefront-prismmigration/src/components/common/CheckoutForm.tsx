@@ -160,8 +160,8 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
         </div>
 
         {/* License Key Box */}
-        <div className="bg-[#0F172A] border border-[#334155] rounded-2xl p-6 mb-8 print:bg-[#1E2937] print:border-gray-200">
-          <div className="flex items-center gap-2 text-[#14B8A6] font-bold mb-3 text-xs">
+        <div className="bg-[#0B0F1A] border border-[#334155] rounded-2xl p-6 mb-8 print:bg-[#1E2937] print:border-gray-200">
+          <div className="flex items-center gap-2 text-[#6366F1] font-bold mb-3 text-xs">
             <Key size={18} />
             <span>YOUR LICENSE KEY</span>
           </div>
@@ -169,7 +169,7 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
             <span>{result.activationKey}</span>
             <button
               onClick={handleCopyKey}
-              className="text-[#14B8A6] hover:text-[#0D9488] p-2 hover:bg-stone-850 rounded-lg transition-colors print:hidden cursor-pointer"
+              className="text-[#6366F1] hover:text-[#4F46E5] p-2 hover:bg-stone-850 rounded-lg transition-colors print:hidden cursor-pointer"
               title="Copy license key"
             >
               {copied ? <span className="text-xs text-emerald-500 font-sans">Copied!</span> : <Copy size={16} />}
@@ -193,7 +193,7 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
             </div>
           </div>
 
-          <div className="bg-[#0F172A] border border-[#334155] rounded-2xl p-5 mb-6">
+          <div className="bg-[#0B0F1A] border border-[#334155] rounded-2xl p-5 mb-6">
             <div className="flex justify-between text-xs mb-2">
               <span className="text-[#94A3B8]">Bill To:</span>
               <span className="font-medium text-white">{result.customerEmail}</span>
@@ -208,7 +208,7 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
           <div className="border border-[#334155] rounded-xl overflow-hidden mb-6">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-[#0F172A] border-b border-[#334155] text-[10px] font-semibold text-[#94A3B8] uppercase">
+                <tr className="bg-[#0B0F1A] border-b border-[#334155] text-[10px] font-semibold text-[#94A3B8] uppercase">
                   <th className="p-4">Item Description</th>
                   <th className="p-4 text-right">Price</th>
                 </tr>
@@ -221,9 +221,9 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
                   </td>
                   <td className="p-4 text-right font-medium">${result.invoice.subtotal.toFixed(2)}</td>
                 </tr>
-                <tr className="text-xs font-semibold text-white bg-[#0F172A]/40">
+                <tr className="text-xs font-semibold text-white bg-[#0B0F1A]/40">
                   <td className="p-4 text-right text-[#94A3B8]">Total Paid</td>
-                  <td className="p-4 text-right text-base text-[#14B8A6] font-bold">${result.invoice.total.toFixed(2)}</td>
+                  <td className="p-4 text-right text-base text-[#6366F1] font-bold">${result.invoice.total.toFixed(2)}</td>
                 </tr>
               </tbody>
             </table>
@@ -240,7 +240,7 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
             </button>
             <a
               href={`/download?product=${product.slug}`}
-              className="bg-[#14B8A6] hover:bg-[#0D9488] text-black py-2.5 px-6 flex items-center gap-2 text-xs font-extrabold rounded-lg transition-all duration-300 shadow-[0_0_15px_rgba(20, 184, 166,0.25)]"
+              className="bg-[#6366F1] hover:bg-[#4F46E5] text-black py-2.5 px-6 flex items-center gap-2 text-xs font-extrabold rounded-lg transition-all duration-300 shadow-[0_0_15px_rgba(99, 102, 241,0.25)]"
             >
               <Download size={15} />
               Download Installer
@@ -269,7 +269,7 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
               placeholder="e.g. john@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 bg-[#0F172A]/80 border border-[#334155] rounded-lg text-white focus:border-[#14B8A6] focus:ring-2 focus:ring-[#14B8A6]/40 focus:outline-none transition-colors text-xs"
+              className="w-full px-4 py-3 bg-[#0B0F1A]/80 border border-[#334155] rounded-lg text-white focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/40 focus:outline-none transition-colors text-xs"
             />
             <p className="text-[10px] text-stone-500 mt-1.5">
               We'll send your activation instructions and transaction invoice to this address.
@@ -287,7 +287,7 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
                 onClick={() => setPaymentMethod("STRIPE")}
                 className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl border font-semibold text-xs transition-all cursor-pointer ${
                   paymentMethod === "STRIPE"
-                    ? "border-[#14B8A6] bg-[#14B8A6]/10 text-white"
+                    ? "border-[#6366F1] bg-[#6366F1]/10 text-white"
                     : "border-[#334155] hover:border-stone-700 text-[#94A3B8]"
                 }`}
               >
@@ -299,7 +299,7 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
                 onClick={() => setPaymentMethod("PAYPAL")}
                 className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl border font-semibold text-xs transition-all cursor-pointer ${
                   paymentMethod === "PAYPAL"
-                    ? "border-[#14B8A6] bg-[#14B8A6]/10 text-white"
+                    ? "border-[#6366F1] bg-[#6366F1]/10 text-white"
                     : "border-[#334155] hover:border-stone-700 text-[#94A3B8]"
                 }`}
               >
@@ -310,7 +310,7 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
 
           {/* Payment Detail Simulator */}
           {paymentMethod === "STRIPE" ? (
-            <div className="bg-[#0F172A]/40 border border-[#334155] rounded-xl p-5 space-y-4">
+            <div className="bg-[#0B0F1A]/40 border border-[#334155] rounded-xl p-5 space-y-4">
               <div className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest mb-1">
                 💳 Secure Stripe Sandbox
               </div>
@@ -323,7 +323,7 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
                   value={cardName}
                   onChange={(e) => setCardName(e.target.value)}
                   required
-                  className="w-full px-3 py-2 bg-[#0F172A] border border-[#334155] rounded-lg text-xs text-white focus:outline-none focus:ring-2 focus:ring-[#14B8A6]/40 focus:border-transparent"
+                  className="w-full px-3 py-2 bg-[#0B0F1A] border border-[#334155] rounded-lg text-xs text-white focus:outline-none focus:ring-2 focus:ring-[#6366F1]/40 focus:border-transparent"
                 />
               </div>
 
@@ -335,7 +335,7 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
                     value={cardNumber}
                     onChange={(e) => setCardNumber(e.target.value)}
                     required
-                    className="w-full px-3 py-2 bg-[#0F172A] border border-[#334155] rounded-lg text-xs text-white focus:outline-none focus:ring-2 focus:ring-[#14B8A6]/40 focus:border-transparent"
+                    className="w-full px-3 py-2 bg-[#0B0F1A] border border-[#334155] rounded-lg text-xs text-white focus:outline-none focus:ring-2 focus:ring-[#6366F1]/40 focus:border-transparent"
                   />
                 </div>
                 <div>
@@ -345,13 +345,13 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
                     value={cardCvc}
                     onChange={(e) => setCardCvc(e.target.value)}
                     required
-                    className="w-full px-3 py-2 bg-[#0F172A] border border-[#334155] rounded-lg text-xs text-white focus:outline-none focus:ring-2 focus:ring-[#14B8A6]/40 focus:border-transparent"
+                    className="w-full px-3 py-2 bg-[#0B0F1A] border border-[#334155] rounded-lg text-xs text-white focus:outline-none focus:ring-2 focus:ring-[#6366F1]/40 focus:border-transparent"
                   />
                 </div>
               </div>
             </div>
           ) : (
-            <div className="bg-[#0F172A]/40 border border-[#334155] rounded-xl p-5 text-center">
+            <div className="bg-[#0B0F1A]/40 border border-[#334155] rounded-xl p-5 text-center">
               <div className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest mb-2">
                 🛍️ PayPal Checkout Sandbox
               </div>
@@ -371,7 +371,7 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
           <button
             type="submit"
             disabled={loading}
-            className="w-full text-center bg-[#14B8A6] hover:bg-[#0D9488] text-black text-xs font-bold py-3.5 px-6 rounded-lg transition-all duration-300 shadow-[0_0_15px_rgba(20, 184, 166,0.25)] cursor-pointer flex items-center justify-center gap-2"
+            className="w-full text-center bg-[#6366F1] hover:bg-[#4F46E5] text-black text-xs font-bold py-3.5 px-6 rounded-lg transition-all duration-300 shadow-[0_0_15px_rgba(99, 102, 241,0.25)] cursor-pointer flex items-center justify-center gap-2"
           >
             {loading ? (
               <>
@@ -394,7 +394,7 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
           <h3 className="font-bold text-white text-base mb-4">Order Summary</h3>
 
           <div className="flex items-start gap-4 pb-6 border-b border-[#334155]">
-            <div className="w-12 h-12 rounded-xl bg-[#0F172A] border border-[#334155] text-[#14B8A6] flex items-center justify-center shadow-md shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-[#0B0F1A] border border-[#334155] text-[#6366F1] flex items-center justify-center shadow-md shrink-0">
               <Download size={20} />
             </div>
             <div>
@@ -416,21 +416,21 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
 
           <div className="pt-6 border-t border-[#334155] flex justify-between items-baseline">
             <span className="font-bold text-white text-xs">Total Price</span>
-            <span className="font-bold text-xl text-[#14B8A6]">${selectedTier.price.toFixed(2)}</span>
+            <span className="font-bold text-xl text-[#6366F1]">${selectedTier.price.toFixed(2)}</span>
           </div>
         </div>
 
         {/* Security Assurances */}
-        <div className="bg-[#0F172A]/45 border border-[#334155] rounded-xl p-5 space-y-4">
+        <div className="bg-[#0B0F1A]/45 border border-[#334155] rounded-xl p-5 space-y-4">
           <div className="flex items-start gap-3">
-            <ShieldCheck size={16} className="text-[#14B8A6] mt-0.5" />
+            <ShieldCheck size={16} className="text-[#6366F1] mt-0.5" />
             <div>
               <p className="text-xs font-bold text-white">256-Bit SSL Encryption</p>
               <p className="text-[10px] text-[#94A3B8] mt-0.5">Your payment details are protected with bank-grade security protocols.</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
-            <CheckCircle size={16} className="text-[#14B8A6] mt-0.5" />
+            <CheckCircle size={16} className="text-[#6366F1] mt-0.5" />
             <div>
               <p className="text-xs font-bold text-white">Instant Key Generation</p>
               <p className="text-[10px] text-[#94A3B8] mt-0.5">License key is rendered immediately on screen upon successful payment.</p>

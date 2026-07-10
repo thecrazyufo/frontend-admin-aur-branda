@@ -259,6 +259,7 @@ function SidebarNavItems({
   sidebarOpen
 }: SidebarNavItemsProps) {
   const searchParams = useSearchParams();
+  const [isBrandNavExpanded, setIsBrandNavExpanded] = useState(true);
   return (
     <>
       {navItems.map((item, idx) => {
@@ -302,6 +303,79 @@ function SidebarNavItems({
                 <Suspense fallback={null}>
                   <SidebarOwnerSubNav ownerStats={ownerStats} pathname={pathname} activeBrands={activeBrands} />
                 </Suspense>
+              )}
+            </div>
+          );
+        }
+
+        const isBrandManager = item.label === "Brand Manager";
+        if (isBrandManager) {
+          const subTabs = [
+            { id: "identity", label: "Identity & Profile", icon: "🏠" },
+            { id: "theme", label: "Theme & Branding", icon: "🎨" },
+            { id: "contact", label: "Support & Socials", icon: "📞" },
+            { id: "navigation", label: "Navigation Links", icon: "🔗", divider: true },
+            { id: "announcement", label: "Announcement Bar", icon: "📢" },
+            { id: "hero", label: "Home Hero Block", icon: "✨", divider: true },
+            { id: "trust", label: "Company & Trust", icon: "🤝" },
+            { id: "pricing", label: "Pricing Matrix", icon: "💳", divider: true },
+            { id: "about", label: "About Page Config", icon: "ℹ️" },
+            { id: "careers", label: "Careers Page", icon: "💼" },
+            { id: "clients", label: "Our Clients", icon: "👥" },
+            { id: "legal", label: "Legal & Policies", icon: "⚖️" }
+          ];
+
+          const isPageActive = pathname === `/${siteId}/brand`;
+
+          return (
+            <div key={idx} className="space-y-0.5">
+              <div
+                className={`flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs font-semibold cursor-pointer transition-all relative ${isPageActive ? "text-white bg-zinc-700 font-semibold" : "text-zinc-300 hover:text-white hover:bg-zinc-800/50"}`}
+                onClick={() => setIsBrandNavExpanded(!isBrandNavExpanded)}
+              >
+                <div className="flex items-center gap-2.5">
+                  <span className="shrink-0 opacity-80">{item.icon}</span>
+                  {sidebarOpen && <span>{item.label}</span>}
+                </div>
+                {sidebarOpen && (
+                  <svg
+                    width="8"
+                    height="8"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    className={`transition-transform duration-200 ${isBrandNavExpanded ? "rotate-0" : "-rotate-90"} opacity-50`}
+                  >
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                )}
+              </div>
+
+              {sidebarOpen && isBrandNavExpanded && (
+                <div className="flex flex-col gap-0.5 border-l border-zinc-700 pl-3.5 ml-4 mt-1 mb-2">
+                  {subTabs.map((sub) => {
+                    const subHref = `/${siteId}/brand?tab=${sub.id}`;
+                    const isSubActive = isPageActive && currentTab === sub.id;
+
+                    return (
+                      <div key={sub.id} className="w-full">
+                        {sub.divider && <div className="border-t border-zinc-750/70 my-1.5 w-[90%]" />}
+                        <Link
+                          href={subHref}
+                          className={`flex items-center gap-2 px-2.5 py-1 rounded-md text-[11px] font-medium transition-all ${
+                            isSubActive 
+                              ? "text-white bg-zinc-800 font-semibold shadow-sm ring-1 ring-zinc-700/40" 
+                              : "text-zinc-300 hover:text-white hover:bg-zinc-800/55"
+                          }`}
+                        >
+                          <span className="text-[10.5px] shrink-0 opacity-100">{sub.icon}</span>
+                          <span className="truncate">{sub.label}</span>
+                        </Link>
+                      </div>
+                    );
+                  })}
+                </div>
               )}
             </div>
           );
