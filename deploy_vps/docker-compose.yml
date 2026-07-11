@@ -32,6 +32,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db-postgres:5432/software_platform
       SPRING_DATASOURCE_USERNAME: admin
       SPRING_DATASOURCE_PASSWORD: UfoCrazySecurePass2026!
+      CORS_ALLOWED_ORIGIN_PATTERNS: "https://*.vercel.app,http://localhost:[*],http://*.thecrazyufo.in:[*],https://*.thecrazyufo.in"
     depends_on:
       db-postgres:
         condition: service_healthy
