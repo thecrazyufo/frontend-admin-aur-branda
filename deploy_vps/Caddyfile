@@ -1,4 +1,4 @@
-api.thecrazyufo.in {
+http://api.thecrazyufo.in, http://64.227.150.88 {
     reverse_proxy tenant-backend:8080
     encode gzip
 }
