@@ -24,6 +24,8 @@ services:
     image: tenant-backend:latest
     container_name: software_tenant_backend
     restart: always
+    ports:
+      - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: prod
       JWT_SECRET: 7a3f8c2d1e6b9a4f0e5c8b2d7a1e4f9c3b6a0d8e2f5c9b4a7e1d6c3f0b8a5e2
