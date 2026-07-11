@@ -1,4 +1,4 @@
-http://api.thecrazyufo.in, http://64.227.150.88 {
+64-227-150-88.nip.io {
     reverse_proxy tenant-backend:8080
     encode gzip
 }
