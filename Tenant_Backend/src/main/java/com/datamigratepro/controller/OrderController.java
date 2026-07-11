@@ -34,6 +34,52 @@ public class OrderController {
     @Autowired
     private com.datamigratepro.service.EmailService emailService;
 
+    @Autowired
+    private com.datamigratepro.repository.CouponRepository couponRepository;
+
+    private double calculateDiscountedAmount(String couponCode, String siteId, double baseAmount) {
+        if (couponCode == null || couponCode.isBlank()) {
+            return baseAmount;
+        }
+        Optional<Coupon> couponOpt = couponRepository.findByCodeAndSiteId(couponCode.toUpperCase(), siteId);
+        if (couponOpt.isPresent()) {
+            Coupon coupon = couponOpt.get();
+            if (coupon.isActive() && (coupon.getExpiresAt() == null || coupon.getExpiresAt().isAfter(LocalDateTime.now()))) {
+                double discount = baseAmount * (coupon.getDiscountPercentage() / 100.0);
+                return baseAmount - discount;
+            }
+        }
+        return baseAmount;
+    }
+
+    private double calculateSalesTax(String country, String state, double subtotal) {
+        if (subtotal <= 0 || country == null || country.isBlank()) return 0.0;
+        
+        String cleanCountry = country.trim().toUpperCase();
+        String cleanState = state != null ? state.trim().toUpperCase() : "";
+
+        if (cleanCountry.equals("US") || cleanCountry.equals("USA") || cleanCountry.equals("UNITED STATES")) {
+            if (cleanState.equals("TX") || cleanState.equals("TEXAS")) return 0.0825; // 8.25% Texas
+            if (cleanState.equals("NY") || cleanState.equals("NEW YORK")) return 0.08875; // 8.875% NY
+            if (cleanState.equals("CA") || cleanState.equals("CALIFORNIA")) return 0.0725; // 7.25% CA
+            if (cleanState.equals("WA") || cleanState.equals("WASHINGTON")) return 0.065; // 6.5% WA
+            return 0.06; // Standard US remote sales tax estimate
+        }
+        
+        // EU VAT Standard rates
+        if (cleanCountry.equals("DE") || cleanCountry.equals("GERMANY")) return 0.19; // Germany
+        if (cleanCountry.equals("FR") || cleanCountry.equals("FRANCE")) return 0.20; // France
+        if (cleanCountry.equals("IT") || cleanCountry.equals("ITALY")) return 0.22; // Italy
+        if (cleanCountry.equals("ES") || cleanCountry.equals("SPAIN")) return 0.21; // Spain
+        if (cleanCountry.equals("NL") || cleanCountry.equals("NETHERLANDS")) return 0.21; // Netherlands
+        
+        // UK & India
+        if (cleanCountry.equals("GB") || cleanCountry.equals("UK") || cleanCountry.equals("UNITED KINGDOM")) return 0.20;
+        if (cleanCountry.equals("IN") || cleanCountry.equals("INDIA")) return 0.18; // 18% GST on software
+
+        return 0.0;
+    }
+
     @PostMapping("/complete")
     public ResponseEntity<Map<String, Object>> completeCheckout(@RequestBody Map<String, String> request) {
         String siteId = request.get("siteId");
@@ -46,6 +92,16 @@ public class OrderController {
         String tierName = request.get("pricingTierName");
         String email = request.get("customerEmail");
         String paymentMethod = request.getOrDefault("paymentMethod", "STRIPE");
+        String couponCode = request.get("couponCode");
+        
+        String billingName = request.get("billingName");
+        String billingCompany = request.get("billingCompany");
+        String billingAddress = request.get("billingAddress");
+        String billingCity = request.get("billingCity");
+        String billingState = request.get("billingState");
+        String billingZip = request.get("billingZip");
+        String billingCountry = request.get("billingCountry");
+        String taxId = request.get("taxId");
 
         if (productId == null || tierName == null || email == null) {
             return ResponseEntity.badRequest().body(Map.of("error", "productId, pricingTierName, and customerEmail are required"));
@@ -73,12 +129,17 @@ public class OrderController {
                 }
             }
         }
-        double amount = selectedTier != null ? selectedTier.getPrice() : 49.00;
+        double baseAmount = selectedTier != null ? selectedTier.getPrice() : 49.00;
+        double subtotal = calculateDiscountedAmount(couponCode, siteId, baseAmount);
+        double taxRate = calculateSalesTax(billingCountry, billingState, subtotal);
+        double taxAmount = subtotal * taxRate;
+        double amount = subtotal + taxAmount;
 
         // Generate Order ID
         String orderId = "ORD-" + (100000 + new Random().nextInt(900000));
 
-        Order order = processSuccessfulOrder(siteId, product.getId(), tierName, email, paymentMethod, orderId, amount);
+        Order order = processSuccessfulOrder(siteId, product.getId(), tierName, email, paymentMethod, orderId, amount,
+            billingName, billingCompany, billingAddress, billingCity, billingState, billingZip, billingCountry, taxId, taxAmount, taxRate);
         return ResponseEntity.ok(buildOrderResponseMap(order));
     }
 
@@ -95,6 +156,10 @@ public class OrderController {
         String email = request.get("customerEmail");
         String successUrl = request.get("successUrl");
         String cancelUrl = request.get("cancelUrl");
+        String couponCode = request.get("couponCode");
+        
+        String billingCountry = request.get("billingCountry");
+        String billingState = request.get("billingState");
 
         if (productId == null || tierName == null || email == null || successUrl == null || cancelUrl == null) {
             return ResponseEntity.badRequest().body(Map.of("error", "productId, pricingTierName, customerEmail, successUrl, and cancelUrl are required"));
@@ -122,7 +187,11 @@ public class OrderController {
                 }
             }
         }
-        double amount = selectedTier != null ? selectedTier.getPrice() : 49.00;
+        double baseAmount = selectedTier != null ? selectedTier.getPrice() : 49.00;
+        double subtotal = calculateDiscountedAmount(couponCode, siteId, baseAmount);
+        double taxRate = calculateSalesTax(billingCountry, billingState, subtotal);
+        double taxAmount = subtotal * taxRate;
+        double amount = subtotal + taxAmount;
 
         Map<String, Object> session = stripeService.createCheckoutSession(
                 product.getId(),
@@ -142,7 +211,17 @@ public class OrderController {
     public ResponseEntity<Map<String, Object>> confirmStripe(@RequestBody Map<String, String> request) {
         String sessionId = request.get("sessionId");
         String siteId = request.get("siteId");
+        String couponCode = request.get("couponCode");
         
+        String billingName = request.get("billingName");
+        String billingCompany = request.get("billingCompany");
+        String billingAddress = request.get("billingAddress");
+        String billingCity = request.get("billingCity");
+        String billingState = request.get("billingState");
+        String billingZip = request.get("billingZip");
+        String billingCountry = request.get("billingCountry");
+        String taxId = request.get("taxId");
+
         if (sessionId == null || sessionId.isBlank() || siteId == null || siteId.isBlank()) {
             return ResponseEntity.badRequest().body(Map.of("error", "sessionId and siteId are required"));
         }
@@ -166,16 +245,44 @@ public class OrderController {
         
         // Fallback amount parsing
         double amount = 49.00;
+        double taxRate = calculateSalesTax(billingCountry, billingState, 1.0);
+        double taxAmount = 0.0;
         try {
             String amtStr = stripeDetails.get("amount");
-            if (amtStr != null) amount = Double.parseDouble(amtStr);
+            if (amtStr != null) {
+                amount = Double.parseDouble(amtStr);
+                double subtotal = amount / (1.0 + taxRate);
+                taxAmount = amount - subtotal;
+            } else {
+                // Fetch product details
+                Optional<Product> prodOpt = productRepository.findById(productId);
+                if (prodOpt.isEmpty()) {
+                    prodOpt = productRepository.findBySlugAndSiteId(productId, siteId);
+                }
+                if (prodOpt.isPresent()) {
+                    Product product = prodOpt.get();
+                    if (product.getPricing() != null) {
+                        for (PricingTier tier : product.getPricing()) {
+                            if (tier.getName().equalsIgnoreCase(tierName)) {
+                                double baseAmount = tier.getPrice();
+                                double subtotal = calculateDiscountedAmount(couponCode, siteId, baseAmount);
+                                taxRate = calculateSalesTax(billingCountry, billingState, subtotal);
+                                taxAmount = subtotal * taxRate;
+                                amount = subtotal + taxAmount;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
         } catch (Exception ignored) {}
 
         if (email == null || productId == null || tierName == null) {
             return ResponseEntity.badRequest().body(Map.of("error", "Session detail lookup failed. Please specify customerEmail, productId, and pricingTierName in the fallback request body."));
         }
 
-        Order order = processSuccessfulOrder(siteId, productId, tierName, email, "STRIPE", sessionId, amount);
+        Order order = processSuccessfulOrder(siteId, productId, tierName, email, "STRIPE", sessionId, amount,
+            billingName, billingCompany, billingAddress, billingCity, billingState, billingZip, billingCountry, taxId, taxAmount, taxRate);
         return ResponseEntity.ok(buildOrderResponseMap(order));
     }
 
@@ -190,6 +297,10 @@ public class OrderController {
         String productId = request.get("productId");
         String tierName = request.get("pricingTierName");
         String email = request.get("customerEmail");
+        String couponCode = request.get("couponCode");
+        
+        String billingCountry = request.get("billingCountry");
+        String billingState = request.get("billingState");
 
         if (productId == null || tierName == null || email == null) {
             return ResponseEntity.badRequest().body(Map.of("error", "productId, pricingTierName, and customerEmail are required"));
@@ -217,7 +328,11 @@ public class OrderController {
                 }
             }
         }
-        double amount = selectedTier != null ? selectedTier.getPrice() : 49.00;
+        double baseAmount = selectedTier != null ? selectedTier.getPrice() : 49.00;
+        double subtotal = calculateDiscountedAmount(couponCode, siteId, baseAmount);
+        double taxRate = calculateSalesTax(billingCountry, billingState, subtotal);
+        double taxAmount = subtotal * taxRate;
+        double amount = subtotal + taxAmount;
 
         String returnUrl = request.get("returnUrl");
         String cancelUrl = request.get("cancelUrl");
@@ -244,7 +359,17 @@ public class OrderController {
     public ResponseEntity<Map<String, Object>> capturePaypalOrder(@RequestBody Map<String, String> request) {
         String orderId = request.get("paypalOrderId");
         String siteId = request.get("siteId");
+        String couponCode = request.get("couponCode");
         
+        String billingName = request.get("billingName");
+        String billingCompany = request.get("billingCompany");
+        String billingAddress = request.get("billingAddress");
+        String billingCity = request.get("billingCity");
+        String billingState = request.get("billingState");
+        String billingZip = request.get("billingZip");
+        String billingCountry = request.get("billingCountry");
+        String taxId = request.get("taxId");
+
         if (orderId == null || orderId.isBlank() || siteId == null || siteId.isBlank()) {
             return ResponseEntity.badRequest().body(Map.of("error", "paypalOrderId and siteId are required"));
         }
@@ -275,19 +400,26 @@ public class OrderController {
             productOpt = productRepository.findBySlugAndSiteId(productId, siteId);
         }
         double amount = 49.00;
+        double taxRate = calculateSalesTax(billingCountry, billingState, amount);
+        double taxAmount = 0.0;
         if (productOpt.isPresent()) {
             Product product = productOpt.get();
             if (product.getPricing() != null) {
                 for (PricingTier tier : product.getPricing()) {
                     if (tier.getName().equalsIgnoreCase(tierName)) {
-                        amount = tier.getPrice();
+                        double baseAmount = tier.getPrice();
+                        double subtotal = calculateDiscountedAmount(couponCode, siteId, baseAmount);
+                        taxRate = calculateSalesTax(billingCountry, billingState, subtotal);
+                        taxAmount = subtotal * taxRate;
+                        amount = subtotal + taxAmount;
                         break;
                     }
                 }
             }
         }
 
-        Order order = processSuccessfulOrder(siteId, productId, tierName, email, "PAYPAL", orderId, amount);
+        Order order = processSuccessfulOrder(siteId, productId, tierName, email, "PAYPAL", orderId, amount,
+            billingName, billingCompany, billingAddress, billingCity, billingState, billingZip, billingCountry, taxId, taxAmount, taxRate);
         return ResponseEntity.ok(buildOrderResponseMap(order));
     }
 
@@ -298,7 +430,17 @@ public class OrderController {
             String customerEmail, 
             String paymentMethod, 
             String externalOrderId, 
-            double amount) {
+            double amount,
+            String billingName,
+            String billingCompany,
+            String billingAddress,
+            String billingCity,
+            String billingState,
+            String billingZip,
+            String billingCountry,
+            String taxId,
+            double taxAmount,
+            double taxRate) {
         
         TenantContext.setCurrentTenant(siteId);
 
@@ -325,7 +467,6 @@ public class OrderController {
             }
         }
 
-        double finalAmount = selectedTier != null ? selectedTier.getPrice() : amount;
         String period = selectedTier != null ? selectedTier.getPeriod() : "lifetime";
 
         // Generate License Key
@@ -367,11 +508,24 @@ public class OrderController {
         order.setProductId(product.getId());
         order.setProductName(product.getName());
         order.setPricingTierName(pricingTierName);
-        order.setAmount(finalAmount);
+        order.setAmount(amount);
         order.setCurrency("USD");
         order.setPaymentStatus("PAID");
         order.setPaymentMethod(paymentMethod.toUpperCase());
         order.setActivationKey(activationKey);
+        
+        // Billing details
+        order.setBillingName(billingName);
+        order.setBillingCompany(billingCompany);
+        order.setBillingAddress(billingAddress);
+        order.setBillingCity(billingCity);
+        order.setBillingState(billingState);
+        order.setBillingZip(billingZip);
+        order.setBillingCountry(billingCountry);
+        order.setTaxId(taxId);
+        order.setTaxAmount(taxAmount);
+        order.setTaxRate(taxRate);
+
         order.setCreatedAt(LocalDateTime.now());
         order.setSiteId(siteId);
         orderRepository.save(order);
@@ -398,6 +552,17 @@ public class OrderController {
         response.put("paymentMethod", order.getPaymentMethod());
         response.put("activationKey", order.getActivationKey());
         response.put("createdAt", order.getCreatedAt().toString());
+        
+        response.put("billingName", order.getBillingName());
+        response.put("billingCompany", order.getBillingCompany());
+        response.put("billingAddress", order.getBillingAddress());
+        response.put("billingCity", order.getBillingCity());
+        response.put("billingState", order.getBillingState());
+        response.put("billingZip", order.getBillingZip());
+        response.put("billingCountry", order.getBillingCountry());
+        response.put("taxId", order.getTaxId());
+        response.put("taxAmount", order.getTaxAmount());
+        response.put("taxRate", order.getTaxRate());
 
         // Simple invoice details
         Map<String, Object> invoice = new HashMap<>();
@@ -405,8 +570,8 @@ public class OrderController {
         invoice.put("issueDate", order.getCreatedAt().toString().substring(0, 10));
         invoice.put("billingEmail", order.getCustomerEmail());
         invoice.put("itemName", order.getProductName() + " - " + order.getPricingTierName() + " Plan");
-        invoice.put("subtotal", order.getAmount());
-        invoice.put("tax", 0.00);
+        invoice.put("subtotal", order.getAmount() - order.getTaxAmount());
+        invoice.put("tax", order.getTaxAmount());
         invoice.put("total", order.getAmount());
         response.put("invoice", invoice);
 

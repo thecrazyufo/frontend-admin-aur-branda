@@ -396,6 +396,32 @@ export const AdminLicenseAPI = {
   revoke: (id: string) => adminPost<LicenseKey>(`/licensing-admin/revoke/${id}`, {}),
   reactivate: (id: string) => adminPost<LicenseKey>(`/licensing-admin/reactivate/${id}`, {}),
   resetActivations: (id: string) => adminPost<LicenseKey>(`/licensing-admin/reset/${id}`, {}),
+  resendEmail: (id: string) => adminPost<{ message: string }>(`/licensing-admin/resend/${id}`, {}),
+  downloadInvoice: async (orderId: string) => {
+    const cid = getCorrelationId();
+    const siteId = getSelectedSiteId();
+    const url = `${API_BASE}/orders/${orderId}/invoice/pdf?siteId=${siteId}`;
+    const token = getAdminToken();
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "X-Tenant-ID": siteId,
+        "siteId": siteId,
+        "X-Correlation-ID": cid,
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      }
+    });
+    if (!response.ok) throw new Error("Failed to download PDF invoice.");
+    const blob = await response.blob();
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.setAttribute("download", `invoice-${orderId}.pdf`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(downloadUrl);
+  }
 };
 
 export const AdminDesktopLicenseAPI = {
@@ -461,5 +487,21 @@ export const AdminRegistryAPI = {
   createKeyFeature: (data: Partial<KeyFeature>) => adminPost<KeyFeature>("/registry/key-features", data),
   updateKeyFeature: (id: string, data: Partial<KeyFeature>) => adminPut<KeyFeature>(`/registry/key-features/${id}`, data),
   deleteKeyFeature: (id: string) => adminDelete(`/registry/key-features/${id}`),
+};
+
+export interface Coupon {
+  id: string;
+  code: string;
+  discountPercentage: number;
+  active: boolean;
+  expiresAt?: string;
+  siteId: string;
+}
+
+export const AdminCouponAPI = {
+  getAll: () => adminGet<Coupon[]>("/coupons"),
+  create: (data: Partial<Coupon>) => adminPost<Coupon>("/coupons", data),
+  update: (id: string, data: Partial<Coupon>) => adminPut<Coupon>(`/coupons/${id}`, data),
+  delete: (id: string) => adminDelete(`/coupons/${id}`),
 };
 

@@ -8,6 +8,8 @@ import com.datamigratepro.repository.ActivationRepository;
 import com.datamigratepro.repository.LicenseActivationRepository;
 import com.datamigratepro.repository.LicenseKeyRepository;
 import com.datamigratepro.repository.LicenseRepository;
+import com.datamigratepro.repository.OrderRepository;
+import com.datamigratepro.entity.Order;
 import com.datamigratepro.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +35,15 @@ public class LicenseController {
 
     @Autowired
     private ActivationRepository activationRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
+    private com.datamigratepro.service.EmailService emailService;
+
+    @Autowired
+    private com.datamigratepro.service.PdfGenerationService pdfGenerationService;
 
     // ─── PUBLIC CLIENT API
     // ────────────────────────────────────────────────────────
@@ -113,6 +124,13 @@ public class LicenseController {
             license.getActivations().add(activation);
             license.setMaxDevices(Math.max(0, license.getMaxDevices() - 1));
             licenseKeyRepository.save(license); // Saves key & cascaded activation
+
+            // Trigger activation alert email with remaining slots
+            try {
+                emailService.sendLicenseActivationAlertEmail(license, deviceName, license.getMaxDevices());
+            } catch (Exception e) {
+                System.err.println("Failed to send activation email alert: " + e.getMessage());
+            }
         }
 
         // Calculate days remaining
@@ -237,6 +255,33 @@ public class LicenseController {
         license.getActivations().clear();
         LicenseKey saved = licenseKeyRepository.save(license);
         return ResponseEntity.ok(saved);
+    }
+
+    @PostMapping("/licensing-admin/resend/{id}")
+    public ResponseEntity<Map<String, String>> resendLicenseEmail(@PathVariable String id) {
+        Optional<LicenseKey> licenseOpt = licenseKeyRepository.findById(id);
+        if (licenseOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        LicenseKey license = licenseOpt.get();
+        SecurityUtils.checkAccess(license.getSiteId());
+
+        if (license.getOrderId() == null || license.getOrderId().isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "No Order ID associated with this license key."));
+        }
+
+        Optional<Order> orderOpt = orderRepository.findByOrderId(license.getOrderId());
+        if (orderOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Order record not found for Order ID: " + license.getOrderId()));
+        }
+
+        Order order = orderOpt.get();
+        try {
+            emailService.sendInvoiceEmail(order);
+            return ResponseEntity.ok(Map.of("message", "License email resent successfully to " + order.getCustomerEmail()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Failed to send email: " + e.getMessage()));
+        }
     }
 
     // ─── DESKTOP LICENSE ADMIN APIs
@@ -367,5 +412,22 @@ public class LicenseController {
             }
         }
         return generateValidPart(targetRemainder);
+    }
+
+    @GetMapping("/orders/{orderId}/invoice/pdf")
+    public ResponseEntity<byte[]> downloadInvoicePdf(@PathVariable String orderId) {
+        Optional<Order> orderOpt = orderRepository.findByOrderId(orderId);
+        if (orderOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Order order = orderOpt.get();
+        SecurityUtils.checkAccess(order.getSiteId());
+
+        byte[] pdfBytes = pdfGenerationService.generateInvoicePdf(order);
+        
+        return ResponseEntity.ok()
+                .header("Content-Type", "application/pdf")
+                .header("Content-Disposition", "attachment; filename=\"invoice-" + orderId + ".pdf\"")
+                .body(pdfBytes);
     }
 }

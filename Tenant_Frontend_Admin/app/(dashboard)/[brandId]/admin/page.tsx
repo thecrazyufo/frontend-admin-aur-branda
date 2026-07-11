@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState, FormEvent, Fragment } from"react";
-import { useParams } from"next/navigation";
-import { AdminLicenseAPI, AdminDesktopLicenseAPI, AdminProductAPI } from"@/services/api";
-import { LicenseKey, DesktopLicense } from"@/types/license";
-import { Product } from"@/types/product";
+import { useEffect, useState, FormEvent, Fragment } from "react";
+import { useParams } from "next/navigation";
+import { AdminLicenseAPI, AdminDesktopLicenseAPI, AdminProductAPI, AdminCouponAPI, Coupon } from "@/services/api";
+import { LicenseKey, DesktopLicense } from "@/types/license";
+import { Product } from "@/types/product";
 import { Button } from"@/components/ui/Button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from"@/components/ui/Card";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from"@/components/ui/Table";
@@ -17,18 +17,29 @@ export default function BrandLicensesPage() {
  const brandId = (params?.brandId as string) ||"";
 
  // Tabs
- const [activeTab, setActiveTab] = useState<"desktop" |"web">("desktop");
+ const [activeTab, setActiveTab] = useState<"desktop" | "web" | "coupons">("desktop");
 
  // Data state
  const [desktopLicenses, setDesktopLicenses] = useState<DesktopLicense[]>([]);
  const [webLicenses, setWebLicenses] = useState<LicenseKey[]>([]);
  const [products, setProducts] = useState<Product[]>([]);
+ const [coupons, setCoupons] = useState<Coupon[]>([]);
  
  // Loading & status
  const [loading, setLoading] = useState(true);
  const [actionLoading, setActionLoading] = useState<string | null>(null);
  const [successMsg, setSuccessMsg] = useState<string | null>(null);
  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+ // Coupon Form state
+ const [couponForm, setCouponForm] = useState({
+   code: "",
+   discountPercentage: 10,
+   active: true,
+   expiresAt: ""
+ });
+ const [showCouponModal, setShowCouponModal] = useState(false);
+ const [editingCoupon, setEditingCoupon] = useState<Coupon | null>(null);
 
  // Search & Filter
  const [searchTerm, setSearchTerm] = useState("");
@@ -71,36 +82,38 @@ export default function BrandLicensesPage() {
  setDesktopForm(prev => ({ ...prev, brandPrefix: activePrefix }));
  }, [brandId, activePrefix]);
 
- // Load licenses and products
+ // Load licenses, products and coupons
  useEffect(() => {
- async function loadData() {
- try {
- setLoading(true);
- setErrorMsg(null);
- const [desktopList, webList, productList] = await Promise.all([
- AdminDesktopLicenseAPI.getAll(),
- AdminLicenseAPI.getAll(),
- AdminProductAPI.getAll().catch(() => [] as Product[])
- ]);
- 
- // Filter elements by siteId/brand scope
- setDesktopLicenses(desktopList.filter(x => x.siteId === brandId));
- setWebLicenses(webList.filter(x => x.siteId === brandId));
- 
- const filteredProducts = productList.filter(x => x.siteId === brandId);
- setProducts(filteredProducts);
- 
- if (filteredProducts.length > 0) {
- setWebForm(prev => ({ ...prev, productId: filteredProducts[0].id! }));
- }
- } catch (err) {
- console.error(err);
- setErrorMsg("Failed to load licenses data from the database.");
- } finally {
- setLoading(false);
- }
- }
- loadData();
+   async function loadData() {
+     try {
+       setLoading(true);
+       setErrorMsg(null);
+       const [desktopList, webList, productList, couponList] = await Promise.all([
+         AdminDesktopLicenseAPI.getAll(),
+         AdminLicenseAPI.getAll(),
+         AdminProductAPI.getAll().catch(() => [] as Product[]),
+         AdminCouponAPI.getAll().catch(() => [] as Coupon[])
+       ]);
+       
+       // Filter elements by siteId/brand scope
+       setDesktopLicenses(desktopList.filter(x => x.siteId === brandId));
+       setWebLicenses(webList.filter(x => x.siteId === brandId));
+       setCoupons(couponList.filter(x => x.siteId === brandId));
+       
+       const filteredProducts = productList.filter(x => x.siteId === brandId);
+       setProducts(filteredProducts);
+       
+       if (filteredProducts.length > 0) {
+         setWebForm(prev => ({ ...prev, productId: filteredProducts[0].id! }));
+       }
+     } catch (err) {
+       console.error(err);
+       setErrorMsg("Failed to load licenses and promotions data from the database.");
+     } finally {
+       setLoading(false);
+     }
+   }
+   loadData();
  }, [brandId]);
 
  function showNotification(msg: string, type:"success" |"error" ="success") {
@@ -153,6 +166,104 @@ export default function BrandLicensesPage() {
  setActionLoading(null);
  }
  }
+
+  async function handleWebResendEmail(id: string) {
+    try {
+      setActionLoading(`web-resend-${id}`);
+      const res = await AdminLicenseAPI.resendEmail(id);
+      showNotification(res.message || "License email resent successfully.");
+    } catch (err: any) {
+      const errMsg = err?.response?.data?.error || "Failed to resend license email.";
+      showNotification(errMsg, "error");
+    } finally {
+      setActionLoading(null);
+    }
+  }
+
+  async function handleWebDownloadInvoice(orderId: string) {
+    if (!orderId) {
+      showNotification("This license does not have an associated Order ID.", "error");
+      return;
+    }
+    try {
+      setActionLoading(`web-pdf-${orderId}`);
+      await AdminLicenseAPI.downloadInvoice(orderId);
+      showNotification("Invoice PDF download completed.");
+    } catch (err: any) {
+      showNotification("Failed to download invoice PDF.", "error");
+    } finally {
+      setActionLoading(null);
+    }
+  }
+
+  // Coupon Action Handlers
+  async function handleCouponSubmit(e: FormEvent) {
+    e.preventDefault();
+    if (!couponForm.code.trim()) {
+      showNotification("Coupon Code is required.", "error");
+      return;
+    }
+    
+    try {
+      setActionLoading("coupon-submit");
+      const data = {
+        code: couponForm.code.trim().toUpperCase(),
+        discountPercentage: Number(couponForm.discountPercentage),
+        expiresAt: couponForm.expiresAt ? new Date(couponForm.expiresAt).toISOString() : undefined,
+        active: couponForm.active,
+        siteId: brandId
+      };
+
+      if (editingCoupon) {
+        const updated = await AdminCouponAPI.update(editingCoupon.id, data);
+        setCoupons(prev => prev.map(c => c.id === editingCoupon.id ? updated : c));
+        showNotification("Coupon updated successfully.");
+      } else {
+        const created = await AdminCouponAPI.create(data);
+        setCoupons(prev => [created, ...prev]);
+        showNotification("Coupon created successfully.");
+      }
+
+      setShowCouponModal(false);
+      setEditingCoupon(null);
+      setCouponForm({ code: "", discountPercentage: 10, active: true, expiresAt: "" });
+    } catch (err: any) {
+      const errMsg = err?.response?.data?.error || "Failed to save coupon.";
+      showNotification(errMsg, "error");
+    } finally {
+      setActionLoading(null);
+    }
+  }
+
+  async function handleCouponToggle(coupon: Coupon) {
+    try {
+      setActionLoading(`coupon-toggle-${coupon.id}`);
+      const updated = await AdminCouponAPI.update(coupon.id, {
+        ...coupon,
+        active: !coupon.active
+      });
+      setCoupons(prev => prev.map(c => c.id === coupon.id ? updated : c));
+      showNotification(`Coupon ${coupon.code} ${!coupon.active ? 'enabled' : 'disabled'} successfully.`);
+    } catch {
+      showNotification("Failed to toggle coupon status.", "error");
+    } finally {
+      setActionLoading(null);
+    }
+  }
+
+  async function handleCouponDelete(id: string) {
+    if (!confirm("Are you sure you want to delete this coupon?")) return;
+    try {
+      setActionLoading(`coupon-delete-${id}`);
+      await AdminCouponAPI.delete(id);
+      setCoupons(prev => prev.filter(c => c.id !== id));
+      showNotification("Coupon deleted successfully.");
+    } catch {
+      showNotification("Failed to delete coupon.", "error");
+    } finally {
+      setActionLoading(null);
+    }
+  }
 
  // Action Handlers for Desktop licenses
  async function handleDesktopRevoke(id: number) {
@@ -291,13 +402,23 @@ export default function BrandLicensesPage() {
  </span>
  </p>
  </div>
- <Button onClick={() => setShowGenerateModal(true)} size="sm" className="h-9 px-4 gap-1.5 shadow-sm">
- <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0">
- <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
- <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
- </svg>
- Issue License Key
- </Button>
+  {activeTab === "coupons" ? (
+    <Button onClick={() => { setEditingCoupon(null); setCouponForm({ code: "", discountPercentage: 10, active: true, expiresAt: "" }); setShowCouponModal(true); }} size="sm" className="h-9 px-4 gap-1.5 shadow-sm">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="shrink-0">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+      Create Coupon
+    </Button>
+  ) : (
+    <Button onClick={() => setShowGenerateModal(true)} size="sm" className="h-9 px-4 gap-1.5 shadow-sm">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+      Issue License Key
+    </Button>
+  )}
  </div>
 
  {successMsg && (
@@ -335,6 +456,17 @@ export default function BrandLicensesPage() {
  >
  🛒 Web & SaaS Licenses ({webLicenses.length})
  </button>
+ <button 
+ className={cn(
+"px-3 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer border-0 bg-transparent",
+ activeTab ==="coupons"
+ ?"bg-white shadow-sm text-zinc-900"
+ :"text-zinc-500 hover:text-zinc-900"
+ )}
+ onClick={() => { setActiveTab("coupons"); setExpandedRow(null); }}
+ >
+ 🏷️ Discount Coupons ({coupons.length})
+ </button>
  </div>
 
  {/* Filter and Search Bar */}
@@ -342,12 +474,13 @@ export default function BrandLicensesPage() {
  <div className="flex-1">
  <Input 
  type="text" 
- placeholder={activeTab ==="desktop" ?"Search by key, type..." :"Search by key, customer email, order ID..."}
+ placeholder={activeTab ==="desktop" ?"Search by key, type..." : activeTab ==="web" ?"Search by key, customer email, order ID..." : "Search by coupon code..."}
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
  className="h-9"
  />
  </div>
+ {activeTab !== "coupons" && (
  <div className="w-full sm:w-48">
  <Select 
  value={statusFilter} 
@@ -359,6 +492,7 @@ export default function BrandLicensesPage() {
  <option value="EXPIRED">Expired Only</option>
  </Select>
  </div>
+ )}
  </div>
 
  {loading ? (
@@ -501,7 +635,7 @@ export default function BrandLicensesPage() {
  </TableBody>
  </Table>
  )
- ) : (
+ ) : activeTab === "web" ? (
  /* WEB / SAAS LICENSES TABLE */
  filteredWebLicenses.length === 0 ? (
  <div className="text-center py-12 text-xs text-zinc-500">No web licenses found matching your filters.</div>
@@ -516,7 +650,7 @@ export default function BrandLicensesPage() {
  <TableHead>Expires At</TableHead>
  <TableHead>Device Slots</TableHead>
  <TableHead>Status</TableHead>
- <TableHead className="text-right" style={{ width:"240px" }}>Actions</TableHead>
+ <TableHead className="text-right" style={{ width:"320px" }}>Actions</TableHead>
  </TableRow>
  </TableHeader>
  <TableBody>
@@ -593,6 +727,24 @@ export default function BrandLicensesPage() {
  >
  Clear Slots
  </Button>
+ <Button 
+ size="sm"
+ variant="outline"
+ className="h-7 text-xs hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200"
+ onClick={() => handleWebResendEmail(lic.id)}
+ disabled={actionLoading !== null}
+ >
+ Resend Email
+ </Button>
+ <Button 
+ size="sm"
+ variant="outline"
+ className="h-7 text-xs hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200"
+ onClick={() => handleWebDownloadInvoice(lic.orderId)}
+ disabled={actionLoading !== null}
+ >
+ {actionLoading === `web-pdf-${lic.orderId}` ? "..." : "Invoice PDF"}
+ </Button>
  </div>
  </TableCell>
  </TableRow>
@@ -635,6 +787,40 @@ export default function BrandLicensesPage() {
  </TableBody>
  </Table>
  )
+ ) : (
+ /* COUPONS TABLE */
+ <Table>
+   <TableHeader>
+     <TableRow>
+       <TableHead>Code</TableHead>
+       <TableHead>Discount</TableHead>
+       <TableHead>Expires</TableHead>
+       <TableHead>Status</TableHead>
+       <TableHead className="text-right">Actions</TableHead>
+     </TableRow>
+   </TableHeader>
+   <TableBody>
+     {coupons.map((c) => (
+       <TableRow key={c.id}>
+         <TableCell className="font-mono font-bold text-xs">{c.code}</TableCell>
+         <TableCell>{c.discountPercentage}%</TableCell>
+         <TableCell className="text-xs">{c.expiresAt ? formatDate(c.expiresAt) : "Never"}</TableCell>
+         <TableCell>
+           <span className={cn("text-[10px] px-2 py-0.5 rounded-full border", c.active ? "bg-emerald-50 border-emerald-200 text-emerald-700" : "bg-zinc-50 border-zinc-200 text-zinc-600")}>
+             {c.active ? "ACTIVE" : "DISABLED"}
+           </span>
+         </TableCell>
+         <TableCell className="text-right">
+           <div className="flex justify-end gap-2">
+             <Button size="sm" variant="outline" onClick={() => { setEditingCoupon(c); setCouponForm({ code: c.code, discountPercentage: c.discountPercentage, active: c.active, expiresAt: c.expiresAt?.split("T")[0] || "" }); setShowCouponModal(true); }}>Edit</Button>
+             <Button size="sm" variant="outline" onClick={() => handleCouponToggle(c)}>{c.active ? "Disable" : "Enable"}</Button>
+             <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700" onClick={() => handleCouponDelete(c.id)}>Delete</Button>
+           </div>
+         </TableCell>
+       </TableRow>
+     ))}
+   </TableBody>
+ </Table>
  )}
  </div>
  </Card>
@@ -835,6 +1021,75 @@ export default function BrandLicensesPage() {
  </Card>
  </div>
  )}
+
+  {/* CREATE/EDIT COUPON MODAL */}
+  {showCouponModal && (
+  <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+  <Card className="w-full max-w-md bg-white border border-zinc-200 shadow-xl rounded-2xl overflow-hidden animate-fade-in">
+  <CardHeader className="border-b border-zinc-100 bg-zinc-50/50">
+  <CardTitle className="text-zinc-900 text-sm font-bold">{editingCoupon ? "Edit Discount Coupon" : "Create Discount Coupon"}</CardTitle>
+  <CardDescription className="text-[11px] text-zinc-500 font-medium">Add a promo code to offer checkout discounts for {brandId}</CardDescription>
+  </CardHeader>
+  <CardContent className="p-6">
+  <form onSubmit={handleCouponSubmit} className="space-y-4">
+  <div className="space-y-1.5">
+  <label className="text-xs font-semibold text-zinc-500">Coupon Promo Code (Uppercase)</label>
+  <Input 
+  type="text" 
+  placeholder="e.g. WELCOME10"
+  value={couponForm.code}
+  onChange={(e) => setCouponForm({ ...couponForm, code: e.target.value.toUpperCase() })}
+  required
+  disabled={editingCoupon !== null}
+  className="font-mono font-bold uppercase"
+  />
+  </div>
+
+  <div className="space-y-1.5">
+  <label className="text-xs font-semibold text-zinc-500">Discount Percentage (%)</label>
+  <Input 
+  type="number" 
+  min="1" 
+  max="90"
+  value={couponForm.discountPercentage}
+  onChange={(e) => setCouponForm({ ...couponForm, discountPercentage: parseInt(e.target.value) || 10 })}
+  required
+  />
+  </div>
+
+  <div className="space-y-1.5">
+  <label className="text-xs font-semibold text-zinc-500">Expiration Date (Optional)</label>
+  <Input 
+  type="date" 
+  value={couponForm.expiresAt}
+  onChange={(e) => setCouponForm({ ...couponForm, expiresAt: e.target.value })}
+  />
+  </div>
+
+  <div className="flex items-center gap-2 pt-2">
+  <input 
+  type="checkbox"
+  id="coupon-active-checkbox"
+  checked={couponForm.active}
+  onChange={(e) => setCouponForm({ ...couponForm, active: e.target.checked })}
+  className="rounded border-zinc-300 text-[#6366F1] focus:ring-[#6366F1]"
+  />
+  <label htmlFor="coupon-active-checkbox" className="text-xs font-semibold text-zinc-700 select-none cursor-pointer">
+  Enable immediately
+  </label>
+  </div>
+
+  <div className="flex justify-end gap-2 pt-4 border-t border-zinc-200">
+  <Button type="button" variant="outline" size="sm" onClick={() => { setShowCouponModal(false); setEditingCoupon(null); }}>Cancel</Button>
+  <Button type="submit" size="sm" disabled={actionLoading !== null} className="shadow-sm">
+  {actionLoading ==="coupon-submit" ?"Saving..." :"Save Coupon"}
+  </Button>
+  </div>
+  </form>
+  </CardContent>
+  </Card>
+  </div>
+  )}
  </div>
  );
 }

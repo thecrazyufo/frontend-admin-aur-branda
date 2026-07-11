@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="037-billing-compliance-fields" author="antigravity">
+        <addColumn tableName="orders">
+            <column name="billing_name" type="VARCHAR(150)"/>
+            <column name="billing_company" type="VARCHAR(150)"/>
+            <column name="billing_address" type="VARCHAR(255)"/>
+            <column name="billing_city" type="VARCHAR(100)"/>
+            <column name="billing_state" type="VARCHAR(100)"/>
+            <column name="billing_zip" type="VARCHAR(20)"/>
+            <column name="billing_country" type="VARCHAR(100)"/>
+            <column name="tax_id" type="VARCHAR(50)"/>
+            <column name="tax_amount" type="DOUBLE" defaultValueNumeric="0.0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tax_rate" type="DOUBLE" defaultValueNumeric="0.0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

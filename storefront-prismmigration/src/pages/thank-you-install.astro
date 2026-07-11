@@ -1,9 +1,16 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { SettingsAPI } from "@/services/api";
+import { SettingsAPI, ProductAPI } from "@/services/api";
 
 const settings = await SettingsAPI.get().catch(() => null);
 const siteName = settings?.name || "Prism Migration";
+
+// Parse product slug from URL search parameters
+const productSlug = Astro.url.searchParams.get("product");
+let product = null;
+if (productSlug) {
+  product = await ProductAPI.getBySlug(productSlug).catch(() => null);
+}
 
 // Try to fetch custom content, fallback to default premium welcome content if empty
 const hasCustomContent = !!settings?.legalPages?.["thank-you-install"];
@@ -38,10 +45,10 @@ const htmlContent = settings?.legalPages?.["thank-you-install"];
 
           <div class="space-y-3">
             <h1 class="text-3xl md:text-3xl font-extrabold text-white tracking-tight">
-              Installation Completed!
+              {product ? `${product.name} Installed!` : "Installation Completed!"}
             </h1>
             <p class="text-[#94A3B8] text-sm md:text-base max-w-md mx-auto">
-              Thank you for choosing <span class="text-[#6366F1] font-bold">{siteName}</span>. Your application has been successfully installed and is ready for use.
+              Thank you for choosing <span class="text-[#6366F1] font-bold">{product ? product.name : siteName}</span>. Your application has been successfully installed and is ready for use.
             </p>
           </div>
 
@@ -67,10 +74,10 @@ const htmlContent = settings?.legalPages?.["thank-you-install"];
           <!-- CTAs -->
           <div class="flex flex-col sm:flex-row gap-4 items-center justify-center pt-6">
             <a 
-              href="/help" 
+              href={product ? `/products/${product.slug}/guide` : "/help"} 
               class="w-full sm:w-auto px-6 py-3 bg-[#6366F1] hover:bg-[#4F46E5] text-black font-semibold rounded-lg text-sm transition-all duration-200 transform hover:scale-[1.02]"
             >
-              Get Started Guide
+              {product ? `How to Use ${product.name}` : "Get Started Guide"}
             </a>
             <a 
               href="/contact" 

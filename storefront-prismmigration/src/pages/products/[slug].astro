@@ -121,10 +121,11 @@ const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
   <!-- Section Divider -->
   <div class="h-px bg-gradient-to-r from-transparent via-[#6366F1]/15 to-transparent"></div>
 
-  {/* Description / Markdown Over  {product.description && (
+  {/* Description / Markdown Overview */}
+  {product.description && (
     <section class="bg-[#0B0F1A] py-16 tech-grid" id="overview">
       <div class="container-custom max-w-4xl">
-        <div class="prose prose-invert max-w-none text-[#E5E5E5] leading-relaxed space-y-4">
+        <div class="prose prose-invert max-w-none text-[#E5E5E5] leading-relaxed space-y-4 animate-fade-in">
           <h2 class="font-bold text-white text-xl mb-6">Product Overview</h2>
           <div set:html={parseMarkdownToHtml(product.description)} />
         </div>

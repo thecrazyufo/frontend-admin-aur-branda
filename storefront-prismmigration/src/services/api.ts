@@ -234,6 +234,7 @@ export const CheckoutAPI = {
     customerEmail: string;
     paymentMethod: string;
     siteId: string;
+    couponCode?: string;
   }) => apiPost<any>("/checkout/complete", body),
   createStripeSession: (body: {
     productId: string;
@@ -242,6 +243,7 @@ export const CheckoutAPI = {
     siteId: string;
     successUrl: string;
     cancelUrl: string;
+    couponCode?: string;
   }) => apiPost<any>("/checkout/create-stripe-session", body),
   confirmStripe: (body: {
     sessionId: string;
@@ -257,6 +259,7 @@ export const CheckoutAPI = {
     siteId: string;
     returnUrl: string;
     cancelUrl: string;
+    couponCode?: string;
   }) => apiPost<any>("/checkout/create-paypal-order", body),
   capturePaypalOrder: (body: {
     paypalOrderId: string;

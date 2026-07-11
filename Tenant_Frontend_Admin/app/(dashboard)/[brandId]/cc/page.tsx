@@ -3410,6 +3410,7 @@ function ContentCreatorContent() {
           { label: "Installation Success Page", url: `${siteUrl}/thank-you-install?product=${quickLinksModal.slug}` },
           { label: "Uninstallation Success Page", url: `${siteUrl}/goodbye?product=${quickLinksModal.slug}` },
           { label: "User Guide (Help Page)", url: `${siteUrl}/help/${quickLinksModal.slug}-user-guide` },
+          { label: "Step-by-Step Guide (How-to Page)", url: `${siteUrl}/products/${quickLinksModal.slug}/guide` },
           { label: "Support Page", url: `${siteUrl}/support` },
           { label: "Upgrade Page", url: `${siteUrl}/upgrade` },
           { label: "License Activation API", url: `${API_BASE}/license/activate` },
