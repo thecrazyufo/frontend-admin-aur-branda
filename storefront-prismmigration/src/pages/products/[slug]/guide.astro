@@ -146,11 +146,21 @@ const siteUrl = (settings?.url || "").replace(/\/$/, "");
           </div>
 
           {/* Supported Formats */}
-          {product.supportedFormats && product.supportedFormats.length > 0 && (
+          {(() => {
+            const formats = (product.supportedFormats && product.supportedFormats.length > 0)
+              ? product.supportedFormats
+              : [...new Set([...(product.sourceFormats || []), ...(product.targetFormats || [])])].map(f => f.toUpperCase());
+            return formats.length > 0;
+          })() && (
             <div class="bg-[#1E2937]/30 backdrop-blur rounded-2xl p-6 border border-[#334155] shadow-sm">
               <h3 class="font-bold text-white mb-4 pb-4 border-b border-[#334155]">Compatibility</h3>
               <div class="flex flex-wrap gap-2">
-                {product.supportedFormats.map((fmt) => (
+                {(() => {
+                  const formats = (product.supportedFormats && product.supportedFormats.length > 0)
+                    ? product.supportedFormats
+                    : [...new Set([...(product.sourceFormats || []), ...(product.targetFormats || [])])].map(f => f.toUpperCase());
+                  return formats;
+                })().map((fmt) => (
                   <span class="px-2.5 py-1 bg-[#6366F1]/10 border border-[#6366F1]/20 text-[#6366F1] text-xs rounded font-mono font-bold">
                     {fmt}
                   </span>

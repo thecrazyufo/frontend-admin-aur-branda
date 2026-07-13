@@ -48,9 +48,10 @@ public class ToolMatcherService {
     private KeyFeatureRepository keyFeatureRepository;
 
     /**
-     * Static lookup map: normalized format key → display metadata.
-     * Centralizing this here keeps the database lean and avoids a separate admin UI for labels.
-     * To add new formats: just add an entry to this map.
+     * LEGACY fallback format metadata.
+     * The primary source is now the source_formats / target_formats database tables
+     * managed by GlobalRegistryController. This static map is only consulted when
+     * a format key is not found in the registry.
      */
     private static final Map<String, AvailableFormatsResponse.FormatOption> FORMAT_METADATA = new LinkedHashMap<>();
 
@@ -100,7 +101,7 @@ public class ToolMatcherService {
             if (srcMatch && tgtMatch) {
                 resultMap.put(product.getId(), new ToolMatchResult(
                         product, "PERFECT_MATCH", 100,
-                        "Directly converts " + formatLabel(src) + " to " + formatLabel(tgt)
+                        "Directly converts " + formatLabel(src, siteId) + " to " + formatLabel(tgt, siteId)
                 ));
             }
         }
@@ -148,7 +149,7 @@ public class ToolMatcherService {
                         if (fc.getCompatibilityScore() > bestScore) {
                             bestScore = fc.getCompatibilityScore();
                             bestMatchType = fc.getMatchType();
-                            bestReason = "Supports " + formatLabel(ps) + " which is " + fc.getMatchType().toLowerCase() + " with " + formatLabel(src);
+                            bestReason = "Supports " + formatLabel(ps, siteId) + " which is " + fc.getMatchType().toLowerCase() + " with " + formatLabel(src, siteId);
                         }
                     }
                 }
@@ -162,7 +163,7 @@ public class ToolMatcherService {
                         if (combined > bestScore) {
                             bestScore = combined;
                             if ("EXACT".equals(fc.getMatchType())) bestMatchType = "SIMILAR";
-                            bestReason = "Can produce " + formatLabel(pt) + " which is compatible with " + formatLabel(tgt);
+                            bestReason = "Can produce " + formatLabel(pt, siteId) + " which is compatible with " + formatLabel(tgt, siteId);
                         }
                     }
                 }
@@ -335,7 +336,21 @@ public class ToolMatcherService {
                 .replaceAll("[^a-z0-9_]", ""); // strip special chars
     }
 
-    private String formatLabel(String key) {
+    /**
+     * Resolve a human-readable label for a format key.
+     * Priority: 1) DB registry → 2) static fallback map → 3) uppercased key.
+     */
+    private String formatLabel(String key, String siteId) {
+        // Try DB registry first
+        List<SourceFormat> dbSources = sourceFormatRepository.findBySiteId(siteId);
+        for (SourceFormat sf : dbSources) {
+            if (sf.getKey().equalsIgnoreCase(key)) return sf.getName();
+        }
+        List<TargetFormat> dbTargets = targetFormatRepository.findBySiteId(siteId);
+        for (TargetFormat tf : dbTargets) {
+            if (tf.getKey().equalsIgnoreCase(key)) return tf.getName();
+        }
+        // Fall back to static map, then raw key
         AvailableFormatsResponse.FormatOption opt = FORMAT_METADATA.get(key);
         return opt != null ? opt.getLabel() : key.toUpperCase();
     }

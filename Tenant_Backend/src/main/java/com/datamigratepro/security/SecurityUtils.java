@@ -63,4 +63,37 @@ public class SecurityUtils {
             throw new AccessDeniedException("Access Denied: You do not have permissions to manage brand: " + requestSiteId);
         }
     }
+
+    /**
+     * Checks that the currently authenticated user holds one of the specified roles.
+     * SUPER_ADMIN and OWNER always pass. Unauthenticated requests are rejected.
+     *
+     * @param allowedRoles the roles that are permitted to access the resource
+     * @throws AccessDeniedException if the user's role is not in the allowed list
+     */
+    public static void checkRole(String... allowedRoles) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
+            throw new AccessDeniedException("Access Denied: Authentication required for this operation");
+        }
+
+        UserCredentials user = getCurrentUser();
+        if (user == null) {
+            throw new AccessDeniedException("Access Denied: Unrecognized administrator");
+        }
+
+        // Global admin always passes role checks
+        String role = user.role();
+        if ("SUPER_ADMIN".equalsIgnoreCase(role) || "OWNER".equalsIgnoreCase(role)) {
+            return;
+        }
+
+        for (String allowed : allowedRoles) {
+            if (allowed.equalsIgnoreCase(role)) {
+                return;
+            }
+        }
+
+        throw new AccessDeniedException("Access Denied: Your role (" + role + ") does not have permission for this operation. Required: " + String.join(" or ", allowedRoles));
+    }
 }

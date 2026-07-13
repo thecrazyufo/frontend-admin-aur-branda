@@ -190,48 +190,90 @@ function ProductMultiSelect({ products, selectedIds, onChange, placeholder = "Se
   );
 }
 
-const emptyProduct = (): Partial<Product> => ({
-  name: "",
-  slug: "",
-  price: 0,
-  category: "email-migration",
-  description: "",
-  shortDescription: "",
-  version: "1.0.0",
-  badge: undefined,
-  trialDownloadUrl: "",
-  installationSuccessUrl: "",
-  uninstallationSuccessUrl: "",
-  features: [],
-  platforms: ["Windows"],
-  supportedFormats: [],
-  pricing: [
-    { name: "Standard License", price: 49.00, period: "lifetime", features: ["1 Mailbox migration", "Free 1-year updates", "24/7 technical support"], cta: "" }
-  ],
-  systemRequirements: { os: "Windows 11/10/8/7 (32/64 bit)", processor: "1 GHz Intel/AMD processor", ram: "2 GB", disk: "100 MB" },
-  howItWorks: [
-    { step: 1, title: "Download & Install", description: "Download the software and install it on your PC." },
-    { step: 2, title: "Add PST File", description: "Launch the software and select the Outlook PST file you want to convert." },
-    { step: 3, title: "Select Output", description: "Choose the output format and destination path." },
-    { step: 4, title: "Convert & Export", description: "Click Convert to export your mailbox items." }
-  ],
-  faqs: [
-    { question: "Can I convert large PST files?", answer: "Yes, our software has no file size limit and can convert large PST files without data loss." }
-  ],
-  reviews: [
-    { id: "rev-1", author: "John D.", rating: 5, date: new Date().toISOString().split('T')[0], content: "Excellent converter, saved me hours of work!", role: "System Administrator", company: "Tech Solutions" }
-  ],
-  relatedProductIds: [],
-  sourceFormats: [],
-  targetFormats: [],
-  capabilities: {},
-  seo: {
-    title: "",
-    description: "",
-    keywords: []
-  },
-  enabled: true
-});
+const emptyProduct = (preset: "blank" | "email" | "cloud" | "backup" | "recovery" = "email"): Partial<Product> => {
+  const base: Partial<Product> = {
+    name: "", slug: "", price: 0, version: "1.0.0", badge: undefined,
+    trialDownloadUrl: "", installationSuccessUrl: "", uninstallationSuccessUrl: "",
+    description: "", shortDescription: "", features: [], platforms: ["Windows"],
+    pricing: [
+      { name: "Standard License", price: 49.00, period: "lifetime", features: ["1 User license", "Free 1-year updates", "24/7 technical support"], cta: "" }
+    ],
+    systemRequirements: { os: "Windows 11/10/8/7 (32/64 bit)", processor: "1 GHz Intel/AMD processor", ram: "2 GB", disk: "100 MB" },
+    reviews: [
+      { id: "rev-1", author: "John D.", rating: 5, date: new Date().toISOString().split('T')[0], content: "Excellent software, saved me hours of work!", role: "System Administrator", company: "Tech Solutions" }
+    ],
+    relatedProductIds: [], sourceFormats: [], targetFormats: [], capabilities: {},
+    seo: { title: "", description: "", keywords: [] },
+    enabled: true
+  };
+
+  switch (preset) {
+    case "email":
+      return {
+        ...base,
+        category: "email-migration",
+        howItWorks: [
+          { step: 1, title: "Download & Install", description: "Download the software and install it on your PC." },
+          { step: 2, title: "Add Mailbox File", description: "Launch the software and select the mailbox file you want to convert." },
+          { step: 3, title: "Select Output", description: "Choose the output format and destination path." },
+          { step: 4, title: "Convert & Export", description: "Click Convert to export your mailbox items." }
+        ],
+        faqs: [
+          { question: "Can I convert large mailbox files?", answer: "Yes, our software has no file size limit and can convert large files without data loss." }
+        ]
+      };
+    case "cloud":
+      return {
+        ...base,
+        category: "cloud-migration",
+        howItWorks: [
+          { step: 1, title: "Connect Source", description: "Authenticate with your source cloud platform." },
+          { step: 2, title: "Connect Destination", description: "Authenticate with the destination cloud platform." },
+          { step: 3, title: "Map Users", description: "Map source users to destination users." },
+          { step: 4, title: "Start Migration", description: "Begin the cloud-to-cloud migration process." }
+        ],
+        faqs: [
+          { question: "Is my data secure?", answer: "Yes, we use OAuth 2.0 and do not store your credentials. Data is encrypted during transit." }
+        ]
+      };
+    case "backup":
+      return {
+        ...base,
+        category: "backup",
+        howItWorks: [
+          { step: 1, title: "Connect Account", description: "Login to the account you want to backup." },
+          { step: 2, title: "Select Folders", description: "Choose specific folders or backup everything." },
+          { step: 3, title: "Choose Format", description: "Select the backup file format (e.g., PST, EML, PDF)." },
+          { step: 4, title: "Start Backup", description: "Click start to download your backup locally." }
+        ],
+        faqs: [
+          { question: "Can I schedule backups?", answer: "Yes, the software supports automated scheduled backups." }
+        ]
+      };
+    case "recovery":
+      return {
+        ...base,
+        category: "mailbox-recovery",
+        howItWorks: [
+          { step: 1, title: "Add Corrupt File", description: "Select the damaged or corrupted data file." },
+          { step: 2, title: "Scan File", description: "The software will scan and recover deleted or corrupted items." },
+          { step: 3, title: "Preview Data", description: "Preview the recovered emails, contacts, and calendars." },
+          { step: 4, title: "Save Data", description: "Export the recovered data to a healthy file format." }
+        ],
+        faqs: [
+          { question: "Can it recover permanently deleted emails?", answer: "Yes, the deep scan mode can recover hard-deleted items." }
+        ]
+      };
+    case "blank":
+    default:
+      return {
+        ...base,
+        category: "general",
+        howItWorks: [],
+        faqs: []
+      };
+  }
+};
 
 function HTMLToolbar({ 
   value, 
@@ -789,7 +831,7 @@ function ContentCreatorContent() {
         category: catVal,
         siteId: brandId,
         trialDownloadUrl: `/download/trial?product=${slugVal}`,
-        installerUrl: productModal.installerUrl || `https://downloads.datamigratepro.com/installers/${slugVal}-trial.exe`,
+        installerUrl: productModal.installerUrl || `https://downloads.thecrazyufo.in/installers/${slugVal}-trial.exe`,
         installationSuccessUrl: `/thank-you-install?product=${slugVal}`,
         uninstallationSuccessUrl: `/goodbye?product=${slugVal}`,
         enabled: isDraftOnly ? false : (productModal.enabled !== false)
@@ -1053,8 +1095,21 @@ function ContentCreatorContent() {
               >
                 ←
               </span>
-              <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
+              <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-4">
                 {productModal.id ? `Editing Product: ${productModal.name}` : "Create New Product"}
+                {!productModal.id && (
+                  <select 
+                    className="ml-4 text-xs bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded px-2 py-1 outline-none text-zinc-700 dark:text-zinc-300 font-medium"
+                    onChange={(e) => setProductModal(emptyProduct(e.target.value as any))}
+                    defaultValue="email"
+                  >
+                    <option value="email">Email Migration Template</option>
+                    <option value="cloud">Cloud Migration Template</option>
+                    <option value="backup">Backup Tool Template</option>
+                    <option value="recovery">Recovery Tool Template</option>
+                    <option value="blank">Blank Template</option>
+                  </select>
+                )}
               </h2>
               <span className={cn(
                 "text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border",
@@ -1226,7 +1281,7 @@ function ContentCreatorContent() {
                                 name,
                                 slug,
                                 trialDownloadUrl: `/download/trial?product=${slug}`,
-                                installerUrl: `https://downloads.datamigratepro.com/installers/${slug}-trial.exe`,
+                                installerUrl: `https://downloads.thecrazyufo.in/installers/${slug}-trial.exe`,
                                 installationSuccessUrl: `/thank-you-install?product=${slug}`,
                                 uninstallationSuccessUrl: `/goodbye?product=${slug}`
                               });
@@ -1252,7 +1307,7 @@ function ContentCreatorContent() {
                                 ...productModal,
                                 slug,
                                 trialDownloadUrl: `/download/trial?product=${slug}`,
-                                installerUrl: `https://downloads.datamigratepro.com/installers/${slug}-trial.exe`,
+                                installerUrl: `https://downloads.thecrazyufo.in/installers/${slug}-trial.exe`,
                                 installationSuccessUrl: `/thank-you-install?product=${slug}`,
                                 uninstallationSuccessUrl: `/goodbye?product=${slug}`
                               });
@@ -1579,19 +1634,6 @@ function ContentCreatorContent() {
                           </Button>
                         </div>
                       </div>
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Supported Formats (comma-separated)</label>
-                      <Input 
-                        type="text" 
-                        value={(productModal.supportedFormats || []).join(", ")}
-                        onChange={e => {
-                          const arr = e.target.value.split(",").map(x => x.trim()).filter(Boolean);
-                          setProductModal({ ...productModal, supportedFormats: arr });
-                        }}
-                        placeholder="e.g. PST, OST, EML, MSG, MBOX"
-                      />
                     </div>
 
                     <div className="space-y-2">
@@ -3406,7 +3448,7 @@ function ContentCreatorContent() {
           { label: "Product Page", url: `${siteUrl}/products/${quickLinksModal.slug}` },
           { label: "Buy Page", url: `${siteUrl}/products/${quickLinksModal.slug}/buy` },
           { label: "Trial Download Page", url: `${siteUrl}/download?product=${quickLinksModal.slug}` },
-          { label: "Direct EXE Download Link", url: quickLinksModal.installerUrl || `https://downloads.datamigratepro.com/installers/${quickLinksModal.slug}-trial.exe` },
+          { label: "Direct EXE Download Link", url: quickLinksModal.installerUrl || `https://downloads.thecrazyufo.in/installers/${quickLinksModal.slug}-trial.exe` },
           { label: "Installation Success Page", url: `${siteUrl}/thank-you-install?product=${quickLinksModal.slug}` },
           { label: "Uninstallation Success Page", url: `${siteUrl}/goodbye?product=${quickLinksModal.slug}` },
           { label: "User Guide (Help Page)", url: `${siteUrl}/help/${quickLinksModal.slug}-user-guide` },

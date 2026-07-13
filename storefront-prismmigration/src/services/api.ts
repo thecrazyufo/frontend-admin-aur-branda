@@ -2,7 +2,6 @@ import type { Product } from "@/types/product";
 import type { BlogPost } from "@/types/blog";
 import type { FAQ } from "@/types/faq";
 import type { HelpArticle } from "@/types/common";
-import type { LicenseKey } from "@/types/license";
 import type { AvailableFormatsResponse, ToolMatchResult } from "@/types/tools";
 
 export interface Category {
@@ -86,93 +85,10 @@ export async function apiPost<T>(path: string, body: unknown): Promise<T> {
   }
 }
 
-// --- Admin API helpers (JWT auth) ---------------------------------------------
+// NOTE: Admin helper functions (adminGet, adminPost, adminPut, adminDelete) have been
+// removed from the storefront. Admin operations belong in the Admin Panel (Tenant_Frontend_Admin).
+// AuthAPI is kept below as it's referenced by the auth.ts service layer.
 
-function getAdminToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("admin_jwt");
-}
-
-function adminHeaders(correlationId: string): Record<string, string> {
-  const token = getAdminToken();
-  return {
-    "Content-Type": "application/json",
-    "X-Correlation-ID": correlationId,
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  };
-}
-
-export async function adminGet<T>(path: string): Promise<T> {
-  const cid = getCorrelationId();
-  const start = Date.now();
-  console.log(`[STORE ADMIN GET] [Trace: ${cid}] Fetching: ${API_BASE}${path}`);
-  try {
-    const res = await fetch(`${API_BASE}${path}`, {
-      headers: adminHeaders(cid),
-    });
-    console.log(`[STORE ADMIN GET] [Trace: ${cid}] Status: ${res.status} (${Date.now() - start}ms)`);
-    if (!res.ok) throw new Error(`Admin API Error: ${res.status} ${res.statusText}`);
-    return res.json();
-  } catch (err: any) {
-    console.error(`[STORE ADMIN GET ERROR] [Trace: ${cid}] Failed after ${Date.now() - start}ms:`, err.message || err);
-    throw err;
-  }
-}
-
-export async function adminPost<T>(path: string, body: unknown): Promise<T> {
-  const cid = getCorrelationId();
-  const start = Date.now();
-  console.log(`[STORE ADMIN POST] [Trace: ${cid}] Posting: ${API_BASE}${path}`);
-  try {
-    const res = await fetch(`${API_BASE}${path}`, {
-      method: "POST",
-      headers: adminHeaders(cid),
-      body: JSON.stringify(body),
-    });
-    console.log(`[STORE ADMIN POST] [Trace: ${cid}] Status: ${res.status} (${Date.now() - start}ms)`);
-    if (!res.ok) throw new Error(`Admin API Error: ${res.status} ${res.statusText}`);
-    return res.json();
-  } catch (err: any) {
-    console.error(`[STORE ADMIN POST ERROR] [Trace: ${cid}] Failed after ${Date.now() - start}ms:`, err.message || err);
-    throw err;
-  }
-}
-
-export async function adminPut<T>(path: string, body: unknown): Promise<T> {
-  const cid = getCorrelationId();
-  const start = Date.now();
-  console.log(`[STORE ADMIN PUT] [Trace: ${cid}] Putting: ${API_BASE}${path}`);
-  try {
-    const res = await fetch(`${API_BASE}${path}`, {
-      method: "PUT",
-      headers: adminHeaders(cid),
-      body: JSON.stringify(body),
-    });
-    console.log(`[STORE ADMIN PUT] [Trace: ${cid}] Status: ${res.status} (${Date.now() - start}ms)`);
-    if (!res.ok) throw new Error(`Admin API Error: ${res.status} ${res.statusText}`);
-    return res.json();
-  } catch (err: any) {
-    console.error(`[STORE ADMIN PUT ERROR] [Trace: ${cid}] Failed after ${Date.now() - start}ms:`, err.message || err);
-    throw err;
-  }
-}
-
-export async function adminDelete(path: string): Promise<void> {
-  const cid = getCorrelationId();
-  const start = Date.now();
-  console.log(`[STORE ADMIN DELETE] [Trace: ${cid}] Deleting: ${API_BASE}${path}`);
-  try {
-    const res = await fetch(`${API_BASE}${path}`, {
-      method: "DELETE",
-      headers: adminHeaders(cid),
-    });
-    console.log(`[STORE ADMIN DELETE] [Trace: ${cid}] Status: ${res.status} (${Date.now() - start}ms)`);
-    if (!res.ok) throw new Error(`Admin API Error: ${res.status} ${res.statusText}`);
-  } catch (err: any) {
-    console.error(`[STORE ADMIN DELETE ERROR] [Trace: ${cid}] Failed after ${Date.now() - start}ms:`, err.message || err);
-    throw err;
-  }
-}
 
 // --- Public APIs ---------------------------------------------------------------
 
@@ -289,30 +205,7 @@ export const BrandAPI = {
   }
 };
 
-// --- Admin/Licensing APIs (require JWT) --------------------------------------------
 
-export const AdminLicenseAPI = {
-  getAll: () => adminGet<LicenseKey[]>("/licensing-admin"),
-  generate: (data: {
-    productId: string;
-    pricingTierName: string;
-    customerEmail: string;
-    orderId: string;
-    maxDevices: number;
-    durationMonths: number;
-  }) => adminPost<LicenseKey>("/licensing-admin/generate", data),
-  revoke: (id: string) => adminPost<LicenseKey>(`/licensing-admin/revoke/${id}`, {}),
-  reactivate: (id: string) => adminPost<LicenseKey>(`/licensing-admin/reactivate/${id}`, {}),
-  resetActivations: (id: string) => adminPost<LicenseKey>(`/licensing-admin/reset/${id}`, {}),
-};
-
-export const AuthAPI = {
-  login: (username: string, password: string) =>
-    apiPost<{ token: string; username: string; expiresIn: number }>("/auth/login", {
-      username,
-      password,
-    }),
-};
 
 export const SocialProofAPI = {
   getLogos: (siteId: string = SITE_ID) => apiGet<any[]>(`/social-proof/logos?siteId=${siteId}`),

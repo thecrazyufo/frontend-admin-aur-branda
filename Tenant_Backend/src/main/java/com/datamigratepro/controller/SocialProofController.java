@@ -64,6 +64,7 @@ public class SocialProofController {
     @PostMapping("/logos")
     public ResponseEntity<ClientLogo> createLogo(@RequestParam String siteId, @RequestBody ClientLogoDto dto) {
         SecurityUtils.checkAccess(siteId);
+        SecurityUtils.checkRole("ADMIN");
         ClientLogo logo = new ClientLogo();
         logo.setId(UUID.randomUUID().toString());
         logo.setSiteId(siteId);
@@ -79,6 +80,7 @@ public class SocialProofController {
     @PutMapping("/logos/{id}")
     public ResponseEntity<ClientLogo> updateLogo(@PathVariable String id, @RequestParam String siteId, @RequestBody ClientLogoDto dto) {
         SecurityUtils.checkAccess(siteId);
+        SecurityUtils.checkRole("ADMIN");
         return clientLogoRepository.findByIdAndSiteId(id, siteId)
                 .map(logo -> {
                     logo.setCompanyName(dto.getCompanyName());
@@ -95,6 +97,7 @@ public class SocialProofController {
     @DeleteMapping("/logos/{id}")
     public ResponseEntity<Void> deleteLogo(@PathVariable String id, @RequestParam String siteId) {
         SecurityUtils.checkAccess(siteId);
+        SecurityUtils.checkRole("ADMIN");
         return clientLogoRepository.findByIdAndSiteId(id, siteId)
                 .map(logo -> {
                     clientLogoRepository.delete(logo);
@@ -122,6 +125,7 @@ public class SocialProofController {
     @PostMapping("/testimonials")
     public ResponseEntity<Testimonial> createTestimonial(@RequestParam String siteId, @RequestBody TestimonialDto dto) {
         SecurityUtils.checkAccess(siteId);
+        SecurityUtils.checkRole("ADMIN");
         Testimonial t = new Testimonial();
         t.setId(UUID.randomUUID().toString());
         t.setSiteId(siteId);
@@ -139,6 +143,7 @@ public class SocialProofController {
     @PutMapping("/testimonials/{id}")
     public ResponseEntity<Testimonial> updateTestimonial(@PathVariable String id, @RequestParam String siteId, @RequestBody TestimonialDto dto) {
         SecurityUtils.checkAccess(siteId);
+        SecurityUtils.checkRole("ADMIN");
         return testimonialRepository.findByIdAndSiteId(id, siteId)
                 .map(t -> {
                     t.setAuthorName(dto.getAuthorName());
@@ -157,6 +162,7 @@ public class SocialProofController {
     @DeleteMapping("/testimonials/{id}")
     public ResponseEntity<Void> deleteTestimonial(@PathVariable String id, @RequestParam String siteId) {
         SecurityUtils.checkAccess(siteId);
+        SecurityUtils.checkRole("ADMIN");
         return testimonialRepository.findByIdAndSiteId(id, siteId)
                 .map(t -> {
                     testimonialRepository.delete(t);

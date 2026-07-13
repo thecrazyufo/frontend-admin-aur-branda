@@ -40,7 +40,7 @@ public class EmailService {
         // Retrieve site settings for dynamic branding
         Optional<SiteSetting> settingOpt = siteSettingRepository.findBySiteId(siteId);
         String siteName = "Software Platform";
-        String supportEmail = "support@datamigratepro.com";
+        String supportEmail = "support@thecrazyufo.in";
         String primaryColor = "#2563eb"; // Blue
 
         byte[] pdfBytes = null;
@@ -230,7 +230,7 @@ public class EmailService {
         
         Optional<SiteSetting> settingOpt = siteSettingRepository.findBySiteId(siteId);
         String siteName = "Software Platform";
-        String supportEmail = "support@datamigratepro.com";
+        String supportEmail = "support@thecrazyufo.in";
         String primaryColor = "#2563eb";
 
         if (settingOpt.isPresent()) {

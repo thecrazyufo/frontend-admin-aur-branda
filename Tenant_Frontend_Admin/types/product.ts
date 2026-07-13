@@ -88,19 +88,3 @@ export interface Product {
   enabled?: boolean;
 }
 
-export type ProductCategory =
-  | "email-migration"
-  | "backup"
-  | "file-converter"
-  | "cloud-migration"
-  | "mailbox-recovery"
-  | "data-export";
-
-export const CATEGORY_LABELS: Record<ProductCategory, string> = {
-  "email-migration": "Email Migration",
-  backup: "Backup Tools",
-  "file-converter": "File Converters",
-  "cloud-migration": "Cloud Migration",
-  "mailbox-recovery": "Mailbox Recovery",
-  "data-export": "Data Export/Import",
-};

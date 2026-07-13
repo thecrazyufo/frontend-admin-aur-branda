@@ -174,7 +174,7 @@ public class LicenseController {
             throw new IllegalArgumentException("siteId is required");
         }
         SecurityUtils.checkAccess(siteId);
-
+        SecurityUtils.checkRole("ADMIN");
         String productId = (String) request.get("productId");
         String tier = (String) request.getOrDefault("pricingTierName", "Standard");
         String email = (String) request.getOrDefault("customerEmail", "");
@@ -220,6 +220,7 @@ public class LicenseController {
         }
         LicenseKey license = licenseOpt.get();
         SecurityUtils.checkAccess(license.getSiteId());
+        SecurityUtils.checkRole("ADMIN");
 
         license.setStatus(LicenseStatus.REVOKED);
         LicenseKey saved = licenseKeyRepository.save(license);
@@ -234,6 +235,7 @@ public class LicenseController {
         }
         LicenseKey license = licenseOpt.get();
         SecurityUtils.checkAccess(license.getSiteId());
+        SecurityUtils.checkRole("ADMIN");
 
         license.setStatus(LicenseStatus.ACTIVE);
         if (license.getExpiresAt() != null && license.getExpiresAt().isBefore(LocalDateTime.now())) {
@@ -251,6 +253,7 @@ public class LicenseController {
         }
         LicenseKey license = licenseOpt.get();
         SecurityUtils.checkAccess(license.getSiteId());
+        SecurityUtils.checkRole("ADMIN");
 
         license.getActivations().clear();
         LicenseKey saved = licenseKeyRepository.save(license);
@@ -265,7 +268,7 @@ public class LicenseController {
         }
         LicenseKey license = licenseOpt.get();
         SecurityUtils.checkAccess(license.getSiteId());
-
+        SecurityUtils.checkRole("ADMIN");
         if (license.getOrderId() == null || license.getOrderId().isBlank()) {
             return ResponseEntity.badRequest().body(Map.of("error", "No Order ID associated with this license key."));
         }
@@ -302,7 +305,7 @@ public class LicenseController {
             throw new IllegalArgumentException("siteId is required");
         }
         SecurityUtils.checkAccess(siteId);
-
+        SecurityUtils.checkRole("ADMIN");
         String brandPrefix = (String) request.get("brandPrefix");
         if (brandPrefix == null || brandPrefix.trim().isEmpty()) {
             brandPrefix = switch (siteId) {
@@ -351,6 +354,7 @@ public class LicenseController {
         }
         License license = licenseOpt.get();
         SecurityUtils.checkAccess(license.getSiteId());
+        SecurityUtils.checkRole("ADMIN");
 
         license.setStatus("REVOKED");
         License saved = licenseRepository.save(license);
@@ -365,6 +369,7 @@ public class LicenseController {
         }
         License license = licenseOpt.get();
         SecurityUtils.checkAccess(license.getSiteId());
+        SecurityUtils.checkRole("ADMIN");
 
         license.setStatus("ACTIVE");
         if (license.getExpiresAt() != null && license.getExpiresAt().isBefore(OffsetDateTime.now())) {
@@ -382,6 +387,7 @@ public class LicenseController {
         }
         License license = licenseOpt.get();
         SecurityUtils.checkAccess(license.getSiteId());
+        SecurityUtils.checkRole("ADMIN");
 
         license.getActivations().clear();
         License saved = licenseRepository.save(license);
