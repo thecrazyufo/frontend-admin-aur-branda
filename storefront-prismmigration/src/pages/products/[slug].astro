@@ -291,14 +291,48 @@ const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
             <h2 class="text-lg font-bold text-white mt-0.5">System Requirements</h2>
           </div>
 
-          <div class="bg-[#1E2937]/30 backdrop-blur rounded-xl border border-[#334155] p-6 space-y-3 shadow-2xl">
-            <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">OS</span><span class="text-[#E2E8F0]">{product.systemRequirements?.os || "N/A"}</span></div>
-            <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">Processor</span><span class="text-[#E2E8F0]">{product.systemRequirements?.processor || "N/A"}</span></div>
-            <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">RAM</span><span class="text-[#E2E8F0]">{product.systemRequirements?.ram || "N/A"}</span></div>
-            <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">Disk</span><span class="text-[#E2E8F0]">{product.systemRequirements?.disk || "N/A"}</span></div>
-            {product.systemRequirements?.other?.map((req) => (
-              <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">Other</span><span class="text-[#E2E8F0]">{req}</span></div>
-            ))}
+          <div class="space-y-4">
+            {/* Windows */}
+            {(product.systemRequirements?.os || product.systemRequirements?.processor) && (
+              <div class="bg-[#1E2937]/30 backdrop-blur rounded-xl border border-[#334155] p-5 space-y-3 shadow-2xl">
+                <span class="text-[10px] font-bold text-[#6366F1] uppercase tracking-wider block border-b border-[#334155]/50 pb-1.5">Windows</span>
+                <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">OS</span><span class="text-[#E2E8F0]">{product.systemRequirements?.os || "N/A"}</span></div>
+                <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">Processor</span><span class="text-[#E2E8F0]">{product.systemRequirements?.processor || "N/A"}</span></div>
+                <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">RAM</span><span class="text-[#E2E8F0]">{product.systemRequirements?.ram || "N/A"}</span></div>
+                <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">Disk</span><span class="text-[#E2E8F0]">{product.systemRequirements?.disk || "N/A"}</span></div>
+              </div>
+            )}
+
+            {/* macOS */}
+            {(product.systemRequirements?.macOs || product.systemRequirements?.macProcessor) && (
+              <div class="bg-[#1E2937]/30 backdrop-blur rounded-xl border border-[#334155] p-5 space-y-3 shadow-2xl">
+                <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider block border-b border-[#334155]/50 pb-1.5">macOS</span>
+                <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">OS</span><span class="text-[#E2E8F0]">{product.systemRequirements?.macOs || "N/A"}</span></div>
+                <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">Processor</span><span class="text-[#E2E8F0]">{product.systemRequirements?.macProcessor || "N/A"}</span></div>
+                <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">RAM</span><span class="text-[#E2E8F0]">{product.systemRequirements?.macRam || "N/A"}</span></div>
+                <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">Disk</span><span class="text-[#E2E8F0]">{product.systemRequirements?.macDisk || "N/A"}</span></div>
+              </div>
+            )}
+
+            {/* Linux */}
+            {(product.systemRequirements?.linuxOs || product.systemRequirements?.linuxProcessor) && (
+              <div class="bg-[#1E2937]/30 backdrop-blur rounded-xl border border-[#334155] p-5 space-y-3 shadow-2xl">
+                <span class="text-[10px] font-bold text-orange-400 uppercase tracking-wider block border-b border-[#334155]/50 pb-1.5">Linux</span>
+                <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">OS</span><span class="text-[#E2E8F0]">{product.systemRequirements?.linuxOs || "N/A"}</span></div>
+                <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">Processor</span><span class="text-[#E2E8F0]">{product.systemRequirements?.linuxProcessor || "N/A"}</span></div>
+                <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">RAM</span><span class="text-[#E2E8F0]">{product.systemRequirements?.linuxRam || "N/A"}</span></div>
+                <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">Disk</span><span class="text-[#E2E8F0]">{product.systemRequirements?.linuxDisk || "N/A"}</span></div>
+              </div>
+            )}
+
+            {product.systemRequirements?.other && product.systemRequirements.other.length > 0 && (
+              <div class="bg-[#1E2937]/30 backdrop-blur rounded-xl border border-[#334155] p-5 space-y-2 shadow-2xl">
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block border-b border-[#334155]/50 pb-1.5">Other Requirements</span>
+                {product.systemRequirements.other.map((req) => (
+                  <div class="flex gap-3 text-xs"><span class="text-[#E2E8F0]">{req}</span></div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

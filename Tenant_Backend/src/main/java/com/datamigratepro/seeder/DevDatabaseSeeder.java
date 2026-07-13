@@ -126,6 +126,7 @@ public class DevDatabaseSeeder implements CommandLineRunner {
 
                 if (siteSettingRepository.count() > 0) {
                     System.out.println("🌱 Database " + brand + " already has configurations. Skipping seeding.");
+                    syncCategoryProductMappings(brand);
                     continue;
                 }
 
@@ -206,6 +207,7 @@ public class DevDatabaseSeeder implements CommandLineRunner {
                     licenseRepository.saveAll(createBrandLicenses(prefix, brand));
                     System.out.println("🔑 Seeded initial valid licenses for " + brand + "!");
                 }
+                syncCategoryProductMappings(brand);
             } finally {
                 TenantContext.clear();
             }
@@ -427,7 +429,7 @@ public class DevDatabaseSeeder implements CommandLineRunner {
     private void seedCategories() {
         categoryRepository.saveAll(Arrays.asList(
             new Category("email-migration", "Email Migration", "Migrate emails across platforms — Gmail, Outlook, Office 365, Yahoo, and more.", "mail", 12, "blue"),
-            new Category("backup", "Backup Tools", "Protect your email data with automated cloud and local backup solutions.", "shield", 8, "green"),
+            new Category("backup-tools", "Backup Tools", "Protect your email data with automated cloud and local backup solutions.", "shield", 8, "green"),
             new Category("file-converter", "File Converters", "Convert between PST, MBOX, EML, MSG, PDF, and other email file formats.", "refresh-cw", 10, "purple"),
             new Category("cloud-migration", "Cloud Migration", "Seamlessly move data between cloud platforms — O365, Google Workspace, AWS.", "cloud", 6, "cyan"),
             new Category("mailbox-recovery", "Mailbox Recovery", "Recover and repair corrupted or inaccessible PST, OST, and mailbox files.", "hard-drive", 7, "orange"),
@@ -674,7 +676,7 @@ public class DevDatabaseSeeder implements CommandLineRunner {
         p4.setName("Gmail Backup Tool");
         p4.setShortDescription("Download and backup your Gmail emails, labels, contacts, and calendars to your local storage.");
         p4.setDescription("Backup your entire Gmail account to your computer in PST, MBOX, EML, or PDF format. Schedule automatic backups, apply filters, and restore data anytime. Keep your Gmail data safe even without internet access.");
-        p4.setCategory("backup");
+        p4.setCategory("backup-tools");
         p4.setTags(Arrays.asList("gmail", "backup", "google", "email backup"));
         p4.setRating(4.6);
         p4.setReviewCount(1543);
@@ -888,7 +890,7 @@ public class DevDatabaseSeeder implements CommandLineRunner {
         b2.setTitle("How to Backup Outlook Emails: 5 Methods Explained");
         b2.setExcerpt("Learn 5 proven methods to backup your Outlook emails, from manual PST export to automated cloud backup solutions.");
         b2.setContent("# How to Backup Outlook Emails: 5 Methods Explained\n\nLosing your Outlook emails can be catastrophic. Here are 5 reliable methods to keep your data safe.\n\n## Method 1: Export to PST File (Built-in)\nOutlook's built-in export feature creates a PST backup file.\n\n## Method 2: Archive Old Emails\nUse Outlook's Auto-Archive feature to automatically archive older emails.\n\n## Method 3: Use a Dedicated Backup Tool\nProfessional tools offer scheduled backups, incremental backups, and cloud storage support.\n\n## Method 4: Office 365 Backup Service\nIf you're on Microsoft 365, use Microsoft's built-in backup features or a third-party solution.\n\n## Method 5: Manual Copy to Network Drive\nSimple but reliable for small setups.\n\n## Which Method is Best?\n\nFor enterprise environments, we recommend using a dedicated backup tool with scheduling and cloud storage capabilities.");
-        b2.setCategory("backup");
+        b2.setCategory("backup-tools");
         b2.setTags(Arrays.asList("outlook", "backup", "pst", "email backup"));
         b2.setAuthor(new Author("Sarah Williams", "Technical Writer"));
         b2.setPublishedAt("2025-04-20");
@@ -920,7 +922,7 @@ public class DevDatabaseSeeder implements CommandLineRunner {
         b4.setTitle("Office 365 Backup Best Practices for 2025");
         b4.setExcerpt("Microsoft doesn't fully backup your Office 365 data. Learn best practices for protecting your Microsoft 365 emails, OneDrive, and SharePoint.");
         b4.setContent("# Office 365 Backup Best Practices for 2025\n\n## The Microsoft Shared Responsibility Model\n\nMicrosoft provides infrastructure reliability, but data protection is YOUR responsibility. Here's what you need to know.\n\n## What Microsoft Backs Up (and What They Don't)\n\nMicrosoft protects against hardware failure and infrastructure issues. They do NOT protect against:\n- Accidental deletion\n- Malicious deletion\n- Ransomware attacks\n- Sync errors\n- Retention policy gaps\n\n## Best Practices for O365 Backup\n\n### 1. Follow the 3-2-1 Rule\n3 copies of data, 2 different storage types, 1 offsite location.\n\n### 2. Use Automated Daily Backups\nManual backups are error-prone. Set up automated daily backups.\n\n### 3. Test Your Restores Regularly\nA backup is only as good as your ability to restore from it.\n\n### 4. Cover All Services\nDon't just backup email — also backup OneDrive, SharePoint, and Teams.");
-        b4.setCategory("backup");
+        b4.setCategory("backup-tools");
         b4.setTags(Arrays.asList("office 365", "backup", "best practices", "microsoft 365"));
         b4.setAuthor(new Author("Alex Johnson", "Senior Migration Specialist"));
         b4.setPublishedAt("2025-02-28");
@@ -1286,7 +1288,29 @@ public class DevDatabaseSeeder implements CommandLineRunner {
             new SourceFormat("sf-eml", "eml", "EML File", "Individual email message file format", "mail", "brandA"),
             new SourceFormat("sf-msg", "msg", "Outlook MSG File", "Outlook individual message format", "mail", "brandA"),
             new SourceFormat("sf-gmail", "gmail", "Gmail / Google Mail", "Google Mail IMAP account", "mail", "brandA"),
-            new SourceFormat("sf-office365", "office365", "Office 365 / Outlook.com", "Microsoft 365 Cloud account", "mail", "brandA")
+            new SourceFormat("sf-office365", "office365", "Office 365 / Outlook.com", "Microsoft 365 Cloud account", "mail", "brandA"),
+            new SourceFormat("sf-tgz", "tgz", "Zimbra TGZ File", "Zimbra mailbox export archive format", "mail", "brandA"),
+            new SourceFormat("sf-olm", "olm", "Outlook Mac OLM File", "Microsoft Outlook for Mac database archive", "mail", "brandA"),
+            new SourceFormat("sf-nsf", "nsf", "Lotus Notes NSF File", "IBM Lotus Notes database format", "mail", "brandA"),
+            new SourceFormat("sf-maildir", "maildir", "Maildir File", "Standard Maildir directory-based mail format", "mail", "brandA"),
+            new SourceFormat("sf-emlx", "emlx", "Apple Mail EMLX File", "Apple Mail individual message format", "mail", "brandA"),
+            new SourceFormat("sf-edb", "edb", "Exchange Database EDB File", "Microsoft Exchange Server mailbox database", "mail", "brandA"),
+            new SourceFormat("sf-dbx", "dbx", "Outlook Express DBX File", "Microsoft Outlook Express database format", "mail", "brandA"),
+            new SourceFormat("sf-yaml", "yaml", "YAML File", "YAML Ain't Markup Language serialization format", "document", "brandA"),
+            new SourceFormat("sf-xml", "xml", "XML File", "eXtensible Markup Language document format", "document", "brandA"),
+            new SourceFormat("sf-docx", "docx", "Word Document", "Microsoft Word document format", "document", "brandA"),
+            new SourceFormat("sf-toml", "toml", "TOML File", "Tom's Obvious Minimal Language config format", "document", "brandA"),
+            new SourceFormat("sf-properties", "properties", "Properties File", "Java configuration properties format", "document", "brandA"),
+            new SourceFormat("sf-md", "markdown", "Markdown File", "Markdown text file format", "document", "brandA"),
+            new SourceFormat("sf-jsonl", "jsonl", "JSON Lines File", "Line-delimited JSON format", "document", "brandA"),
+            new SourceFormat("sf-json", "json", "JSON File", "JavaScript Object Notation data format", "document", "brandA"),
+            new SourceFormat("sf-ini", "ini", "INI File", "Initialization configuration file format", "document", "brandA"),
+            new SourceFormat("sf-xlsx", "xlsx", "Excel Worksheet", "Microsoft Excel spreadsheet format", "document", "brandA"),
+            new SourceFormat("sf-csv", "csv", "CSV File", "Comma Separated Values text table format", "document", "brandA"),
+            new SourceFormat("sf-vcf", "vcf", "vCard File", "vCard electronic business card format", "contact", "brandA"),
+            new SourceFormat("sf-ics", "ics", "iCalendar File", "iCalendar calendar and scheduling format", "calendar", "brandA"),
+            new SourceFormat("sf-mobi", "mobi", "MOBI E-book", "Mobipocket e-book format", "document", "brandA"),
+            new SourceFormat("sf-epub", "epub", "EPUB E-book", "Electronic Publication open e-book format", "document", "brandA")
         ));
 
         targetFormatRepository.saveAll(Arrays.asList(
@@ -1296,14 +1320,59 @@ public class DevDatabaseSeeder implements CommandLineRunner {
             new TargetFormat("tf-pdf", "pdf", "PDF Document", "Portable Document Format for printing/archiving", "file", "brandA"),
             new TargetFormat("tf-gmail", "gmail", "Gmail / Google Mail", "Google Mail IMAP account", "mail", "brandA"),
             new TargetFormat("tf-office365", "office365", "Office 365 / Outlook.com", "Microsoft 365 Cloud account", "mail", "brandA"),
-            new TargetFormat("tf-html", "html", "HTML File", "HyperText Markup Language files for web viewing", "file", "brandA")
+            new TargetFormat("tf-html", "html", "HTML File", "HyperText Markup Language files for web viewing", "file", "brandA"),
+            new TargetFormat("tf-tgz", "tgz", "Zimbra TGZ File", "Zimbra mailbox export archive format", "mail", "brandA"),
+            new TargetFormat("tf-olm", "olm", "Outlook Mac OLM File", "Microsoft Outlook for Mac database archive", "mail", "brandA"),
+            new TargetFormat("tf-nsf", "nsf", "Lotus Notes NSF File", "IBM Lotus Notes database format", "mail", "brandA"),
+            new TargetFormat("tf-maildir", "maildir", "Maildir File", "Standard Maildir directory-based mail format", "mail", "brandA"),
+            new TargetFormat("tf-emlx", "emlx", "Apple Mail EMLX File", "Apple Mail individual message format", "mail", "brandA"),
+            new TargetFormat("tf-edb", "edb", "Exchange Database EDB File", "Microsoft Exchange Server mailbox database", "mail", "brandA"),
+            new TargetFormat("tf-dbx", "dbx", "Outlook Express DBX File", "Microsoft Outlook Express database format", "mail", "brandA"),
+            new TargetFormat("tf-yaml", "yaml", "YAML File", "YAML Ain't Markup Language serialization format", "document", "brandA"),
+            new TargetFormat("tf-xml", "xml", "XML File", "eXtensible Markup Language document format", "document", "brandA"),
+            new TargetFormat("tf-docx", "docx", "Word Document", "Microsoft Word document format", "document", "brandA"),
+            new TargetFormat("tf-toml", "toml", "TOML File", "Tom's Obvious Minimal Language config format", "document", "brandA"),
+            new TargetFormat("tf-properties", "properties", "Properties File", "Java configuration properties format", "document", "brandA"),
+            new TargetFormat("tf-md", "markdown", "Markdown File", "Markdown text file format", "document", "brandA"),
+            new TargetFormat("tf-jsonl", "jsonl", "JSON Lines File", "Line-delimited JSON format", "document", "brandA"),
+            new TargetFormat("tf-json", "json", "JSON File", "JavaScript Object Notation data format", "document", "brandA"),
+            new TargetFormat("tf-ini", "ini", "INI File", "Initialization configuration file format", "document", "brandA"),
+            new TargetFormat("tf-xlsx", "xlsx", "Excel Worksheet", "Microsoft Excel spreadsheet format", "document", "brandA"),
+            new TargetFormat("tf-csv", "csv", "CSV File", "Comma Separated Values text table format", "document", "brandA"),
+            new TargetFormat("tf-vcf", "vcf", "vCard File", "vCard electronic business card format", "contact", "brandA"),
+            new TargetFormat("tf-ics", "ics", "iCalendar File", "iCalendar calendar and scheduling format", "calendar", "brandA"),
+            new TargetFormat("tf-mobi", "mobi", "MOBI E-book", "Mobipocket e-book format", "document", "brandA"),
+            new TargetFormat("tf-epub", "epub", "EPUB E-book", "Electronic Publication open e-book format", "document", "brandA"),
+            new TargetFormat("tf-rtf", "rtf", "Rich Text Format", "Rich Text Format document", "file", "brandA"),
+            new TargetFormat("tf-txt", "txt", "Plain Text Document", "Plain text message extraction", "file", "brandA"),
+            new TargetFormat("tf-mht", "mht", "MHTML Web Archive", "Single file HTML web archive", "file", "brandA"),
+            new TargetFormat("tf-xps", "xps", "XPS Document", "XML Paper Specification", "file", "brandA"),
+            new TargetFormat("tf-tiff", "tiff", "TIFF Image", "Tagged Image File Format", "image", "brandA"),
+            new TargetFormat("tf-bmp", "bmp", "Bitmap Image", "BMP Image format", "image", "brandA"),
+            new TargetFormat("tf-gif", "gif", "GIF Image", "Graphics Interchange Format", "image", "brandA"),
+            new TargetFormat("tf-jpeg", "jpeg", "JPEG Image", "Joint Photographic Experts Group", "image", "brandA"),
+            new TargetFormat("tf-png", "png", "PNG Image", "Portable Network Graphics", "image", "brandA")
         ));
 
         supportedClientRepository.saveAll(Arrays.asList(
             new SupportedClient("sc-outlook", "outlook", "Microsoft Outlook", "Desktop client for Windows & Mac", "mail", "brandA"),
             new SupportedClient("sc-thunderbird", "thunderbird", "Mozilla Thunderbird", "Open-source email desktop client", "mail", "brandA"),
             new SupportedClient("sc-applemail", "applemail", "Apple Mail", "Built-in macOS/iOS email client", "mail", "brandA"),
-            new SupportedClient("sc-gmail", "gmail", "Google Webmail", "Gmail web interface on browsers", "mail", "brandA")
+            new SupportedClient("sc-gmail", "gmail", "Google Webmail", "Gmail web interface on browsers", "mail", "brandA"),
+            new SupportedClient("sc-zimbra", "zimbra", "Zimbra Desktop", "Zimbra collaboration mail client", "mail", "brandA"),
+            new SupportedClient("sc-lotusnotes", "lotusnotes", "Lotus Notes / Domino", "IBM Lotus Notes collaboration platform", "mail", "brandA"),
+            new SupportedClient("sc-outlookexpress", "outlookexpress", "Outlook Express", "Classic Windows Mail / Outlook Express", "mail", "brandA"),
+            new SupportedClient("sc-exchange", "exchange", "Microsoft Exchange Server", "Exchange on-premise or cloud database", "mail", "brandA"),
+            new SupportedClient("sc-onedrive", "onedrive", "Microsoft OneDrive", "OneDrive Cloud Storage", "cloud", "brandA"),
+            new SupportedClient("sc-googledrive", "googledrive", "Google Drive", "Google Workspace Cloud Storage", "cloud", "brandA"),
+            new SupportedClient("sc-yahoo", "yahoo", "Yahoo Mail", "Yahoo Mail accounts via IMAP/API", "cloud", "brandA"),
+            new SupportedClient("sc-outlook-com", "outlook_com", "Outlook.com", "Outlook.com Personal Cloud accounts", "cloud", "brandA"),
+            new SupportedClient("sc-godaddy", "godaddy", "GoDaddy Workspace Mail", "GoDaddy Workspace email platform", "mail", "brandA"),
+            new SupportedClient("sc-zoho", "zoho", "Zoho Mail", "Zoho Mail enterprise server", "mail", "brandA"),
+            new SupportedClient("sc-workmail", "workmail", "Amazon WorkMail", "AWS Enterprise email and calendar", "mail", "brandA"),
+            new SupportedClient("sc-yandex", "yandex", "Yandex Mail", "Yandex Mail cloud platform", "cloud", "brandA"),
+            new SupportedClient("sc-dropbox", "dropbox", "Dropbox", "Dropbox Cloud Storage", "cloud", "brandA"),
+            new SupportedClient("sc-sharepoint", "sharepoint", "Microsoft SharePoint", "Microsoft SharePoint portal", "cloud", "brandA")
         ));
 
         keyFeatureRepository.saveAll(Arrays.asList(
@@ -1314,7 +1383,14 @@ public class DevDatabaseSeeder implements CommandLineRunner {
             new KeyFeature("kf-multiple-files", "supportsMultipleFiles", "Multiple Files Support", "Allows selecting and converting multiple files simultaneously", "brandA"),
             new KeyFeature("kf-extract-emails", "extractEmails", "Extract Emails", "Extracts and migrates all email folders (Inbox, Sent, Drafts, etc.)", "brandA"),
             new KeyFeature("kf-extract-contacts", "extractContacts", "Extract Contacts", "Extracts and migrates contact lists, address books, and distribution lists", "brandA"),
-            new KeyFeature("kf-extract-calendars", "extractCalendars", "Extract Calendars", "Extracts and migrates calendar events, schedules, and meetings", "brandA")
+            new KeyFeature("kf-extract-calendars", "extractCalendars", "Extract Calendars", "Extracts and migrates calendar events, schedules, and meetings", "brandA"),
+            new KeyFeature("kf-duplicate-cleanup", "supportsDuplicateCleanup", "Duplicate Cleanup", "Identify and remove duplicate emails, files or folders during processing", "brandA"),
+            new KeyFeature("kf-deep-scan", "supportsDeepScan", "Deep Scan Mode", "Sector-by-sector scan for corrupted or damaged database files", "brandA"),
+            new KeyFeature("kf-folder-tree", "supportsFolderLock", "Folder Tree Locking", "Preserve exact hierarchical folder structures during conversion", "brandA"),
+            new KeyFeature("kf-split-files", "supportsSplitFiles", "Split Large Files", "Automatically split large output files into smaller target segments", "brandA"),
+            new KeyFeature("kf-merge-files", "supportsMergeFiles", "Merge Files", "Merge multiple source files into a single unified output file", "brandA"),
+            new KeyFeature("kf-pause-resume", "supportsPauseResume", "Pause & Resume", "Allows pausing and resuming the conversion process mid-operation", "brandA"),
+            new KeyFeature("kf-log-report", "supportsLogReports", "Conversion Log Reports", "Generates and saves TXT log report summaries after completion", "brandA")
         ));
     }
 
@@ -2191,5 +2267,27 @@ public class DevDatabaseSeeder implements CommandLineRunner {
         helpArticleRepository.save(h1);
 
         System.out.println("✅ ApexByte Catalog injected.");
+    }
+
+    private void syncCategoryProductMappings(String brand) {
+        List<Category> categories = categoryRepository.findBySiteId(brand);
+        List<Product> products = productRepository.findBySiteId(brand);
+        
+        boolean updatedAny = false;
+        for (Category category : categories) {
+            List<String> productIds = products.stream()
+                .filter(p -> category.getId().equals(p.getCategory()))
+                .map(Product::getId)
+                .collect(java.util.stream.Collectors.toList());
+            
+            if (category.getProductIds() == null || !category.getProductIds().equals(productIds)) {
+                category.setProductIds(productIds);
+                updatedAny = true;
+            }
+        }
+        if (updatedAny) {
+            categoryRepository.saveAll(categories);
+            System.out.println("🔄 Synced " + categories.size() + " category mappings for brand: " + brand);
+        }
     }
 }

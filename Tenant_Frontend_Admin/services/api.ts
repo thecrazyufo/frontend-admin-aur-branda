@@ -358,7 +358,7 @@ export const AdminFaqAPI = {
 };
 
 export const AdminCategoryAPI = {
-  getAll: () => adminGet<Category[]>("/categories"),
+  getAll: () => adminGet<Category[]>("/categories?includeEmpty=true"),
   create: (cat: Partial<Category>) => adminPost<Category>("/categories", cat),
   update: (id: string, cat: Partial<Category>) => adminPut<Category>(`/categories/${id}`, cat),
   delete: (id: string) => adminDelete(`/categories/${id}`),

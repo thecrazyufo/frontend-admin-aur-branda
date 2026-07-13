@@ -31,10 +31,20 @@ export default function PricingCard({ tier, productSlug }: PricingCardProps) {
       )}
 
       {/* Header */}
-      <div className="mb-5">
+      <div className="mb-4">
         <h3 className="font-bold text-white text-lg mb-1">{tier.name}</h3>
+        {tier.bestFor && (
+          <p className="text-xs text-[#E2E8F0]/90 mb-1.5">
+            <span className="font-semibold text-stone-400">Best For:</span> {tier.bestFor}
+          </p>
+        )}
+        {tier.description && (
+          <p className="text-xs text-[#94A3B8]/95 bg-[#1E2937]/35 border border-[#334155]/60 rounded-lg p-2.5 my-2 leading-relaxed">
+            {tier.description}
+          </p>
+        )}
         {tier.mailboxes && (
-          <span className="text-[10px] text-[#E2E8F0] bg-stone-850 border border-[#334155] px-2 py-0.5 rounded">
+          <span className="inline-block text-[10px] text-[#E2E8F0] bg-stone-850 border border-[#334155] px-2 py-0.5 rounded mt-1">
             {tier.mailboxes}
           </span>
         )}

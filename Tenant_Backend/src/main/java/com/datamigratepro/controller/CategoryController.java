@@ -30,7 +30,8 @@ public class CategoryController {
     // ✅ PUBLIC GET
     @GetMapping
     public ResponseEntity<List<Category>> getAllCategories(
-            @RequestParam(required = true) String siteId) {
+            @RequestParam(required = true) String siteId,
+            @RequestParam(required = false, defaultValue = "false") boolean includeEmpty) {
         
         SecurityUtils.checkAccess(siteId);
 
@@ -39,22 +40,24 @@ public class CategoryController {
         Map<String, String> productMap = products.stream()
                 .collect(Collectors.toMap(Product::getId, Product::getName, (a, b) -> a));
 
-        List<Category> filtered = new ArrayList<>();
+        List<Category> result = new ArrayList<>();
         for (Category category : allCategories) {
-            // Rule: Every Category entry must be associated with at least one Product/Tool
-            if (category.getProductIds() != null && !category.getProductIds().isEmpty()) {
-                List<String> names = new ArrayList<>();
+            List<String> names = new ArrayList<>();
+            if (category.getProductIds() != null) {
                 for (String pId : category.getProductIds()) {
                     if (productMap.containsKey(pId)) {
                         names.add(productMap.get(pId));
                     }
                 }
-                category.setProductNames(names);
-                filtered.add(category);
+            }
+            category.setProductNames(names);
+
+            if (includeEmpty || (category.getProductIds() != null && !category.getProductIds().isEmpty())) {
+                result.add(category);
             }
         }
 
-        return ResponseEntity.ok(filtered);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/{id}")

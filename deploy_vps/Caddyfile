@@ -2,3 +2,7 @@
     reverse_proxy tenant-backend:8080
     encode gzip
 }
+
+datamigratepro.com, www.datamigratepro.com {
+    redir https://thecrazyufo.in{uri} 301
+}

@@ -70,10 +70,11 @@ export default function Footer({
   const links = footerConfig || defaultFooterLinks;
   const socialsToUse = socials || {};
 
-  const adminLoginUrl =
-    typeof window !== "undefined"
+  const adminLoginUrl = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.PUBLIC_ADMIN_URL)
+    ? `${import.meta.env.PUBLIC_ADMIN_URL}/admin/login`
+    : (typeof window !== "undefined"
       ? `${window.location.protocol}//${window.location.hostname}:3000/admin/login`
-      : "/admin/login";
+      : "http://localhost:3000/admin/login");
 
   const trustBadges = [
     { icon: <Shield size={14} />, text: "SSL Encrypted" },

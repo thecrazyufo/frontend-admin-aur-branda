@@ -270,6 +270,26 @@ public class ToolMatcherService {
                         .thenComparing(Comparator.comparingInt(ToolMatchResult::getScore).reversed()))
                 .collect(Collectors.toList());
     }
+    /**
+     * Return ALL formats currently defined in the registry, unconditionally.
+     * Used as the unified single source of truth for UI typeaheads and full catalogs.
+     */
+    public AvailableFormatsResponse getAllRegistryFormats(String siteId) {
+        List<SourceFormat> dbSources = sourceFormatRepository.findBySiteId(siteId);
+        List<TargetFormat> dbTargets = targetFormatRepository.findBySiteId(siteId);
+
+        List<AvailableFormatsResponse.FormatOption> srcOptions = dbSources.stream()
+                .map(sf -> new AvailableFormatsResponse.FormatOption(
+                        sf.getKey(), sf.getName(), sf.getIcon() != null ? sf.getIcon() : "file", sf.getDescription(), "Registry"))
+                .collect(Collectors.toList());
+
+        List<AvailableFormatsResponse.FormatOption> tgtOptions = dbTargets.stream()
+                .map(tf -> new AvailableFormatsResponse.FormatOption(
+                        tf.getKey(), tf.getName(), tf.getIcon() != null ? tf.getIcon() : "file", tf.getDescription(), "Registry"))
+                .collect(Collectors.toList());
+
+        return new AvailableFormatsResponse(srcOptions, tgtOptions);
+    }
 
     /**
      * Return all distinct source and target formats from enabled products for a site.

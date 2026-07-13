@@ -7,6 +7,10 @@ export const metadata: Metadata = {
  template:"%s | Admin Portal",
  },
  description:"Multi-Tenant Admin Console for managing software selling storefronts.",
+ robots: {
+   index: false,
+   follow: false,
+ },
  icons: {
  icon:"/favicon.ico",
  },

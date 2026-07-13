@@ -1,4 +1,4 @@
-import { ProductCategory } from "@/types/product";
+type ProductCategory = string;
 
 export interface Category {
   id: ProductCategory;

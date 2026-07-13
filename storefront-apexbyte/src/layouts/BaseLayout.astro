@@ -81,7 +81,8 @@ const fontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href={fontUrl} rel="stylesheet" />
+    <link rel="stylesheet" href={fontUrl} media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href={fontUrl} /></noscript>
 
     <!-- Dynamic CSS custom properties from admin panel -->
     <style define:vars={{ primaryColor, accentColor, fontFamily }}>

@@ -214,7 +214,7 @@ export const SocialProofAPI = {
 
 export const ToolsAPI = {
   getAvailableFormats: (siteId: string = SITE_ID) => 
-    apiGet<AvailableFormatsResponse>(`/formats/available`),
+    apiGet<AvailableFormatsResponse>(`/registry/formats/all?siteId=${siteId}`),
   matchTools: (
     source: string, 
     destination: string, 

@@ -50,7 +50,7 @@ const siteDescription = settings?.description || "Tools so easy to use, they fee
             <p class="text-zinc-600 font-medium mb-8 flex-grow">{product.description}</p>
             <div class="flex items-center justify-between">
               <span class="text-2xl font-black text-zinc-900">${product.price}</span>
-              <a href={`/products/${product.id}`} class="bg-zinc-900 text-white font-bold py-3 px-6 rounded-xl hover:bg-zinc-700 transition-colors">Get It!</a>
+              <a href={`/products/${product.slug}`} class="bg-zinc-900 text-white font-bold py-3 px-6 rounded-xl hover:bg-zinc-700 transition-colors">Get It!</a>
             </div>
           </div>
         ))}

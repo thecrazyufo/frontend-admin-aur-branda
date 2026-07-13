@@ -7,6 +7,8 @@ export interface PricingTier {
   cta: string;
   popular?: boolean;
   mailboxes?: string;
+  bestFor?: string;
+  description?: string;
 }
 
 export interface ProductScreenshot {
@@ -31,6 +33,14 @@ export interface SystemRequirement {
   processor: string;
   ram: string;
   disk: string;
+  macOs?: string;
+  macProcessor?: string;
+  macRam?: string;
+  macDisk?: string;
+  linuxOs?: string;
+  linuxProcessor?: string;
+  linuxRam?: string;
+  linuxDisk?: string;
   other?: string[];
 }
 
@@ -86,3 +96,4 @@ export interface Product {
   enabled?: boolean;
 }
 
+export const CATEGORY_LABELS: Record<string, string> = { "mail-migration": "Mail Migration", "email-recovery": "Email Recovery", "email-backup": "Email Backup", "cloud-backup": "Cloud Backup" };

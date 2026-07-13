@@ -101,6 +101,40 @@ services:
       - PUBLIC_SITE_ID=migrationuncle
     depends_on:
       - tenant-backend
+
+  brandD:
+    build:
+      context: ./storefront-brandD
+    image: brandd
+    container_name: software_brandD
+    restart: always
+    ports:
+      - "3004:4321"
+    volumes:
+      - ./storefront-brandD:/app
+      - /app/node_modules
+    command: npm run dev -- --host 0.0.0.0
+    environment:
+      - PUBLIC_SITE_ID=brandD
+    depends_on:
+      - tenant-backend
+
+  brandE:
+    build:
+      context: ./storefront-brandE
+    image: brande
+    container_name: software_brandE
+    restart: always
+    ports:
+      - "3005:4321"
+    volumes:
+      - ./storefront-brandE:/app
+      - /app/node_modules
+    command: npm run dev -- --host 0.0.0.0
+    environment:
+      - PUBLIC_SITE_ID=brandE
+    depends_on:
+      - tenant-backend
   # ─────────────────────────────────────────────────────────────────────────────
   # Admin Panel — Next.js
   # ─────────────────────────────────────────────────────────────────────────────
@@ -145,6 +179,8 @@ services:
       - brandA
       - apexbyte
       - migrationuncle
+      - brandD
+      - brandE
 
 
 volumes:
