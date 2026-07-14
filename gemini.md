@@ -137,6 +137,33 @@ Developers must keep their local `/etc/hosts` clean and only map `api.thecrazyuf
 
 ---
 
+## ⚡ Storefront Performance & Caching Rules (High Priority)
+
+To prevent severe latency (due to Vercel functions executing in US-East while the DigitalOcean API VPS is in India), the following development rules must be strictly adhered to for all storefront codebases:
+
+1. **Parallel Data Fetching (Minimizing Latency):**
+   * Never execute multiple sequential `await` fetches for backend APIs in Astro SSR components (e.g., `await SettingsAPI.get()` followed by `await ProductAPI.getBySlug()`).
+   * Group all independent fetches into parallel blocks using `Promise.all` to reduce network round-trips. If dependencies exist (e.g., fetching related products needs the product ID), group them in structured parallel phases (Phase 1, Phase 2).
+
+2. **Propagating Props to Layouts (Avoiding Redundant Calls):**
+   * Always pass already fetched layout data (`settings`, `brandConfig`, and `products` for navigation) as props to the layout wrapper `<BaseLayout>` (e.g., `<BaseLayout settings={settings} brandConfig={brandConfig} products={products}>`).
+   * The `<BaseLayout>` must check these props and only query the backend APIs as a fail-safe fallback when props are missing. This eliminates duplicate API queries on the same request.
+
+3. **Vercel Edge Caching & ISR:**
+   * Enable Edge Caching/ISR on all public storefront pages (Home, Catalog, Product Detail, Policies) by setting the `Cache-Control` header at the top of the Astro component:
+     ```typescript
+     Astro.response.headers.set(
+       "Cache-Control",
+       "public, max-age=0, s-maxage=600, stale-while-revalidate=60"
+     );
+     ```
+   * Do not cache pages containing dynamic user-specific actions (e.g., checkout, download success page, search page).
+
+4. **Smooth SPA transitions (`ClientRouter`):**
+   * Keep `<ClientRouter />` from `astro:transitions` imported and mounted inside the `<head>` of [BaseLayout.astro](file:///Users/akashsahu.blue/Documents/Akas/software-selling-platform/storefront-prismmigration/src/layouts/BaseLayout.astro). This converts standard link clicks into instant client-side route transitions, avoiding page reload delays.
+
+---
+
 ## 🪙 Token-Saving Tips & Guidelines
 
 1. **Prefer Programmatic API Testing:**
