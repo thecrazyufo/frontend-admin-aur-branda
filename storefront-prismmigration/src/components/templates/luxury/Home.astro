@@ -66,7 +66,7 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
   </div>
 
   <!-- Giant Glass Prism & Refraction Rays SVG (Stretches from left to right corner) -->
-  <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden flex items-center justify-center" aria-hidden="true">
+  <div class="absolute top-[60px] inset-x-0 bottom-0 lg:top-0 lg:inset-0 pointer-events-none z-0 overflow-hidden flex items-center justify-center" aria-hidden="true">
     <svg class="w-[135%] h-[115%] md:w-[125%] md:h-[105%] opacity-[0.55] scale-100 md:scale-105" viewBox="0 0 1200 600" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <!-- Light Beam Gradients for Left-side Input Streams (low opacity — stay behind text) -->
@@ -583,7 +583,7 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
     <!-- Clean, Highly Readable Text Overlay (Directly on Prism/Ray Background) -->
     <div class="max-w-5xl mx-auto relative z-10 flex flex-col items-center text-center space-y-4 md:space-y-6 pt-1 pb-6 md:pb-8 lg:pb-10">
       <!-- Welcome Badge — Dynamic -->
-      <div class="animate-fade-up inline-flex items-center gap-2 text-[10px] tracking-[0.25em] text-[#A855F7] uppercase font-bold bg-[#A855F7]/10 border border-[#A855F7]/25 px-4 py-1.5 rounded-full shadow-inner backdrop-blur-md">
+      <div class="animate-fade-up inline-flex items-center gap-1.5 text-[8px] xs:text-[9px] sm:text-[10px] tracking-[0.08em] sm:tracking-[0.25em] text-[#A855F7] uppercase font-bold bg-[#A855F7]/10 border border-[#A855F7]/25 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full shadow-inner backdrop-blur-md max-w-[90%] sm:max-w-none text-center">
         <span class="w-1.5 h-1.5 rounded-full bg-[#A855F7] animate-ping"></span>
         <span>{settings.hero?.badgeText || "WELCOME TO PRISM MIGRATION"}</span>
       </div>
@@ -662,9 +662,9 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
 
 <!-- Dedicated Data-Stream Ticker Band (100% clear of hero section SVG pyramid and commitments badges at all viewport sizes) -->
 <div class="relative py-4 border-y border-[#334155]/20 overflow-hidden z-20" style="background: var(--ink-void);" aria-hidden="true">
-  <div class="absolute left-0 top-0 w-24 h-full z-10 pointer-events-none" style="background: linear-gradient(to right, var(--ink-void), transparent);"></div>
-  <div class="absolute right-0 top-0 w-24 h-full z-10 pointer-events-none" style="background: linear-gradient(to left, var(--ink-void), transparent);"></div>
-  <div id="stream-ticker" class="flex gap-8 whitespace-nowrap" style="font-family: var(--font-mono); font-size: 0.62rem; color: var(--type-faint); letter-spacing: 0.05em; animation: ticker-scroll 28s linear infinite;">
+  <div class="absolute left-0 top-0 w-12 sm:w-24 h-full z-30 pointer-events-none" style="background: linear-gradient(to right, var(--ink-void), transparent);"></div>
+  <div class="absolute right-0 top-0 w-12 sm:w-24 h-full z-30 pointer-events-none" style="background: linear-gradient(to left, var(--ink-void), transparent);"></div>
+  <div id="stream-ticker" class="flex gap-8 whitespace-nowrap relative z-10" style="font-family: var(--font-mono); font-size: 0.62rem; color: var(--type-faint); letter-spacing: 0.05em; animation: ticker-scroll 28s linear infinite;">
     <span>► <span style="color: var(--signal-teal);">PST → MBOX</span>&nbsp; ✓ COMPLETE &nbsp;·&nbsp; </span>
     <span>► <span style="color: var(--amber-alert);">OST → EML</span>&nbsp; ✓ 14,082 items migrated &nbsp;·&nbsp; </span>
     <span>► <span style="color: var(--signal-teal);">GMAIL → OFFICE 365</span>&nbsp; ✓ BYTE-PERFECT &nbsp;·&nbsp; </span>
