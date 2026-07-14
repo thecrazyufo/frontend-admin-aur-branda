@@ -96,4 +96,10 @@ export interface Product {
   enabled?: boolean;
 }
 
-export const CATEGORY_LABELS: Record<string, string> = { "mail-migration": "Mail Migration", "email-recovery": "Email Recovery", "email-backup": "Email Backup", "cloud-backup": "Cloud Backup" };
+export const CATEGORY_LABELS: Record<string, string> = {
+  "email-migration": "Email Migration",
+  "file-converter": "File Converter",
+  "backup": "Email Backup",
+  "cloud-migration": "Cloud Migration",
+  "mailbox-recovery": "Mailbox Recovery"
+};
