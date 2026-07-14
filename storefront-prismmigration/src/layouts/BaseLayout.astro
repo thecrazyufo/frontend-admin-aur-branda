@@ -3,6 +3,7 @@ import "../styles/globals.css";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import { SettingsAPI, BrandAPI, ProductAPI } from "../services/api";
+import { ClientRouter } from "astro:transitions";
 
 interface Props {
   title?: string;
@@ -89,6 +90,7 @@ const fontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/
 <!doctype html>
 <html lang="en">
   <head>
+    <ClientRouter />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>

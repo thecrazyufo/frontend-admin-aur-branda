@@ -1,7 +1,6 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { ProductAPI , SettingsAPI } from "@/services/api";
-const settings = await SettingsAPI.get().catch(() => null);
+import { ProductAPI, SettingsAPI, BrandAPI } from "@/services/api";
 import { Star, Download, ShoppingCart, Check, Monitor, ChevronRight } from "lucide-react";
 import { generateProductSchema, generateBreadcrumbSchema, generateFAQSchema } from "@/lib/seo";
 import { parseMarkdownToHtml } from "@/lib/utils";
@@ -14,18 +13,29 @@ import type { Product } from "@/types/product";
 
 const { slug } = Astro.params;
 
+let settings = null;
+let brandConfig = null;
 let product: Product | null = null;
+let products: Product[] = [];
 let relatedProducts: Product[] = [];
 
 try {
-  if (slug) {
-    product = await ProductAPI.getBySlug(slug);
-    if (product) {
-      relatedProducts = await ProductAPI.getRelated(product.id);
-    }
+  // Phase 1: Fetch core configurations and target product details in parallel
+  [settings, brandConfig, product] = await Promise.all([
+    SettingsAPI.get().catch(() => null),
+    BrandAPI.getCurrentBrand().catch(() => null),
+    slug ? ProductAPI.getBySlug(slug).catch(() => null) : Promise.resolve(null)
+  ]);
+
+  // Phase 2: Fetch related products and catalog (for navbar) in parallel using product details
+  if (product) {
+    [relatedProducts, products] = await Promise.all([
+      ProductAPI.getRelated(product.id).catch(() => []),
+      ProductAPI.getAll().catch(() => [])
+    ]);
   }
 } catch (e) {
-  console.error("Error fetching product detail:", e);
+  console.error("Error loading product page data:", e);
 }
 
 if (!product || product.enabled === false) {
@@ -48,6 +58,8 @@ Astro.response.headers.set(
   description={product.seo?.description || product.shortDescription}
   ogType="product"
   settings={settings}
+  brandConfig={brandConfig}
+  products={products}
 >
   <script type="application/ld+json" set:html={JSON.stringify(generateProductSchema({ name: product.name, description: product.description, image: product.thumbnailUrl || undefined, price: lowestPaidPrice?.price || 0, rating: product.rating || 0, reviewCount: product.reviewCount || 0, url: productUrl }))} />
   <script type="application/ld+json" set:html={JSON.stringify(generateBreadcrumbSchema([{ label: "Home", href: "/" }, { label: "Products", href: "/products" }, { label: product.name, href: `/products/${product.slug}` }], siteUrl))} />
