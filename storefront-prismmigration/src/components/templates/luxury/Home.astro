@@ -657,36 +657,37 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
       ))}
     </div>
 
-    <!-- Data-Stream Ticker: placed below Stats Grid (completely clear of Y=539 prism baseline) -->
-    <div class="relative mt-8 w-full max-w-4xl mx-auto overflow-hidden z-20" aria-hidden="true">
-      <div class="absolute left-0 top-0 w-24 h-full z-10 pointer-events-none" style="background: linear-gradient(to right, var(--ink-void), transparent);"></div>
-      <div class="absolute right-0 top-0 w-24 h-full z-10 pointer-events-none" style="background: linear-gradient(to left, var(--ink-void), transparent);"></div>
-      <div id="stream-ticker" class="flex gap-8 whitespace-nowrap" style="font-family: var(--font-mono); font-size: 0.62rem; color: var(--type-faint); letter-spacing: 0.05em; animation: ticker-scroll 28s linear infinite;">
-        <span>► <span style="color: var(--signal-teal);">PST → MBOX</span>&nbsp; ✓ COMPLETE &nbsp;·&nbsp; </span>
-        <span>► <span style="color: var(--amber-alert);">OST → EML</span>&nbsp; ✓ 14,082 items migrated &nbsp;·&nbsp; </span>
-        <span>► <span style="color: var(--signal-teal);">GMAIL → OFFICE 365</span>&nbsp; ✓ BYTE-PERFECT &nbsp;·&nbsp; </span>
-        <span>► <span style="color: var(--amber-alert);">PST → PDF</span>&nbsp; ✓ 3,211 messages converted &nbsp;·&nbsp; </span>
-        <span>► <span style="color: var(--signal-teal);">OFFICE 365 → GOOGLE WORKSPACE</span>&nbsp; ✓ INTACT &nbsp;·&nbsp; </span>
-        <span>► <span style="color: var(--amber-alert);">MBOX → PST</span>&nbsp; ✓ 8,450 emails processed &nbsp;·&nbsp; </span>
-        <!-- repeat for seamless loop -->
-        <span>► <span style="color: var(--signal-teal);">PST → MBOX</span>&nbsp; ✓ COMPLETE &nbsp;·&nbsp; </span>
-        <span>► <span style="color: var(--amber-alert);">OST → EML</span>&nbsp; ✓ 14,082 items migrated &nbsp;·&nbsp; </span>
-        <span>► <span style="color: var(--signal-teal);">GMAIL → OFFICE 365</span>&nbsp; ✓ BYTE-PERFECT &nbsp;·&nbsp; </span>
-        <span>► <span style="color: var(--amber-alert);">PST → PDF</span>&nbsp; ✓ 3,211 messages converted &nbsp;·&nbsp; </span>
-      </div>
-    </div>
-    <style>
-      @keyframes ticker-scroll {
-        0%   { transform: translateX(0); }
-        100% { transform: translateX(-50%); }
-      }
-      #stream-ticker:hover { animation-play-state: paused; }
-    </style>
   </div>
-  
-  <!-- Section Divider -->
-  <div class="h-px bg-gradient-to-r from-transparent via-[#6366F1]/15 to-transparent mt-8"></div>
 </section>
+
+<!-- Dedicated Data-Stream Ticker Band (100% clear of hero section SVG pyramid and commitments badges at all viewport sizes) -->
+<div class="relative py-4 border-y border-[#334155]/20 overflow-hidden z-20" style="background: var(--ink-void);" aria-hidden="true">
+  <div class="absolute left-0 top-0 w-24 h-full z-10 pointer-events-none" style="background: linear-gradient(to right, var(--ink-void), transparent);"></div>
+  <div class="absolute right-0 top-0 w-24 h-full z-10 pointer-events-none" style="background: linear-gradient(to left, var(--ink-void), transparent);"></div>
+  <div id="stream-ticker" class="flex gap-8 whitespace-nowrap" style="font-family: var(--font-mono); font-size: 0.62rem; color: var(--type-faint); letter-spacing: 0.05em; animation: ticker-scroll 28s linear infinite;">
+    <span>► <span style="color: var(--signal-teal);">PST → MBOX</span>&nbsp; ✓ COMPLETE &nbsp;·&nbsp; </span>
+    <span>► <span style="color: var(--amber-alert);">OST → EML</span>&nbsp; ✓ 14,082 items migrated &nbsp;·&nbsp; </span>
+    <span>► <span style="color: var(--signal-teal);">GMAIL → OFFICE 365</span>&nbsp; ✓ BYTE-PERFECT &nbsp;·&nbsp; </span>
+    <span>► <span style="color: var(--amber-alert);">PST → PDF</span>&nbsp; ✓ 3,211 messages converted &nbsp;·&nbsp; </span>
+    <span>► <span style="color: var(--signal-teal);">OFFICE 365 → GOOGLE WORKSPACE</span>&nbsp; ✓ INTACT &nbsp;·&nbsp; </span>
+    <span>► <span style="color: var(--amber-alert);">MBOX → PST</span>&nbsp; ✓ 8,450 emails processed &nbsp;·&nbsp; </span>
+    <!-- repeat for seamless loop -->
+    <span>► <span style="color: var(--signal-teal);">PST → MBOX</span>&nbsp; ✓ COMPLETE &nbsp;·&nbsp; </span>
+    <span>► <span style="color: var(--amber-alert);">OST → EML</span>&nbsp; ✓ 14,082 items migrated &nbsp;·&nbsp; </span>
+    <span>► <span style="color: var(--signal-teal);">GMAIL → OFFICE 365</span>&nbsp; ✓ BYTE-PERFECT &nbsp;·&nbsp; </span>
+    <span>► <span style="color: var(--amber-alert);">PST → PDF</span>&nbsp; ✓ 3,211 messages converted &nbsp;·&nbsp; </span>
+  </div>
+</div>
+<style>
+  @keyframes ticker-scroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  #stream-ticker:hover { animation-play-state: paused; }
+</style>
+
+<!-- Section Divider -->
+<div class="h-px bg-gradient-to-r from-transparent via-[#6366F1]/15 to-transparent my-6"></div>
 
 <!-- Section I: Architectural Principles -->
 <section class="bg-[#0B0F1A] py-20 tech-grid relative overflow-hidden">
