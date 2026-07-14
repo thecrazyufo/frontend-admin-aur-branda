@@ -1,6 +1,7 @@
 
 /** Strip markdown syntax from a string, returning plain text for use in JSON-LD schema */
-function stripMarkdown(md: string): string {
+function stripMarkdown(md: string | undefined | null): string {
+  if (!md) return "";
   return md
     .replace(/```[\s\S]*?```/g, "")            // remove fenced code blocks
     .replace(/`([^`]+)`/g, "$1")               // inline code -> plain
