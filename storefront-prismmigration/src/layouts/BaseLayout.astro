@@ -163,6 +163,31 @@ const fontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/
     </style>
   </head>
   <body class={`min-h-screen flex flex-col antialiased layout-${layoutTemplate} bg-canvas text-ink relative`} style={`font-family: '${fontFamily}', system-ui, sans-serif;`}>
+    <!-- Global Loading Progress Bar for Client-Side Routing -->
+    <div id="global-loading-bar" style="position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, #6366F1 0%, #8B5CF6 100%); z-index: 99999; opacity: 0; transition: width 0.4s ease, opacity 0.3s ease; width: 0%; pointer-events: none;"></div>
+
+    <script is:inline>
+      document.addEventListener('astro:before-preparation', () => {
+        const bar = document.getElementById('global-loading-bar');
+        if (bar) {
+          bar.style.width = '0%';
+          bar.style.opacity = '1';
+          bar.style.transition = 'width 10s cubic-bezier(0.08, 0.8, 0.1, 1), opacity 0.2s ease';
+          bar.offsetWidth; // Force layout reflow
+          bar.style.width = '90%';
+        }
+      });
+
+      document.addEventListener('astro:page-load', () => {
+        const bar = document.getElementById('global-loading-bar');
+        if (bar) {
+          bar.style.transition = 'width 0.3s ease-out, opacity 0.3s ease 0.2s';
+          bar.style.width = '100%';
+          bar.style.opacity = '0';
+        }
+      });
+    </script>
+
     <!-- Accessibility Skip Link -->
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-[#6366F1] focus:text-white focus:font-extrabold focus:rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6366F1] focus:ring-offset-2 focus:ring-offset-black transition-all">
       Skip to main content
