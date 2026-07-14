@@ -13,12 +13,28 @@ interface Props {
   author?: string;
   noindex?: boolean;
   keywords?: string;
+  settings?: any;
+  brandConfig?: any;
+  products?: any[];
 }
 
-const settings = await SettingsAPI.get().catch(() => null);
-const brandConfig = await BrandAPI.getCurrentBrand().catch(() => null);
+let settings = Astro.props.settings;
+let brandConfig = Astro.props.brandConfig;
+let products = Astro.props.products;
+
+// Fetch in parallel if any are missing
+if (!settings || !brandConfig || !products) {
+  const [fetchedSettings, fetchedBrandConfig, fetchedProducts] = await Promise.all([
+    settings ? Promise.resolve(settings) : SettingsAPI.get().catch(() => null),
+    brandConfig ? Promise.resolve(brandConfig) : BrandAPI.getCurrentBrand().catch(() => null),
+    products ? Promise.resolve(products) : ProductAPI.getAll().catch(() => [])
+  ]);
+  settings = fetchedSettings;
+  brandConfig = fetchedBrandConfig;
+  products = fetchedProducts;
+}
+
 const layoutTemplate = brandConfig?.layoutTemplate || "classic";
-const products = await ProductAPI.getAll().catch(() => []);
 
 const siteName = settings?.name || "";
 const siteTagline = settings?.tagline || "";

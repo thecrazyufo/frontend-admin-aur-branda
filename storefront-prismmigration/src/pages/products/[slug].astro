@@ -35,12 +35,19 @@ if (!product || product.enabled === false) {
 const siteUrl = (settings?.url || "").replace(/\/$/, "");
 const productUrl = `${siteUrl}/products/${product.slug}`;
 const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
+
+// Enable Edge Caching/ISR
+Astro.response.headers.set(
+  "Cache-Control",
+  "public, max-age=0, s-maxage=600, stale-while-revalidate=60"
+);
 ---
 
 <BaseLayout
   title={`${product.seo?.title || product.name} — ${settings?.name || ""}`}
   description={product.seo?.description || product.shortDescription}
   ogType="product"
+  settings={settings}
 >
   <script type="application/ld+json" set:html={JSON.stringify(generateProductSchema({ name: product.name, description: product.description, image: product.thumbnailUrl || undefined, price: lowestPaidPrice?.price || 0, rating: product.rating || 0, reviewCount: product.reviewCount || 0, url: productUrl }))} />
   <script type="application/ld+json" set:html={JSON.stringify(generateBreadcrumbSchema([{ label: "Home", href: "/" }, { label: "Products", href: "/products" }, { label: product.name, href: `/products/${product.slug}` }], siteUrl))} />

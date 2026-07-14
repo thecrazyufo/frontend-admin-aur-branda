@@ -35,11 +35,19 @@ try {
 
 const activeCategory = categoriesList.find((c) => c.id === category);
 const filteredCount = products.length;
+
+// Enable Edge Caching/ISR
+Astro.response.headers.set(
+  "Cache-Control",
+  "public, max-age=0, s-maxage=600, stale-while-revalidate=60"
+);
 ---
 
 <BaseLayout
   title={activeCategory ? `${activeCategory.label} Tools — ${settings?.name || ""}` : `All Software Products — ${settings?.name || ""}`}
   description={activeCategory ? activeCategory.description : "Browse our complete collection of email migration, backup, file converter, and cloud migration tools."}
+  settings={settings}
+  products={allProducts}
 >
   <div class="min-h-screen bg-[#0B0F1A] text-white">
     {/* Header */}

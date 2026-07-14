@@ -48,9 +48,21 @@ const layoutTemplate = brandConfig?.layoutTemplate || "classic";
 const siteName = settings?.name || "";
 const siteTagline = settings?.tagline || "";
 const siteDescription = settings?.description || "";
+
+// Enable Edge Caching/ISR (Cache for 10 min, stale-while-revalidate for 60s)
+Astro.response.headers.set(
+  "Cache-Control",
+  "public, max-age=0, s-maxage=600, stale-while-revalidate=60"
+);
 ---
 
-<BaseLayout title={`${siteName} — ${siteTagline}`} description={siteDescription}>
+<BaseLayout
+  title={`${siteName} — ${siteTagline}`}
+  description={siteDescription}
+  settings={settings}
+  brandConfig={brandConfig}
+  products={products}
+>
   <script type="application/ld+json"
     set:html={JSON.stringify({
       "@context": "https://schema.org",
