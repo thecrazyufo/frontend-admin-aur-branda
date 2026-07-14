@@ -68,7 +68,7 @@ try {
         />
         <div class="space-y-3">
           {items.map((faq) => (
-            <details class="group rounded-2xl border" style="background: var(--slate-surface); border-color: var(--circuit-line);">
+            <details class="group rounded-2xl border" open={faq.id === "placeholder-1"} style="background: var(--slate-surface); border-color: var(--circuit-line);">
               <summary class="flex items-center justify-between px-6 py-4 cursor-pointer list-none">
                 <span class="font-semibold text-white pr-4 text-sm" style="font-family: var(--font-body);">{faq.question}</span>
                 <ChevronRight size={18} class="text-stone-500 shrink-0 group-open:rotate-90 transition-transform" />
