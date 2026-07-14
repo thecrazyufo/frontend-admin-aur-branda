@@ -57,7 +57,7 @@ export default function PricingCard({ tier, productSlug }: PricingCardProps) {
           </div>
         ) : (
           <div className="flex items-end gap-2">
-            <span className="text-3xl font-bold text-white" style={{fontFamily: 'var(--font-mono)', letterSpacing: '-0.02em'}}>
+            <span className="text-3xl font-bold text-[var(--amber-alert)]" style={{fontFamily: 'var(--font-mono)', letterSpacing: '-0.02em'}}>
               ${tier.price}
             </span>
             {tier.originalPrice && (

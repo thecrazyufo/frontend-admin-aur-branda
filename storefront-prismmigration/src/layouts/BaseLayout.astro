@@ -162,7 +162,7 @@ const refractionFontsUrl = `https://fonts.googleapis.com/css2?family=Syne:wght@6
         /* Typography colors */
         --type-light:  #E2EAF4;   /* primary text — blue-shifted for terminal feel */
         --type-muted:  #8FA4BF;   /* secondary / muted text */
-        --type-faint:  #4A6280;   /* placeholder, fine print */
+        --type-faint:  #708BAE;   /* placeholder, fine print — lightened to satisfy WCAG contrast AA */
 
         /* ── Typography — Refraction Three-Face Stack ─────────────── */
         --font-display: 'Syne', system-ui, sans-serif;      /* hero headlines, section titles */
@@ -188,6 +188,11 @@ const refractionFontsUrl = `https://fonts.googleapis.com/css2?family=Syne:wght@6
         --color-mute:             var(--type-faint);
         --color-hairline:         var(--circuit-line);
         --color-hairline-strong:  #2E4A66;
+      }
+
+      /* Global WCAG Contrast Overrides to elevate dim/muted tailwind text */
+      .text-stone-500, .text-gray-500, .text-slate-500 {
+        color: var(--type-muted) !important;
       }
 
       /* ── Global mono utility class — technical labels throughout ── */

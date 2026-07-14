@@ -110,6 +110,17 @@ Astro.response.headers.set(
             ))}
           </ul>
 
+          <!-- Starting Price Display Box (High contrast visual anchor) -->
+          <div class="mb-6 flex items-baseline gap-2 bg-[#0F1620]/40 border border-[#1C2B3A] p-4 rounded-xl max-w-sm">
+            <div class="flex flex-col">
+              <span class="text-[9px] uppercase font-mono tracking-widest text-[#8FA4BF]">Starting License Price</span>
+              <div class="flex items-baseline gap-1.5 mt-1">
+                <span class="text-3xl font-black font-mono text-[var(--amber-alert)]">${lowestPaidPrice?.price || "0"}</span>
+                <span class="text-[10px] font-mono text-[#8FA4BF] uppercase tracking-wider">/ lifetime key</span>
+              </div>
+            </div>
+          </div>
+
           {/* CTAs */}
           <div class="flex flex-wrap gap-3">
             <a href={`/checkout?product=${product.slug}&tier=${encodeURIComponent(lowestPaidPrice?.name || "Standard")}`} class="cta-pulse-wrap font-extrabold text-sm py-3 px-6 rounded flex items-center gap-2 transition-all duration-300 transform active:scale-95" style="background: var(--signal-teal); color: #080C14; box-shadow: 0 0 15px rgba(0,200,160,0.25);">

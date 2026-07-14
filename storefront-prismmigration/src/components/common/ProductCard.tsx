@@ -270,7 +270,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             <div className="text-[8px] uppercase tracking-wider text-zinc-500 font-bold">Starting at</div>
             {lowestPrice ? (
               <div className="flex items-baseline gap-0.5">
-                <span className="font-extrabold text-white text-[16px] tracking-tight">
+                <span className="font-extrabold text-[var(--signal-teal)] text-[16px] tracking-tight font-mono">
                   {formatPrice(lowestPrice.price)}
                 </span>
                 <span className="text-[9px] text-[#6B7280]">/{lowestPrice.period === "one-time" ? "lifetime" : lowestPrice.period}</span>
