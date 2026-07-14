@@ -35,14 +35,15 @@ try {
       </div>
 
       <div class="container-custom relative z-10">
-        <span class="inline-block text-[10px] font-bold uppercase tracking-widest mb-4 px-3 py-1.5 rounded-full text-[#6366F1] bg-[#6366F1]/15 border border-[#6366F1]/25">Blog</span>
-        <h1 class="text-white font-extrabold text-3xl md:text-3xl tracking-tight mb-4">Expert Guides & Tutorials</h1>
-        <p class="text-[#E2E8F0] max-w-xl mx-auto text-xs leading-relaxed">
+        <span class="inline-block text-[10px] font-bold uppercase tracking-widest mb-4 px-3 py-1.5 rounded-full border" style="color: var(--signal-teal); background: rgba(0,200,160,0.08); border-color: rgba(0,200,160,0.25); font-family: var(--font-mono);">Blog</span>
+        <h1 class="text-white font-extrabold text-3xl md:text-3xl tracking-tight mb-4" style="font-family: var(--font-display);">Expert Guides & Tutorials</h1>
+        <p class="text-[#E2E8F0] max-w-xl mx-auto text-xs leading-relaxed" style="color: var(--type-muted);">
           Learn email migration, backup strategies, and data management from our team of experts.
         </p>
       </div>
     </div>
 
+    <!-- Category style helper in Astro frontmatter is not required since we inline mappings directly -->
     <div class="container-custom py-20">
       {/* Featured Post */}
       {featured && (
@@ -55,8 +56,16 @@ try {
               <span class="text-stone-800 text-3xl font-black">{featured.title.charAt(0)}</span>
             </div>
             <div class="p-8 flex flex-col justify-center">
-              <span class="px-2.5 py-0.5 rounded border border-[#6366F1]/20 bg-[#6366F1]/10 text-[#6366F1] text-[9px] uppercase font-bold tracking-wider inline-block self-start mb-3">{BLOG_CATEGORY_LABELS[featured.category]}</span>
-              <h2 class="font-bold text-white text-xl mb-3 group-hover:text-[#6366F1] transition-colors text-sm">{featured.title}</h2>
+              {featured.category === 'email-migration' && (
+                <span class="px-2.5 py-0.5 rounded text-[9px] uppercase font-bold tracking-wider inline-block self-start mb-3" style="border: 1px solid rgba(0, 200, 160, 0.35); background: rgba(0, 200, 160, 0.08); color: var(--signal-teal); font-family: var(--font-mono);">EMAIL-MIGRATION</span>
+              )}
+              {featured.category === 'backup' && (
+                <span class="px-2.5 py-0.5 rounded text-[9px] uppercase font-bold tracking-wider inline-block self-start mb-3" style="border: 1px solid rgba(177, 159, 251, 0.35); background: rgba(177, 159, 251, 0.08); color: #B19FFB; font-family: var(--font-mono);">BACKUP-STRATEGY</span>
+              )}
+              {featured.category !== 'email-migration' && featured.category !== 'backup' && (
+                <span class="px-2.5 py-0.5 rounded text-[9px] uppercase font-bold tracking-wider inline-block self-start mb-3" style="border: 1px solid rgba(245, 158, 11, 0.35); background: rgba(245, 158, 11, 0.08); color: var(--amber-alert); font-family: var(--font-mono);">{featured.category.toUpperCase()}</span>
+              )}
+              <h2 class="font-bold text-white text-xl mb-3 group-hover:text-[#6366F1] transition-colors text-sm" style="font-family: var(--font-body);">{featured.title}</h2>
               <p class="text-xs text-[#E2E8F0] mb-5 line-clamp-3 leading-relaxed">{featured.excerpt}</p>
               <div class="flex items-center justify-between text-xs text-[#94A3B8]">
                 <div class="flex items-center gap-3">
@@ -92,7 +101,15 @@ try {
                 <span class="text-stone-800 text-3xl font-black">{post.title.charAt(0)}</span>
               </div>
               <div class="p-5">
-                <span class="px-2.5 py-0.5 rounded border border-[#6366F1]/20 bg-[#6366F1]/10 text-[#6366F1] text-[9px] uppercase font-bold tracking-wider inline-block mb-2">{BLOG_CATEGORY_LABELS[post.category]}</span>
+                {post.category === 'email-migration' && (
+                  <span class="px-2.5 py-0.5 rounded text-[9px] uppercase font-bold tracking-wider inline-block mb-2" style="border: 1px solid rgba(0, 200, 160, 0.35); background: rgba(0, 200, 160, 0.08); color: var(--signal-teal); font-family: var(--font-mono);">EMAIL-MIGRATION</span>
+                )}
+                {post.category === 'backup' && (
+                  <span class="px-2.5 py-0.5 rounded text-[9px] uppercase font-bold tracking-wider inline-block mb-2" style="border: 1px solid rgba(177, 159, 251, 0.35); background: rgba(177, 159, 251, 0.08); color: #B19FFB; font-family: var(--font-mono);">BACKUP-STRATEGY</span>
+                )}
+                {post.category !== 'email-migration' && post.category !== 'backup' && (
+                  <span class="px-2.5 py-0.5 rounded text-[9px] uppercase font-bold tracking-wider inline-block mb-2" style="border: 1px solid rgba(245, 158, 11, 0.35); background: rgba(245, 158, 11, 0.08); color: var(--amber-alert); font-family: var(--font-mono);">{post.category.toUpperCase()}</span>
+                )}
                 <h3 class="font-bold text-white mb-2 group-hover:text-[#6366F1] transition-colors line-clamp-2 text-sm">{post.title}</h3>
                 <p class="text-xs text-[#E2E8F0] line-clamp-2 mb-4 leading-relaxed">{post.excerpt}</p>
                 <div class="flex items-center justify-between text-[11px] text-[#94A3B8]">

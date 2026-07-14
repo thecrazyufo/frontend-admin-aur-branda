@@ -84,7 +84,7 @@ Astro.response.headers.set(
               {product.badge === "bestseller" ? "🏆 Best Seller" : product.badge === "popular" ? "🔥 Popular" : product.badge === "new" ? "✨ New" : "🔄 Updated"}
             </span>
           )}
-          <h1 class="font-extrabold text-white text-3xl tracking-tight mb-4">{product.name}</h1>
+          <h1 class="font-extrabold text-white text-3xl tracking-tight mb-4" style="font-family: var(--font-display);">{product.name}</h1>
           <p class="text-base text-[#E5E5E5] mb-6">{product.shortDescription}</p>
 
           {/* Rating */}
