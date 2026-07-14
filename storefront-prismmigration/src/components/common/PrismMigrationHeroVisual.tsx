@@ -83,8 +83,28 @@ export default function PrismMigrationHeroVisual({ sourceFormats = [], targetFor
   const sources = sourceFormats.length > 0 ? sourceFormats : ["pst", "ost"];
   const targets = targetFormats.length > 0 ? targetFormats : ["gmail", "office365", "mbox", "pdf", "html", "csv"];
 
+  const [isVisible, setIsVisible] = React.useState(false);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="w-full bg-gradient-to-b from-[#080B16] to-[#03040A] border border-[#202740] rounded-2xl p-6 md:p-8 shadow-[0_24px_60px_rgba(0,0,0,0.6)] relative overflow-hidden flex flex-col gap-6 select-none">
+    <div ref={containerRef} className="w-full bg-gradient-to-b from-[#080B16] to-[#03040A] border border-[#202740] rounded-2xl p-6 md:p-8 shadow-[0_24px_60px_rgba(0,0,0,0.6)] relative overflow-hidden flex flex-col gap-6 select-none">
       
       {/* High-fidelity glowing grid background */}
       <div
@@ -127,12 +147,18 @@ export default function PrismMigrationHeroVisual({ sourceFormats = [], targetFor
             Source Archives
           </div>
           <div className="flex flex-row md:flex-col flex-wrap gap-2 justify-center md:justify-start">
-            {sources.map((s) => {
+            {sources.map((s, idx) => {
               const colors = formatColorClass(s);
               return (
                 <div
                   key={s}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg border bg-[#0B0F1A]/85 backdrop-blur-md ${colors.border} shadow-[0_4px_12px_rgba(0,0,0,0.2)] hover:border-indigo-500/50 hover:shadow-indigo-500/5 transition-all duration-300 w-24 md:w-full max-w-[140px]`}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg border bg-[#0B0F1A]/85 backdrop-blur-md ${colors.border} shadow-[0_4px_12px_rgba(0,0,0,0.2)] hover:border-indigo-500/50 hover:shadow-indigo-500/5 transition-all duration-300 w-24 md:w-full max-w-[140px] ${
+                    isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'
+                  }`}
+                  style={{
+                    transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                    transitionDelay: isVisible ? `${idx * 150}ms` : '0ms'
+                  }}
                 >
                   <span className="w-2 h-2 rounded-full flex-shrink-0 animate-ping" style={{ backgroundColor: colors.dot }} />
                   <span className={`text-[10px] font-extrabold font-mono tracking-wider ${colors.text}`}>
@@ -150,6 +176,15 @@ export default function PrismMigrationHeroVisual({ sourceFormats = [], targetFor
             <style>{`
               @keyframes laserFlow {
                 to { stroke-dashoffset: -40; }
+              }
+              @keyframes drawRay {
+                from { stroke-dashoffset: 150; }
+                to { stroke-dashoffset: 0; }
+              }
+              .draw-ray-active {
+                stroke-dasharray: 150;
+                stroke-dashoffset: 150;
+                animation: drawRay 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
               }
               @keyframes crystalRotation {
                 0% { transform: rotate(0deg) scale(1); }
@@ -250,18 +285,18 @@ export default function PrismMigrationHeroVisual({ sourceFormats = [], targetFor
             <path d="M 10,100 L 138,100" className="laser-line" stroke="#E2E8F0" strokeWidth="2" fill="none" />
 
             {/* 2. SPECTRUM REFRACT LIGHT BEAMS (Fanning out from right face to nodes area) */}
-            <path id="pathRed" d="M 172,100 Q 230,85 310,40" className="spectrum-line" stroke="url(#specRed)" strokeWidth="2.8" fill="none" style={{ animationDelay: '0s' }} />
-            <path id="pathOrange" d="M 172,100 Q 230,95 310,70" className="spectrum-line" stroke="url(#specOrange)" strokeWidth="2.8" fill="none" style={{ animationDelay: '0.3s' }} />
-            <path id="pathYellow" d="M 172,100 Q 230,100 310,100" className="spectrum-line" stroke="url(#specYellow)" strokeWidth="2.8" fill="none" style={{ animationDelay: '0.6s' }} />
-            <path id="pathGreen" d="M 172,100 Q 230,105 310,130" className="spectrum-line" stroke="url(#specGreen)" strokeWidth="2.8" fill="none" style={{ animationDelay: '0.9s' }} />
-            <path id="pathBlue" d="M 172,100 Q 230,110 310,160" className="spectrum-line" stroke="url(#specBlue)" strokeWidth="2.8" fill="none" style={{ animationDelay: '1.2s' }} />
+            <path id="pathRed" d="M 172,100 Q 230,85 310,40" className={`spectrum-line ${isVisible ? 'draw-ray-active' : ''}`} stroke="url(#specRed)" strokeWidth="2.8" fill="none" style={{ animationDelay: isVisible ? `${sources.length * 150 + 100}ms` : '0s' }} />
+            <path id="pathOrange" d="M 172,100 Q 230,95 310,70" className={`spectrum-line ${isVisible ? 'draw-ray-active' : ''}`} stroke="url(#specOrange)" strokeWidth="2.8" fill="none" style={{ animationDelay: isVisible ? `${sources.length * 150 + 180}ms` : '0s' }} />
+            <path id="pathYellow" d="M 172,100 Q 230,100 310,100" className={`spectrum-line ${isVisible ? 'draw-ray-active' : ''}`} stroke="url(#specYellow)" strokeWidth="2.8" fill="none" style={{ animationDelay: isVisible ? `${sources.length * 150 + 260}ms` : '0s' }} />
+            <path id="pathGreen" d="M 172,100 Q 230,105 310,130" className={`spectrum-line ${isVisible ? 'draw-ray-active' : ''}`} stroke="url(#specGreen)" strokeWidth="2.8" fill="none" style={{ animationDelay: isVisible ? `${sources.length * 150 + 340}ms` : '0s' }} />
+            <path id="pathBlue" d="M 172,100 Q 230,110 310,160" className={`spectrum-line ${isVisible ? 'draw-ray-active' : ''}`} stroke="url(#specBlue)" strokeWidth="2.8" fill="none" style={{ animationDelay: isVisible ? `${sources.length * 150 + 420}ms` : '0s' }} />
 
             {/* Glowing animated flow particles on paths */}
-            <circle r="4.5" fill="#EF4444" className="particle-dot" style={{ motionPath: "path('M 172,100 Q 230,85 310,40')", animationDelay: '0s', filter: 'drop-shadow(0 0 4px #EF4444)' }} />
-            <circle r="4.5" fill="#F97316" className="particle-dot" style={{ motionPath: "path('M 172,100 Q 230,95 310,70')", animationDelay: '0.8s', filter: 'drop-shadow(0 0 4px #F97316)' }} />
-            <circle r="4.5" fill="#F59E0B" className="particle-dot" style={{ motionPath: "path('M 172,100 Q 230,100 310,100')", animationDelay: '1.6s', filter: 'drop-shadow(0 0 4px #F59E0B)' }} />
-            <circle r="4.5" fill="#10B981" className="particle-dot" style={{ motionPath: "path('M 172,100 Q 230,105 310,130')", animationDelay: '0.4s', filter: 'drop-shadow(0 0 4px #10B981)' }} />
-            <circle r="4.5" fill="#3B82F6" className="particle-dot" style={{ motionPath: "path('M 172,100 Q 230,110 310,160')", animationDelay: '1.2s', filter: 'drop-shadow(0 0 4px #3B82F6)' }} />
+            <circle r="4.5" fill="#EF4444" className="particle-dot" style={{ motionPath: "path('M 172,100 Q 230,85 310,40')", animationDelay: '0s', filter: 'drop-shadow(0 0 4px #EF4444)', opacity: isVisible ? 1 : 0, transition: 'opacity 0.2s ease', transitionDelay: `${sources.length * 150 + 500}ms` }} />
+            <circle r="4.5" fill="#F97316" className="particle-dot" style={{ motionPath: "path('M 172,100 Q 230,95 310,70')", animationDelay: '0.8s', filter: 'drop-shadow(0 0 4px #F97316)', opacity: isVisible ? 1 : 0, transition: 'opacity 0.2s ease', transitionDelay: `${sources.length * 150 + 500}ms` }} />
+            <circle r="4.5" fill="#F59E0B" className="particle-dot" style={{ motionPath: "path('M 172,100 Q 230,100 310,100')", animationDelay: '1.6s', filter: 'drop-shadow(0 0 4px #F59E0B)', opacity: isVisible ? 1 : 0, transition: 'opacity 0.2s ease', transitionDelay: `${sources.length * 150 + 500}ms` }} />
+            <circle r="4.5" fill="#10B981" className="particle-dot" style={{ motionPath: "path('M 172,100 Q 230,105 310,130')", animationDelay: '0.4s', filter: 'drop-shadow(0 0 4px #10B981)', opacity: isVisible ? 1 : 0, transition: 'opacity 0.2s ease', transitionDelay: `${sources.length * 150 + 500}ms` }} />
+            <circle r="4.5" fill="#3B82F6" className="particle-dot" style={{ motionPath: "path('M 172,100 Q 230,110 310,160')", animationDelay: '1.2s', filter: 'drop-shadow(0 0 4px #3B82F6)', opacity: isVisible ? 1 : 0, transition: 'opacity 0.2s ease', transitionDelay: `${sources.length * 150 + 500}ms` }} />
 
             {/* 3. THE 3D GLASS CRYSTAL DIAMOND (Refracting centerpiece) */}
             <g className="crystal-prism" style={{ filter: 'drop-shadow(0 0 16px rgba(0, 240, 255, 0.45))' }}>
@@ -284,12 +319,18 @@ export default function PrismMigrationHeroVisual({ sourceFormats = [], targetFor
           </div>
           {/* Dense, responsive grid layout designed to fit 20+ targets perfectly without bloat */}
           <div className="grid grid-cols-2 lg:grid-cols-2 gap-2 max-h-[220px] overflow-y-auto pr-1 select-none custom-scrollbar">
-            {targets.map((t) => {
+            {targets.map((t, idx) => {
               const colors = formatColorClass(t);
               return (
                 <div
                   key={t}
-                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border bg-[#0B0F1A]/85 backdrop-blur-md ${colors.border} ${colors.bg} hover:border-[#6366F1]/55 hover:scale-[1.03] transition-all duration-200 shadow-sm`}
+                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border bg-[#0B0F1A]/85 backdrop-blur-md ${colors.border} ${colors.bg} hover:border-[#6366F1]/55 hover:scale-[1.03] transition-all duration-200 shadow-sm ${
+                    isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'
+                  }`}
+                  style={{
+                    transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                    transitionDelay: isVisible ? `${sources.length * 150 + 500 + idx * 80}ms` : '0ms'
+                  }}
                 >
                   <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 animate-pulse" style={{ backgroundColor: colors.dot }} />
                   <span className={`text-[9px] font-bold font-mono tracking-wider ${colors.text} truncate`}>

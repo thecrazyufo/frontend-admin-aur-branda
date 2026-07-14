@@ -20,6 +20,15 @@ try {
 } catch (e) {
   console.error("Error loading blog posts:", e);
 }
+
+function getTechnicalBio(authorName: string): string {
+  const bios: Record<string, string> = {
+    "Alex Johnson": "12 years Windows Server admin · Written 47 migration guides",
+    "Sarah Jenkins": "Lead Migration Engineer · Former Enterprise Exchange Architect",
+    "Michael Torres": "Data Security Specialist · 15 years Unix/Mail Server Administrator",
+  };
+  return bios[authorName] || "Enterprise Migration Lead · Systems Engineer";
+}
 ---
 
 <BaseLayout
@@ -74,7 +83,8 @@ try {
                   </div>
                   <div>
                     <p class="font-semibold text-[#E2E8F0]">{featured.author.name}</p>
-                    <p class="text-[10px] text-stone-500 font-mono mt-0.5">{formatDate(featured.publishedAt)}</p>
+                    <p class="text-[9px] text-zinc-550 dark:text-zinc-500 font-mono mt-0.5 leading-tight">{getTechnicalBio(featured.author.name)}</p>
+                    <p class="text-[9px] text-stone-500 font-mono mt-1">{formatDate(featured.publishedAt)}</p>
                   </div>
                 </div>
                 <div class="flex items-center gap-1 font-mono text-[10px]">
