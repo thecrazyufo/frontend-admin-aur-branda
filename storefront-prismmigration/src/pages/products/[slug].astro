@@ -97,14 +97,14 @@ Astro.response.headers.set(
             <span class="font-bold text-white">{product.rating || 0}</span>
             <span>({(product.reviewCount || 0).toLocaleString()} reviews)</span>
             <span class="text-stone-700">•</span>
-            <span class="text-[#6366F1]">{product.downloads || "0"} downloads</span>
+            <span style="color: var(--signal-teal);">{product.downloads || "0"} downloads</span>
           </div>
 
           {/* Top Features */}
           <ul class="space-y-2 mb-8">
             {(product.features || []).slice(0, 5).map((f) => (
               <li class="flex items-center gap-2 text-xs text-[#E2E8F0]">
-                <Check size={14} class="text-[#6366F1] shrink-0" />
+                <Check size={14} style="color: var(--signal-teal);" class="shrink-0" />
                 {f}
               </li>
             ))}
@@ -112,11 +112,11 @@ Astro.response.headers.set(
 
           {/* CTAs */}
           <div class="flex flex-wrap gap-3">
-            <a href={`/checkout?product=${product.slug}&tier=${encodeURIComponent(lowestPaidPrice?.name || "Standard")}`} class="bg-[#6366F1] hover:bg-[#4F46E5] text-white font-extrabold text-sm py-3 px-6 rounded flex items-center gap-2 transition-all duration-300 transform active:scale-95 shadow-[0_0_15px_rgba(99, 102, 241,0.25)] hover:shadow-[0_0_20px_rgba(99, 102, 241,0.4)]">
+            <a href={`/checkout?product=${product.slug}&tier=${encodeURIComponent(lowestPaidPrice?.name || "Standard")}`} class="cta-pulse-wrap font-extrabold text-sm py-3 px-6 rounded flex items-center gap-2 transition-all duration-300 transform active:scale-95" style="background: var(--signal-teal); color: #080C14; box-shadow: 0 0 15px rgba(0,200,160,0.25);">
               <ShoppingCart size={16} />
               Buy Now — ${lowestPaidPrice?.price}
             </a>
-            <a href={`/download?product=${product.slug}`} class="border border-[#6366F1]/30 hover:border-[#6366F1] bg-[#1E2937]/60 hover:bg-[#6366F1]/10 text-[#6366F1] hover:text-white text-sm py-3 px-6 rounded flex items-center gap-2 transition-all duration-300 font-bold">
+            <a href={`/download?product=${product.slug}`} class="cta-pulse-wrap text-sm py-3 px-6 rounded flex items-center gap-2 transition-all duration-300 font-bold" style="border: 1px solid rgba(0,200,160,0.3); background: rgba(0,200,160,0.06); color: var(--signal-teal);">
               <Download size={16} />
               Free Trial
             </a>
@@ -137,8 +137,25 @@ Astro.response.headers.set(
     </div>
   </section>
 
-  <!-- Section Divider -->
-  <div class="h-px bg-gradient-to-r from-transparent via-[#6366F1]/15 to-transparent"></div>
+  <!-- Monospace Spec Bar (product detail page signature element) -->
+  <div class="border-y" style="border-color: var(--circuit-line); background: var(--slate-surface);">
+    <div class="container-custom max-w-4xl">
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-2 py-3 overflow-x-auto" style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--type-faint); letter-spacing: 0.06em; text-transform: uppercase;" aria-label="Product technical specifications">
+        {product.version && <span>VERSION&nbsp;<span style="color: var(--type-muted);">{product.version}</span></span>}
+        <span style="color: var(--circuit-line);">|</span>
+        {(product.platforms || []).length > 0 && <span>PLATFORMS&nbsp;<span style="color: var(--type-muted);">{(product.platforms || []).join(', ')}</span></span>}
+        <span style="color: var(--circuit-line);">|</span>
+        {(product.sourceFormats || []).length > 0 && <span>FORMAT IN&nbsp;<span style="color: var(--signal-teal);">{(product.sourceFormats || []).join(', ')}</span></span>}
+        <span style="color: var(--circuit-line);">|</span>
+        {(product.targetFormats || []).length > 0 && <span>FORMAT OUT&nbsp;<span style="color: var(--signal-teal);">{(product.targetFormats || []).join(', ')}</span></span>}
+        <span style="color: var(--circuit-line);">|</span>
+        <span>INTEGRITY&nbsp;<span style="color: var(--signal-teal);">BYTE-PERFECT</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Prism Section Divider -->
+  <hr class="prism-divider" style="margin: 0;" />
 
   {/* Description / Markdown Overview */}
   {product.description && (
@@ -159,15 +176,15 @@ Astro.response.headers.set(
   <section class="bg-[#0B0F1A] py-16 tech-grid" id="features">
     <div class="container-custom">
       <div class="text-center mb-10">
-        <span class="text-[10px] tracking-wider text-[#6366F1] uppercase font-bold block">Engine Details</span>
+        <span class="text-[10px] tracking-wider uppercase font-bold block" style="color: var(--signal-teal); font-family: var(--font-mono);">Engine Details</span>
         <h2 class="text-xl font-bold text-[#E2E8F0] mt-1">Everything You Need</h2>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         {(product.features || []).map((feature) => (
           <div class="flex items-start gap-3 bg-[#1E2937]/30 backdrop-blur rounded-xl p-4 border border-[#334155] shadow-2xl">
-            <div class="w-8 h-8 rounded-lg bg-[#6366F1]/10 border border-[#6366F1]/25 flex items-center justify-center shrink-0 mt-0.5">
-              <Check size={14} class="text-[#6366F1]" />
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5" style="background: rgba(0,200,160,0.08); border: 1px solid rgba(0,200,160,0.2);">
+              <Check size={14} style="color: var(--signal-teal);" />
             </div>
             <span class="text-sm text-[#E2E8F0]">{feature}</span>
           </div>

@@ -49,21 +49,23 @@ Astro.response.headers.set(
   settings={settings}
   products={allProducts}
 >
-  <div class="min-h-screen bg-[#0B0F1A] text-white">
-    {/* Header */}
-    <div class="bg-[#0B0F1A] border-b border-[#334155] py-16 tech-grid relative overflow-hidden">
+  <div class="min-h-screen text-white" style="background: var(--ink-void);">
+    {/* Header - Products Catalog Signature: subtle dot-grid overlay */}
+    <div class="border-b py-16 relative overflow-hidden" style="background: var(--ink-void); border-color: var(--circuit-line);">
       <!-- Subtle Ambient Glow -->
       <div class="absolute inset-0 pointer-events-none overflow-hidden">
-        <div class="absolute top-1/2 left-1/4 -translate-y-1/2 w-[350px] h-[150px] bg-[#6366F1]/10 blur-[80px] rounded-full"></div>
+        <div class="absolute top-1/2 left-1/4 -translate-y-1/2 w-[350px] h-[150px] blur-[80px] rounded-full" style="background: rgba(0,200,160,0.07);"></div>
       </div>
+      <!-- Dot Grid Overlay (catalog page signature) -->
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true" style="background-image: radial-gradient(circle, rgba(0,200,160,0.12) 1px, transparent 1px); background-size: 40px 40px; opacity: 0.5;"></div>
 
       <div class="container-custom relative z-10">
         <div class="max-w-2xl">
-          <span class="inline-block text-[10px] font-bold uppercase tracking-widest text-[#6366F1] mb-2">Products</span>
-          <h1 class="text-3xl font-extrabold text-white tracking-tight mb-2">
+          <span class="inline-block text-[10px] font-bold uppercase tracking-widest mb-2" style="color: var(--signal-teal); font-family: var(--font-mono);">Products</span>
+          <h1 class="text-3xl font-extrabold text-white tracking-tight mb-2" style="font-family: var(--font-display);">
             {activeCategory ? activeCategory.label : "Pristine Software Collection"}
           </h1>
-          <p class="text-xs text-[#E5E5E5] leading-relaxed">
+          <p class="text-xs leading-relaxed" style="color: var(--type-muted);">
             {activeCategory ? activeCategory.description : "Find the right enterprise-grade utility for lightning-fast database and mailbox migration."}
           </p>
         </div>
@@ -82,12 +84,13 @@ Astro.response.headers.set(
                   href="/products"
                   class={`flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition-all duration-300 ${
                     !category
-                      ? "bg-[#6366F1]/10 text-[#6366F1] border border-[#6366F1]/20 font-bold"
+                      ? "border font-bold"
                       : "text-[#E2E8F0] hover:text-white hover:bg-[#1E2937]/40 border border-transparent"
                   }`}
+                  style={!category ? "background: rgba(0,200,160,0.08); color: var(--signal-teal); border-color: rgba(0,200,160,0.25);" : ""}
                 >
                   All Products
-                  <span class="text-[10px] text-[#E2E8F0] bg-stone-800 border border-[#475569] px-1.5 py-0.5 rounded-md font-mono">
+                  <span class="text-[10px] bg-stone-800 border border-[#475569] px-1.5 py-0.5 rounded-md" style="font-family: var(--font-mono); color: var(--type-muted);">
                     {allProducts.length}
                   </span>
                 </a>
@@ -98,12 +101,13 @@ Astro.response.headers.set(
                     href={`/products?category=${cat.id}`}
                     class={`flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition-all duration-300 ${
                       category === cat.id
-                        ? "bg-[#6366F1]/10 text-[#6366F1] border border-[#6366F1]/20 font-bold"
+                        ? "border font-bold"
                         : "text-[#E2E8F0] hover:text-white hover:bg-[#1E2937]/40 border border-transparent"
                     }`}
+                    style={category === cat.id ? "background: rgba(0,200,160,0.08); color: var(--signal-teal); border-color: rgba(0,200,160,0.25);" : ""}
                   >
                     {cat.label}
-                    <span class="text-[10px] text-[#E2E8F0] bg-stone-800 border border-[#475569] px-1.5 py-0.5 rounded-md font-mono">
+                    <span class="text-[10px] bg-stone-800 border border-[#475569] px-1.5 py-0.5 rounded-md" style="font-family: var(--font-mono); color: var(--type-muted);">
                       {cat.count}
                     </span>
                   </a>
@@ -116,7 +120,7 @@ Astro.response.headers.set(
         {/* Product Grid */}
         <div class="flex-1">
           <div class="flex items-center justify-between mb-6">
-            <p class="text-xs text-[#94A3B8] font-mono">
+            <p class="text-xs font-bold" style="color: var(--type-faint); font-family: var(--font-mono); letter-spacing: 0.08em;">
               {filteredCount} UTILI{filteredCount !== 1 ? "TIES" : "TY"} RESOLVED
             </p>
           </div>
@@ -128,9 +132,9 @@ Astro.response.headers.set(
               ))}
             </div>
           ) : (
-            <div class="text-center py-20 bg-[#1E2937]/10 backdrop-blur rounded-2xl border border-[#334155] p-8 shadow-2xl">
-              <p class="text-[#E2E8F0] text-sm">No migration utilities matching this query were found in database index.</p>
-              <a href="/products" class="inline-block mt-4 bg-[#6366F1] hover:bg-[#4F46E5] text-white font-extrabold text-xs py-2 px-4 rounded transition-colors shadow-[0_0_15px_rgba(99, 102, 241,0.2)]">Clear Filters</a>
+            <div class="text-center py-20 backdrop-blur rounded-2xl border p-8" style="background: rgba(0,200,160,0.03); border-color: var(--circuit-line);">
+              <p class="text-sm" style="color: var(--type-muted);">No migration utilities matching this query were found in database index.</p>
+              <a href="/products" class="cta-pulse-wrap inline-block mt-4 font-extrabold text-xs py-2 px-4 rounded transition-colors" style="background: var(--signal-teal); color: #080C14;">Clear Filters</a>
             </div>
           )}
         </div>

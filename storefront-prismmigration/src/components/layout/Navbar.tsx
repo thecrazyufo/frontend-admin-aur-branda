@@ -206,8 +206,8 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
                             if (catProducts.length === 0) return null;
                             return (
                               <div key={catKey} className="space-y-2">
-                                <h4 className="text-[10px] font-extrabold uppercase tracking-widest text-[#6366F1] flex items-center gap-1.5">
-                                  <span className="w-1 h-1 rounded-full bg-[#6366F1]"></span>
+                                <h4 className="text-[10px] font-extrabold uppercase tracking-widest flex items-center gap-1.5" style={{color: 'var(--signal-teal)', fontFamily: 'var(--font-mono)'}}>
+                                  <span className="w-1 h-1 rounded-full" style={{background: 'var(--signal-teal)'}}></span>
                                   {catLabel}
                                 </h4>
                                 <div className="space-y-1">
@@ -217,8 +217,8 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
                                       href={`/products/${prod.slug}`}
                                       className="group/item block p-1.5 -ml-1.5 rounded-lg hover:bg-[#1E2937]/45 transition-colors focus-visible:outline-none focus-visible:bg-[#1E2937]/45"
                                     >
-                                      <p className="text-xs font-bold text-white group-hover/item:text-[#6366F1] transition-colors">{prod.name}</p>
-                                      <p className="text-[10px] text-[#94A3B8] group-hover/item:text-stone-300 transition-colors line-clamp-1 mt-0.5">{prod.shortDescription}</p>
+                                      <p className="text-xs font-bold text-white group-hover/item:text-[var(--signal-teal)] transition-colors" style={{fontFamily: 'var(--font-body)'}}>{prod.name}</p>
+                                      <p className="text-[10px] group-hover/item:text-stone-300 transition-colors line-clamp-1 mt-0.5" style={{color: 'var(--type-muted)', fontFamily: 'var(--font-mono)', fontSize: '0.6rem'}}>{prod.shortDescription}</p>
                                     </a>
                                   ))}
                                 </div>
@@ -247,7 +247,7 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
                                     <div className="pt-2">
                                       <a
                                         href={`/products/${spotlightProduct.slug}`}
-                                        className="inline-flex items-center gap-1.5 text-xs text-[#6366F1] font-bold hover:underline"
+                                        className="inline-flex items-center gap-1.5 text-xs font-bold hover:underline" style={{color: 'var(--signal-teal)'}}
                                       >
                                         Learn More
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor" className="w-3.5 h-3.5">
@@ -360,8 +360,8 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
               <a href="/products" className="text-[14px] font-medium text-[#E2E8F0] hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6366F1]">
                 Contact
               </a>
-              <a href="/download" style={{color: '#ffffff'}} className="bg-[#6C5CE7] hover:bg-[#5B4FE0] !text-white text-white font-semibold text-[13px] py-1.5 px-3.5 rounded-md transition-all duration-300 shadow-[0_0_12px_rgba(108,92,231,0.3)] hover:shadow-[0_0_20px_rgba(108,92,231,0.55)] transform active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6C5CE7]">
-                Deploy
+              <a href="/download" style={{color:'#ffffff', background:'var(--signal-teal)', fontFamily:'var(--font-mono)', fontSize:'12px', letterSpacing:'0.03em'}} className="hover:opacity-90 !text-white font-semibold py-1.5 px-3.5 rounded-md transition-all duration-300 shadow-[0_0_12px_rgba(0,200,160,0.3)] hover:shadow-[0_0_20px_rgba(0,200,160,0.5)] transform active:scale-95 focus-visible:outline-none focus-visible:ring-2">
+                Get the Tool
               </a>
             </div>
 
@@ -418,8 +418,8 @@ export default function Navbar({ siteName = "", phone = "", navigation = [], log
                   Admin Portal
                 </a>
               )}
-              <a href="/download" style={{color: '#ffffff'}} className="bg-[#6C5CE7] hover:bg-[#5B4FE0] !text-white text-white w-full flex items-center justify-center py-2 text-[14px] font-semibold rounded-md shadow-[0_0_15px_rgba(108,92,231,0.3)]">
-                Deploy Now
+              <a href="/download" style={{color:'#ffffff', background:'var(--signal-teal)', boxShadow:'0 0 15px rgba(0,200,160,0.3)', fontFamily:'var(--font-mono)', fontSize:'13px', letterSpacing:'0.02em'}} className="hover:opacity-90 !text-white w-full flex items-center justify-center py-2 font-semibold rounded-md">
+                Get the Tool
               </a>
             </div>
           </div>

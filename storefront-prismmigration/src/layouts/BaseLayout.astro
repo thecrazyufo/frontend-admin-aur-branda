@@ -85,6 +85,8 @@ const {
 
 // Google Fonts URL — dynamically load the font selected in admin
 const fontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/ /g, "+")}:wght@300;400;500;600;700;800;900&display=swap`;
+// Refraction Design System — three-face type stack (Syne display, DM Sans body, JetBrains Mono utility)
+const refractionFontsUrl = `https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap`;
 ---
 
 <!doctype html>
@@ -132,39 +134,128 @@ const fontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href={fontUrl} media="print" onload="this.media='all'" />
     <noscript><link rel="stylesheet" href={fontUrl} /></noscript>
+    <!-- Refraction Design System — Syne (display) + DM Sans (body) + JetBrains Mono (utility/tech labels) -->
+    <link rel="stylesheet" href={refractionFontsUrl} media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href={refractionFontsUrl} /></noscript>
 
-    <!-- Dynamic Theme CSS Custom Properties -->
+    <!-- Refraction Design System — CSS Custom Properties -->
     <style define:vars={{ primaryColor, accentColor, fontFamily }}>
       :root {
         --brand-primary: var(--primaryColor);
         --brand-accent: var(--accentColor);
         --brand-font: var(--fontFamily), system-ui, sans-serif;
 
-        /* Force dark theme values globally for the entire storefront */
-        --background: #0B0F1A;
-        --foreground: #ffffff;
-        --muted: #111827;
-        --muted-foreground: #D1D5DB;
-        --border: #1F2937;
-        --card: #111827;
+        /* ── Refraction Palette ───────────────────────────────────── */
+        /* Background & surface layers */
+        --ink-void:        #080C14;   /* true background — warmer than generic near-black */
+        --slate-surface:   #0F1620;   /* card / panel surface */
+        --circuit-line:    #1C2B3A;   /* borders, dividers — PCB-trace feel */
 
-        --color-foreground: #ffffff;
-        --color-muted: #9CA3AF;
-        --color-surface: #111827;
-        --color-canvas: #0B0F1A;
-        --color-canvas-soft: #111827;
-        --color-canvas-soft-2: #18181b;
-        --color-ink: #ffffff;
-        --color-body: #D1D5DB;
-        --color-mute: #9CA3AF;
-        --color-hairline: #1F2937;
-        --color-hairline-strong: #3f3f46;
+        /* Accents — chosen for data-migration semantic meaning */
+        --signal-teal:     #00C8A0;   /* primary accent: verified/complete/transferred */
+        --signal-teal-dim: #00C8A020; /* teal at 12% opacity for backgrounds */
+        --signal-teal-mid: #00C8A040; /* teal at 25% opacity for borders */
+        --amber-alert:     #F59E0B;   /* version badges, warnings, BIOS/filesystem feel */
+        --amber-dim:       #F59E0B18; /* amber at 10% opacity */
+
+        /* Typography colors */
+        --type-light:  #E2EAF4;   /* primary text — blue-shifted for terminal feel */
+        --type-muted:  #8FA4BF;   /* secondary / muted text */
+        --type-faint:  #4A6280;   /* placeholder, fine print */
+
+        /* ── Typography — Refraction Three-Face Stack ─────────────── */
+        --font-display: 'Syne', system-ui, sans-serif;      /* hero headlines, section titles */
+        --font-body:    'DM Sans', system-ui, sans-serif;   /* all body copy */
+        --font-mono:    'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace; /* format tags, version numbers, specs, status */
+
+        /* ── Legacy compatibility mappings ───────────────────────── */
+        --background:          var(--ink-void);
+        --foreground:          var(--type-light);
+        --muted:               var(--slate-surface);
+        --muted-foreground:    var(--type-muted);
+        --border:              var(--circuit-line);
+        --card:                var(--slate-surface);
+
+        --color-foreground:       var(--type-light);
+        --color-muted:            var(--type-muted);
+        --color-surface:          var(--slate-surface);
+        --color-canvas:           var(--ink-void);
+        --color-canvas-soft:      var(--slate-surface);
+        --color-canvas-soft-2:    #18222E;
+        --color-ink:              var(--type-light);
+        --color-body:             var(--type-muted);
+        --color-mute:             var(--type-faint);
+        --color-hairline:         var(--circuit-line);
+        --color-hairline-strong:  #2E4A66;
+      }
+
+      /* ── Global mono utility class — technical labels throughout ── */
+      .mono {
+        font-family: var(--font-mono);
+        font-size: 0.75em;
+        letter-spacing: 0.03em;
+      }
+      .mono-sm {
+        font-family: var(--font-mono);
+        font-size: 0.65em;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      /* ── Teal accent utilities ─────────────────────────────────── */
+      .accent-teal { color: var(--signal-teal); }
+      .accent-amber { color: var(--amber-alert); }
+      .bg-teal-dim { background: var(--signal-teal-dim); }
+      .border-teal { border-color: var(--signal-teal-mid); }
+
+      /* ── Section divider with flat prism mark (site signature) ─── */
+      .prism-divider {
+        position: relative;
+        border: none;
+        border-top: 1px solid var(--circuit-line);
+        margin: 3rem 0;
+      }
+      .prism-divider::after {
+        content: '▲';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 10px;
+        color: var(--signal-teal);
+        background: var(--ink-void);
+        padding: 0 8px;
+        opacity: 0.6;
+      }
+
+      /* ── CTA Data-Transfer Pulse (Buy/Trial button hover motion) ─── */
+      @keyframes data-pulse {
+        0%   { transform: translateX(-100%); opacity: 0.8; }
+        100% { transform: translateX(200%); opacity: 0; }
+      }
+      .cta-pulse-wrap {
+        position: relative;
+        overflow: hidden;
+      }
+      .cta-pulse-wrap::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 40%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0,200,160,0.35), transparent);
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      .cta-pulse-wrap:hover::after {
+        animation: data-pulse 0.45s ease-out forwards;
       }
     </style>
   </head>
   <body class={`min-h-screen flex flex-col antialiased layout-${layoutTemplate} bg-canvas text-ink relative`} style={`font-family: '${fontFamily}', system-ui, sans-serif;`}>
     <!-- Global Loading Progress Bar for Client-Side Routing -->
-    <div id="global-loading-bar" style="position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, #6366F1 0%, #8B5CF6 100%); z-index: 99999; opacity: 0; transition: width 0.4s ease, opacity 0.3s ease; width: 0%; pointer-events: none;"></div>
+    <div id="global-loading-bar" style="position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--signal-teal) 0%, #00E8B8 100%); z-index: 99999; opacity: 0; transition: width 0.4s ease, opacity 0.3s ease; width: 0%; pointer-events: none;"></div>
 
     <script is:inline>
       document.addEventListener('astro:before-preparation', () => {

@@ -617,13 +617,58 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
         </a>
         <a 
           href={settings.hero?.ctaSecondaryHref || "/download"} 
-          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-center border border-[#6C5CE7]/65 hover:border-[#6C5CE7] bg-[#6C5CE7]/10 hover:bg-[#6C5CE7]/20 text-[#A5B4FC] hover:text-white text-xs font-semibold py-2.5 px-6 rounded-lg transition-all duration-300 backdrop-blur-sm cursor-pointer will-change-transform"
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-center text-xs font-semibold py-2.5 px-6 rounded-lg transition-all duration-300 backdrop-blur-sm cursor-pointer will-change-transform"
+          style="border: 1px solid rgba(0,200,160,0.4); background: rgba(0,200,160,0.08); color: var(--signal-teal);"
+          onmouseover="this.style.background='rgba(0,200,160,0.15)'; this.style.color='#ffffff';"
+          onmouseout="this.style.background='rgba(0,200,160,0.08)'; this.style.color='var(--signal-teal)';"
         >
           <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v7m0 0-3-3m3 3 3-3M3 13h10"/></svg>
           {settings.hero?.ctaSecondaryText || "Free Trial Installer"}
         </a>
       </div>
 
+      <!-- Data-Stream Ticker: operation log of real conversions (homepage signature element) -->
+      <div class="relative mt-6 w-full max-w-2xl mx-auto overflow-hidden z-20" aria-hidden="true">
+        <div class="absolute left-0 top-0 w-12 h-full z-10 pointer-events-none" style="background: linear-gradient(to right, var(--ink-void), transparent);"></div>
+        <div class="absolute right-0 top-0 w-12 h-full z-10 pointer-events-none" style="background: linear-gradient(to left, var(--ink-void), transparent);"></div>
+        <div id="stream-ticker" class="flex gap-8 whitespace-nowrap" style="font-family: var(--font-mono); font-size: 0.62rem; color: var(--type-faint); letter-spacing: 0.05em; animation: ticker-scroll 28s linear infinite;">
+          <span>► <span style="color: var(--signal-teal);">PST → MBOX</span>&nbsp; ✓ COMPLETE &nbsp;·&nbsp; </span>
+          <span>► <span style="color: var(--amber-alert);">OST → EML</span>&nbsp; ✓ 14,082 items migrated &nbsp;·&nbsp; </span>
+          <span>► <span style="color: var(--signal-teal);">GMAIL → OFFICE 365</span>&nbsp; ✓ BYTE-PERFECT &nbsp;·&nbsp; </span>
+          <span>► <span style="color: var(--amber-alert);">PST → PDF</span>&nbsp; ✓ 3,211 messages converted &nbsp;·&nbsp; </span>
+          <span>► <span style="color: var(--signal-teal);">OFFICE 365 → GOOGLE WORKSPACE</span>&nbsp; ✓ INTACT &nbsp;·&nbsp; </span>
+          <span>► <span style="color: var(--amber-alert);">MBOX → PST</span>&nbsp; ✓ 8,450 emails processed &nbsp;·&nbsp; </span>
+          <!-- repeat for seamless loop -->
+          <span>► <span style="color: var(--signal-teal);">PST → MBOX</span>&nbsp; ✓ COMPLETE &nbsp;·&nbsp; </span>
+          <span>► <span style="color: var(--amber-alert);">OST → EML</span>&nbsp; ✓ 14,082 items migrated &nbsp;·&nbsp; </span>
+          <span>► <span style="color: var(--signal-teal);">GMAIL → OFFICE 365</span>&nbsp; ✓ BYTE-PERFECT &nbsp;·&nbsp; </span>
+          <span>► <span style="color: var(--amber-alert);">PST → PDF</span>&nbsp; ✓ 3,211 messages converted &nbsp;·&nbsp; </span>
+        </div>
+      </div>
+      <style>
+        @keyframes ticker-scroll {
+          0%   { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        #stream-ticker:hover { animation-play-state: paused; }
+      </style>
+
+      <!-- Page-load Scan Line (homepage signature motion) -->
+      <div id="hero-scan-line" aria-hidden="true" style="position:absolute; top:0; left:0; width:100%; height:2px; background: linear-gradient(90deg, transparent 0%, var(--signal-teal) 50%, transparent 100%); opacity:0; z-index:30; pointer-events:none; transition: opacity 0.2s ease;"></div>
+      <script is:inline>
+        (function() {
+          var line = document.getElementById('hero-scan-line');
+          if (!line) return;
+          // fire on first page load only
+          line.style.opacity = '0.8';
+          line.style.transform = 'translateY(0)';
+          line.style.transition = 'transform 0.55s ease-out, opacity 0.3s ease 0.45s';
+          requestAnimationFrame(function() {
+            line.style.transform = 'translateY(900px)';
+            setTimeout(function() { line.style.opacity = '0'; }, 450);
+          });
+        })();
+      </script>
 
 
     </div>

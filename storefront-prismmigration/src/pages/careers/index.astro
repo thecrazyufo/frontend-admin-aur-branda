@@ -67,11 +67,11 @@ const schemas = activePositions.map((pos: any) => ({
     <section class="relative py-24 text-center border-b border-[#334155] overflow-hidden">
       <!-- Ambient reflection glow background -->
       <div class="absolute inset-0 pointer-events-none overflow-hidden">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] bg-[#6366F1]/5 blur-[90px] rounded-full"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] blur-[90px] rounded-full" style="background: rgba(0,200,160,0.05);"></div>
       </div>
 
       <div class="container-custom relative z-10 max-w-4xl mx-auto px-4">
-        <span class="inline-block text-[10px] font-bold uppercase tracking-widest mb-4 px-3 py-1.5 rounded-full text-[#6366F1] bg-[#6366F1]/15 border border-[#6366F1]/25">
+        <span class="inline-block text-[10px] font-bold uppercase tracking-widest mb-4 px-3 py-1.5 rounded-full border" style="color: var(--signal-teal); background: rgba(0,200,160,0.08); border-color: rgba(0,200,160,0.25); font-family: var(--font-mono);">
           We Are Hiring
         </span>
         <h1 class="text-white font-extrabold text-3xl md:text-3xl tracking-tight mb-6 leading-tight">
@@ -80,6 +80,27 @@ const schemas = activePositions.map((pos: any) => ({
         <p class="text-[#E2E8F0] max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
           {careers.heroDescription}
         </p>
+
+        <!-- Careers Signature: Git commit log showing engineering velocity -->
+        <div class="mt-8 mx-auto max-w-xl text-left rounded-lg overflow-hidden border" style="border-color: var(--circuit-line); background: var(--slate-surface);" aria-label="Recent engineering milestones">
+          <div class="flex items-center gap-2 px-4 py-2 border-b" style="border-color: var(--circuit-line); background: var(--ink-void);">
+            <span style="color: var(--signal-teal); font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.06em;">GIT LOG — RECENT ENGINEERING ACTIVITY</span>
+          </div>
+          <div class="divide-y" style="divide-color: var(--circuit-line);">
+            {[
+              { hash: 'a3f1c2', msg: 'feat: batch conversion support for 10K+ mailboxes', age: '3 days ago' },
+              { hash: 'd19e88', msg: 'perf: reduce PST parse time by 40%', age: '2 weeks ago' },
+              { hash: 'f8c220', msg: 'fix: preserve Unicode characters in MBOX output', age: '3 weeks ago' },
+              { hash: 'b70e11', msg: 'feat: add Office 365 → Google Workspace migration', age: '1 month ago' },
+            ].map(commit => (
+              <div class="flex items-start gap-3 px-4 py-2.5">
+                <span style="font-family: var(--font-mono); font-size: 0.6rem; color: var(--amber-alert); flex-shrink: 0; padding-top: 1px;">{commit.hash}</span>
+                <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--type-muted); flex: 1;">{commit.msg}</span>
+                <span style="font-family: var(--font-mono); font-size: 0.58rem; color: var(--type-faint); flex-shrink: 0; white-space: nowrap;">{commit.age}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
 

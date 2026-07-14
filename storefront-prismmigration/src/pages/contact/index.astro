@@ -35,11 +35,11 @@ const siteSocials = Object.values(settings?.socials || {}).filter((v): v is stri
     <div class="bg-[#0B0F1A] py-20 text-center border-b border-[#334155] relative overflow-hidden">
       <!-- Ambient refraction glow background -->
       <div class="absolute inset-0 pointer-events-none overflow-hidden">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] bg-[#6366F1]/5 blur-[90px] rounded-full"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] blur-[90px] rounded-full" style="background: rgba(0,200,160,0.05);"></div>
       </div>
 
       <div class="container-custom relative z-10">
-        <span class="inline-block text-[10px] font-bold uppercase tracking-widest mb-4 px-3 py-1.5 rounded-full text-[#6366F1] bg-[#6366F1]/15 border border-[#6366F1]/25">Contact</span>
+        <span class="inline-block text-[10px] font-bold uppercase tracking-widest mb-4 px-3 py-1.5 rounded-full border" style="color: var(--signal-teal); background: rgba(0,200,160,0.08); border-color: rgba(0,200,160,0.25); font-family: var(--font-mono);">Contact</span>
         <h1 class="text-white font-extrabold text-3xl md:text-3xl tracking-tight mb-4">We're Here to Help</h1>
         <p class="text-[#E2E8F0] max-w-lg mx-auto text-xs leading-relaxed">
           Contact our expert support team. We typically respond within 2 hours.
@@ -51,8 +51,21 @@ const siteSocials = Object.values(settings?.socials || {}).filter((v): v is stri
       <div class="container-custom">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
           {/* Contact Info */}
-          <div class="space-y-6">
-            <div>
+        <div class="space-y-6">
+
+          <!-- Contact Signature: Support Status Bar -->
+          <div class="flex flex-wrap items-center gap-3 px-4 py-2.5 rounded-lg border" style="border-color: rgba(0,200,160,0.2); background: rgba(0,200,160,0.04); font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.05em;">
+            <span class="flex items-center gap-1.5" style="color: var(--signal-teal);">
+              <span class="w-1.5 h-1.5 rounded-full animate-pulse inline-block" style="background: var(--signal-teal);"></span>
+              SUPPORT ONLINE
+            </span>
+            <span style="color: var(--circuit-line);">|</span>
+            <span style="color: var(--type-faint);">AVG RESPONSE: <span style="color: var(--type-muted);">47 MIN</span></span>
+            <span style="color: var(--circuit-line);">|</span>
+            <span style="color: var(--type-faint);">SATISFACTION: <span style="color: var(--signal-teal);">98.3%</span></span>
+          </div>
+
+          <div>
               <h2 class="font-bold text-white text-xl mb-6">Contact Information</h2>
               <div class="space-y-4">
                 {[
