@@ -2,8 +2,13 @@ package com.datamigratepro.controller;
 
 import com.datamigratepro.entity.Activation;
 import com.datamigratepro.entity.License;
+import com.datamigratepro.entity.LicenseKey;
+import com.datamigratepro.entity.LicenseActivation;
+import com.datamigratepro.entity.LicenseStatus;
 import com.datamigratepro.repository.ActivationRepository;
 import com.datamigratepro.repository.LicenseRepository;
+import com.datamigratepro.repository.LicenseKeyRepository;
+import com.datamigratepro.repository.LicenseActivationRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +28,12 @@ public class LicenseActivationController {
 
     @Autowired
     private ActivationRepository activationRepository;
+
+    @Autowired
+    private LicenseKeyRepository licenseKeyRepository;
+
+    @Autowired
+    private LicenseActivationRepository licenseActivationRepository;
 
     private static final DateTimeFormatter ISO_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
@@ -82,13 +93,109 @@ public class LicenseActivationController {
         // 4. Query DB for License Key
         Optional<License> licenseOpt = licenseRepository.findByLicenseKey(normalizedKey);
         if (licenseOpt.isEmpty()) {
+            // Check if key exists in license_keys table (checkout licenses)
+            Optional<LicenseKey> licenseKeyOpt = licenseKeyRepository.findByActivationKey(normalizedKey);
+            if (licenseKeyOpt.isEmpty()) {
+                return ResponseEntity.ok(new ActivationResponse(
+                    false,
+                    "License key not found",
+                    0,
+                    null,
+                    null,
+                    null
+                ));
+            }
+
+            LicenseKey licenseKey = licenseKeyOpt.get();
+            if (!licenseKey.isOfflineCapable()) {
+                return ResponseEntity.ok(new ActivationResponse(
+                    false,
+                    "This license key does not support offline activation",
+                    0,
+                    null,
+                    null,
+                    null
+                ));
+            }
+
+            // Expiration boundary check
+            java.time.LocalDateTime nowLdt = java.time.LocalDateTime.now();
+            if (licenseKey.getExpiresAt() != null && licenseKey.getExpiresAt().isBefore(nowLdt)) {
+                if (licenseKey.getStatus() != LicenseStatus.EXPIRED) {
+                    licenseKey.setStatus(LicenseStatus.EXPIRED);
+                    licenseKeyRepository.save(licenseKey);
+                }
+                return ResponseEntity.ok(new ActivationResponse(
+                    false,
+                    "License has expired",
+                    0,
+                    formatTimestamp(licenseKey.getExpiresAt()),
+                    null,
+                    licenseKey.getPricingTierName()
+                ));
+            }
+
+            // Revocation status check
+            if (licenseKey.getStatus() == LicenseStatus.REVOKED) {
+                int remaining = Math.max(0, licenseKey.getMaxDevices());
+                return ResponseEntity.ok(new ActivationResponse(
+                    false,
+                    "License is revoked",
+                    remaining,
+                    formatTimestamp(licenseKey.getExpiresAt()),
+                    null,
+                    licenseKey.getPricingTierName()
+                ));
+            }
+
+            // Find existing activation for this machine ID
+            Optional<LicenseActivation> existingActivationOpt = licenseKey.getActivations().stream()
+                    .filter(act -> act.getHardwareFingerprint().equals(machineId))
+                    .findFirst();
+            LicenseActivation licenseActivation;
+            java.time.LocalDateTime now = java.time.LocalDateTime.now();
+
+            if (existingActivationOpt.isPresent()) {
+                licenseActivation = existingActivationOpt.get();
+                licenseActivation.setLastCheckIn(now);
+                licenseActivation.setDeviceName(machineName);
+                licenseActivationRepository.save(licenseActivation);
+            } else {
+                // Check max activations limit
+                if (licenseKey.getMaxDevices() <= 0) {
+                    return ResponseEntity.ok(new ActivationResponse(
+                        false,
+                        "Maximum activations limit reached (" + licenseKey.getMaxDevices() + ")",
+                        0,
+                        formatTimestamp(licenseKey.getExpiresAt()),
+                        null,
+                        licenseKey.getPricingTierName()
+                    ));
+                }
+
+                // Register new activation
+                licenseActivation = new LicenseActivation();
+                licenseActivation.setLicenseKey(licenseKey);
+                licenseActivation.setHardwareFingerprint(machineId);
+                licenseActivation.setDeviceName(machineName);
+                licenseActivation.setActivatedAt(now);
+                licenseActivation.setLastCheckIn(now);
+                
+                // Add to list, decrement remaining count, and save
+                licenseKey.getActivations().add(licenseActivation);
+                licenseKey.setMaxDevices(Math.max(0, licenseKey.getMaxDevices() - 1));
+                licenseKeyRepository.save(licenseKey);
+            }
+
+            int remaining = Math.max(0, licenseKey.getMaxDevices());
+
             return ResponseEntity.ok(new ActivationResponse(
-                false,
-                "License key not found",
-                0,
-                null,
-                null,
-                null
+                true,
+                "Activation successful",
+                remaining,
+                formatTimestamp(licenseKey.getExpiresAt()),
+                formatTimestamp(licenseActivation.getActivatedAt()),
+                licenseKey.getPricingTierName()
             ));
         }
 
@@ -206,6 +313,13 @@ public class LicenseActivationController {
             return null;
         }
         return odt.withOffsetSameInstant(ZoneOffset.UTC).format(ISO_FORMATTER);
+    }
+
+    private String formatTimestamp(java.time.LocalDateTime ldt) {
+        if (ldt == null) {
+            return null;
+        }
+        return formatTimestamp(ldt.atOffset(ZoneOffset.UTC));
     }
 
     // --- Request / Response Payloads ---

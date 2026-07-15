@@ -151,6 +151,7 @@ export const CheckoutAPI = {
     paymentMethod: string;
     siteId: string;
     couponCode?: string;
+    needsOfflineSupport?: boolean | string;
   }) => apiPost<any>("/checkout/complete", body),
   createStripeSession: (body: {
     productId: string;
@@ -160,6 +161,7 @@ export const CheckoutAPI = {
     successUrl: string;
     cancelUrl: string;
     couponCode?: string;
+    needsOfflineSupport?: boolean | string;
   }) => apiPost<any>("/checkout/create-stripe-session", body),
   confirmStripe: (body: {
     sessionId: string;
@@ -167,6 +169,7 @@ export const CheckoutAPI = {
     customerEmail?: string;
     productId?: string;
     pricingTierName?: string;
+    needsOfflineSupport?: boolean | string;
   }) => apiPost<any>("/checkout/confirm-stripe", body),
   createPaypalOrder: (body: {
     productId: string;
@@ -176,6 +179,7 @@ export const CheckoutAPI = {
     returnUrl: string;
     cancelUrl: string;
     couponCode?: string;
+    needsOfflineSupport?: boolean | string;
   }) => apiPost<any>("/checkout/create-paypal-order", body),
   capturePaypalOrder: (body: {
     paypalOrderId: string;
@@ -183,6 +187,7 @@ export const CheckoutAPI = {
     customerEmail?: string;
     productId?: string;
     pricingTierName?: string;
+    needsOfflineSupport?: boolean | string;
   }) => apiPost<any>("/checkout/capture-paypal-order", body),
 };
 

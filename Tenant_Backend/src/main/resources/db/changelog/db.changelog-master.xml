@@ -57,4 +57,5 @@
     <include file="db/changelog/035-product-installer-url.xml" relativeToChangelogFile="false"/>
     <include file="db/changelog/036-create-coupons-table.xml" relativeToChangelogFile="false"/>
     <include file="db/changelog/037-billing-compliance-fields.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/038-add-offline-column.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>
