@@ -134,7 +134,7 @@ public class SiteSetting {
     private String reviewPlatformUrl;      // e.g. "https://trustpilot.com/review/..."
 
     @Column(name = "review_platform_rating", precision = 3, scale = 1)
-    private Double reviewPlatformRating;   // e.g. 4.8
+    private java.math.BigDecimal reviewPlatformRating;   // e.g. 4.8
 
     @Column(name = "review_platform_count")
     private Integer reviewPlatformCount;   // e.g. 127
