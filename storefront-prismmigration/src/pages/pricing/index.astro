@@ -1,11 +1,27 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { ProductAPI, CategoryAPI, SettingsAPI } from "@/services/api";
+import { ProductAPI, CategoryAPI, SettingsAPI, BrandAPI } from "@/services/api";
 import SectionHeader from "@/components/common/SectionHeader";
 import { generateFAQSchema } from "@/lib/seo";
 import { Check, CreditCard, HelpCircle, ShieldCheck } from "lucide-react";
 
-const settings = await SettingsAPI.get().catch(() => null);
+let settings = null;
+let brandConfig = null;
+let productsList = [];
+let categoriesList = [];
+let errorLoading = false;
+
+try {
+  [settings, brandConfig, productsList, categoriesList] = await Promise.all([
+    SettingsAPI.get().catch(() => null),
+    BrandAPI.getCurrentBrand().catch(() => null),
+    ProductAPI.getAll().catch(() => []),
+    CategoryAPI.getAll().catch(() => []),
+  ]);
+} catch (e) {
+  console.error("Error loading products for pricing:", e);
+  errorLoading = true;
+}
 
 const dynamicFaqs = settings?.pricingFaqs || [
   { question: "How does licensing work?", answer: "We offer flexible licensing tiers tailored for different needs. Each license tier specifies its own validity period and features on the product page." },
@@ -14,28 +30,15 @@ const dynamicFaqs = settings?.pricingFaqs || [
   { question: "How are updates delivered?", answer: "You will receive updates during the active period of your license. Lifetime licenses receive lifetime updates." },
 ];
 
-let groupedProducts = [];
-let errorLoading = false;
+const enabledProducts = productsList.filter(p => p.enabled !== false);
 
-try {
-  const [productsList, categoriesList] = await Promise.all([
-    ProductAPI.getAll(),
-    CategoryAPI.getAll(),
-  ]);
-
-  const enabledProducts = productsList.filter(p => p.enabled !== false);
-
-  groupedProducts = categoriesList.map(cat => {
-    const productsInCategory = enabledProducts.filter(p => p.category === cat.id);
-    return {
-      category: cat,
-      products: productsInCategory
-    };
-  }).filter(group => group.products.length > 0);
-} catch (e) {
-  console.error("Error loading products for pricing:", e);
-  errorLoading = true;
-}
+const groupedProducts = categoriesList.map(cat => {
+  const productsInCategory = enabledProducts.filter(p => p.category === cat.id);
+  return {
+    category: cat,
+    products: productsInCategory
+  };
+}).filter(group => group.products.length > 0);
 
 const getLowestPaidPlan = (product: any) => {
   if (!product.pricing || product.pricing.length === 0) return null;
@@ -48,6 +51,9 @@ const getLowestPaidPlan = (product: any) => {
 <BaseLayout
   title={`Pricing Catalog — ${settings?.name || ""}`}
   description="Transparent pricing directory for all our software tools. Free trials, standard, and enterprise licensing plans available."
+  settings={settings}
+  brandConfig={brandConfig}
+  products={productsList}
 >
   <script type="application/ld+json" set:html={JSON.stringify(generateFAQSchema(dynamicFaqs))} />
 

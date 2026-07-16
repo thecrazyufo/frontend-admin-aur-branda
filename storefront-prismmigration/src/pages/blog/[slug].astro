@@ -1,7 +1,6 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { BlogAPI , SettingsAPI } from "@/services/api";
-const settings = await SettingsAPI.get().catch(() => null);
+import { BlogAPI, SettingsAPI, BrandAPI, ProductAPI } from "@/services/api";
 import { formatDate, parseMarkdownToHtml } from "@/lib/utils";
 import { generateArticleSchema, generateBreadcrumbSchema } from "@/lib/seo";
 import Breadcrumb from "@/components/layout/Breadcrumb";
@@ -9,12 +8,18 @@ import { Clock, ArrowLeft } from "lucide-react";
 
 const { slug } = Astro.params;
 
+let settings = null;
+let brandConfig = null;
+let products = [];
 let post = null;
 
 try {
-  if (slug) {
-    post = await BlogAPI.getBySlug(slug);
-  }
+  [settings, brandConfig, products, post] = await Promise.all([
+    SettingsAPI.get().catch(() => null),
+    BrandAPI.getCurrentBrand().catch(() => null),
+    ProductAPI.getAll().catch(() => []),
+    slug ? BlogAPI.getBySlug(slug).catch(() => null) : Promise.resolve(null)
+  ]);
 } catch (e) {
   console.error("Error loading blog post:", e);
 }
@@ -29,8 +34,8 @@ const articleUrl = `${siteUrl}/blog/${post.slug}`;
 function getTechnicalBio(authorName: string): string {
   const bios: Record<string, string> = {
     "Alex Johnson": "12 years Windows Server admin · Written 47 migration guides",
-    "Sarah Jenkins": "Lead Migration Engineer · Former Enterprise Exchange Architect",
-    "Michael Torres": "Data Security Specialist · 15 years Unix/Mail Server Administrator",
+    "Sarah Jenkins": "Lead Migration Engineer · Former Exchange Architect",
+    "Michael Torres": "Data Security Specialist · 15 years Mail Server Administrator",
   };
   return bios[authorName] || "Enterprise Migration Lead · Systems Engineer";
 }
@@ -41,6 +46,9 @@ function getTechnicalBio(authorName: string): string {
   description={post.seo.description}
   ogType="article"
   author={post.author.name}
+  settings={settings}
+  brandConfig={brandConfig}
+  products={products}
 >
   <script type="application/ld+json"
     set:html={JSON.stringify(generateArticleSchema({

@@ -2,9 +2,19 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import SectionHeader from "@/components/common/SectionHeader";
 import { Users, Globe, Award, TrendingUp } from "lucide-react";
-import { SettingsAPI } from "@/services/api";
+import { SettingsAPI, BrandAPI, ProductAPI } from "@/services/api";
 
-const settings = await SettingsAPI.get().catch(() => null);
+let settings = null;
+let brandConfig = null;
+let products = [];
+
+try {
+  [settings, brandConfig, products] = await Promise.all([
+    SettingsAPI.get().catch(() => null),
+    BrandAPI.getCurrentBrand().catch(() => null),
+    ProductAPI.getAll().catch(() => [])
+  ]);
+} catch (e) {}
 
 const siteStats = settings?.stats?.map((s: any, idx: number) => ({
   value: s.value,
@@ -31,6 +41,9 @@ const siteDescription = settings?.description || "";
 <BaseLayout
   title={`About Us — ${siteName}`}
   description={`Learn about ${siteName}, our mission, leadership team, and why over 1 million IT professionals worldwide trust our data migration and file conversion tools.`}
+  settings={settings}
+  brandConfig={brandConfig}
+  products={products}
 >
   <div>
     {/* Hero */}
