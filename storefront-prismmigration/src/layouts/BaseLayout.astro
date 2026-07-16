@@ -47,7 +47,7 @@ const themeConfig = settings?.theme || {};
 const fontFamily = themeConfig.fontFamily || "Inter";
 const primaryColor = themeConfig.primaryColor || "#2563eb";
 const accentColor = themeConfig.accentColor || "#f59e0b";
-const faviconUrl = themeConfig.faviconUrl || "/favicon.ico";
+const faviconUrl = themeConfig.faviconUrl || "/logo-p.png";
 const logoUrl = themeConfig.logoUrl || "";
 
 // Navigation from API — falls back to empty (Navbar has its own defaults)
@@ -159,10 +159,10 @@ const refractionFontsUrl = `https://fonts.googleapis.com/css2?family=Syne:wght@6
         --amber-alert:     #F59E0B;   /* version badges, warnings, BIOS/filesystem feel */
         --amber-dim:       #F59E0B18; /* amber at 10% opacity */
 
-        /* Typography colors */
-        --type-light:  #E2EAF4;   /* primary text — blue-shifted for terminal feel */
-        --type-muted:  #8FA4BF;   /* secondary / muted text */
-        --type-faint:  #708BAE;   /* placeholder, fine print — lightened to satisfy WCAG contrast AA */
+        /* Typography colors — shifted to lighter nodes for high-contrast visibility */
+        --type-light:  #F8FAFC;   /* primary text — ultra-bright slate-white */
+        --type-muted:  #E2E8F0;   /* secondary / body text — light gray-blue */
+        --type-faint:  #94A3B8;   /* small tags, fine print, placeholders */
 
         /* ── Typography — Refraction Three-Face Stack ─────────────── */
         --font-display: 'Syne', system-ui, sans-serif;      /* hero headlines, section titles */

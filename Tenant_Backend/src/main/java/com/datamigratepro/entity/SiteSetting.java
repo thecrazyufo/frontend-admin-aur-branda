@@ -125,6 +125,31 @@ public class SiteSetting {
     @Column(columnDefinition = "jsonb")
     private SeoDefaults seoDefaults;
 
+    // ─── Review Platform & Social Proof ────────────────────────────────────────
+
+    @Column(name = "review_platform_name", length = 100)
+    private String reviewPlatformName;     // e.g. "Trustpilot"
+
+    @Column(name = "review_platform_url", length = 500)
+    private String reviewPlatformUrl;      // e.g. "https://trustpilot.com/review/..."
+
+    @Column(name = "review_platform_rating", precision = 3, scale = 1)
+    private Double reviewPlatformRating;   // e.g. 4.8
+
+    @Column(name = "review_platform_count")
+    private Integer reviewPlatformCount;   // e.g. 127
+
+    // ─── Live Chat ─────────────────────────────────────────────────────────────
+
+    @Column(name = "live_chat_embed_code", columnDefinition = "TEXT")
+    private String liveChatEmbedCode;      // Raw widget script snippet
+
+    // ─── Press Mentions ────────────────────────────────────────────────────────
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "press_mentions", columnDefinition = "jsonb")
+    private List<PressItem> pressMentions;
+
     // ═══════════════════════════════════════════════════════════════════════════
     // INNER CLASSES
     // ═══════════════════════════════════════════════════════════════════════════
@@ -357,5 +382,15 @@ public class SiteSetting {
         private String metaTitle;
         private String metaDescription;
         private String metaKeywords;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PressItem {
+        private String name;        // e.g. "TechRadar"
+        private String logoUrl;     // optional CDN URL
+        private String articleUrl;  // link to the article
+        private String quote;       // optional pull quote
     }
 }

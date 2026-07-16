@@ -103,6 +103,9 @@ public class OrderController {
         String billingCountry = request.get("billingCountry");
         String taxId = request.get("taxId");
 
+        String needsOffline = request.get("needsOfflineSupport");
+        boolean needsOfflineSupport = "true".equalsIgnoreCase(needsOffline) || Boolean.parseBoolean(needsOffline);
+
         if (productId == null || tierName == null || email == null) {
             return ResponseEntity.badRequest().body(Map.of("error", "productId, pricingTierName, and customerEmail are required"));
         }
@@ -139,7 +142,7 @@ public class OrderController {
         String orderId = "ORD-" + (100000 + new Random().nextInt(900000));
 
         Order order = processSuccessfulOrder(siteId, product.getId(), tierName, email, paymentMethod, orderId, amount,
-            billingName, billingCompany, billingAddress, billingCity, billingState, billingZip, billingCountry, taxId, taxAmount, taxRate);
+            billingName, billingCompany, billingAddress, billingCity, billingState, billingZip, billingCountry, taxId, taxAmount, taxRate, needsOfflineSupport);
         return ResponseEntity.ok(buildOrderResponseMap(order));
     }
 
@@ -222,6 +225,9 @@ public class OrderController {
         String billingCountry = request.get("billingCountry");
         String taxId = request.get("taxId");
 
+        String needsOffline = request.get("needsOfflineSupport");
+        boolean needsOfflineSupport = "true".equalsIgnoreCase(needsOffline) || Boolean.parseBoolean(needsOffline);
+
         if (sessionId == null || sessionId.isBlank() || siteId == null || siteId.isBlank()) {
             return ResponseEntity.badRequest().body(Map.of("error", "sessionId and siteId are required"));
         }
@@ -235,42 +241,39 @@ public class OrderController {
 
         Map<String, String> stripeDetails = stripeService.confirmSession(sessionId);
         if (!"paid".equalsIgnoreCase(stripeDetails.get("status"))) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Payment not completed or verified."));
+            return ResponseEntity.badRequest().body(Map.of("error", "Payment failed or not completed in Stripe"));
         }
 
-        // For mock/simulated sessions or fallback details:
         String email = stripeDetails.getOrDefault("customerEmail", request.get("customerEmail"));
         String productId = stripeDetails.getOrDefault("productId", request.get("productId"));
         String tierName = stripeDetails.getOrDefault("pricingTierName", request.get("pricingTierName"));
-        
-        // Fallback amount parsing
+
+        // Lookup product to find actual amount (or fall back to Stripe session amount)
         double amount = 49.00;
-        double taxRate = calculateSalesTax(billingCountry, billingState, 1.0);
-        double taxAmount = 0.0;
         try {
             String amtStr = stripeDetails.get("amount");
-            if (amtStr != null) {
-                amount = Double.parseDouble(amtStr);
-                double subtotal = amount / (1.0 + taxRate);
-                taxAmount = amount - subtotal;
-            } else {
-                // Fetch product details
-                Optional<Product> prodOpt = productRepository.findById(productId);
-                if (prodOpt.isEmpty()) {
-                    prodOpt = productRepository.findBySlugAndSiteId(productId, siteId);
-                }
-                if (prodOpt.isPresent()) {
-                    Product product = prodOpt.get();
-                    if (product.getPricing() != null) {
-                        for (PricingTier tier : product.getPricing()) {
-                            if (tier.getName().equalsIgnoreCase(tierName)) {
-                                double baseAmount = tier.getPrice();
-                                double subtotal = calculateDiscountedAmount(couponCode, siteId, baseAmount);
-                                taxRate = calculateSalesTax(billingCountry, billingState, subtotal);
-                                taxAmount = subtotal * taxRate;
-                                amount = subtotal + taxAmount;
-                                break;
-                            }
+            if (amtStr != null) amount = Double.parseDouble(amtStr);
+        } catch (Exception ignored) {}
+
+        double taxRate = calculateSalesTax(billingCountry, billingState, amount);
+        double taxAmount = 0.0;
+
+        try {
+            Optional<Product> productOpt = productRepository.findById(productId);
+            if (productOpt.isEmpty()) {
+                productOpt = productRepository.findBySlugAndSiteId(productId, siteId);
+            }
+            if (productOpt.isPresent()) {
+                Product product = productOpt.get();
+                if (product.getPricing() != null) {
+                    for (PricingTier tier : product.getPricing()) {
+                        if (tier.getName().equalsIgnoreCase(tierName)) {
+                            double baseAmount = tier.getPrice();
+                            double subtotal = calculateDiscountedAmount(couponCode, siteId, baseAmount);
+                            taxRate = calculateSalesTax(billingCountry, billingState, subtotal);
+                            taxAmount = subtotal * taxRate;
+                            amount = subtotal + taxAmount;
+                            break;
                         }
                     }
                 }
@@ -282,7 +285,7 @@ public class OrderController {
         }
 
         Order order = processSuccessfulOrder(siteId, productId, tierName, email, "STRIPE", sessionId, amount,
-            billingName, billingCompany, billingAddress, billingCity, billingState, billingZip, billingCountry, taxId, taxAmount, taxRate);
+            billingName, billingCompany, billingAddress, billingCity, billingState, billingZip, billingCountry, taxId, taxAmount, taxRate, needsOfflineSupport);
         return ResponseEntity.ok(buildOrderResponseMap(order));
     }
 
@@ -370,6 +373,9 @@ public class OrderController {
         String billingCountry = request.get("billingCountry");
         String taxId = request.get("taxId");
 
+        String needsOffline = request.get("needsOfflineSupport");
+        boolean needsOfflineSupport = "true".equalsIgnoreCase(needsOffline) || Boolean.parseBoolean(needsOffline);
+
         if (orderId == null || orderId.isBlank() || siteId == null || siteId.isBlank()) {
             return ResponseEntity.badRequest().body(Map.of("error", "paypalOrderId and siteId are required"));
         }
@@ -419,7 +425,7 @@ public class OrderController {
         }
 
         Order order = processSuccessfulOrder(siteId, productId, tierName, email, "PAYPAL", orderId, amount,
-            billingName, billingCompany, billingAddress, billingCity, billingState, billingZip, billingCountry, taxId, taxAmount, taxRate);
+            billingName, billingCompany, billingAddress, billingCity, billingState, billingZip, billingCountry, taxId, taxAmount, taxRate, needsOfflineSupport);
         return ResponseEntity.ok(buildOrderResponseMap(order));
     }
 
@@ -440,7 +446,8 @@ public class OrderController {
             String billingCountry,
             String taxId,
             double taxAmount,
-            double taxRate) {
+            double taxRate,
+            boolean needsOfflineSupport) {
         
         TenantContext.setCurrentTenant(siteId);
 
@@ -470,8 +477,23 @@ public class OrderController {
         String period = selectedTier != null ? selectedTier.getPeriod() : "lifetime";
 
         // Generate License Key
-        String rawUuid = UUID.randomUUID().toString().replace("-", "").toUpperCase();
-        String activationKey = "DMP-" + rawUuid.substring(0, 4) + "-" + rawUuid.substring(4, 8) + "-" + rawUuid.substring(8, 12);
+        String activationKey;
+        if (needsOfflineSupport) {
+            String brandPrefix = switch (siteId) {
+                case "apexbyte" -> "PSTB";
+                case "migrationuncle" -> "PSTC";
+                case "brandD" -> "PSTD";
+                case "brandE" -> "PSTE";
+                default -> "PST";
+            };
+            String s1 = generateValidPart(9);
+            String s2 = generateValidPart(0);
+            String s3 = generateValidPart(8);
+            activationKey = brandPrefix.toUpperCase() + "-ELITE-" + s1 + "-" + s2 + "-" + s3;
+        } else {
+            String rawUuid = UUID.randomUUID().toString().replace("-", "").toUpperCase();
+            activationKey = "DMP-" + rawUuid.substring(0, 4) + "-" + rawUuid.substring(4, 8) + "-" + rawUuid.substring(8, 12);
+        }
 
         // Resolve device count
         int maxDevices = 1;
@@ -498,6 +520,7 @@ public class OrderController {
         license.setMaxDevices(maxDevices);
         license.setCreatedAt(LocalDateTime.now());
         license.setExpiresAt(expiresAt);
+        license.setOfflineCapable(needsOfflineSupport);
         license.setSiteId(siteId);
         licenseKeyRepository.save(license);
 
@@ -576,5 +599,29 @@ public class OrderController {
         response.put("invoice", invoice);
 
         return response;
+    }
+
+    private String generateValidPart(int targetRemainder) {
+        java.util.Random rand = new java.util.Random();
+        StringBuilder sb = new StringBuilder();
+        int sum = 0;
+        for (int i = 0; i < 3; i++) {
+            char c = (char) ('A' + rand.nextInt(26));
+            sb.append(c);
+            sum += c;
+        }
+        for (char c = 'A'; c <= 'Z'; c++) {
+            if ((sum + c) % 17 == targetRemainder) {
+                sb.append(c);
+                return sb.toString();
+            }
+        }
+        for (char c = '0'; c <= '9'; c++) {
+            if ((sum + c) % 17 == targetRemainder) {
+                sb.append(c);
+                return sb.toString();
+            }
+        }
+        return generateValidPart(targetRemainder);
     }
 }

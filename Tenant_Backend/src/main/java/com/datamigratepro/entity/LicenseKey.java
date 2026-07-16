@@ -43,6 +43,9 @@ public class LicenseKey {
     private LocalDateTime createdAt;
     private LocalDateTime expiresAt; // null for lifetime licenses
 
+    @Column(name = "is_offline_capable", nullable = false)
+    private boolean isOfflineCapable = false;
+
     @org.hibernate.annotations.TenantId
     @Column(name = "site_id", nullable = false)
     private String siteId;

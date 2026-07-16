@@ -56,21 +56,21 @@ public class ToolMatcherService {
     private static final Map<String, AvailableFormatsResponse.FormatOption> FORMAT_METADATA = new LinkedHashMap<>();
 
     static {
-        FORMAT_METADATA.put("pst",              new AvailableFormatsResponse.FormatOption("pst",              "PST (Outlook Data File)",   "microsoft-outlook",   "Outlook email archive file",              "Microsoft"));
-        FORMAT_METADATA.put("ost",              new AvailableFormatsResponse.FormatOption("ost",              "OST (Offline Storage)",     "microsoft-outlook",   "Exchange offline cache file",             "Microsoft"));
-        FORMAT_METADATA.put("outlook",          new AvailableFormatsResponse.FormatOption("outlook",          "Outlook (Live Account)",    "microsoft-outlook",   "Live Microsoft Outlook mailbox",          "Microsoft"));
-        FORMAT_METADATA.put("office365",        new AvailableFormatsResponse.FormatOption("office365",        "Microsoft 365",             "microsoft",           "Microsoft 365 / Exchange Online",         "Microsoft"));
-        FORMAT_METADATA.put("exchange_online",  new AvailableFormatsResponse.FormatOption("exchange_online",  "Exchange Online",           "microsoftexchange",   "Exchange Online (Office 365 mail)",        "Microsoft"));
-        FORMAT_METADATA.put("gmail",            new AvailableFormatsResponse.FormatOption("gmail",            "Gmail",                     "gmail",               "Google Gmail mailbox",                    "Google"));
-        FORMAT_METADATA.put("google_workspace", new AvailableFormatsResponse.FormatOption("google_workspace", "Google Workspace",          "google",              "Google Workspace / G Suite account",      "Google"));
-        FORMAT_METADATA.put("mbox",             new AvailableFormatsResponse.FormatOption("mbox",             "MBOX",                      "thunderbird",         "Open standard mailbox format (Thunderbird/Apple Mail)", "Open Standard"));
-        FORMAT_METADATA.put("eml",              new AvailableFormatsResponse.FormatOption("eml",              "EML (Email File)",          "mail",                "Individual email file format",            "Open Standard"));
-        FORMAT_METADATA.put("msg",              new AvailableFormatsResponse.FormatOption("msg",              "MSG (Outlook Message)",     "microsoft-outlook",   "Outlook individual message file",         "Microsoft"));
-        FORMAT_METADATA.put("pdf",              new AvailableFormatsResponse.FormatOption("pdf",              "PDF",                       "adobeacrobatreader",  "Portable Document Format (read-only)",    "Adobe"));
-        FORMAT_METADATA.put("html",             new AvailableFormatsResponse.FormatOption("html",             "HTML",                      "html5",               "Web browser readable email archive",      "Open Standard"));
-        FORMAT_METADATA.put("onedrive",         new AvailableFormatsResponse.FormatOption("onedrive",         "OneDrive",                  "microsoftonedrive",   "Microsoft OneDrive cloud storage",        "Microsoft"));
-        FORMAT_METADATA.put("sharepoint",       new AvailableFormatsResponse.FormatOption("sharepoint",       "SharePoint",                "microsoftsharepoint", "Microsoft SharePoint document library",   "Microsoft"));
-        FORMAT_METADATA.put("google_drive",     new AvailableFormatsResponse.FormatOption("google_drive",     "Google Drive",              "googledrive",         "Google Drive cloud storage",              "Google"));
+        FORMAT_METADATA.put("pst",              new AvailableFormatsResponse.FormatOption("pst",              "PST (Outlook Data File)",   "microsoft-outlook",   "Outlook email archive file",              "Microsoft",    "Email"));
+        FORMAT_METADATA.put("ost",              new AvailableFormatsResponse.FormatOption("ost",              "OST (Offline Storage)",     "microsoft-outlook",   "Exchange offline cache file",             "Microsoft",    "Email"));
+        FORMAT_METADATA.put("outlook",          new AvailableFormatsResponse.FormatOption("outlook",          "Outlook (Live Account)",    "microsoft-outlook",   "Live Microsoft Outlook mailbox",          "Microsoft",    "Email"));
+        FORMAT_METADATA.put("office365",        new AvailableFormatsResponse.FormatOption("office365",        "Microsoft 365",             "microsoft",           "Microsoft 365 / Exchange Online",         "Microsoft",    "Cloud Platform"));
+        FORMAT_METADATA.put("exchange_online",  new AvailableFormatsResponse.FormatOption("exchange_online",  "Exchange Online",           "microsoftexchange",   "Exchange Online (Office 365 mail)",        "Microsoft",    "Cloud Platform"));
+        FORMAT_METADATA.put("gmail",            new AvailableFormatsResponse.FormatOption("gmail",            "Gmail",                     "gmail",               "Google Gmail mailbox",                    "Google",       "Email"));
+        FORMAT_METADATA.put("google_workspace", new AvailableFormatsResponse.FormatOption("google_workspace", "Google Workspace",          "google",              "Google Workspace / G Suite account",      "Google",       "Cloud Platform"));
+        FORMAT_METADATA.put("mbox",             new AvailableFormatsResponse.FormatOption("mbox",             "MBOX",                      "thunderbird",         "Open standard mailbox format (Thunderbird/Apple Mail)", "Open Standard", "Email"));
+        FORMAT_METADATA.put("eml",              new AvailableFormatsResponse.FormatOption("eml",              "EML (Email File)",          "mail",                "Individual email file format",            "Open Standard", "Email"));
+        FORMAT_METADATA.put("msg",              new AvailableFormatsResponse.FormatOption("msg",              "MSG (Outlook Message)",     "microsoft-outlook",   "Outlook individual message file",         "Microsoft",    "Email"));
+        FORMAT_METADATA.put("pdf",              new AvailableFormatsResponse.FormatOption("pdf",              "PDF",                       "adobeacrobatreader",  "Portable Document Format (read-only)",    "Adobe",        "File Format"));
+        FORMAT_METADATA.put("html",             new AvailableFormatsResponse.FormatOption("html",             "HTML",                      "html5",               "Web browser readable email archive",      "Open Standard", "File Format"));
+        FORMAT_METADATA.put("onedrive",         new AvailableFormatsResponse.FormatOption("onedrive",         "OneDrive",                  "microsoftonedrive",   "Microsoft OneDrive cloud storage",        "Microsoft",    "Cloud Storage"));
+        FORMAT_METADATA.put("sharepoint",       new AvailableFormatsResponse.FormatOption("sharepoint",       "SharePoint",                "microsoftsharepoint", "Microsoft SharePoint document library",   "Microsoft",    "Cloud Storage"));
+        FORMAT_METADATA.put("google_drive",     new AvailableFormatsResponse.FormatOption("google_drive",     "Google Drive",              "googledrive",         "Google Drive cloud storage",              "Google",       "Cloud Storage"));
     }
 
     /**
@@ -280,12 +280,18 @@ public class ToolMatcherService {
 
         List<AvailableFormatsResponse.FormatOption> srcOptions = dbSources.stream()
                 .map(sf -> new AvailableFormatsResponse.FormatOption(
-                        sf.getKey(), sf.getName(), sf.getIcon() != null ? sf.getIcon() : "file", sf.getDescription(), "Registry"))
+                        sf.getKey(), sf.getName(),
+                        sf.getIcon() != null ? sf.getIcon() : "file",
+                        sf.getDescription(), "Registry",
+                        sf.getCategory() != null ? sf.getCategory() : "Other"))
                 .collect(Collectors.toList());
 
         List<AvailableFormatsResponse.FormatOption> tgtOptions = dbTargets.stream()
                 .map(tf -> new AvailableFormatsResponse.FormatOption(
-                        tf.getKey(), tf.getName(), tf.getIcon() != null ? tf.getIcon() : "file", tf.getDescription(), "Registry"))
+                        tf.getKey(), tf.getName(),
+                        tf.getIcon() != null ? tf.getIcon() : "file",
+                        tf.getDescription(), "Registry",
+                        tf.getCategory() != null ? tf.getCategory() : "Other"))
                 .collect(Collectors.toList());
 
         return new AvailableFormatsResponse(srcOptions, tgtOptions);
@@ -327,7 +333,11 @@ public class ToolMatcherService {
                 .map(k -> {
                     SourceFormat sf = dbSourceMap.get(k);
                     if (sf != null) {
-                        return new AvailableFormatsResponse.FormatOption(sf.getKey(), sf.getName(), sf.getIcon() != null ? sf.getIcon() : "file", sf.getDescription(), "Registry");
+                        return new AvailableFormatsResponse.FormatOption(
+                                sf.getKey(), sf.getName(),
+                                sf.getIcon() != null ? sf.getIcon() : "file",
+                                sf.getDescription(), "Registry",
+                                sf.getCategory() != null ? sf.getCategory() : "Other");
                     }
                     return FORMAT_METADATA.getOrDefault(k, generateFallbackOption(k));
                 })
@@ -337,7 +347,11 @@ public class ToolMatcherService {
                 .map(k -> {
                     TargetFormat tf = dbTargetMap.get(k);
                     if (tf != null) {
-                        return new AvailableFormatsResponse.FormatOption(tf.getKey(), tf.getName(), tf.getIcon() != null ? tf.getIcon() : "file", tf.getDescription(), "Registry");
+                        return new AvailableFormatsResponse.FormatOption(
+                                tf.getKey(), tf.getName(),
+                                tf.getIcon() != null ? tf.getIcon() : "file",
+                                tf.getDescription(), "Registry",
+                                tf.getCategory() != null ? tf.getCategory() : "Other");
                     }
                     return FORMAT_METADATA.getOrDefault(k, generateFallbackOption(k));
                 })
@@ -377,7 +391,7 @@ public class ToolMatcherService {
 
     private AvailableFormatsResponse.FormatOption generateFallbackOption(String key) {
         String label = key.replace("_", " ").toUpperCase();
-        return new AvailableFormatsResponse.FormatOption(key, label, "file", label + " format", "Other");
+        return new AvailableFormatsResponse.FormatOption(key, label, "file", label + " format", "Other", "Other");
     }
 
     /**

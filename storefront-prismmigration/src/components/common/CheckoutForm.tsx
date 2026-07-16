@@ -29,6 +29,7 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
   const [billingCountry, setBillingCountry] = useState("US");
   const [taxId, setTaxId] = useState("");
   const [showBusinessFields, setShowBusinessFields] = useState(false);
+  const [needsOfflineSupport, setNeedsOfflineSupport] = useState(false);
 
   // Loading & Result States
   const [loading, setLoading] = useState(false);
@@ -59,6 +60,7 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
     const tierName = query.get("tier");
     const emailUrl = query.get("email");
     const cancelled = query.get("cancelled");
+    const offlineUrl = query.get("needsOfflineSupport") || "";
     
     // Extracted billing details from redirect
     const bName = query.get("billingName") || "";
@@ -92,7 +94,8 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
         billingState: bState ? decodeURIComponent(bState) : undefined,
         billingZip: bZip ? decodeURIComponent(bZip) : undefined,
         billingCountry: bCountry ? decodeURIComponent(bCountry) : undefined,
-        taxId: bTaxId ? decodeURIComponent(bTaxId) : undefined
+        taxId: bTaxId ? decodeURIComponent(bTaxId) : undefined,
+        needsOfflineSupport: offlineUrl === "true"
       })
         .then((res) => {
           setResult(res);
@@ -120,7 +123,8 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
         billingState: bState ? decodeURIComponent(bState) : undefined,
         billingZip: bZip ? decodeURIComponent(bZip) : undefined,
         billingCountry: bCountry ? decodeURIComponent(bCountry) : undefined,
-        taxId: bTaxId ? decodeURIComponent(bTaxId) : undefined
+        taxId: bTaxId ? decodeURIComponent(bTaxId) : undefined,
+        needsOfflineSupport: offlineUrl === "true"
       })
         .then((res) => {
           setResult(res);
@@ -234,7 +238,7 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
 
     try {
       const currentUrl = window.location.origin + window.location.pathname;
-      const successUrlParams = `?success=true&session_id={CHECKOUT_SESSION_ID}&product=${product.slug}&tier=${encodeURIComponent(selectedTier.name)}&email=${encodeURIComponent(email)}`;
+      const successUrlParams = `?success=true&session_id={CHECKOUT_SESSION_ID}&product=${product.slug}&tier=${encodeURIComponent(selectedTier.name)}&email=${encodeURIComponent(email)}&needsOfflineSupport=${needsOfflineSupport}`;
       const cancelUrlParams = `?cancelled=true&product=${product.slug}&tier=${encodeURIComponent(selectedTier.name)}&email=${encodeURIComponent(email)}`;
 
       const billingParams = {
@@ -249,7 +253,7 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
       };
 
       // Append billing parameters to redirect success URLs to preserve them on redirection confirm endpoint
-      const extraQueryParams = `&billingName=${encodeURIComponent(billingParams.billingName)}&billingCompany=${encodeURIComponent(billingParams.billingCompany)}&billingAddress=${encodeURIComponent(billingParams.billingAddress)}&billingCity=${encodeURIComponent(billingParams.billingCity)}&billingState=${encodeURIComponent(billingParams.billingState)}&billingZip=${encodeURIComponent(billingParams.billingZip)}&billingCountry=${encodeURIComponent(billingParams.billingCountry)}&taxId=${encodeURIComponent(billingParams.taxId)}`;
+      const extraQueryParams = `&billingName=${encodeURIComponent(billingParams.billingName)}&billingCompany=${encodeURIComponent(billingParams.billingCompany)}&billingAddress=${encodeURIComponent(billingParams.billingAddress)}&billingCity=${encodeURIComponent(billingParams.billingCity)}&billingState=${encodeURIComponent(billingParams.billingState)}&billingZip=${encodeURIComponent(billingParams.billingZip)}&billingCountry=${encodeURIComponent(billingParams.billingCountry)}&taxId=${encodeURIComponent(billingParams.taxId)}&needsOfflineSupport=${needsOfflineSupport}`;
 
       if (paymentMethod === "STRIPE") {
         const session = await CheckoutAPI.createStripeSession({
@@ -260,6 +264,7 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
           successUrl: currentUrl + successUrlParams + extraQueryParams,
           cancelUrl: currentUrl + cancelUrlParams,
           couponCode: appliedCoupon?.code,
+          needsOfflineSupport: needsOfflineSupport,
           ...billingParams
         });
         // Redirect to Stripe checkout screen
@@ -273,6 +278,7 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
           returnUrl: currentUrl + `?paypal_success=true&product=${product.slug}&tier=${encodeURIComponent(selectedTier.name)}&email=${encodeURIComponent(email)}` + extraQueryParams,
           cancelUrl: currentUrl + cancelUrlParams,
           couponCode: appliedCoupon?.code,
+          needsOfflineSupport: needsOfflineSupport,
           ...billingParams
         });
         // Redirect to PayPal checkout/approve screen
@@ -530,6 +536,25 @@ export default function CheckoutForm({ product, selectedTierName, siteId }: Chec
                 <label htmlFor="checkout-business-toggle" className="text-[10px] font-bold text-stone-300 uppercase tracking-wider cursor-pointer select-none">
                   Buying for a business
                 </label>
+              </div>
+
+              {/* Offline Activation Option */}
+              <div className="flex items-start gap-2 mt-3 pt-2 border-t border-[#334155]/20">
+                <input
+                  type="checkbox"
+                  id="checkout-offline-toggle"
+                  checked={needsOfflineSupport}
+                  onChange={(e) => setNeedsOfflineSupport(e.target.checked)}
+                  className="mt-0.5 rounded border-[#334155] text-[#6366F1] focus:ring-[#6366F1] bg-[#0B0F1A]"
+                />
+                <div>
+                  <label htmlFor="checkout-offline-toggle" className="text-[10px] font-bold text-stone-300 uppercase tracking-wider cursor-pointer select-none">
+                    Enable offline activation support
+                  </label>
+                  <p className="text-[9px] text-stone-500 mt-0.5 leading-relaxed">
+                    Check this if you plan to activate and run the software in an air-gapped or enterprise environment without active internet.
+                  </p>
+                </div>
               </div>
 
               {showBusinessFields && (

@@ -1,0 +1,89 @@
+---
+/**
+ * FaqAccordion — Dynamic expandable FAQ section
+ * Data: FaqAPI.getAll() → FAQ[] { question, answer, category }
+ * Uses native <details>/<summary> for zero-JS, accessible accordions.
+ */
+
+interface FAQ {
+  id?: string;
+  question: string;
+  answer: string;
+  category?: string;
+}
+
+interface Props {
+  faqs: FAQ[];
+  title?: string;
+  subtitle?: string;
+  limit?: number;
+}
+
+const {
+  faqs,
+  title = "Frequently Asked Questions",
+  subtitle = "Everything you need to know before you migrate.",
+  limit = 8,
+} = Astro.props;
+
+const displayFaqs = faqs.slice(0, limit);
+---
+
+<section class="py-20 relative" style="background: var(--ink-void); border-top: 1px solid var(--circuit-line);">
+  <div class="container-custom mx-auto px-4 max-w-3xl">
+    <div class="text-center mb-12">
+      <span class="inline-block text-[10px] font-bold uppercase tracking-widest border px-3 py-1 rounded mb-4" style="color: var(--signal-teal); background: rgba(0,200,160,0.08); border-color: rgba(0,200,160,0.25); font-family: var(--font-mono);">
+        FAQ
+      </span>
+      <h2 class="text-2xl md:text-3xl font-extrabold text-white mt-4 tracking-tight" style="font-family: var(--font-display);">{title}</h2>
+      <p class="text-sm mt-3 max-w-lg mx-auto" style="color: var(--type-muted);">{subtitle}</p>
+    </div>
+
+    <div class="space-y-2">
+      {displayFaqs.map((faq) => (
+        <details
+          class="faq-item group rounded-xl border overflow-hidden transition-all duration-200"
+          style="background: var(--slate-surface); border-color: var(--circuit-line);"
+        >
+          <summary
+            class="flex items-center justify-between gap-4 px-5 py-4 cursor-pointer list-none select-none text-sm font-semibold text-white hover:text-[var(--signal-teal)] transition-colors duration-200"
+          >
+            <span>{faq.question}</span>
+            <!-- Plus/minus icon toggled via CSS -->
+            <span class="faq-icon shrink-0 w-6 h-6 rounded-full flex items-center justify-center border transition-all duration-200" style="border-color: var(--circuit-line); color: var(--signal-teal);">
+              <svg class="faq-plus" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg>
+              <svg class="faq-minus hidden" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="1" y1="6" x2="11" y2="6"/></svg>
+            </span>
+          </summary>
+          <div class="px-5 pb-5 pt-1">
+            <p class="text-xs leading-relaxed" style="color: var(--type-muted);">{faq.answer}</p>
+          </div>
+        </details>
+      ))}
+    </div>
+
+    {faqs.length > limit && (
+      <div class="text-center mt-8">
+        <a href="/faq" class="text-[11px] underline underline-offset-4 transition-colors" style="color: var(--type-faint); font-family: var(--font-mono);">
+          View all {faqs.length} questions →
+        </a>
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  details[open] > summary .faq-plus { display: none; }
+  details[open] > summary .faq-minus { display: block; }
+  details[open] {
+    border-color: rgba(0,200,160,0.25) !important;
+  }
+  details[open] summary {
+    color: var(--signal-teal);
+    border-bottom: 1px solid var(--circuit-line);
+    padding-bottom: 1rem;
+    margin-bottom: 0;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::marker { display: none; }
+</style>

@@ -24,7 +24,7 @@ export const API_BASE = (() => {
   }
   
   if (typeof window === "undefined") {
-    return "http://tenant-backend:8080/api";
+    return "http://localhost:8080/api";
   }
 
   const hostname = window.location.hostname;
@@ -503,5 +503,23 @@ export const AdminCouponAPI = {
   create: (data: Partial<Coupon>) => adminPost<Coupon>("/coupons", data),
   update: (id: string, data: Partial<Coupon>) => adminPut<Coupon>(`/coupons/${id}`, data),
   delete: (id: string) => adminDelete(`/coupons/${id}`),
+};
+
+export interface BrandConfig {
+  id: string;
+  name: string;
+  domain: string;
+  adminDomain?: string;
+  devPort?: string;
+  logoUrl?: string;
+  themeColors?: string;
+  features?: string;
+  layoutTemplate: string;
+  active: boolean;
+}
+
+export const AdminBrandAPI = {
+  getAll: () => adminGet<BrandConfig[]>("/brands"),
+  update: (id: string, data: Partial<BrandConfig>) => adminPut<BrandConfig>(`/brands/${id}`, data),
 };
 

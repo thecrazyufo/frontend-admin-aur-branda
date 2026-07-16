@@ -62,11 +62,11 @@
 
   /* Dark theme base — matches BaseLayout injected values */
   --background: #0B0F1A;
-  --foreground: #F9FAFB;
+  --foreground: #F8FAFC;
   --muted: #111827;
   --muted-2: #18181b;
-  --muted-foreground: #D1D5DB;
-  --color-mute-var: #9CA3AF;
+  --muted-foreground: #E2E8F0;
+  --color-mute-var: #94A3B8;
   --border: #1F2937;
   --border-strong: #374151;
 
@@ -78,9 +78,9 @@
   --brand-accent-light: #E9D5FF;
 
   /* Semantic color tokens */
-  --color-ink: #F9FAFB;
-  --color-body: #D1D5DB;
-  --color-mute: #9CA3AF;
+  --color-ink: var(--type-light, #F8FAFC);
+  --color-body: var(--type-muted, #E2E8F0);
+  --color-mute: var(--type-faint, #94A3B8);
   --color-hairline: #1F2937;
   --color-hairline-strong: #374151;
   --color-surface: #111827;

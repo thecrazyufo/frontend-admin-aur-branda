@@ -126,6 +126,14 @@ public class DevDatabaseSeeder implements CommandLineRunner {
 
                 if (siteSettingRepository.count() > 0) {
                     System.out.println("🌱 Database " + brand + " already has configurations. Skipping seeding.");
+                    SiteSetting setting = siteSettingRepository.findBySiteId(brand).orElse(null);
+                    if (setting != null && (setting.getLegalPages() == null || setting.getLegalPages().isEmpty())) {
+                        if ("brandA".equals(brand)) {
+                            setting.setLegalPages(generateLegalPages("Prism Migration", "https://prismmigration.com", "support@prismmigration.com"));
+                            siteSettingRepository.save(setting);
+                            System.out.println("🌱 Populated missing legal pages for brandA in dev seeder fallback.");
+                        }
+                    }
                     syncCategoryProductMappings(brand);
                     continue;
                 }
@@ -1282,76 +1290,76 @@ public class DevDatabaseSeeder implements CommandLineRunner {
 
     private void seedGlobalRegistryForBrandA() {
         sourceFormatRepository.saveAll(Arrays.asList(
-            new SourceFormat("sf-pst", "pst", "Outlook PST File", "Microsoft Outlook Personal Storage Table", "mail", "brandA"),
-            new SourceFormat("sf-ost", "ost", "Outlook OST File", "Microsoft Outlook Offline Storage Table", "mail", "brandA"),
-            new SourceFormat("sf-mbox", "mbox", "MBOX File", "Standard MBOX mailbox archive file", "mail", "brandA"),
-            new SourceFormat("sf-eml", "eml", "EML File", "Individual email message file format", "mail", "brandA"),
-            new SourceFormat("sf-msg", "msg", "Outlook MSG File", "Outlook individual message format", "mail", "brandA"),
-            new SourceFormat("sf-gmail", "gmail", "Gmail / Google Mail", "Google Mail IMAP account", "mail", "brandA"),
-            new SourceFormat("sf-office365", "office365", "Office 365 / Outlook.com", "Microsoft 365 Cloud account", "mail", "brandA"),
-            new SourceFormat("sf-tgz", "tgz", "Zimbra TGZ File", "Zimbra mailbox export archive format", "mail", "brandA"),
-            new SourceFormat("sf-olm", "olm", "Outlook Mac OLM File", "Microsoft Outlook for Mac database archive", "mail", "brandA"),
-            new SourceFormat("sf-nsf", "nsf", "Lotus Notes NSF File", "IBM Lotus Notes database format", "mail", "brandA"),
-            new SourceFormat("sf-maildir", "maildir", "Maildir File", "Standard Maildir directory-based mail format", "mail", "brandA"),
-            new SourceFormat("sf-emlx", "emlx", "Apple Mail EMLX File", "Apple Mail individual message format", "mail", "brandA"),
-            new SourceFormat("sf-edb", "edb", "Exchange Database EDB File", "Microsoft Exchange Server mailbox database", "mail", "brandA"),
-            new SourceFormat("sf-dbx", "dbx", "Outlook Express DBX File", "Microsoft Outlook Express database format", "mail", "brandA"),
-            new SourceFormat("sf-yaml", "yaml", "YAML File", "YAML Ain't Markup Language serialization format", "document", "brandA"),
-            new SourceFormat("sf-xml", "xml", "XML File", "eXtensible Markup Language document format", "document", "brandA"),
-            new SourceFormat("sf-docx", "docx", "Word Document", "Microsoft Word document format", "document", "brandA"),
-            new SourceFormat("sf-toml", "toml", "TOML File", "Tom's Obvious Minimal Language config format", "document", "brandA"),
-            new SourceFormat("sf-properties", "properties", "Properties File", "Java configuration properties format", "document", "brandA"),
-            new SourceFormat("sf-md", "markdown", "Markdown File", "Markdown text file format", "document", "brandA"),
-            new SourceFormat("sf-jsonl", "jsonl", "JSON Lines File", "Line-delimited JSON format", "document", "brandA"),
-            new SourceFormat("sf-json", "json", "JSON File", "JavaScript Object Notation data format", "document", "brandA"),
-            new SourceFormat("sf-ini", "ini", "INI File", "Initialization configuration file format", "document", "brandA"),
-            new SourceFormat("sf-xlsx", "xlsx", "Excel Worksheet", "Microsoft Excel spreadsheet format", "document", "brandA"),
-            new SourceFormat("sf-csv", "csv", "CSV File", "Comma Separated Values text table format", "document", "brandA"),
-            new SourceFormat("sf-vcf", "vcf", "vCard File", "vCard electronic business card format", "contact", "brandA"),
-            new SourceFormat("sf-ics", "ics", "iCalendar File", "iCalendar calendar and scheduling format", "calendar", "brandA"),
-            new SourceFormat("sf-mobi", "mobi", "MOBI E-book", "Mobipocket e-book format", "document", "brandA"),
-            new SourceFormat("sf-epub", "epub", "EPUB E-book", "Electronic Publication open e-book format", "document", "brandA")
+            new SourceFormat("sf-pst", "pst", "Outlook PST File", "Microsoft Outlook Personal Storage Table", "microsoft-outlook", "Email", "brandA"),
+            new SourceFormat("sf-ost", "ost", "Outlook OST File", "Microsoft Outlook Offline Storage Table", "microsoft-outlook", "Email", "brandA"),
+            new SourceFormat("sf-mbox", "mbox", "MBOX File", "Standard MBOX mailbox archive file", "mbox", "Email", "brandA"),
+            new SourceFormat("sf-eml", "eml", "EML File", "Individual email message file format", "email-file", "Email", "brandA"),
+            new SourceFormat("sf-msg", "msg", "Outlook MSG File", "Outlook individual message format", "microsoft-outlook", "Email", "brandA"),
+            new SourceFormat("sf-gmail", "gmail", "Gmail / Google Mail", "Google Mail IMAP account", "gmail", "Email", "brandA"),
+            new SourceFormat("sf-office365", "office365", "Office 365 / Outlook.com", "Microsoft 365 Cloud account", "microsoft-365", "Cloud Platform", "brandA"),
+            new SourceFormat("sf-tgz", "tgz", "Zimbra TGZ File", "Zimbra mailbox export archive format", "email-file", "Email", "brandA"),
+            new SourceFormat("sf-olm", "olm", "Outlook Mac OLM File", "Microsoft Outlook for Mac database archive", "microsoft-outlook", "Email", "brandA"),
+            new SourceFormat("sf-nsf", "nsf", "Lotus Notes NSF File", "IBM Lotus Notes database format", "ibm-lotus-notes", "Email", "brandA"),
+            new SourceFormat("sf-maildir", "maildir", "Maildir File", "Standard Maildir directory-based mail format", "email-file", "Email", "brandA"),
+            new SourceFormat("sf-emlx", "emlx", "Apple Mail EMLX File", "Apple Mail individual message format", "email-file", "Email", "brandA"),
+            new SourceFormat("sf-edb", "edb", "Exchange Database EDB File", "Microsoft Exchange Server mailbox database", "microsoft-outlook", "Database", "brandA"),
+            new SourceFormat("sf-dbx", "dbx", "Outlook Express DBX File", "Microsoft Outlook Express database format", "microsoft-outlook", "Email", "brandA"),
+            new SourceFormat("sf-yaml", "yaml", "YAML File", "YAML Ain't Markup Language serialization format", "code-file", "File Format", "brandA"),
+            new SourceFormat("sf-xml", "xml", "XML File", "eXtensible Markup Language document format", "code-file", "File Format", "brandA"),
+            new SourceFormat("sf-docx", "docx", "Word Document", "Microsoft Word document format", "microsoft-word", "File Format", "brandA"),
+            new SourceFormat("sf-toml", "toml", "TOML File", "Tom's Obvious Minimal Language config format", "code-file", "File Format", "brandA"),
+            new SourceFormat("sf-properties", "properties", "Properties File", "Java configuration properties format", "code-file", "File Format", "brandA"),
+            new SourceFormat("sf-md", "markdown", "Markdown File", "Markdown text file format", "code-file", "File Format", "brandA"),
+            new SourceFormat("sf-jsonl", "jsonl", "JSON Lines File", "Line-delimited JSON format", "code-file", "File Format", "brandA"),
+            new SourceFormat("sf-json", "json", "JSON File", "JavaScript Object Notation data format", "code-file", "File Format", "brandA"),
+            new SourceFormat("sf-ini", "ini", "INI File", "Initialization configuration file format", "code-file", "File Format", "brandA"),
+            new SourceFormat("sf-xlsx", "xlsx", "Excel Worksheet", "Microsoft Excel spreadsheet format", "microsoft-excel", "File Format", "brandA"),
+            new SourceFormat("sf-csv", "csv", "CSV File", "Comma Separated Values text table format", "code-file", "File Format", "brandA"),
+            new SourceFormat("sf-vcf", "vcf", "vCard File", "vCard electronic business card format", "contact", "Contacts", "brandA"),
+            new SourceFormat("sf-ics", "ics", "iCalendar File", "iCalendar calendar and scheduling format", "calendar", "Calendar", "brandA"),
+            new SourceFormat("sf-mobi", "mobi", "MOBI E-book", "Mobipocket e-book format", "file", "File Format", "brandA"),
+            new SourceFormat("sf-epub", "epub", "EPUB E-book", "Electronic Publication open e-book format", "file", "File Format", "brandA")
         ));
 
         targetFormatRepository.saveAll(Arrays.asList(
-            new TargetFormat("tf-pst", "pst", "Outlook PST File", "Microsoft Outlook Personal Storage Table", "mail", "brandA"),
-            new TargetFormat("tf-mbox", "mbox", "MBOX File", "Standard MBOX mailbox archive file", "mail", "brandA"),
-            new TargetFormat("tf-eml", "eml", "EML File", "Individual email message file format", "mail", "brandA"),
-            new TargetFormat("tf-pdf", "pdf", "PDF Document", "Portable Document Format for printing/archiving", "file", "brandA"),
-            new TargetFormat("tf-gmail", "gmail", "Gmail / Google Mail", "Google Mail IMAP account", "mail", "brandA"),
-            new TargetFormat("tf-office365", "office365", "Office 365 / Outlook.com", "Microsoft 365 Cloud account", "mail", "brandA"),
-            new TargetFormat("tf-html", "html", "HTML File", "HyperText Markup Language files for web viewing", "file", "brandA"),
-            new TargetFormat("tf-tgz", "tgz", "Zimbra TGZ File", "Zimbra mailbox export archive format", "mail", "brandA"),
-            new TargetFormat("tf-olm", "olm", "Outlook Mac OLM File", "Microsoft Outlook for Mac database archive", "mail", "brandA"),
-            new TargetFormat("tf-nsf", "nsf", "Lotus Notes NSF File", "IBM Lotus Notes database format", "mail", "brandA"),
-            new TargetFormat("tf-maildir", "maildir", "Maildir File", "Standard Maildir directory-based mail format", "mail", "brandA"),
-            new TargetFormat("tf-emlx", "emlx", "Apple Mail EMLX File", "Apple Mail individual message format", "mail", "brandA"),
-            new TargetFormat("tf-edb", "edb", "Exchange Database EDB File", "Microsoft Exchange Server mailbox database", "mail", "brandA"),
-            new TargetFormat("tf-dbx", "dbx", "Outlook Express DBX File", "Microsoft Outlook Express database format", "mail", "brandA"),
-            new TargetFormat("tf-yaml", "yaml", "YAML File", "YAML Ain't Markup Language serialization format", "document", "brandA"),
-            new TargetFormat("tf-xml", "xml", "XML File", "eXtensible Markup Language document format", "document", "brandA"),
-            new TargetFormat("tf-docx", "docx", "Word Document", "Microsoft Word document format", "document", "brandA"),
-            new TargetFormat("tf-toml", "toml", "TOML File", "Tom's Obvious Minimal Language config format", "document", "brandA"),
-            new TargetFormat("tf-properties", "properties", "Properties File", "Java configuration properties format", "document", "brandA"),
-            new TargetFormat("tf-md", "markdown", "Markdown File", "Markdown text file format", "document", "brandA"),
-            new TargetFormat("tf-jsonl", "jsonl", "JSON Lines File", "Line-delimited JSON format", "document", "brandA"),
-            new TargetFormat("tf-json", "json", "JSON File", "JavaScript Object Notation data format", "document", "brandA"),
-            new TargetFormat("tf-ini", "ini", "INI File", "Initialization configuration file format", "document", "brandA"),
-            new TargetFormat("tf-xlsx", "xlsx", "Excel Worksheet", "Microsoft Excel spreadsheet format", "document", "brandA"),
-            new TargetFormat("tf-csv", "csv", "CSV File", "Comma Separated Values text table format", "document", "brandA"),
-            new TargetFormat("tf-vcf", "vcf", "vCard File", "vCard electronic business card format", "contact", "brandA"),
-            new TargetFormat("tf-ics", "ics", "iCalendar File", "iCalendar calendar and scheduling format", "calendar", "brandA"),
-            new TargetFormat("tf-mobi", "mobi", "MOBI E-book", "Mobipocket e-book format", "document", "brandA"),
-            new TargetFormat("tf-epub", "epub", "EPUB E-book", "Electronic Publication open e-book format", "document", "brandA"),
-            new TargetFormat("tf-rtf", "rtf", "Rich Text Format", "Rich Text Format document", "file", "brandA"),
-            new TargetFormat("tf-txt", "txt", "Plain Text Document", "Plain text message extraction", "file", "brandA"),
-            new TargetFormat("tf-mht", "mht", "MHTML Web Archive", "Single file HTML web archive", "file", "brandA"),
-            new TargetFormat("tf-xps", "xps", "XPS Document", "XML Paper Specification", "file", "brandA"),
-            new TargetFormat("tf-tiff", "tiff", "TIFF Image", "Tagged Image File Format", "image", "brandA"),
-            new TargetFormat("tf-bmp", "bmp", "Bitmap Image", "BMP Image format", "image", "brandA"),
-            new TargetFormat("tf-gif", "gif", "GIF Image", "Graphics Interchange Format", "image", "brandA"),
-            new TargetFormat("tf-jpeg", "jpeg", "JPEG Image", "Joint Photographic Experts Group", "image", "brandA"),
-            new TargetFormat("tf-png", "png", "PNG Image", "Portable Network Graphics", "image", "brandA")
+            new TargetFormat("tf-pst", "pst", "Outlook PST File", "Microsoft Outlook Personal Storage Table", "microsoft-outlook", "Email", "brandA"),
+            new TargetFormat("tf-mbox", "mbox", "MBOX File", "Standard MBOX mailbox archive file", "mbox", "Email", "brandA"),
+            new TargetFormat("tf-eml", "eml", "EML File", "Individual email message file format", "email-file", "Email", "brandA"),
+            new TargetFormat("tf-pdf", "pdf", "PDF Document", "Portable Document Format for printing/archiving", "adobe-pdf", "File Format", "brandA"),
+            new TargetFormat("tf-gmail", "gmail", "Gmail / Google Mail", "Google Mail IMAP account", "gmail", "Email", "brandA"),
+            new TargetFormat("tf-office365", "office365", "Office 365 / Outlook.com", "Microsoft 365 Cloud account", "microsoft-365", "Cloud Platform", "brandA"),
+            new TargetFormat("tf-html", "html", "HTML File", "HyperText Markup Language files for web viewing", "file", "File Format", "brandA"),
+            new TargetFormat("tf-tgz", "tgz", "Zimbra TGZ File", "Zimbra mailbox export archive format", "email-file", "Email", "brandA"),
+            new TargetFormat("tf-olm", "olm", "Outlook Mac OLM File", "Microsoft Outlook for Mac database archive", "microsoft-outlook", "Email", "brandA"),
+            new TargetFormat("tf-nsf", "nsf", "Lotus Notes NSF File", "IBM Lotus Notes database format", "ibm-lotus-notes", "Email", "brandA"),
+            new TargetFormat("tf-maildir", "maildir", "Maildir File", "Standard Maildir directory-based mail format", "email-file", "Email", "brandA"),
+            new TargetFormat("tf-emlx", "emlx", "Apple Mail EMLX File", "Apple Mail individual message format", "email-file", "Email", "brandA"),
+            new TargetFormat("tf-edb", "edb", "Exchange Database EDB File", "Microsoft Exchange Server mailbox database", "microsoft-outlook", "Database", "brandA"),
+            new TargetFormat("tf-dbx", "dbx", "Outlook Express DBX File", "Microsoft Outlook Express database format", "microsoft-outlook", "Email", "brandA"),
+            new TargetFormat("tf-yaml", "yaml", "YAML File", "YAML Ain't Markup Language serialization format", "code-file", "File Format", "brandA"),
+            new TargetFormat("tf-xml", "xml", "XML File", "eXtensible Markup Language document format", "code-file", "File Format", "brandA"),
+            new TargetFormat("tf-docx", "docx", "Word Document", "Microsoft Word document format", "microsoft-word", "File Format", "brandA"),
+            new TargetFormat("tf-toml", "toml", "TOML File", "Tom's Obvious Minimal Language config format", "code-file", "File Format", "brandA"),
+            new TargetFormat("tf-properties", "properties", "Properties File", "Java configuration properties format", "code-file", "File Format", "brandA"),
+            new TargetFormat("tf-md", "markdown", "Markdown File", "Markdown text file format", "code-file", "File Format", "brandA"),
+            new TargetFormat("tf-jsonl", "jsonl", "JSON Lines File", "Line-delimited JSON format", "code-file", "File Format", "brandA"),
+            new TargetFormat("tf-json", "json", "JSON File", "JavaScript Object Notation data format", "code-file", "File Format", "brandA"),
+            new TargetFormat("tf-ini", "ini", "INI File", "Initialization configuration file format", "code-file", "File Format", "brandA"),
+            new TargetFormat("tf-xlsx", "xlsx", "Excel Worksheet", "Microsoft Excel spreadsheet format", "microsoft-excel", "File Format", "brandA"),
+            new TargetFormat("tf-csv", "csv", "CSV File", "Comma Separated Values text table format", "code-file", "File Format", "brandA"),
+            new TargetFormat("tf-vcf", "vcf", "vCard File", "vCard electronic business card format", "contact", "Contacts", "brandA"),
+            new TargetFormat("tf-ics", "ics", "iCalendar File", "iCalendar calendar and scheduling format", "calendar", "Calendar", "brandA"),
+            new TargetFormat("tf-mobi", "mobi", "MOBI E-book", "Mobipocket e-book format", "file", "File Format", "brandA"),
+            new TargetFormat("tf-epub", "epub", "EPUB E-book", "Electronic Publication open e-book format", "file", "File Format", "brandA"),
+            new TargetFormat("tf-rtf", "rtf", "Rich Text Format", "Rich Text Format document", "file", "File Format", "brandA"),
+            new TargetFormat("tf-txt", "txt", "Plain Text Document", "Plain text message extraction", "file", "File Format", "brandA"),
+            new TargetFormat("tf-mht", "mht", "MHTML Web Archive", "Single file HTML web archive", "file", "File Format", "brandA"),
+            new TargetFormat("tf-xps", "xps", "XPS Document", "XML Paper Specification", "file", "File Format", "brandA"),
+            new TargetFormat("tf-tiff", "tiff", "TIFF Image", "Tagged Image File Format", "image-file", "Image", "brandA"),
+            new TargetFormat("tf-bmp", "bmp", "Bitmap Image", "BMP Image format", "image-file", "Image", "brandA"),
+            new TargetFormat("tf-gif", "gif", "GIF Image", "Graphics Interchange Format", "image-file", "Image", "brandA"),
+            new TargetFormat("tf-jpeg", "jpeg", "JPEG Image", "Joint Photographic Experts Group", "image-file", "Image", "brandA"),
+            new TargetFormat("tf-png", "png", "PNG Image", "Portable Network Graphics", "image-file", "Image", "brandA")
         ));
 
         supportedClientRepository.saveAll(Arrays.asList(
@@ -1808,7 +1816,7 @@ public class DevDatabaseSeeder implements CommandLineRunner {
         // 2. Products
         Product p1 = new Product();
         p1.setId("uncle-pst-to-gmail");
-        p1.setSlug("pst-to-gmail-converter");
+        p1.setSlug("uncle-pst-to-gmail-converter");
         p1.setName("PST to Gmail Converter");
         p1.setShortDescription("The easiest way to move your old Outlook data to your Google account.");
         p1.setDescription("Don't let your old emails collect dust. Uncle's tool helps you seamlessly transfer all your Outlook PST files to your new Gmail account with just a few clicks. It's safe, secure, and incredibly friendly to use.");
@@ -1821,7 +1829,7 @@ public class DevDatabaseSeeder implements CommandLineRunner {
 
         Product p2 = new Product();
         p2.setId("uncle-ost-recovery");
-        p2.setSlug("ost-recovery-tool");
+        p2.setSlug("uncle-ost-recovery-tool");
         p2.setName("OST Recovery Tool");
         p2.setShortDescription("Rescue your data from corrupted Outlook offline files.");
         p2.setDescription("Got an OST file you can't open? Don't panic. Uncle's recovery kit will repair the file and extract your emails, contacts, and calendars so you can get back to work.");
@@ -1831,7 +1839,7 @@ public class DevDatabaseSeeder implements CommandLineRunner {
 
         Product p3 = new Product();
         p3.setId("uncle-duplicate-cleaner");
-        p3.setSlug("duplicate-cleaner");
+        p3.setSlug("uncle-duplicate-cleaner");
         p3.setName("Duplicate Cleaner");
         p3.setShortDescription("Tidy up your messy mailbox by finding and removing duplicate emails.");
         p3.setDescription("Is your inbox full of the same message? Uncle's Duplicate Cleaner scans your accounts and safely removes identical copies, giving you your space back.");
@@ -1844,7 +1852,7 @@ public class DevDatabaseSeeder implements CommandLineRunner {
 
         Product p4 = new Product();
         p4.setId("uncle-cloud-migration-kit");
-        p4.setSlug("cloud-migration-kit");
+        p4.setSlug("uncle-cloud-migration-kit");
         p4.setName("Cloud Migration Kit");
         p4.setShortDescription("Move all your local files and emails to the cloud safely.");
         p4.setDescription("Moving to the cloud doesn't have to be scary. This kit handles everything from local archives to cloud mailboxes in one smooth process.");
@@ -1854,7 +1862,7 @@ public class DevDatabaseSeeder implements CommandLineRunner {
 
         Product p5 = new Product();
         p5.setId("uncle-mbox-to-pst");
-        p5.setSlug("mbox-to-pst-converter");
+        p5.setSlug("uncle-mbox-to-pst-converter");
         p5.setName("MBOX to PST Converter");
         p5.setShortDescription("Convert Apple Mail and Thunderbird files to Outlook.");
         p5.setDescription("Switching from Mac to PC? Or Thunderbird to Outlook? This tool converts your MBOX files to PST format flawlessly.");
@@ -1864,7 +1872,7 @@ public class DevDatabaseSeeder implements CommandLineRunner {
 
         Product p6 = new Product();
         p6.setId("uncle-email-backup-pro");
-        p6.setSlug("email-backup-pro");
+        p6.setSlug("uncle-email-backup-pro");
         p6.setName("Email Backup Pro");
         p6.setShortDescription("Automated, secure backups for your IMAP or Exchange mailboxes.");
         p6.setDescription("Never lose an email again. Set it and forget it. Email Backup Pro takes daily snapshots of your mailboxes to local storage.");
@@ -1874,7 +1882,7 @@ public class DevDatabaseSeeder implements CommandLineRunner {
 
         Product p7 = new Product();
         p7.setId("uncle-eml-viewer");
-        p7.setSlug("eml-viewer-free");
+        p7.setSlug("uncle-eml-viewer-free");
         p7.setName("EML Viewer (Free)");
         p7.setShortDescription("A simple utility to view standalone .eml files.");
         p7.setDescription("Someone sent you an EML file and you don't have an email client installed? Use our free viewer to read the email and extract attachments.");
@@ -1884,7 +1892,7 @@ public class DevDatabaseSeeder implements CommandLineRunner {
 
         Product p8 = new Product();
         p8.setId("uncle-ost-to-pst");
-        p8.setSlug("ost-to-pst-converter");
+        p8.setSlug("uncle-ost-to-pst-converter");
         p8.setName("OST to PST Converter");
         p8.setShortDescription("Convert healthy OST files to portable PST format.");
         p8.setDescription("Need to backup your Exchange cache or move it to another machine? Convert it to PST easily with this tool.");

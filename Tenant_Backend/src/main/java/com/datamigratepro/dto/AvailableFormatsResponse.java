@@ -49,5 +49,22 @@ public class AvailableFormatsResponse {
 
         /** Vendor/platform category for grouping in the UI. e.g., "Microsoft", "Google", "Open Standard" */
         private String vendor;
+
+        /**
+         * UI grouping category for the wizard tab bar.
+         * e.g., "Email", "Cloud Platform", "File Format", "Calendar", "Contacts", "Image"
+         * Derived from the category column in source_formats / target_formats registry tables.
+         */
+        private String category;
+
+        /** Convenience constructor for legacy static FORMAT_METADATA map (no category). */
+        public FormatOption(String key, String label, String icon, String description, String vendor) {
+            this.key = key;
+            this.label = label;
+            this.icon = icon;
+            this.description = description;
+            this.vendor = vendor;
+            this.category = null;
+        }
     }
 }
