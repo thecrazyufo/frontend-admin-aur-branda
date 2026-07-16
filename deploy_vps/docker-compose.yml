@@ -33,6 +33,8 @@ services:
       SPRING_DATASOURCE_USERNAME: admin
       SPRING_DATASOURCE_PASSWORD: UfoCrazySecurePass2026!
       CORS_ALLOWED_ORIGIN_PATTERNS: "https://*.vercel.app,http://localhost:[*],http://*.thecrazyufo.in:[*],https://*.thecrazyufo.in"
+    volumes:
+      - /root/backups:/backups
     depends_on:
       db-postgres:
         condition: service_healthy
