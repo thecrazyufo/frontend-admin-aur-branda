@@ -1,19 +1,24 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { HelpAPI , SettingsAPI } from "@/services/api";
-const settings = await SettingsAPI.get().catch(() => null);
+import { HelpAPI, SettingsAPI, BrandAPI, ProductAPI } from "@/services/api";
 import Breadcrumb from "@/components/layout/Breadcrumb";
 import { ArrowLeft, ThumbsUp, ThumbsDown } from "lucide-react";
 import { parseMarkdownToHtml } from "@/lib/utils";
 
 const { slug } = Astro.params;
 
+let settings = null;
+let brandConfig = null;
+let products = [];
 let article = null;
 
 try {
-  if (slug) {
-    article = await HelpAPI.getBySlug(slug);
-  }
+  [settings, brandConfig, products, article] = await Promise.all([
+    SettingsAPI.get().catch(() => null),
+    BrandAPI.getCurrentBrand().catch(() => null),
+    ProductAPI.getAll().catch(() => []),
+    slug ? HelpAPI.getBySlug(slug).catch(() => null) : Promise.resolve(null)
+  ]);
 } catch (e) {
   console.error("Error loading help article:", e);
 }
@@ -26,6 +31,9 @@ if (!article) {
 <BaseLayout
   title={`${article.title} — ${settings?.name || ""}`}
   description={article.excerpt}
+  settings={settings}
+  brandConfig={brandConfig}
+  products={products}
 >
   <Breadcrumb items={[{ label: "Help Center", href: "/help" }, { label: article.title }]} />
   <div class="bg-[#0B0F1A] min-h-screen">

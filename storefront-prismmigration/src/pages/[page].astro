@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { SettingsAPI } from "@/services/api";
+import { SettingsAPI, BrandAPI, ProductAPI } from "@/services/api";
 
 const { page } = Astro.params;
 
@@ -15,7 +15,18 @@ if (!page || !validPages[page]) {
   return Astro.redirect("/404");
 }
 
-const settings = await SettingsAPI.get().catch(() => null);
+let settings = null;
+let brandConfig = null;
+let products = [];
+
+try {
+  [settings, brandConfig, products] = await Promise.all([
+    SettingsAPI.get().catch(() => null),
+    BrandAPI.getCurrentBrand().catch(() => null),
+    ProductAPI.getAll().catch(() => [])
+  ]);
+} catch (e) {}
+
 const pageTitle = validPages[page];
 const siteName = settings?.name || "";
 const htmlContent = settings?.legalPages?.[page] || `<p>This page is currently being updated. Please check back later or <a href="/contact">contact us</a> for more information.</p>`;
@@ -40,6 +51,8 @@ Astro.response.headers.set(
   title={`${pageTitle} — ${siteName}`}
   description={`${pageTitle} for ${siteName}. Read our policies carefully.`}
   settings={settings}
+  brandConfig={brandConfig}
+  products={products}
 >
   <section class="py-16 bg-[#0B0F1A]">
     <div class="container-custom max-w-4xl">
