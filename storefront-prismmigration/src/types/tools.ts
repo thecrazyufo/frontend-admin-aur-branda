@@ -6,6 +6,7 @@ export interface FormatOption {
   icon: string;
   description: string;
   vendor: string;
+  category?: string;
 }
 
 export interface AvailableFormatsResponse {

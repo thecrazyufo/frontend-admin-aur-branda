@@ -2,6 +2,10 @@
 import type { Product } from "@/types/product";
 import type { Category } from "@/services/api";
 import ProductCard from "@/components/common/ProductCard";
+import TrustBadgeStrip from "@/components/common/TrustBadgeStrip.astro";
+import HowItWorks from "@/components/common/HowItWorks.astro";
+import PricingSection from "@/components/common/PricingSection.astro";
+import FaqAccordion from "@/components/common/FaqAccordion.astro";
 
 interface Testimonial {
   authorName: string;
@@ -11,7 +15,7 @@ interface Testimonial {
   content: string;
 }
 
-const { categories, settings, featured, testimonials, clientLogos = [] } = Astro.props;
+const { categories, settings, featured, testimonials, clientLogos = [], faqs = [] } = Astro.props;
 
 const logosList = clientLogos.length > 0 ? clientLogos.slice(0, 12) : [
   { companyName: "Google Workspace", logoUrl: "https://raw.githubusercontent.com/gilbarbara/logos/master/logos/google-workspace.svg" },
@@ -32,6 +36,24 @@ const siteName = settings?.name || "Prism Migration";
 const siteTagline = settings?.tagline || "Enterprise Mailbox & Database Migrators. Built to Run Locally.";
 const siteDescription = settings?.description || "Preserve folder structures, validate integrity with double checksums, and stream files at maximum connection speed. 100% private, on-premise execution.";
 const siteStats = settings?.stats || [];
+
+// Extract how-it-works steps from the first product that has them
+const howItWorksSteps = featured?.find((p: Product) => (p as any).howItWorks?.length > 0)?.howItWorks || [];
+
+// Extract pricing tiers from the first featured product for the homepage pricing section
+const featuredForPricing = featured?.find((p: Product) => (p as any).pricing?.length > 0);
+const homepagePricingTiers = (featuredForPricing as any)?.pricing || [];
+const homepagePricingSlug = (featuredForPricing as any)?.slug || "";
+const homepagePricingName = (featuredForPricing as any)?.name || "";
+
+// Trust badges from settings
+const trustBadges = settings?.trustBadges || [];
+
+// Review platform attribution from settings
+const reviewPlatformName = settings?.reviewPlatformName || "";
+const reviewPlatformUrl = settings?.reviewPlatformUrl || "";
+const reviewPlatformRating = settings?.reviewPlatformRating || null;
+const reviewPlatformCount = settings?.reviewPlatformCount || null;
 
 const iconMap: Record<string, string> = {
   mail: "✉️", shield: "🛡️", "refresh-cw": "🔄", cloud: "☁️", "hard-drive": "💾", download: "⬇️",
@@ -56,7 +78,7 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
 ---
 
 <!-- Sleek SaaS Hero Section (Premium Dark Theme) -->
-<section class="relative overflow-hidden bg-[#0B0F1A] pt-6 pb-10 md:pt-8 md:pb-12 tech-grid">
+<section class="relative overflow-hidden bg-[#0B0F1A] pt-1.5 pb-20 md:pt-2 md:pb-24 tech-grid">
   <!-- Cinematic Glowing Lights & Mesh Gradients -->
   <div class="absolute inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
     <!-- Center light source (warm coral/violet gradient blend) -->
@@ -431,9 +453,9 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
 
       <!-- Top Corner Commitment (100% Private & Local Run) — Placed OUTSIDE/ABOVE the prism apex, safely below navbar -->
       <g>
-        <line x1="600" y1="150" x2="600" y2="105" stroke="#6C5CE7" stroke-width="1.2" stroke-dasharray="2,2" />
-        <rect x="490" y="81" width="220" height="24" rx="12" fill="#0B0F1A" fill-opacity="0.95" stroke="#6C5CE7" stroke-width="1.2" />
-        <text x="600" y="96.5" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="9.5" font-weight="800" text-anchor="middle" letter-spacing="0.05em">100% PRIVATE & LOCAL RUN</text>
+        <line x1="600" y1="150" x2="600" y2="120" stroke="#6C5CE7" stroke-width="1.2" stroke-dasharray="2,2" />
+        <rect x="490" y="96" width="220" height="24" rx="12" fill="#0B0F1A" fill-opacity="0.95" stroke="#6C5CE7" stroke-width="1.2" />
+        <text x="600" y="111.5" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="9.5" font-weight="800" text-anchor="middle" letter-spacing="0.05em">100% PRIVATE & LOCAL RUN</text>
       </g>
 
       <!-- Bottom-Left Corner Commitment (Byte-Perfect Checksum Verification) — Placed OUTSIDE/DIAGONAL -->
@@ -583,19 +605,16 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
     <!-- Clean, Highly Readable Text Overlay (Directly on Prism/Ray Background) -->
     <div class="max-w-5xl mx-auto relative z-10 flex flex-col items-center text-center space-y-4 md:space-y-6 pt-1 pb-6 md:pb-8 lg:pb-10">
       <!-- Welcome Badge — Dynamic -->
-      <div class="animate-fade-up inline-flex items-center gap-1.5 text-[8px] xs:text-[9px] sm:text-[10px] tracking-[0.08em] sm:tracking-[0.25em] text-[#A855F7] uppercase font-bold bg-[#A855F7]/10 border border-[#A855F7]/25 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full shadow-inner backdrop-blur-md max-w-[90%] sm:max-w-none text-center">
-        <span class="w-1.5 h-1.5 rounded-full bg-[#A855F7] animate-ping"></span>
+      <div class="animate-fade-up inline-flex items-center gap-1.5 text-[8px] xs:text-[9px] sm:text-[10px] tracking-[0.08em] sm:tracking-[0.25em] uppercase font-bold px-3 py-1 sm:px-4 sm:py-1.5 rounded-full shadow-inner backdrop-blur-md max-w-[90%] sm:max-w-none text-center" style="color: var(--brand-accent); background: rgba(168,85,247,0.08); border: 1px solid rgba(168,85,247,0.2);">
+        <span class="w-1.5 h-1.5 rounded-full animate-ping" style="background: var(--brand-accent);"></span>
         <span>{settings.hero?.badgeText || "WELCOME TO PRISM MIGRATION"}</span>
       </div>
  
       <!-- Title / Headline Overlay (Enhanced Shadows for Direct Overlay legibility) -->
-      <div class="animate-fade-up animate-fade-up-delay-1 space-y-4 max-w-4xl mx-auto">
-        <!-- Glass backdrop for legibility over the prism SVG -->
-        <div class="relative inline-block px-6 py-3 rounded-2xl bg-[#0B0F1A]/30 backdrop-blur-[2px]">
-          <span class="text-5xl sm:text-7xl md:text-8xl lg:text-8.5xl font-black tracking-tight text-white block drop-shadow-[0_4px_20px_rgba(0,0,0,0.98)] bg-clip-text bg-gradient-to-b from-white via-zinc-100 to-zinc-300" style="font-family: var(--font-display);">
-            {settings?.name || "Prism Migration"}
-          </span>
-        </div>
+      <div class="animate-fade-up animate-fade-up-delay-1 space-y-4 max-w-4xl mx-auto pt-10">
+        <span class="text-5xl sm:text-7xl md:text-8xl lg:text-8.5xl font-black tracking-tight !text-transparent bg-clip-text bg-gradient-to-b from-white via-zinc-100 to-zinc-300 block drop-shadow-[0_4px_20px_rgba(0,0,0,0.98)] pb-4 leading-[1.1]" style="font-family: var(--font-display);">
+          {settings?.name || "Prism Migration"}
+        </span>
         <h1 class="text-xl sm:text-3xl md:text-4.5xl lg:text-5.5xl font-black leading-tight tracking-tight !text-transparent !bg-clip-text bg-gradient-to-r from-[#00C8A0] to-[#F59E0B] drop-shadow-[0_4px_12px_rgba(0,0,0,1)]" style="font-family: var(--font-display);">
           {settings.hero?.headline || "Migrate Data at Lightning Speed Without Losing a Single Byte."}
         </h1>
@@ -610,7 +629,10 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
       <div class="animate-fade-up animate-fade-up-delay-3 flex flex-col sm:flex-row items-center justify-center gap-3 pt-3 w-full max-w-md mx-auto relative z-20">
         <a 
           href={settings.hero?.ctaPrimaryHref || "/products"} 
-          class="group w-full sm:w-auto inline-flex items-center justify-center gap-2 text-center bg-[#6C5CE7] hover:bg-[#5B4FE0] text-white text-xs font-semibold py-2.5 px-6 rounded-lg transition-all duration-300 shadow-[0_0_15px_rgba(108,92,231,0.35)] hover:shadow-[0_0_24px_rgba(108,92,231,0.6)] transform active:scale-95 cursor-pointer will-change-transform"
+          class="group w-full sm:w-auto inline-flex items-center justify-center gap-2 text-center text-white text-xs font-semibold py-2.5 px-6 rounded-lg transition-all duration-300 transform active:scale-95 cursor-pointer will-change-transform"
+          style="background: var(--brand-primary); box-shadow: 0 0 15px rgba(108,92,231,0.25);"
+          onmouseover="this.style.filter='brightness(1.15)';"
+          onmouseout="this.style.filter='brightness(1.0)';"
         >
           {settings.hero?.ctaPrimaryText || "Discover Utilities"}
           <svg class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
@@ -623,11 +645,15 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
           onmouseout="this.style.background='rgba(0,200,160,0.08)'; this.style.color='var(--signal-teal)';"
         >
           <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v7m0 0-3-3m3 3 3-3M3 13h10"/></svg>
-          {settings.hero?.ctaSecondaryText || "Free Trial Installer"}
+          {settings.hero?.ctaSecondaryText || "Download Free Installer"}
         </a>
       </div>
 
-      <!-- Page-load Scan Line (homepage signature motion) -->
+      <!-- Trust Badge Strip — immediately below hero CTAs -->
+      <div class="animate-fade-up animate-fade-up-delay-4 mt-6 w-full max-w-2xl mx-auto relative z-20">
+        <TrustBadgeStrip badges={trustBadges} />
+      </div>
+
       <div id="hero-scan-line" aria-hidden="true" style="position:absolute; top:0; left:0; width:100%; height:2px; background: linear-gradient(90deg, transparent 0%, var(--signal-teal) 50%, transparent 100%); opacity:0; z-index:30; pointer-events:none; transition: opacity 0.2s ease;"></div>
       <script is:inline>
         (function() {
@@ -648,14 +674,16 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
     </div>
 
     <!-- Stats Grid — dark backdrop prevents streak-over-stats contrast failures -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 mt-6 border-t border-[#334155]/60 max-w-3xl mx-auto bg-[#0B0F1A]/40 backdrop-blur-sm rounded-xl px-4 py-3">
-      {siteStats.slice(0, 4).map((stat: any) => (
-        <div class="text-center space-y-0.5">
-          <div class="text-xl md:text-3xl font-extrabold text-white">{stat.value}</div>
-          <div class="text-[9px] uppercase tracking-wider text-[#94A3B8] font-semibold">{stat.label}</div>
-        </div>
-      ))}
-    </div>
+    {siteStats && siteStats.length > 0 && (
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 mt-6 border-t border-[#334155]/60 max-w-3xl mx-auto bg-[#0B0F1A]/40 backdrop-blur-sm rounded-xl px-4 py-3">
+        {siteStats.slice(0, 4).map((stat: any) => (
+          <div class="text-center space-y-0.5">
+            <div class="text-xl md:text-3xl font-extrabold text-white">{stat.value}</div>
+            <div class="text-[9px] uppercase tracking-wider text-[#94A3B8] font-semibold">{stat.label}</div>
+          </div>
+        ))}
+      </div>
+    )}
 
   </div>
 </section>
@@ -686,62 +714,11 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
   #stream-ticker:hover { animation-play-state: paused; }
 </style>
 
+<!-- How It Works — inserted between ticker and product collection -->
+<HowItWorks />
+
 <!-- Section Divider -->
 <div class="h-px bg-gradient-to-r from-transparent via-[#6366F1]/15 to-transparent my-6"></div>
-
-<!-- Section I: Architectural Principles -->
-<section class="bg-[#0B0F1A] py-20 tech-grid relative overflow-hidden">
-  {/* Connected glow from hero */}
-  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-48 bg-[#6366F1]/3 blur-[90px] pointer-events-none"></div>
-  <div class="container-custom mx-auto px-4 relative z-10">
-    <div class="text-center mb-16 animate-fade-up">
-      <span class="overline-pill mb-4 mx-auto">Integrity First</span>
-      <h2 class="text-3xl md:text-4xl font-extrabold text-white mt-4 tracking-tight">Architectural Principles</h2>
-      <p class="text-[#94A3B8] text-sm mt-3 max-w-md mx-auto">Designed for enterprises that cannot afford data loss or downtime.</p>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 lg:gap-12">
-      <!-- Principle 1 -->
-      <div class="bg-gradient-to-b from-[#6366F1]/5 to-[#0B0F1A]/20 border border-[#334155] border-l-2 border-l-[#6366F1] p-8 rounded-xl relative overflow-hidden group hover:border-[#6366F1]/40 hover:bg-[#6366F1]/10 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1">
-        <div class="flex items-center justify-between mb-5 relative z-10">
-          <span class="font-mono text-3xl font-extrabold text-[#6366F1] drop-shadow-[0_0_15px_rgba(99, 102, 241,0.35)] select-none">01</span>
-          <span class="text-[8px] font-mono font-extrabold text-zinc-500 tracking-wider">SOVEREIGNTY</span>
-        </div>
-        <h3 class="text-sm sm:text-base font-bold text-[#E2E8F0] mb-2.5 relative z-10 group-hover:text-[#6366F1] transition-colors">Completely Private Run</h3>
-        <p class="text-xs text-[#E2E8F0] leading-relaxed relative z-10">
-          Your credentials and databases remain inside your security perimeter. The package compiles and runs locally on your servers, eliminating middle-man cloud risk.
-        </p>
-      </div>
-
-      <!-- Principle 2 -->
-      <div class="bg-gradient-to-b from-[#1E2937]/10 to-[#0B0F1A]/20 border border-[#334155] border-l-2 border-l-[#6366F1] p-8 rounded-xl relative overflow-hidden group hover:border-[#6366F1]/40 hover:bg-[#1E2937]/30 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1">
-        <div class="flex items-center justify-between mb-5 relative z-10">
-          <span class="font-mono text-3xl font-extrabold text-[#6366F1] drop-shadow-[0_0_15px_rgba(99, 102, 241,0.35)] select-none">02</span>
-          <span class="text-[8px] font-mono font-bold text-zinc-500 tracking-wider">FIDELITY</span>
-        </div>
-        <h3 class="text-sm sm:text-base font-bold text-[#E2E8F0] mb-2.5 relative z-10 group-hover:text-[#6366F1] transition-colors">Byte-Perfect Delivery</h3>
-        <p class="text-xs text-[#E2E8F0] leading-relaxed relative z-10">
-          Every document mapping is double-checksum validated. Read, write, and folder mapping structures are preserved with absolute structural fidelity.
-        </p>
-      </div>
-
-      <!-- Principle 3 -->
-      <div class="bg-gradient-to-b from-[#F97316]/5 to-[#0B0F1A]/20 border border-[#334155] border-l-2 border-l-[#6366F1] p-8 rounded-xl relative overflow-hidden group hover:border-[#6366F1]/40 hover:bg-[#F97316]/10 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1">
-        <div class="flex items-center justify-between mb-5 relative z-10">
-          <span class="font-mono text-3xl font-extrabold text-[#6366F1] drop-shadow-[0_0_15px_rgba(99, 102, 241,0.35)] select-none">03</span>
-          <span class="text-[8px] font-mono font-bold text-zinc-500 tracking-wider">ASYNCHRONY</span>
-        </div>
-        <h3 class="text-sm sm:text-base font-bold text-[#E2E8F0] mb-2.5 relative z-10 group-hover:text-[#6366F1] transition-colors">Engineered Velocity</h3>
-        <p class="text-xs text-[#E2E8F0] leading-relaxed relative z-10">
-          Utilizes advanced multi-threaded channels to queue and stream files asynchronously, safely maximizing connection bandwidth while protecting host APIs.
-        </p>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Section Divider -->
-  <div class="h-px bg-gradient-to-r from-transparent via-[#6366F1]/15 to-transparent mt-20"></div>
-</section>
 
 <!-- Section II: Pristine Software Collection (Grid Showcase) -->
 <section class="bg-[#0B0F1A] py-20 relative">
@@ -759,14 +736,14 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
         ))}
       </div>
     ) : (
-      <div class="flex flex-col items-center justify-center text-center py-20 px-6 border border-dashed border-[#6366F1]/20 rounded-3xl bg-[#1E2937]/40 max-w-xl mx-auto my-6 relative overflow-hidden transition-all duration-300 group hover:border-[#6366F1]/50 hover:shadow-xl hover:shadow-[rgba(0,0,0,0.3)]">
+      <div class="flex flex-col items-center justify-center text-center py-20 px-6 border border-dashed border-[var(--circuit-line)] rounded-3xl bg-[var(--slate-surface)]/40 max-w-xl mx-auto my-6 relative overflow-hidden transition-all duration-300 group hover:border-[var(--brand-primary)]/30 hover:shadow-xl">
         {/* Subtle Backing Glow */}
-        <div class="absolute -top-12 -left-12 w-28 h-28 bg-[#6366F1]/5 rounded-full blur-2xl pointer-events-none"></div>
-        <div class="absolute -bottom-12 -right-12 w-28 h-28 bg-[#6366F1]/5 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="absolute -top-12 -left-12 w-28 h-28 bg-[var(--brand-primary)]/5 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="absolute -bottom-12 -right-12 w-28 h-28 bg-[var(--brand-primary)]/5 rounded-full blur-2xl pointer-events-none"></div>
         
         {/* Cloud Disconnected Icon */}
-        <div class="relative w-16 h-16 bg-[rgba(255,255,255,0.01)] border border-[#6366F1]/15 rounded-2xl flex items-center justify-center mb-6 shadow-sm group-hover:scale-105 transition-transform duration-300">
-          <svg class="w-7 h-7 text-[#94A3B8] group-hover:text-[#6366F1] transition-colors duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <div class="relative w-16 h-16 bg-[rgba(255,255,255,0.01)] border border-[var(--circuit-line)] rounded-2xl flex items-center justify-center mb-6 shadow-sm group-hover:scale-105 transition-transform duration-300">
+          <svg class="w-7 h-7 text-[#94A3B8] group-hover:text-[var(--brand-primary)] transition-colors duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M17.5 19A3.5 3.5 0 0 0 21 15.5c0-2.79-2.54-4.5-5-4.5-.42 0-.83.04-1.24.12C14 7.74 11.46 5 8 5c-3.87 0-7 3.13-7 7 0 2.22 1.03 4.2 2.65 5.5"/>
             <path d="M12 11v6m0 0-3-3m3 3 3-3" class="animate-bounce" style="animation-duration: 2s;"/>
             <path d="M22 2 2 22" class="stroke-red-500/80" stroke-width="2"/>
@@ -785,7 +762,7 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
         {/* Action Button */}
         <button 
           onclick="window.location.reload()" 
-          class="cursor-pointer select-none px-5 py-2 bg-[#6366F1] hover:bg-[#4F46E5] text-black rounded-lg text-[12px] font-extrabold transition-all duration-150 active:scale-[0.98] border-[#334155] flex items-center gap-1.5 shadow-[0_0_15px_rgba(99, 102, 241,0.15)]"
+          class="cursor-pointer select-none px-5 py-2 bg-[var(--brand-primary)] hover:brightness-110 text-white rounded-lg text-[12px] font-extrabold transition-all duration-150 active:scale-[0.98] border-[var(--circuit-line)] flex items-center gap-1.5 shadow-[0_0_15px_rgba(108,92,231,0.15)]"
         >
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
@@ -800,17 +777,80 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
   </div>
   
   <!-- Section Divider -->
-  <div class="h-px bg-gradient-to-r from-transparent via-[#6366F1]/15 to-transparent mt-20"></div>
+  <div class="h-px bg-gradient-to-r from-transparent via-[var(--brand-primary)]/15 to-transparent mt-20"></div>
+</section>
+
+<!-- Pricing Section — shown when at least one product has pricing tiers -->
+{homepagePricingTiers.length > 0 && (
+  <PricingSection
+    tiers={homepagePricingTiers}
+    productSlug={homepagePricingSlug}
+    productName={homepagePricingName}
+  />
+)}
+
+<!-- Section I: Architectural Principles -->
+<section class="bg-[var(--canvas)] py-20 tech-grid relative overflow-hidden">
+  {/* Connected glow from hero */}
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-48 bg-[var(--brand-primary)]/3 blur-[90px] pointer-events-none"></div>
+  <div class="container-custom mx-auto px-4 relative z-10">
+    <div class="text-center mb-16 animate-fade-up">
+      <span class="overline-pill mb-4 mx-auto">Integrity First</span>
+      <h2 class="text-3xl md:text-4xl font-extrabold text-white mt-4 tracking-tight">Architectural Principles</h2>
+      <p class="text-[#94A3B8] text-sm mt-3 max-w-md mx-auto">Designed for enterprises that cannot afford data loss or downtime.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 lg:gap-12">
+      <!-- Principle 1 -->
+      <div class="bg-gradient-to-b from-[var(--signal-teal)]/5 to-[var(--canvas)]/20 border border-[var(--circuit-line)] border-l-2 border-l-[var(--signal-teal)] p-8 rounded-xl relative overflow-hidden group hover:border-[var(--signal-teal)]/40 hover:bg-[var(--signal-teal)]/10 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1">
+        <div class="flex items-center justify-between mb-5 relative z-10">
+          <span class="font-mono text-3xl font-extrabold text-[var(--signal-teal)] drop-shadow-[0_0_15px_rgba(0,200,160,0.35)] select-none">01</span>
+          <span class="text-[8px] font-mono font-extrabold text-zinc-500 tracking-wider">SOVEREIGNTY</span>
+        </div>
+        <h3 class="text-sm sm:text-base font-bold text-[#E2E8F0] mb-2.5 relative z-10 group-hover:text-[var(--signal-teal)] transition-colors">Completely Private Run</h3>
+        <p class="text-xs text-[#E2E8F0] leading-relaxed relative z-10">
+          Your credentials and databases remain inside your security perimeter. The package compiles and runs locally on your servers, eliminating middle-man cloud risk.
+        </p>
+      </div>
+
+      <!-- Principle 2 -->
+      <div class="bg-gradient-to-b from-[var(--brand-primary)]/5 to-[var(--canvas)]/20 border border-[var(--circuit-line)] border-l-2 border-l-[var(--brand-primary)] p-8 rounded-xl relative overflow-hidden group hover:border-[var(--brand-primary)]/40 hover:bg-[var(--brand-primary)]/10 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1">
+        <div class="flex items-center justify-between mb-5 relative z-10">
+          <span class="font-mono text-3xl font-extrabold text-[var(--brand-primary)] drop-shadow-[0_0_15px_var(--brand-primary-light)]/20 select-none">02</span>
+          <span class="text-[8px] font-mono font-bold text-zinc-500 tracking-wider">FIDELITY</span>
+        </div>
+        <h3 class="text-sm sm:text-base font-bold text-[#E2E8F0] mb-2.5 relative z-10 group-hover:text-[var(--brand-primary)] transition-colors">Byte-Perfect Delivery</h3>
+        <p class="text-xs text-[#E2E8F0] leading-relaxed relative z-10">
+          Every document mapping is double-checksum validated. Read, write, and folder mapping structures are preserved with absolute structural fidelity.
+        </p>
+      </div>
+
+      <!-- Principle 3 -->
+      <div class="bg-gradient-to-b from-[var(--amber-alert)]/5 to-[var(--canvas)]/20 border border-[var(--circuit-line)] border-l-2 border-l-[var(--amber-alert)] p-8 rounded-xl relative overflow-hidden group hover:border-[var(--amber-alert)]/40 hover:bg-[var(--amber-alert)]/10 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1">
+        <div class="flex items-center justify-between mb-5 relative z-10">
+          <span class="font-mono text-3xl font-extrabold text-[var(--amber-alert)] drop-shadow-[0_0_15px_rgba(245,158,11,0.35)] select-none">03</span>
+          <span class="text-[8px] font-mono font-bold text-zinc-500 tracking-wider">ASYNCHRONY</span>
+        </div>
+        <h3 class="text-sm sm:text-base font-bold text-[#E2E8F0] mb-2.5 relative z-10 group-hover:text-[var(--amber-alert)] transition-colors">Engineered Velocity</h3>
+        <p class="text-xs text-[#E2E8F0] leading-relaxed relative z-10">
+          Utilizes advanced multi-threaded channels to queue and stream files asynchronously, safely maximizing connection bandwidth while protecting host APIs.
+        </p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Section Divider -->
+  <div class="h-px bg-gradient-to-r from-transparent via-[var(--brand-primary)]/15 to-transparent mt-20"></div>
 </section>
 
 
 
 <!-- Section IV: Category Suites -->
 {categories.length > 0 && (
-  <section class="bg-[#0B0F1A] py-20 tech-grid relative overflow-hidden">
+  <section class="bg-[var(--canvas)] py-20 tech-grid relative overflow-hidden">
     <!-- Subtle Cyan Backlight -->
     <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[200px] bg-[#F97316]/3 blur-[120px] rounded-full"></div>
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[200px] bg-[var(--amber-alert)]/3 blur-[120px] rounded-full"></div>
     </div>
     <div class="container-custom mx-auto px-4">
       <div class="text-center mb-16 animate-fade-up">
@@ -823,18 +863,18 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
         {categories.map((cat: Category) => (
           <a
             href={`/products?category=${cat.id}`}
-            class="group bg-[#1E2937]/30 backdrop-blur border border-[#334155] p-6 rounded-xl transition-all duration-300 hover:border-[#F97316]/60 hover:bg-[#1E2937]/50 flex flex-col justify-between min-h-[170px] relative overflow-hidden hover:scale-[1.02] hover:-translate-y-1"
+            class="group bg-[var(--slate-surface)]/30 backdrop-blur border border-[var(--circuit-line)] p-6 rounded-xl transition-all duration-300 hover:border-[var(--brand-primary)]/60 hover:bg-[var(--slate-surface)]/50 flex flex-col justify-between min-h-[170px] relative overflow-hidden hover:scale-[1.02] hover:-translate-y-1"
           >
             <!-- Top meta row with side-by-side icon/title alignment -->
             <div class="flex items-center gap-3.5 mb-3 relative z-10">
-              <div class="w-10 h-10 rounded-xl bg-[#0B0F1A] border border-[#334155] flex items-center justify-center text-lg shadow-[0_0_10px_rgba(249, 115, 22,0.05)] group-hover:border-[#F97316]/40 transition-all duration-300 shrink-0">
+              <div class="w-10 h-10 rounded-xl bg-[var(--ink-void)] border border-[var(--circuit-line)] flex items-center justify-center text-lg shadow-[0_0_10px_rgba(0,200,160,0.05)] group-hover:border-[var(--brand-primary)]/40 transition-all duration-300 shrink-0">
                 <span class="group-hover:scale-110 transition-transform">{iconMap[cat.icon] || "📦"}</span>
               </div>
               <div class="space-y-1">
-                <h3 class="text-sm font-bold text-white group-hover:text-[#F97316] transition-colors leading-tight">
+                <h3 class="text-sm font-bold text-white group-hover:text-[var(--brand-primary)] transition-colors leading-tight">
                   {cat.label}
                 </h3>
-                <span class="text-[9px] uppercase tracking-wider text-[#F97316] bg-[#F97316]/10 px-2 py-0.5 rounded font-mono font-bold border border-[#F97316]/20 shadow-[0_0_10px_rgba(249, 115, 22,0.05)] inline-block">
+                <span class="text-[9px] uppercase tracking-wider text-[var(--amber-alert)] bg-[var(--amber-alert)]/10 px-2 py-0.5 rounded font-mono font-bold border border-[var(--amber-alert)]/20 inline-block">
                   {cat.count} files
                 </span>
               </div>
@@ -846,7 +886,7 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
               </p>
             </div>
             
-            <div class="flex items-center gap-1.5 text-[9px] uppercase tracking-wider font-bold text-[#94A3B8] group-hover:text-[#F97316] pt-3.5 mt-3.5 border-t border-[#334155]/60 transition-colors relative z-10">
+            <div class="flex items-center gap-1.5 text-[9px] uppercase tracking-wider font-bold text-[#94A3B8] group-hover:text-[var(--brand-primary)] pt-3.5 mt-3.5 border-t border-[var(--circuit-line)] transition-colors relative z-10">
               Discover suite <span class="transform group-hover:translate-x-1 transition-transform">→</span>
             </div>
           </a>
@@ -855,14 +895,14 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
     </div>
     
     <!-- Section Divider -->
-    <div class="h-px bg-gradient-to-r from-transparent via-[#6366F1]/15 to-transparent mt-20"></div>
+    <div class="h-px bg-gradient-to-r from-transparent via-[var(--brand-primary)]/15 to-transparent mt-20"></div>
   </section>
 )}
 
 <!-- Section: Clients Marquee (Stripe-style animated logo strip) -->
-<section class="bg-[#0B0F1A] py-14 relative overflow-hidden">
+<section class="bg-[var(--canvas)] py-14 relative overflow-hidden">
   <!-- Subtle glow behind logos -->
-  <div class="absolute inset-0 bg-gradient-to-r from-[#0B0F1A] via-[#6366F1]/3 to-[#0B0F1A] pointer-events-none"></div>
+  <div class="absolute inset-0 bg-gradient-to-r from-[var(--canvas)] via-[var(--brand-primary)]/3 to-[var(--canvas)] pointer-events-none"></div>
   <div class="container-custom mx-auto px-4 text-center mb-8">
     <p class="text-[10px] md:text-[11px] font-bold uppercase tracking-widest text-zinc-500">
       Trusted by 50,000+ engineers at leading organizations
@@ -872,7 +912,7 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
   <div class="marquee-outer">
     <div class="marquee-track">
       <!-- Render logos twice for seamless loop -->
-      {[...logosList, ...logosList].map((logo: any, idx: number) => (
+      {[...logosList, ...logosList].map((logo: any) => (
         <div class="flex items-center justify-center px-10 opacity-50 hover:opacity-90 transition-opacity duration-300 shrink-0">
           {logo.logoUrl ? (
             <>
@@ -896,20 +936,38 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
 </section>
 
 <!-- Section Divider -->
-<div class="h-px bg-gradient-to-r from-transparent via-[#6366F1]/15 to-transparent mt-14"></div>
+<div class="h-px bg-gradient-to-r from-transparent via-[var(--brand-primary)]/15 to-transparent mt-14"></div>
 
 <!-- Section V: Guest Reviews (Endorsements) -->
-<section class="bg-[#0B0F1A] py-20 tech-grid">
+<section class="bg-[var(--canvas)] py-20 tech-grid">
   <div class="container-custom mx-auto px-4">
     <div class="text-center mb-16 animate-fade-up">
       <span class="overline-pill mb-4 mx-auto">Verified Reviews</span>
       <h2 class="text-3xl md:text-4xl font-extrabold text-white mt-4 tracking-tight">What Engineers Say</h2>
       <p class="text-[#94A3B8] text-sm mt-3 max-w-sm mx-auto">Trusted by teams that migrated mission-critical data.</p>
+      {reviewPlatformName && reviewPlatformUrl && (
+        <a
+          href={reviewPlatformUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 mt-4 text-[10px] font-bold px-3 py-1.5 rounded-full border transition-all hover:opacity-80"
+          style="color: var(--signal-teal); border-color: rgba(0,200,160,0.3); background: rgba(0,200,160,0.06); font-family: var(--font-mono);"
+        >
+          {reviewPlatformRating && (
+            <span class="flex items-center gap-1">
+              <span style="color: var(--amber-alert);">★</span>
+              <span>{reviewPlatformRating}/5</span>
+            </span>
+          )}
+          <span>{reviewPlatformCount && `${reviewPlatformCount}+ reviews on `}{reviewPlatformName}</span>
+          <span aria-hidden="true">↗</span>
+        </a>
+      )}
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
       {testimonials.map((t: Testimonial, i: number) => (
-        <div class={`animate-fade-up animate-fade-up-delay-${Math.min(i + 1, 4)} bg-[#0B0F1A]/70 backdrop-blur border border-[#334155] p-6 md:p-8 rounded-xl relative flex flex-col justify-between min-h-[220px] shadow-xl transition-all duration-300 hover:border-[#6366F1]/30 hover:bg-[#1E2937]/50 hover:scale-[1.01] hover:-translate-y-1 will-change-transform`}>
+        <div class={`animate-fade-up animate-fade-up-delay-${Math.min(i + 1, 4)} bg-[var(--slate-surface)]/70 backdrop-blur border border-[var(--circuit-line)] p-6 md:p-8 rounded-xl relative flex flex-col justify-between min-h-[220px] shadow-xl transition-all duration-300 hover:border-[var(--brand-primary)]/30 hover:bg-[var(--slate-surface)]/50 hover:scale-[1.01] hover:-translate-y-1 will-change-transform`}>
           <!-- Gradient top accent -->
           <div class="card-accent-line group-hover:opacity-100"></div>
           <div>
@@ -917,14 +975,14 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
             <div class="star-rating mb-3">
               <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
             </div>
-            <span class="text-5xl font-serif text-[#6366F1]/25 block -mt-2 -ml-1 select-none leading-none mb-1">“</span>
+            <span class="text-5xl font-serif text-[var(--brand-primary)]/25 block -mt-2 -ml-1 select-none leading-none mb-1">“</span>
             <p class="text-[13px] leading-relaxed text-[#CBD5E1] mb-4">
               {t.content}
             </p>
           </div>
-          <div class="flex items-center gap-3 pt-4 border-t border-[#1E2937]">
+          <div class="flex items-center gap-3 pt-4 border-t border-[var(--circuit-line)]">
             <!-- Avatar with gradient background -->
-            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-[#6366F1] to-[#4F46E5] border border-[#6366F1]/30 flex items-center justify-center text-white text-[12px] font-black shrink-0">
+            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-accent)] border border-[var(--brand-primary)]/30 flex items-center justify-center text-white text-[12px] font-black shrink-0">
               {t.authorName?.charAt(0) || 'U'}
             </div>
             <div class="min-w-0 flex-1">
@@ -941,50 +999,51 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
   </div>
   
   <!-- Section Divider -->
-  <div class="h-px bg-gradient-to-r from-transparent via-[#6366F1]/15 to-transparent mt-20"></div>
+  <div class="h-px bg-gradient-to-r from-transparent via-[var(--brand-primary)]/15 to-transparent mt-20"></div>
 </section>
 
+<!-- FAQ Accordion Section -->
+{faqs && faqs.length > 0 && (
+  <FaqAccordion faqs={faqs} limit={6} />
+)}
+
 <!-- Acquisition Portal CTA -->
-<section class="bg-[#0B0F1A] py-20 relative overflow-hidden">
+<section class="bg-[var(--canvas)] py-20 relative overflow-hidden">
   <!-- Glowing bloom -->
   <div class="absolute inset-0 pointer-events-none overflow-hidden">
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[300px] bg-gradient-to-r from-[#6366F1]/10 to-[#F97316]/6 blur-[120px] rounded-full"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[300px] bg-gradient-to-r from-[var(--brand-primary)]/10 to-[var(--amber-alert)]/6 blur-[120px] rounded-full"></div>
   </div>
 
   <div class="container-custom relative z-10 text-center mx-auto px-4">
     <!-- CTA card with animated corner brackets -->
-    <div class="corner-bracket relative border border-[#334155]/80 hover:border-[#6366F1]/30 transition-colors duration-500 p-8 md:p-12 lg:p-16 bg-gradient-to-b from-[#1E2937]/30 to-[#0B0F1A]/60 backdrop-blur rounded-2xl shadow-2xl">
+    <div class="corner-bracket relative border border-[var(--circuit-line)] hover:border-[var(--brand-primary)]/30 transition-colors duration-500 p-8 md:p-12 lg:p-16 bg-gradient-to-b from-[var(--slate-surface)]/30 to-[var(--canvas)]/60 backdrop-blur rounded-2xl shadow-2xl">
 
-      <span class="overline-pill mb-5 mx-auto">Acquisition Portal</span>
+      <span class="overline-pill mb-5 mx-auto">Get Started</span>
       <h2 class="text-3xl md:text-4xl text-white font-extrabold mb-4 mt-5 leading-tight tracking-tight">
-        Start Migrating for Free Today
+        Try Free — No Credit Card Required
       </h2>
       <p class="text-sm text-[#94A3B8] leading-relaxed max-w-lg mx-auto mb-8">
-        Evaluate any tool locally without financial commitment. Full-featured trial with no time limit — acquire a license key when you're ready to deploy.
+        Download and run a full-featured trial locally. When you're ready to unlock everything, get a license from just $29 — protected by our 30-day money-back guarantee.
       </p>
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
-        <a href="/download" class="group inline-flex items-center justify-center gap-2 w-full sm:w-auto text-center bg-[#6366F1] hover:bg-[#4F46E5] text-black text-sm font-extrabold py-3 px-8 rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(20,184,166,0.35)] hover:shadow-[0_0_30px_rgba(20,184,166,0.55)] transform active:scale-95 cursor-pointer will-change-transform">
+        <a 
+          href="/download" 
+          class="group inline-flex items-center justify-center gap-2 w-full sm:w-auto text-center text-black text-sm font-extrabold py-3 px-8 rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(0,200,160,0.25)] hover:shadow-[0_0_30px_rgba(0,200,160,0.45)] transform active:scale-95 cursor-pointer will-change-transform"
+          style="background: var(--signal-teal);"
+        >
           Download Free Trial
           <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 3v7m0 0-3-3m3 3 3-3M3 13h10"/></svg>
         </a>
-        <a href="/products" class="inline-flex items-center justify-center gap-2 w-full sm:w-auto text-center border border-[#334155] hover:border-[#6366F1]/60 bg-[#1E2937]/30 hover:bg-[#6366F1]/8 text-[#94A3B8] hover:text-[#6366F1] text-sm font-semibold py-3 px-8 rounded-lg transition-all duration-300 cursor-pointer will-change-transform">
-          Browse Collection
+        <a 
+          href="/pricing" 
+          class="inline-flex items-center justify-center gap-2 w-full sm:w-auto text-center border border-[var(--circuit-line)] bg-[var(--slate-surface)]/30 hover:bg-[var(--brand-primary)]/8 text-[#94A3B8] hover:text-[var(--brand-primary)] text-sm font-semibold py-3 px-8 rounded-lg transition-all duration-300 cursor-pointer will-change-transform"
+        >
+          View Pricing
         </a>
       </div>
-      <!-- Trust signals -->
-      <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[11px] text-[#475569] font-medium">
-        <span class="flex items-center gap-1.5">
-          <svg class="w-3.5 h-3.5 text-[#6366F1]" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 4L6 11l-3-3"/></svg>
-          30-day money-back guarantee
-        </span>
-        <span class="flex items-center gap-1.5">
-          <svg class="w-3.5 h-3.5 text-[#6366F1]" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 4L6 11l-3-3"/></svg>
-          No credit card required
-        </span>
-        <span class="flex items-center gap-1.5">
-          <svg class="w-3.5 h-3.5 text-[#6366F1]" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 4L6 11l-3-3"/></svg>
-          Runs 100% locally — zero cloud dependency
-        </span>
+      <!-- Trust Badge Strip in final CTA -->
+      <div class="mt-2 mb-4">
+        <TrustBadgeStrip badges={trustBadges} />
       </div>
     </div>
   </div>
@@ -992,11 +1051,11 @@ const categoryColorMap: Record<string, { text: string; bg: string; border: strin
 
 <style>
   .tech-grid {
-    background-color: #0B0F1A;
+    background-color: var(--canvas);
     background-size: 60px 60px;
     background-image: 
-      linear-gradient(to right, rgba(99, 102, 241, 0.02) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(99, 102, 241, 0.02) 1px, transparent 1px);
+      linear-gradient(to right, rgba(99, 102, 241, 0.015) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(99, 102, 241, 0.015) 1px, transparent 1px);
   }
 
   @keyframes data-flow-line {

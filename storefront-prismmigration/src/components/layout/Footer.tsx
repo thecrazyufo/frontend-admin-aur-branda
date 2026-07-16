@@ -83,12 +83,9 @@ export default function Footer({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-16">
           {/* Brand Column */}
           <div className="lg:col-span-2">
-            <a href="/" className="flex items-center gap-2 mb-5 group w-fit">
-              <svg className="w-6 h-6 text-[#6366F1] filter drop-shadow-[0_0_6px_rgba(99, 102, 241,0.8)] transition-transform group-hover:scale-110" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="8">
-                <polygon points="50,15 15,80 85,80" />
-                <line x1="50" y1="15" x2="50" y2="80" strokeWidth="4" />
-              </svg>
-              <span className="font-semibold text-white group-hover:text-[#6366F1] tracking-tight transition-colors">
+            <a href="/" className="flex flex-col items-start gap-4 mb-5 group w-fit">
+              <img src="/logo-p.png" alt={siteName} className="w-24 h-24 rounded-2xl object-contain transition-transform group-hover:scale-105" />
+              <span className="font-extrabold text-white text-xl group-hover:text-[#6366F1] tracking-tight transition-colors">
                 {siteName || "Prism Migration"}
               </span>
             </a>
@@ -186,14 +183,6 @@ export default function Footer({
               ))}
             </div>
           </div>
-          
-          <a
-            href={adminLoginUrl}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium text-stone-500 hover:text-white hover:bg-[#1E2937]/50 transition-colors"
-          >
-            <Shield size={12} />
-            Admin Login
-          </a>
         </div>
       </div>
     </footer>

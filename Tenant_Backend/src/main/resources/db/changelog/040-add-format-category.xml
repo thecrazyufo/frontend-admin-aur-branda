@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <!-- 040: Add category column to format registry tables -->
+
+    <changeSet id="040-add-category-to-source-formats" author="platform">
+        <addColumn tableName="source_formats">
+            <column name="category" type="VARCHAR(100)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="040-add-category-to-target-formats" author="platform">
+        <addColumn tableName="target_formats">
+            <column name="category" type="VARCHAR(100)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <!-- Backfill source_formats categories based on icon/format_key -->
+    <changeSet id="040-backfill-source-format-categories" author="platform">
+
+        <!-- Email formats -->
+        <update tableName="source_formats">
+            <column name="category" value="Email"/>
+            <where>icon = 'mail' OR format_key IN ('pst','ost','eml','emlx','mbox','msg','nsf','olm','maildir','imap','tgz','gmail','office365','exchange','yahoo','dbx','zimbra')</where>
+        </update>
+
+        <!-- Cloud Platform / Workspace -->
+        <update tableName="source_formats">
+            <column name="category" value="Cloud Platform"/>
+            <where>format_key IN ('google_workspace','yahoo') AND category IS NULL</where>
+        </update>
+        <update tableName="source_formats">
+            <column name="category" value="Cloud Platform"/>
+            <where>icon = 'cloud' AND category IS NULL</where>
+        </update>
+
+        <!-- Contacts -->
+        <update tableName="source_formats">
+            <column name="category" value="Contacts"/>
+            <where>icon = 'contact' OR format_key IN ('vcf')</where>
+        </update>
+
+        <!-- Calendar -->
+        <update tableName="source_formats">
+            <column name="category" value="Calendar"/>
+            <where>icon = 'calendar' OR format_key IN ('ics')</where>
+        </update>
+
+        <!-- Cloud Storage / Drive -->
+        <update tableName="source_formats">
+            <column name="category" value="Cloud Storage"/>
+            <where>icon = 'drive' OR format_key IN ('site-migration')</where>
+        </update>
+
+        <!-- Database / Server -->
+        <update tableName="source_formats">
+            <column name="category" value="Database"/>
+            <where>icon = 'server' OR format_key IN ('edb')</where>
+        </update>
+
+        <!-- Document / File formats — catch-all for remaining document-type icons -->
+        <update tableName="source_formats">
+            <column name="category" value="File Format"/>
+            <where>category IS NULL AND icon IN ('document','file')</where>
+        </update>
+
+        <!-- Final fallback -->
+        <update tableName="source_formats">
+            <column name="category" value="Other"/>
+            <where>category IS NULL</where>
+        </update>
+
+    </changeSet>
+
+    <!-- Backfill target_formats categories based on icon/format_key -->
+    <changeSet id="040-backfill-target-format-categories" author="platform">
+
+        <!-- Email formats -->
+        <update tableName="target_formats">
+            <column name="category" value="Email"/>
+            <where>icon = 'mail' OR format_key IN ('pst','ost','eml','emlx','mbox','msg','nsf','olm','maildir','tgz','gmail','office365','exchange','edb','dbx','zimbra')</where>
+        </update>
+
+        <!-- Cloud Platform / Workspace -->
+        <update tableName="target_formats">
+            <column name="category" value="Cloud Platform"/>
+            <where>icon = 'cloud' AND category IS NULL</where>
+        </update>
+        <update tableName="target_formats">
+            <column name="category" value="Cloud Platform"/>
+            <where>format_key IN ('google_workspace','imap') AND category IS NULL</where>
+        </update>
+
+        <!-- Contacts -->
+        <update tableName="target_formats">
+            <column name="category" value="Contacts"/>
+            <where>icon = 'contact' OR format_key IN ('vcf')</where>
+        </update>
+
+        <!-- Calendar -->
+        <update tableName="target_formats">
+            <column name="category" value="Calendar"/>
+            <where>icon = 'calendar' OR format_key IN ('ics')</where>
+        </update>
+
+        <!-- Images -->
+        <update tableName="target_formats">
+            <column name="category" value="Image"/>
+            <where>icon = 'image' OR format_key IN ('png','jpeg','gif','bmp','tiff')</where>
+        </update>
+
+        <!-- Cloud Storage / Drive -->
+        <update tableName="target_formats">
+            <column name="category" value="Cloud Storage"/>
+            <where>icon = 'drive' OR format_key IN ('site-migration')</where>
+        </update>
+
+        <!-- Database / Server -->
+        <update tableName="target_formats">
+            <column name="category" value="Database"/>
+            <where>icon = 'server' AND category IS NULL</where>
+        </update>
+
+        <!-- Document / File formats -->
+        <update tableName="target_formats">
+            <column name="category" value="File Format"/>
+            <where>category IS NULL AND (icon IN ('document','file') OR format_key IN ('pdf','html','txt','rtf','csv','docx','xlsx','epub','mobi','xml','json','jsonl','ini','toml','yaml','markdown','properties','mht','xps'))</where>
+        </update>
+
+        <!-- Final fallback -->
+        <update tableName="target_formats">
+            <column name="category" value="Other"/>
+            <where>category IS NULL</where>
+        </update>
+
+    </changeSet>
+
+</databaseChangeLog>

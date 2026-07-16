@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { ProductAPI, CategoryAPI, SettingsAPI, BrandAPI, SocialProofAPI } from "@/services/api";
+import { ProductAPI, CategoryAPI, SettingsAPI, BrandAPI, SocialProofAPI, FaqAPI } from "@/services/api";
 
 import LuxuryHome from "@/components/templates/luxury/Home.astro";
 import TechBoldHome from "@/components/templates/tech-bold/Home.astro";
@@ -16,15 +16,17 @@ let settings = null;
 let brandConfig = null;
 let clientLogos = [];
 let dynamicTestimonials = [];
+let faqs = [];
 
 try {
-  [products, categories, settings, brandConfig, clientLogos, dynamicTestimonials] = await Promise.all([
+  [products, categories, settings, brandConfig, clientLogos, dynamicTestimonials, faqs] = await Promise.all([
     ProductAPI.getAll(),
     CategoryAPI.getAll(),
     SettingsAPI.get().catch(() => null),
     BrandAPI.getCurrentBrand(),
     SocialProofAPI.getLogos().catch(() => []),
-    SocialProofAPI.getTestimonials().catch(() => [])
+    SocialProofAPI.getTestimonials().catch(() => []),
+    FaqAPI.getAll().catch(() => [])
   ]);
 } catch (e) {
   // Backend missing
@@ -43,7 +45,7 @@ const testimonials = dynamicTestimonials.length > 0 ? dynamicTestimonials : prod
   )
   .slice(0, 6);
 
-const templateProps = { products, categories, settings, featured, testimonials, clientLogos };
+const templateProps = { products, categories, settings, featured, testimonials, clientLogos, faqs };
 const layoutTemplate = brandConfig?.layoutTemplate || "classic";
 const siteName = settings?.name || "";
 const siteTagline = settings?.tagline || "";

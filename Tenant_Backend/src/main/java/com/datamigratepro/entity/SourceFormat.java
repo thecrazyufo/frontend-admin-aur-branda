@@ -28,6 +28,9 @@ public class SourceFormat {
 
     private String icon;
 
+    @Column(name = "category")
+    private String category;
+
     @org.hibernate.annotations.TenantId
     @Column(name = "site_id", nullable = false)
     private String siteId;
@@ -41,6 +44,18 @@ public class SourceFormat {
         this.name = name;
         this.description = description;
         this.icon = icon;
+        this.siteId = siteId;
+        this.supportsMultipleAccounts = false;
+        this.category = null;
+    }
+
+    public SourceFormat(String id, String key, String name, String description, String icon, String category, String siteId) {
+        this.id = id;
+        this.key = key;
+        this.name = name;
+        this.description = description;
+        this.icon = icon;
+        this.category = category;
         this.siteId = siteId;
         this.supportsMultipleAccounts = false;
     }

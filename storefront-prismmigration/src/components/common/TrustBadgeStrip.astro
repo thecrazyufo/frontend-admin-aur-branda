@@ -1,0 +1,50 @@
+---
+/**
+ * TrustBadgeStrip — Dynamic trust signals row
+ * Data: SiteSetting.trustBadges[] → { emoji, title, desc, color }
+ * Falls back to hardcoded security defaults if backend data unavailable.
+ */
+
+interface TrustBadge {
+  emoji: string;
+  title: string;
+  desc?: string;
+  color?: string;
+}
+
+interface Props {
+  badges?: TrustBadge[];
+}
+
+const { badges } = Astro.props;
+
+const defaultBadges: TrustBadge[] = [
+  { emoji: "🔒", title: "256-bit SSL Encrypted", color: "#00C8A0" },
+  { emoji: "✅", title: "30-Day Money-Back Guarantee", color: "#00C8A0" },
+  { emoji: "💳", title: "Secure Payment Processing", color: "#00C8A0" },
+  { emoji: "🖥️", title: "100% Local — No Cloud Risk", color: "#F59E0B" },
+  { emoji: "🎁", title: "Free Trial — No Card Required", color: "#00C8A0" },
+];
+
+const displayBadges = (badges && badges.length > 0) ? badges : defaultBadges;
+---
+
+<div class="trust-badge-strip flex flex-wrap items-center justify-center gap-x-5 gap-y-2.5" role="list" aria-label="Trust and security signals">
+  {displayBadges.map((badge) => (
+    <div
+      role="listitem"
+      class="flex items-center gap-1.5 text-[10px] font-semibold whitespace-nowrap"
+      style={`color: ${badge.color || 'var(--type-faint)'};`}
+    >
+      <span class="text-sm leading-none" aria-hidden="true">{badge.emoji}</span>
+      <span>{badge.title}</span>
+    </div>
+  ))}
+</div>
+
+<style>
+  .trust-badge-strip {
+    font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+  }
+</style>

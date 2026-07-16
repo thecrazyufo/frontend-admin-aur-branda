@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, FormEvent, Fragment } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { AdminLicenseAPI, AdminDesktopLicenseAPI, AdminProductAPI, AdminCouponAPI, Coupon } from "@/services/api";
 import { LicenseKey, DesktopLicense } from "@/types/license";
 import { Product } from "@/types/product";
@@ -14,10 +14,33 @@ import { cn } from"@/lib/utils";
 
 export default function BrandLicensesPage() {
  const params = useParams();
+ const searchParams = useSearchParams();
  const brandId = (params?.brandId as string) ||"";
+ const tabParam = searchParams?.get("tab");
+
+ // Role based access check
+ const [userRole, setUserRole] = useState<string | null>(null);
+ 
+ useEffect(() => {
+   if (typeof window !== "undefined") {
+     setUserRole(localStorage.getItem("admin_role"));
+   }
+ }, []);
+
+ const canManageLicenses = userRole === "SUPER_ADMIN" || userRole === "OWNER" || userRole === "ADMIN" || userRole === "LICENSE_ADMIN";
 
  // Tabs
  const [activeTab, setActiveTab] = useState<"desktop" | "web" | "coupons">("desktop");
+
+ useEffect(() => {
+   if (userRole) {
+     if (!canManageLicenses) {
+       setActiveTab("coupons");
+     } else if (tabParam === "coupons" || tabParam === "desktop" || tabParam === "web") {
+       setActiveTab(tabParam as any);
+     }
+   }
+ }, [tabParam, userRole, canManageLicenses]);
 
  // Data state
  const [desktopLicenses, setDesktopLicenses] = useState<DesktopLicense[]>([]);
@@ -84,13 +107,15 @@ export default function BrandLicensesPage() {
 
  // Load licenses, products and coupons
  useEffect(() => {
+   if (userRole === null) return; // Wait for userRole to resolve
+
    async function loadData() {
      try {
        setLoading(true);
        setErrorMsg(null);
        const [desktopList, webList, productList, couponList] = await Promise.all([
-         AdminDesktopLicenseAPI.getAll(),
-         AdminLicenseAPI.getAll(),
+         canManageLicenses ? AdminDesktopLicenseAPI.getAll().catch(() => [] as DesktopLicense[]) : Promise.resolve([] as DesktopLicense[]),
+         canManageLicenses ? AdminLicenseAPI.getAll().catch(() => [] as LicenseKey[]) : Promise.resolve([] as LicenseKey[]),
          AdminProductAPI.getAll().catch(() => [] as Product[]),
          AdminCouponAPI.getAll().catch(() => [] as Coupon[])
        ]);
@@ -114,7 +139,7 @@ export default function BrandLicensesPage() {
      }
    }
    loadData();
- }, [brandId]);
+ }, [brandId, userRole, canManageLicenses]);
 
  function showNotification(msg: string, type:"success" |"error" ="success") {
  if (type ==="success") {
@@ -434,40 +459,44 @@ export default function BrandLicensesPage() {
 
  {/* Tabs */}
  <div className="flex gap-1.5 p-1 bg-muted rounded-xl border border-zinc-200 shrink-0 w-fit select-none">
- <button 
- className={cn(
-"px-3 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer border-0 bg-transparent",
- activeTab ==="desktop"
- ?"bg-white shadow-sm text-zinc-900"
- :"text-zinc-500 hover:text-zinc-900"
- )}
- onClick={() => { setActiveTab("desktop"); setExpandedRow(null); }}
- >
- 💻 Desktop App Licenses ({desktopLicenses.length})
- </button>
- <button 
- className={cn(
-"px-3 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer border-0 bg-transparent",
- activeTab ==="web"
- ?"bg-white shadow-sm text-zinc-900"
- :"text-zinc-500 hover:text-zinc-900"
- )}
- onClick={() => { setActiveTab("web"); setExpandedRow(null); }}
- >
- 🛒 Web & SaaS Licenses ({webLicenses.length})
- </button>
- <button 
- className={cn(
-"px-3 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer border-0 bg-transparent",
- activeTab ==="coupons"
- ?"bg-white shadow-sm text-zinc-900"
- :"text-zinc-500 hover:text-zinc-900"
- )}
- onClick={() => { setActiveTab("coupons"); setExpandedRow(null); }}
- >
- 🏷️ Discount Coupons ({coupons.length})
- </button>
- </div>
+ {canManageLicenses && (
+    <>
+      <button 
+      className={cn(
+     "px-3 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer border-0 bg-transparent",
+      activeTab ==="desktop"
+      ?"bg-white shadow-sm text-zinc-900"
+      :"text-zinc-500 hover:text-zinc-900"
+      )}
+      onClick={() => { setActiveTab("desktop"); setExpandedRow(null); }}
+      >
+      💻 Desktop App Licenses ({desktopLicenses.length})
+      </button>
+      <button 
+      className={cn(
+     "px-3 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer border-0 bg-transparent",
+      activeTab ==="web"
+      ?"bg-white shadow-sm text-zinc-900"
+      :"text-zinc-500 hover:text-zinc-900"
+      )}
+      onClick={() => { setActiveTab("web"); setExpandedRow(null); }}
+      >
+      🛒 Web & SaaS Licenses ({webLicenses.length})
+      </button>
+    </>
+  )}
+  <button 
+  className={cn(
+ "px-3 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer border-0 bg-transparent",
+  activeTab ==="coupons"
+  ?"bg-white shadow-sm text-zinc-900"
+  :"text-zinc-500 hover:text-zinc-900"
+  )}
+  onClick={() => { setActiveTab("coupons"); setExpandedRow(null); }}
+  >
+  🏷️ Discount Coupons ({coupons.length})
+  </button>
+  </div>
 
  {/* Filter and Search Bar */}
  <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mt-6 mb-4">

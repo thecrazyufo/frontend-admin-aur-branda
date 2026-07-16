@@ -1,0 +1,180 @@
+---
+/**
+ * PricingSection — Full multi-tier pricing cards section
+ * Data: Product.pricing[] → PricingTier { name, price, originalPrice, period, features, cta, mailboxes, popular, bestFor }
+ * Renders all tiers for ONE product (the featured/first product).
+ * Links to full /pricing page for multi-product view.
+ */
+
+interface PricingTier {
+  name: string;
+  price: number;
+  originalPrice?: number | null;
+  period: string;
+  features: string[];
+  cta: string;
+  mailboxes?: string;
+  popular?: boolean;
+  bestFor?: string;
+  description?: string;
+}
+
+interface Props {
+  tiers: PricingTier[];
+  productSlug?: string;
+  productName?: string;
+}
+
+const { tiers, productSlug = "", productName = "" } = Astro.props;
+
+const hasDiscount = tiers.some(t => t.originalPrice && t.originalPrice > t.price);
+---
+
+<section class="py-20 relative overflow-hidden" style="background: var(--ink-void);">
+  <!-- Ambient pricing glow -->
+  <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+    <div class="absolute -bottom-20 left-1/2 -translate-x-1/2 w-[700px] h-[300px] blur-[120px] rounded-full" style="background: rgba(99,102,241,0.04);"></div>
+  </div>
+
+  <div class="container-custom mx-auto px-4 relative z-10">
+    <!-- Section Header -->
+    <div class="text-center mb-14 animate-fade-up">
+      <span class="inline-block text-[10px] font-bold uppercase tracking-widest border px-3 py-1 rounded mb-4" style="color: var(--amber-alert); background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.25); font-family: var(--font-mono);">
+        Pricing
+      </span>
+      <h2 class="text-3xl md:text-4xl font-extrabold text-white mt-4 tracking-tight" style="font-family: var(--font-display);">
+        Simple, Transparent Pricing
+      </h2>
+      <p class="text-sm mt-3 max-w-md mx-auto leading-relaxed" style="color: var(--type-muted);">
+        {productName ? `Licensing tiers for ${productName}.` : "Pick the plan that fits your scale."} Start free — no card required.
+      </p>
+      {hasDiscount && (
+        <div class="inline-flex items-center gap-2 mt-4 text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full" style="background: rgba(0,200,160,0.1); color: var(--signal-teal); border: 1px solid rgba(0,200,160,0.25);">
+          <span class="w-1.5 h-1.5 rounded-full bg-[var(--signal-teal)] animate-pulse inline-block"></span>
+          Limited-time discount active
+        </div>
+      )}
+    </div>
+
+    <!-- Pricing Cards Grid -->
+    <div class={`grid gap-6 max-w-5xl mx-auto ${tiers.length === 2 ? 'grid-cols-1 md:grid-cols-2' : tiers.length === 3 ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'}`}>
+      {tiers.map((tier) => (
+        <div
+          class={`relative rounded-2xl border flex flex-col transition-all duration-300 overflow-hidden ${tier.popular ? 'scale-[1.03] shadow-[0_0_40px_rgba(0,200,160,0.12)]' : 'hover:border-[rgba(0,200,160,0.2)]'}`}
+          style={tier.popular
+            ? 'background: var(--slate-surface); border-color: rgba(0,200,160,0.45);'
+            : 'background: var(--slate-surface); border-color: var(--circuit-line);'}
+        >
+          {tier.popular && (
+            <div class="absolute top-0 left-0 right-0 h-0.5" style="background: linear-gradient(90deg, transparent, var(--signal-teal), transparent);"></div>
+          )}
+
+          {/* Popular badge */}
+          {tier.popular && (
+            <div class="absolute -top-px left-1/2 -translate-x-1/2 z-10">
+              <span class="text-[9px] font-black uppercase tracking-widest px-4 py-1 inline-block" style="background: var(--signal-teal); color: #000; font-family: var(--font-mono);">
+                ⚡ Most Popular
+              </span>
+            </div>
+          )}
+
+          {/* Sale badge */}
+          {tier.originalPrice && tier.price > 0 && (
+            <div class="absolute top-3 right-3 z-10">
+              <span class="text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded" style="background: rgba(245,158,11,0.15); color: var(--amber-alert); border: 1px solid rgba(245,158,11,0.3); font-family: var(--font-mono);">
+                {Math.round((1 - tier.price / tier.originalPrice!) * 100)}% OFF
+              </span>
+            </div>
+          )}
+
+          <div class={`p-6 flex flex-col flex-1 ${tier.popular ? 'pt-8' : ''}`}>
+            <!-- Tier name & mailboxes -->
+            <div class="mb-4">
+              <h3 class="text-sm font-black text-white uppercase tracking-widest mb-1" style="font-family: var(--font-mono);">{tier.name}</h3>
+              {tier.bestFor && <p class="text-[10px]" style="color: var(--type-faint);">Best for: {tier.bestFor}</p>}
+              {tier.mailboxes && (
+                <span class="inline-block text-[9px] font-semibold mt-1.5 px-2 py-0.5 rounded border" style="color: var(--type-muted); border-color: var(--circuit-line); font-family: var(--font-mono);">
+                  {tier.mailboxes}
+                </span>
+              )}
+            </div>
+
+            <!-- Price -->
+            <div class="mb-6">
+              {tier.price === 0 ? (
+                <div class="flex items-end gap-1">
+                  <span class="text-4xl font-black text-white" style="font-family: var(--font-mono);">Free</span>
+                </div>
+              ) : (
+                <div>
+                  <div class="flex items-end gap-2">
+                    <span class="text-4xl font-black" style="color: var(--amber-alert); font-family: var(--font-mono); letter-spacing: -0.02em;">
+                      ${tier.price}
+                    </span>
+                    {tier.originalPrice && (
+                      <span class="text-xl line-through mb-1" style="color: var(--type-faint); font-family: var(--font-mono);">
+                        ${tier.originalPrice}
+                      </span>
+                    )}
+                  </div>
+                  {tier.originalPrice && tier.price > 0 && (
+                    <div class="text-[9px] font-bold mt-1" style="color: var(--signal-teal); font-family: var(--font-mono);">
+                      You save ${(tier.originalPrice - tier.price).toFixed(0)}
+                    </div>
+                  )}
+                </div>
+              )}
+              <p class="text-[10px] mt-1.5 capitalize" style="color: var(--type-faint); font-family: var(--font-mono);">
+                {tier.period === "lifetime" ? "One-time payment · Lifetime updates" : `Billed ${tier.period}`}
+              </p>
+            </div>
+
+            <!-- CTA Button -->
+            <a
+              href={tier.price === 0
+                ? `/download${productSlug ? `?product=${productSlug}` : ""}`
+                : `/checkout?product=${productSlug}&tier=${encodeURIComponent(tier.name)}`}
+              class="cta-pulse-wrap w-full text-center text-xs py-3 font-black rounded-lg transition-all duration-300 mb-6 block"
+              style={tier.popular
+                ? `background: var(--signal-teal); color: #000; font-family: var(--font-mono); letter-spacing: 0.03em;`
+                : `background: rgba(0,200,160,0.06); color: var(--signal-teal); border: 1px solid rgba(0,200,160,0.3); font-family: var(--font-mono); letter-spacing: 0.03em;`}
+            >
+              {tier.cta || (tier.price === 0 ? "Download Free" : "Buy Now")}
+            </a>
+
+            <!-- Feature list -->
+            <ul class="space-y-2.5 flex-1">
+              {tier.features.map((feature) => (
+                <li class="flex items-start gap-2">
+                  <svg class="mt-0.5 shrink-0" width="13" height="13" viewBox="0 0 13 13" fill="none">
+                    <circle cx="6.5" cy="6.5" r="6.5" fill="rgba(0,200,160,0.12)"/>
+                    <path d="M4 6.5l1.8 1.8L9 4.5" stroke="#00C8A0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span class="text-[11px] leading-relaxed" style="color: var(--type-muted);">{feature}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Payment trust row below pricing -->
+    <div class="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[10px]" style="color: var(--type-faint); font-family: var(--font-mono);">
+      <span class="flex items-center gap-1.5"><span>🔒</span> 256-bit SSL</span>
+      <span class="text-[var(--circuit-line)]">·</span>
+      <span class="flex items-center gap-1.5"><span>✅</span> 30-Day Money-Back</span>
+      <span class="text-[var(--circuit-line)]">·</span>
+      <span class="flex items-center gap-1.5"><span>💳</span> Secure Checkout</span>
+      <span class="text-[var(--circuit-line)]">·</span>
+      <span class="flex items-center gap-1.5"><span>🎁</span> Free Trial Available</span>
+    </div>
+
+    <!-- Link to full pricing page -->
+    <div class="text-center mt-8">
+      <a href="/pricing" class="text-[11px] underline underline-offset-4" style="color: var(--type-faint); font-family: var(--font-mono);">
+        View all tools & pricing tiers →
+      </a>
+    </div>
+  </div>
+</section>

@@ -41,12 +41,15 @@ export default function SearchBar({
         aria-label="Search"
         className={`w-full ${sizeClasses[size]} pl-11 pr-28 rounded-xl border border-[#334155] bg-[#0B0F1A]/80 text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-[#6366F1]/40 focus:border-transparent transition shadow-sm`}
       />
-      <button
-        type="submit"
-        className="absolute right-2 top-1/2 -translate-y-1/2 btn btn-primary text-sm py-1.5 px-4"
-      >
-        Search
-      </button>
+      <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center">
+        <button
+          type="submit"
+          className="btn btn-primary text-sm py-1 px-4 cursor-pointer"
+          style={{ height: '36px' }}
+        >
+          Search
+        </button>
+      </div>
     </form>
   );
 }

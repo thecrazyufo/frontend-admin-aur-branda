@@ -60,12 +60,12 @@ public class ToolFinderController {
     }
 
     /**
-     * GET /api/public/registry/formats/all
+     * GET /api/registry/formats/all
      *
      * Returns ALL formats currently defined in the registry, unconditionally.
      * Used as the unified single source of truth for UI typeaheads.
      */
-    @GetMapping("/api/public/registry/formats/all")
+    @GetMapping("/api/registry/formats/all")
     public ResponseEntity<AvailableFormatsResponse> getAllRegistryFormats(
             @RequestParam String siteId) {
         SecurityUtils.checkAccess(siteId);

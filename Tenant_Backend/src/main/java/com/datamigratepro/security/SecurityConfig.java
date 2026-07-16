@@ -83,13 +83,13 @@ public class SecurityConfig {
                     .hasAnyRole("SUPER_ADMIN", "OWNER", "ADMIN", "LICENSE_ADMIN")
 
                 // 🔐 Brand Settings mutations (PUT, PATCH) — Super Admin or Brand Admin
-                .requestMatchers(HttpMethod.PUT, "/api/settings", "/api/settings/**")
+                .requestMatchers(HttpMethod.PUT, "/api/settings", "/api/settings/**", "/api/brands", "/api/brands/**")
                     .hasAnyRole("SUPER_ADMIN", "OWNER", "ADMIN", "BRAND_MANAGER", "SEO")
-                .requestMatchers(HttpMethod.PATCH, "/api/settings", "/api/settings/**")
+                .requestMatchers(HttpMethod.PATCH, "/api/settings", "/api/settings/**", "/api/brands", "/api/brands/**")
                     .hasAnyRole("SUPER_ADMIN", "OWNER", "ADMIN", "BRAND_MANAGER", "SEO")
-                .requestMatchers(HttpMethod.POST, "/api/settings", "/api/settings/**")
+                .requestMatchers(HttpMethod.POST, "/api/settings", "/api/settings/**", "/api/brands", "/api/brands/**")
                     .hasAnyRole("SUPER_ADMIN", "OWNER", "ADMIN", "BRAND_MANAGER", "SEO")
-                .requestMatchers(HttpMethod.DELETE, "/api/settings", "/api/settings/**")
+                .requestMatchers(HttpMethod.DELETE, "/api/settings", "/api/settings/**", "/api/brands", "/api/brands/**")
                     .hasAnyRole("SUPER_ADMIN", "OWNER", "ADMIN", "BRAND_MANAGER", "SEO")
 
                 // 🔐 Product mutations — Super Admin or SEO/CW & Product Manager

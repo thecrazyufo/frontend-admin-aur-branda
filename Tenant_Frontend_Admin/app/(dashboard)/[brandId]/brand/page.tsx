@@ -3,7 +3,7 @@
 import { useEffect, useState, FormEvent } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useTheme } from"@/app/(dashboard)/layout";
-import { AdminSettingsAPI } from"@/services/api";
+import { AdminSettingsAPI, AdminBrandAPI, BrandConfig } from"@/services/api";
 import { Button } from"@/components/ui/Button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from"@/components/ui/Card";
 import { Input } from"@/components/ui/Input";
@@ -249,6 +249,8 @@ export default function BrandManagerPage() {
 
   const [settings, setSettings] = useState<SiteSettings | null>(null);
   const [originalSettings, setOriginalSettings] = useState<string>("");
+  const [brandConfig, setBrandConfig] = useState<BrandConfig | null>(null);
+  const [originalBrandConfig, setOriginalBrandConfig] = useState<string>("");
   const [isDirty, setIsDirty] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -262,8 +264,12 @@ export default function BrandManagerPage() {
       return;
     }
     const currentStr = JSON.stringify(settings);
-    setIsDirty(currentStr !== originalSettings);
-  }, [settings, originalSettings]);
+    const settingsDirty = currentStr !== originalSettings;
+    
+    const brandDirty = brandConfig ? JSON.stringify(brandConfig) !== originalBrandConfig : false;
+    
+    setIsDirty(settingsDirty || brandDirty);
+  }, [settings, originalSettings, brandConfig, originalBrandConfig]);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -310,6 +316,12 @@ export default function BrandManagerPage() {
       };
       setSettings(defaultState);
       setOriginalSettings(JSON.stringify(defaultState));
+
+      // Load brand config
+      const brands = await AdminBrandAPI.getAll().catch(() => [] as BrandConfig[]);
+      const currentBrand = brands.find(b => b.id === brandId) || null;
+      setBrandConfig(currentBrand);
+      setOriginalBrandConfig(currentBrand ? JSON.stringify(currentBrand) : "");
     } catch {
       // If settings don't exist yet (e.g., truncated/new database), initialize with clean defaults
       const defaultStateFallback = {
@@ -342,6 +354,13 @@ export default function BrandManagerPage() {
       };
       setSettings(defaultStateFallback);
       setOriginalSettings(JSON.stringify(defaultStateFallback));
+
+      // Attempt to load brand config anyway
+      const brands = await AdminBrandAPI.getAll().catch(() => [] as BrandConfig[]);
+      const currentBrand = brands.find(b => b.id === brandId) || null;
+      setBrandConfig(currentBrand);
+      setOriginalBrandConfig(currentBrand ? JSON.stringify(currentBrand) : "");
+
       showToast("Initialized with default brand settings template.", "success");
     } finally {
       setLoading(false);
@@ -363,6 +382,16 @@ export default function BrandManagerPage() {
       const savedState = { ...settings, id: updated.id };
       setSettings(savedState);
       setOriginalSettings(JSON.stringify(savedState));
+
+      // Save brand config if it exists
+      if (brandConfig) {
+        const updatedBrand = await AdminBrandAPI.update(brandId, {
+          layoutTemplate: brandConfig.layoutTemplate
+        });
+        setBrandConfig(updatedBrand);
+        setOriginalBrandConfig(JSON.stringify(updatedBrand));
+      }
+
       showToast("Brand settings saved successfully!", "success");
     } catch {
       showToast("Failed to save settings. Please try again.", "error");
@@ -635,9 +664,25 @@ export default function BrandManagerPage() {
  <option value="solid">Solid</option>
  <option value="transparent">Transparent</option>
  <option value="gradient">Gradient</option>
- </Select>
- </div>
- <div className="sm:col-span-2 space-y-1.5">
+  </Select>
+  </div>
+  {brandConfig && (
+    <div className="space-y-1.5">
+      <label className="text-xs font-semibold text-zinc-500">Homepage Layout Template</label>
+      <Select
+        value={brandConfig.layoutTemplate || "classic"}
+        onChange={e => setBrandConfig({ ...brandConfig, layoutTemplate: e.target.value })}
+      >
+        <option value="classic">Classic</option>
+        <option value="luxury">Luxury</option>
+        <option value="tech-bold">Tech Bold</option>
+        <option value="playful">Playful</option>
+        <option value="corporate">Corporate</option>
+        <option value="ecomm-dark">E-commerce Dark</option>
+      </Select>
+    </div>
+  )}
+  <div className="sm:col-span-2 space-y-1.5">
  <label className="text-xs font-semibold text-zinc-500">Logo URL</label>
  <Input
  type="text"

@@ -27,14 +27,15 @@ const autoProduct = targetSlug ? productsList.find(p => p.slug === targetSlug) :
   noindex={true}
 >
   <div>
-    <section class="bg-[#0B0F1A] py-20 text-center border-b border-[#334155] relative overflow-hidden">
+    {/* Hero */}
+    <section class="bg-[var(--canvas)] py-20 text-center border-b border-[var(--circuit-line)] relative overflow-hidden">
       <!-- Ambient refraction glow background -->
       <div class="absolute inset-0 pointer-events-none overflow-hidden">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] bg-[#6366F1]/5 blur-[90px] rounded-full"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] bg-[var(--brand-primary)]/5 blur-[90px] rounded-full"></div>
       </div>
 
       <div class="container-custom relative z-10">
-        <span class="inline-block text-[10px] font-bold uppercase tracking-widest mb-4 px-3 py-1.5 rounded-full text-[#6366F1] bg-[#6366F1]/15 border border-[#6366F1]/25">Download Center</span>
+        <span class="inline-block text-[10px] font-bold uppercase tracking-widest mb-4 px-3 py-1.5 rounded-full text-[var(--brand-primary)] bg-[var(--brand-primary)]/10 border border-[var(--brand-primary)]/20">Download Center</span>
         <h1 class="text-white font-extrabold text-3xl md:text-3xl tracking-tight mb-4">Download Free Trials</h1>
         <p class="text-[#E2E8F0] max-w-xl mx-auto leading-relaxed text-xs">
           Try any tool free. No credit card required. Migrate/convert up to 50 items in trial mode to verify it works for you.
@@ -42,7 +43,7 @@ const autoProduct = targetSlug ? productsList.find(p => p.slug === targetSlug) :
         <div class="flex items-center justify-center gap-6 mt-6 text-[11px] text-[#94A3B8] font-mono flex-wrap">
           {["No Credit Card", "Instant Download", "100% Safe & Secure", "Windows Compatible"].map((t) => (
             <div class="flex items-center gap-1.5">
-              <CheckCircle size={13} class="text-[#6366F1]" />
+              <CheckCircle size={13} class="text-[var(--brand-primary)]" />
               {t}
             </div>
           ))}
@@ -53,7 +54,7 @@ const autoProduct = targetSlug ? productsList.find(p => p.slug === targetSlug) :
     {/* Auto Download Modal overlay */}
     {autoProduct && (
       <div id="download-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div class="bg-[#1E2937] rounded-2xl p-8 max-w-md w-full shadow-2xl relative border border-[#334155] text-center animate-in fade-in zoom-in duration-200">
+        <div class="bg-[var(--slate-surface)] rounded-2xl p-8 max-w-md w-full shadow-2xl relative border border-[var(--circuit-line)] text-center animate-in fade-in zoom-in duration-200">
           <button 
             onclick="document.getElementById('download-overlay').style.display='none'"
             class="absolute top-4 right-4 text-stone-500 hover:text-white p-2 hover:bg-stone-850 rounded-full cursor-pointer transition-colors"
@@ -62,41 +63,7 @@ const autoProduct = targetSlug ? productsList.find(p => p.slug === targetSlug) :
             <X size={18} />
           </button>
           
-          <div id="modal-initial-state">
-            <div class="w-16 h-16 rounded-full bg-[#6366F1]/10 border border-[#6366F1]/25 flex items-center justify-center mx-auto mb-4 text-[#6366F1]">
-              <Download size={32} />
-            </div>
-            
-            <h2 class="text-xl font-bold text-white mb-2">Download Free Trial</h2>
-            <p class="text-xs text-[#E2E8F0] mb-6">
-              Enter your email to download your free trial of <strong class="text-white">{autoProduct.name}</strong>.
-            </p>
-            
-            <form id="lead-form" class="space-y-4">
-              <div class="text-left">
-                <label for="lead-email" class="block text-[10px] font-bold text-[#94A3B8] mb-1.5 uppercase tracking-wider">Business Email Address</label>
-                <input 
-                  type="email" 
-                  id="lead-email" 
-                  required 
-                  placeholder="name@company.com" 
-                  class="w-full px-4 py-3 rounded-lg border border-[#334155] text-xs focus:outline-none focus:ring-2 focus:ring-[#6366F1]/40 focus:border-transparent transition-all text-white bg-[#0B0F1A]/80"
-                />
-              </div>
-              
-              <button 
-                type="submit" 
-                id="submit-btn" 
-                class="w-full text-center bg-[#6366F1] hover:bg-[#4F46E5] text-black text-xs font-bold py-3 px-6 rounded-lg transition-all duration-300 shadow-[0_0_15px_rgba(99, 102, 241,0.25)] hover:shadow-[0_0_20px_rgba(99, 102, 241,0.4)] cursor-pointer"
-              >
-                Request Download
-              </button>
-            </form>
-            
-            <div id="error-message" class="text-red-500 text-xs mt-3 hidden"></div>
-          </div>
-
-          <div id="modal-success-state" class="hidden">
+          <div>
             <div class="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center mx-auto mb-4 text-emerald-500">
               <CheckCircle size={32} />
             </div>
@@ -106,7 +73,7 @@ const autoProduct = targetSlug ? productsList.find(p => p.slug === targetSlug) :
               Downloading the setup package for <strong class="text-white">{autoProduct.name}</strong>.
             </p>
             
-            <div class="bg-[#0B0F1A] rounded-xl p-4 text-xs text-[#94A3B8] text-left space-y-2 mb-6 border border-[#334155]">
+            <div class="bg-[var(--ink-void)] rounded-xl p-4 text-xs text-[#94A3B8] text-left space-y-2 mb-6 border border-[var(--circuit-line)]">
               <p class="font-semibold text-white">Next Steps:</p>
               <ol class="list-decimal list-inside space-y-1">
                 <li>Open the downloaded installer file.</li>
@@ -117,84 +84,39 @@ const autoProduct = targetSlug ? productsList.find(p => p.slug === targetSlug) :
 
             <a 
               id="manual-download-link"
-              href="#" 
-              class="inline-block w-full text-center bg-[#6366F1] hover:bg-[#4F46E5] text-black text-xs font-bold py-2.5 px-6 rounded-lg transition-all duration-300"
+              href={autoProduct.installerUrl || autoProduct.trialDownloadUrl || `https://downloads.thecrazyufo.in/installers/${autoProduct.slug}-trial.exe`} 
+              class="inline-block w-full text-center text-black text-xs font-bold py-2.5 px-6 rounded-lg transition-all duration-300 shadow-[0_0_12px_rgba(0,200,160,0.2)] hover:shadow-[0_0_20px_rgba(0,200,160,0.4)]"
+              style="background: var(--signal-teal);"
             >
               Click here if download doesn't start
             </a>
           </div>
         </div>
 
-        <script is:inline define:vars={{ productSlug: autoProduct.slug, publicApiUrl: import.meta.env.PUBLIC_API_URL || "http://localhost:8080/api" }}>
-          const form = document.getElementById("lead-form");
-          const emailInput = document.getElementById("lead-email");
-          const submitBtn = document.getElementById("submit-btn");
-          const errorMsg = document.getElementById("error-message");
-          const initialState = document.getElementById("modal-initial-state");
-          const successState = document.getElementById("modal-success-state");
-          const manualLink = document.getElementById("manual-download-link");
-
-          form?.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const email = emailInput?.value;
-            if (!email) return;
-
-            submitBtn.disabled = true;
-            submitBtn.textContent = "Processing...";
-            errorMsg.classList.add("hidden");
-
-            try {
-              const res = await fetch(`${publicApiUrl}/download/trial`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ email, productSlug })
-              });
-
-              if (res.ok) {
-                const data = await res.json();
-                
-                // Show success state
-                initialState.classList.add("hidden");
-                successState.classList.remove("hidden");
-                manualLink.href = data.downloadUrl;
-
-                // Trigger download
-                const link = document.createElement("a");
-                link.href = data.downloadUrl;
-                link.download = "";
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-              } else {
-                const errData = await res.json().catch(() => ({}));
-                errorMsg.textContent = errData.message || "Failed to initiate download. Please check your email and try again.";
-                errorMsg.classList.remove("hidden");
-                submitBtn.disabled = false;
-                submitBtn.textContent = "Request Download";
-              }
-            } catch (err) {
-              console.error("Error submitting lead:", err);
-              errorMsg.textContent = "Network error. Please try again later.";
-              errorMsg.classList.remove("hidden");
-              submitBtn.disabled = false;
-              submitBtn.textContent = "Request Download";
-            }
+        <script is:inline define:vars={{ downloadUrl: autoProduct.installerUrl || autoProduct.trialDownloadUrl || `https://downloads.thecrazyufo.in/installers/${autoProduct.slug}-trial.exe` }}>
+          window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+              const link = document.createElement("a");
+              link.href = downloadUrl;
+              link.download = "";
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+            }, 600); // smooth user experience delay
           });
         </script>
       </div>
     )}
 
-    <section class="py-20 bg-[#0B0F1A] border-t border-[#334155]">
+    <section class="py-20 bg-[var(--canvas)] border-t border-[var(--circuit-line)]">
       <div class="container-custom">
-        <SectionHeader eyebrow="Downloads" title="All Available Tools" class="mb-12 text-center" />
+        <SectionHeader eyebrow="Downloads" title="All Available Tools" class="text-center mb-12" />
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           {productsList.map((product) => (
-            <div class="bg-[#1E2937]/10 backdrop-blur border border-[#334155] hover:border-[#6366F1]/30 rounded-xl p-6 flex items-start justify-between gap-6 shadow-2xl transition-all duration-300">
+            <div class="bg-[var(--slate-surface)]/30 backdrop-blur border border-[var(--circuit-line)] hover:border-[var(--brand-primary)]/30 rounded-xl p-6 flex items-start justify-between gap-6 shadow-2xl transition-all duration-300">
               <div class="flex items-start gap-4 flex-1">
-                <div class="w-12 h-12 rounded-xl bg-[#0B0F1A] border border-[#334155] flex items-center justify-center shadow-md shrink-0">
-                  <Download size={20} class="text-[#6366F1]" />
+                <div class="w-12 h-12 rounded-xl bg-[var(--ink-void)] border border-[var(--circuit-line)] flex items-center justify-center shadow-md shrink-0">
+                  <Download size={20} class="text-[var(--brand-primary)]" />
                 </div>
                 <div>
                   <h3 class="font-bold text-white mb-1 text-sm">{product.name}</h3>
@@ -208,13 +130,15 @@ const autoProduct = targetSlug ? productsList.find(p => p.slug === targetSlug) :
               </div>
               <div class="flex flex-col gap-2 shrink-0">
                 <a
-                  href={`/download?product=${product.slug}`}
-                  class="bg-[#6366F1] hover:bg-[#4F46E5] text-black py-2 px-4 rounded-lg text-xs font-bold transition-all duration-300 flex items-center justify-center gap-1"
+                  href={product.installerUrl || product.trialDownloadUrl || `https://downloads.thecrazyufo.in/installers/${product.slug}-trial.exe`}
+                  download
+                  class="text-black py-2 px-4 rounded-lg text-xs font-bold transition-all duration-300 flex items-center justify-center gap-1 shadow-[0_0_12px_rgba(0,200,160,0.2)] hover:shadow-[0_0_20px_rgba(0,200,160,0.4)]"
+                  style="background: var(--signal-teal);"
                 >
                   <Download size={14} />
                   Download
                 </a>
-                <a href={`/products/${product.slug}`} class="text-xs text-center text-[#6366F1] hover:underline">
+                <a href={`/products/${product.slug}`} class="text-xs text-center text-[var(--brand-primary)] hover:underline">
                   Learn more →
                 </a>
               </div>

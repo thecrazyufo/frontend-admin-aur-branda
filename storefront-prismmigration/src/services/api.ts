@@ -41,7 +41,7 @@ export async function apiGet<T>(path: string): Promise<T> {
   const cid = getCorrelationId();
   const start = Date.now();
   const sep = path.includes("?") ? "&" : "?";
-  const url = `${API_BASE}${path}${sep}siteId=${SITE_ID}`;
+  const url = `${API_BASE}${path}${sep}siteId=${SITE_ID}&_t=${Date.now()}`;
   
   console.log(`[STORE API GET] [Trace: ${cid}] Fetching: ${url}`);
   try {
@@ -213,20 +213,28 @@ export const BrandAPI = {
 
 
 export const SocialProofAPI = {
-  getLogos: (siteId: string = SITE_ID) => apiGet<any[]>(`/social-proof/logos?siteId=${siteId}`),
-  getTestimonials: (siteId: string = SITE_ID) => apiGet<any[]>(`/social-proof/testimonials?siteId=${siteId}`),
+  getLogos: () => apiGet<any[]>(`/social-proof/logos`),
+  getTestimonials: () => apiGet<any[]>(`/social-proof/testimonials`),
 };
 
 export const ToolsAPI = {
-  getAvailableFormats: (siteId: string = SITE_ID) => 
-    apiGet<AvailableFormatsResponse>(`/registry/formats/all?siteId=${siteId}`),
+  /**
+   * Fetches ALL formats from the registry for the current site.
+   * Note: siteId is automatically appended by apiGet — do NOT embed it in the path.
+   */
+  getAvailableFormats: () =>
+    apiGet<AvailableFormatsResponse>(`/registry/formats/all`),
+
+  /**
+   * Finds tools matching a source → target conversion.
+   * siteId is automatically appended by apiGet.
+   */
   matchTools: (
-    source: string, 
-    destination: string, 
-    multipleAccounts?: boolean, 
-    requireBatchCsv?: boolean, 
-    requireImpersonation?: boolean, 
-    siteId: string = SITE_ID
+    source: string,
+    destination: string,
+    multipleAccounts?: boolean,
+    requireBatchCsv?: boolean,
+    requireImpersonation?: boolean,
   ) => {
     let url = `/tools/match?source=${encodeURIComponent(source)}&destination=${encodeURIComponent(destination)}`;
     if (multipleAccounts !== undefined) url += `&multipleAccounts=${multipleAccounts}`;
@@ -234,17 +242,15 @@ export const ToolsAPI = {
     if (requireImpersonation !== undefined) url += `&requireImpersonation=${requireImpersonation}`;
     return apiGet<ToolMatchResult[]>(url);
   },
+
   /**
-   * Returns the union of capabilities (e.g. "supportsMultipleAccounts") across all products
-   * matching a source -> destination pair for a site.
-   *
-   * Used to dynamically populate the wizard quiz step -- only shows filter questions
-   * that are actually relevant to the matching product set.
+   * Returns the union of capabilities across all products matching a source → target pair.
+   * Used to dynamically populate the wizard quiz step.
+   * siteId is automatically appended by apiGet — do NOT embed it in the path.
    */
   getCapabilities: (
     source: string,
     destination: string,
-    siteId: string = SITE_ID
   ): Promise<{ availableCapabilities: string[]; capabilityLabels: Record<string, string>; totalMatchingProducts: number }> => {
     const url = `/tools/capabilities?source=${encodeURIComponent(source)}&destination=${encodeURIComponent(destination)}`;
     return apiGet(url);

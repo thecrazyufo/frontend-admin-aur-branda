@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <!-- 041: Update format icons to official brand identifiers -->
+    <changeSet id="041-update-official-format-icons" author="platform">
+        <!-- Microsoft Outlook / PST / OST / MSG / OLM -->
+        <update tableName="source_formats">
+            <column name="icon" value="microsoft-outlook"/>
+            <where>format_key IN ('pst', 'ost', 'msg', 'olm') AND site_id = 'brandA'</where>
+        </update>
+        <update tableName="target_formats">
+            <column name="icon" value="microsoft-outlook"/>
+            <where>format_key IN ('pst', 'ost', 'msg', 'olm') AND site_id = 'brandA'</where>
+        </update>
+
+        <!-- Gmail -->
+        <update tableName="source_formats">
+            <column name="icon" value="gmail"/>
+            <where>format_key = 'gmail' AND site_id = 'brandA'</where>
+        </update>
+        <update tableName="target_formats">
+            <column name="icon" value="gmail"/>
+            <where>format_key = 'gmail' AND site_id = 'brandA'</where>
+        </update>
+
+        <!-- Google Workspace -->
+        <update tableName="source_formats">
+            <column name="icon" value="google-workspace"/>
+            <where>format_key = 'google_workspace' AND site_id = 'brandA'</where>
+        </update>
+        <update tableName="target_formats">
+            <column name="icon" value="google-workspace"/>
+            <where>format_key = 'google_workspace' AND site_id = 'brandA'</where>
+        </update>
+
+        <!-- Microsoft 365 / Exchange -->
+        <update tableName="source_formats">
+            <column name="icon" value="microsoft-365"/>
+            <where>format_key IN ('office365', 'exchange') AND site_id = 'brandA'</where>
+        </update>
+        <update tableName="target_formats">
+            <column name="icon" value="microsoft-365"/>
+            <where>format_key IN ('office365', 'exchange') AND site_id = 'brandA'</where>
+        </update>
+
+        <!-- Adobe PDF -->
+        <update tableName="source_formats">
+            <column name="icon" value="adobe-pdf"/>
+            <where>format_key = 'pdf' AND site_id = 'brandA'</where>
+        </update>
+        <update tableName="target_formats">
+            <column name="icon" value="adobe-pdf"/>
+            <where>format_key = 'pdf' AND site_id = 'brandA'</where>
+        </update>
+
+        <!-- Microsoft Excel / CSV -->
+        <update tableName="source_formats">
+            <column name="icon" value="microsoft-excel"/>
+            <where>format_key IN ('xlsx', 'csv') AND site_id = 'brandA'</where>
+        </update>
+        <update tableName="target_formats">
+            <column name="icon" value="microsoft-excel"/>
+            <where>format_key IN ('xlsx', 'csv') AND site_id = 'brandA'</where>
+        </update>
+
+        <!-- Microsoft Word -->
+        <update tableName="source_formats">
+            <column name="icon" value="microsoft-word"/>
+            <where>format_key = 'docx' AND site_id = 'brandA'</where>
+        </update>
+        <update tableName="target_formats">
+            <column name="icon" value="microsoft-word"/>
+            <where>format_key = 'docx' AND site_id = 'brandA'</where>
+        </update>
+
+        <!-- Yahoo -->
+        <update tableName="source_formats">
+            <column name="icon" value="yahoo"/>
+            <where>format_key = 'yahoo' AND site_id = 'brandA'</where>
+        </update>
+        <update tableName="target_formats">
+            <column name="icon" value="yahoo"/>
+            <where>format_key = 'yahoo' AND site_id = 'brandA'</where>
+        </update>
+
+        <!-- MBOX / Thunderbird -->
+        <update tableName="source_formats">
+            <column name="icon" value="thunderbird"/>
+            <where>format_key = 'mbox' AND site_id = 'brandA'</where>
+        </update>
+        <update tableName="target_formats">
+            <column name="icon" value="thunderbird"/>
+            <where>format_key = 'mbox' AND site_id = 'brandA'</where>
+        </update>
+
+        <!-- Google Drive -->
+        <update tableName="source_formats">
+            <column name="icon" value="google-drive"/>
+            <where>format_key = 'google_drive' AND site_id = 'brandA'</where>
+        </update>
+        <update tableName="target_formats">
+            <column name="icon" value="google-drive"/>
+            <where>format_key = 'google_drive' AND site_id = 'brandA'</where>
+        </update>
+
+        <!-- OneDrive -->
+        <update tableName="source_formats">
+            <column name="icon" value="microsoft-onedrive"/>
+            <where>format_key = 'onedrive' AND site_id = 'brandA'</where>
+        </update>
+        <update tableName="target_formats">
+            <column name="icon" value="microsoft-onedrive"/>
+            <where>format_key = 'onedrive' AND site_id = 'brandA'</where>
+        </update>
+
+        <!-- SharePoint -->
+        <update tableName="source_formats">
+            <column name="icon" value="microsoft-sharepoint"/>
+            <where>format_key = 'sharepoint' AND site_id = 'brandA'</where>
+        </update>
+        <update tableName="target_formats">
+            <column name="icon" value="microsoft-sharepoint"/>
+            <where>format_key = 'sharepoint' AND site_id = 'brandA'</where>
+        </update>
+
+        <!-- IBM Lotus Notes (NSF) -->
+        <update tableName="source_formats">
+            <column name="icon" value="ibm-lotus-notes"/>
+            <where>format_key = 'nsf' AND site_id = 'brandA'</where>
+        </update>
+        <update tableName="target_formats">
+            <column name="icon" value="ibm-lotus-notes"/>
+            <where>format_key = 'nsf' AND site_id = 'brandA'</where>
+        </update>
+
+        <!-- Zimbra -->
+        <update tableName="source_formats">
+            <column name="icon" value="zimbra"/>
+            <where>format_key = 'zimbra' AND site_id = 'brandA'</where>
+        </update>
+        <update tableName="target_formats">
+            <column name="icon" value="zimbra"/>
+            <where>format_key = 'zimbra' AND site_id = 'brandA'</where>
+        </update>
+
+        <!-- Generic code/text files -->
+        <update tableName="source_formats">
+            <column name="icon" value="code-file"/>
+            <where>format_key IN ('xml', 'json', 'jsonl', 'ini', 'properties', 'toml', 'yaml', 'markdown') AND site_id = 'brandA'</where>
+        </update>
+        <update tableName="target_formats">
+            <column name="icon" value="code-file"/>
+            <where>format_key IN ('xml', 'json', 'jsonl', 'ini', 'properties', 'toml', 'yaml', 'markdown') AND site_id = 'brandA'</where>
+        </update>
+
+        <!-- Generic image files -->
+        <update tableName="source_formats">
+            <column name="icon" value="image-file"/>
+            <where>format_key IN ('png', 'jpeg', 'gif', 'bmp', 'tiff') AND site_id = 'brandA'</where>
+        </update>
+        <update tableName="target_formats">
+            <column name="icon" value="image-file"/>
+            <where>format_key IN ('png', 'jpeg', 'gif', 'bmp', 'tiff') AND site_id = 'brandA'</where>
+        </update>
+
+        <!-- Generic email files (EML, EMLX, Maildir, TGZ) -->
+        <update tableName="source_formats">
+            <column name="icon" value="email-file"/>
+            <where>format_key IN ('eml', 'emlx', 'maildir', 'tgz', 'dbx') AND site_id = 'brandA'</where>
+        </update>
+        <update tableName="target_formats">
+            <column name="icon" value="email-file"/>
+            <where>format_key IN ('eml', 'emlx', 'maildir', 'tgz', 'dbx') AND site_id = 'brandA'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>
