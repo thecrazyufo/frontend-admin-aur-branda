@@ -379,8 +379,12 @@ const refractionFontsUrl = `https://fonts.googleapis.com/css2?family=Syne:wght@6
       Tawk_API.onChatMinimized = function() { hideTawkBuiltinBubble(); };
       Tawk_API.onMinimize = function() { hideTawkBuiltinBubble(); };
 
-      // Load Tawk.to script asynchronously
-      (function() {
+      // Lazy load Tawk.to script to prevent it from blocking the initial page load speed
+      var tawkLoaded = false;
+      function loadTawkScript() {
+        if (tawkLoaded) return;
+        tawkLoaded = true;
+        
         var s1 = document.createElement('script');
         var s0 = document.getElementsByTagName('script')[0];
         s1.async = true;
@@ -388,10 +392,31 @@ const refractionFontsUrl = `https://fonts.googleapis.com/css2?family=Syne:wght@6
         s1.charset = 'UTF-8';
         s1.setAttribute('crossorigin', '*');
         s0.parentNode.insertBefore(s1, s0);
-      })();
+      }
+
+      // Trigger lazy load on user interaction or after a 3.5-second idle delay
+      function initLazyTawk() {
+        // Remove listeners
+        window.removeEventListener('scroll', initLazyTawk);
+        window.removeEventListener('mousemove', initLazyTawk);
+        window.removeEventListener('touchstart', initLazyTawk);
+        clearTimeout(tawkTimeout);
+        
+        // Load the script
+        loadTawkScript();
+      }
+
+      // Listen for scroll, mouse movement, or touch interaction
+      window.addEventListener('scroll', initLazyTawk, { passive: true });
+      window.addEventListener('mousemove', initLazyTawk, { passive: true });
+      window.addEventListener('touchstart', initLazyTawk, { passive: true });
+
+      // Fallback timeout to load script if user is idle
+      var tawkTimeout = setTimeout(initLazyTawk, 3500);
 
       // Open Tawk chat panel inline when our custom button is clicked
       window.triggerTawkOpen = function() {
+        loadTawkScript(); // Force load if not loaded yet
         var attempts = 0;
         function tryOpen() {
           if (typeof Tawk_API !== 'undefined' && typeof Tawk_API.maximize === 'function') {
@@ -401,7 +426,6 @@ const refractionFontsUrl = `https://fonts.googleapis.com/css2?family=Syne:wght@6
             attempts++;
             setTimeout(tryOpen, 150);
           }
-          // No fallback — chat only opens inline as a widget
         }
         tryOpen();
       };
