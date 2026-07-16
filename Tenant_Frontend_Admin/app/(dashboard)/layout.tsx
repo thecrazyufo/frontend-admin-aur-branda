@@ -517,6 +517,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         allowedHrefs.push(`/${b.id}/admin`);
         allowedHrefs.push(`/${b.id}/social-proof`);
         allowedHrefs.push(`/${b.id}/deployment`);
+        allowedHrefs.push(`/${b.id}/backup`);
       });
     } else {
       const allowedItems = ROLE_NAV_REGISTRY[role] || [];
@@ -631,6 +632,11 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         label: "Discount Coupons",
         href: `/${siteId}/admin?tab=coupons`,
         icon: CouponIcon
+      },
+      {
+        label: "Database Backups",
+        href: `/${siteId}/backup`,
+        icon: DatabaseIcon
       }
     ];
   } else {

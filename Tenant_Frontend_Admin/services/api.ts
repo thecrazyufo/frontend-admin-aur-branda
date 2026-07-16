@@ -523,3 +523,43 @@ export const AdminBrandAPI = {
   update: (id: string, data: Partial<BrandConfig>) => adminPut<BrandConfig>(`/brands/${id}`, data),
 };
 
+export interface BackupFile {
+  fileName: string;
+  sizeBytes: number;
+  lastModified: number;
+  formattedDate: string;
+}
+
+export async function adminDownloadFile(path: string, fileName: string) {
+  const cid = getCorrelationId();
+  const siteId = getSelectedSiteId();
+  const sep = path.includes("?") ? "&" : "?";
+  const url = `${API_BASE}${path}${sep}siteId=${siteId}`;
+  
+  const token = getAdminToken();
+  const headers: Record<string, string> = {
+    "X-Tenant-ID": siteId,
+    "siteId": siteId,
+    "X-Correlation-ID": cid,
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+
+  const response = await fetch(url, { headers });
+  if (!response.ok) throw new Error("Download failed.");
+  const blob = await response.blob();
+  const downloadUrl = window.URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = downloadUrl;
+  link.setAttribute("download", fileName);
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}
+
+export const AdminBackupAPI = {
+  getAll: () => adminGet<BackupFile[]>("/admin/backups"),
+  trigger: () => adminPost<{ status: string; fileName?: string; message?: string }>("/admin/backups/trigger", {}),
+  delete: (fileName: string) => adminDelete(`/admin/backups/${fileName}`),
+  download: (fileName: string) => adminDownloadFile(`/admin/backups/download/${fileName}`, fileName)
+};
+

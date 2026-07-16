@@ -77,6 +77,8 @@ public class SecurityConfig {
 
                 // 🔐 Super Admin / Owner — User & Credential Management
                 .requestMatchers("/api/owner/**").hasAnyRole("SUPER_ADMIN", "OWNER")
+                // 🔐 Backup Management — Super Admin / Owner only
+                .requestMatchers("/api/admin/backups", "/api/admin/backups/**").hasAnyRole("SUPER_ADMIN", "OWNER")
 
                 // 🔐 License Management — Super Admin or Brand Admin
                 .requestMatchers("/api/licensing-admin", "/api/licensing-admin/**")
