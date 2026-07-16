@@ -394,25 +394,35 @@ const refractionFontsUrl = `https://fonts.googleapis.com/css2?family=Syne:wght@6
         s0.parentNode.insertBefore(s1, s0);
       }
 
-      // Trigger lazy load on user interaction or after a 3.5-second idle delay
+      // Trigger lazy load on user interaction or after a 6-second idle delay
       function initLazyTawk() {
         // Remove listeners
         window.removeEventListener('scroll', initLazyTawk);
-        window.removeEventListener('mousemove', initLazyTawk);
         window.removeEventListener('touchstart', initLazyTawk);
+        const chatBtn = document.getElementById('tawk-custom-chat-button');
+        if (chatBtn) {
+          chatBtn.removeEventListener('mouseenter', initLazyTawk);
+        }
         clearTimeout(tawkTimeout);
         
         // Load the script
         loadTawkScript();
       }
 
-      // Listen for scroll, mouse movement, or touch interaction
+      // Listen for scroll, touch interaction, or hovering specifically on the chat button
       window.addEventListener('scroll', initLazyTawk, { passive: true });
-      window.addEventListener('mousemove', initLazyTawk, { passive: true });
       window.addEventListener('touchstart', initLazyTawk, { passive: true });
 
-      // Fallback timeout to load script if user is idle
-      var tawkTimeout = setTimeout(initLazyTawk, 3500);
+      // Delay bind for hover on custom chat button
+      setTimeout(function() {
+        const chatBtn = document.getElementById('tawk-custom-chat-button');
+        if (chatBtn) {
+          chatBtn.addEventListener('mouseenter', initLazyTawk, { passive: true });
+        }
+      }, 500);
+
+      // Fallback timeout to load script if user is idle (extended to 6 seconds)
+      var tawkTimeout = setTimeout(initLazyTawk, 6000);
 
       // Open Tawk chat panel inline when our custom button is clicked
       window.triggerTawkOpen = function() {
