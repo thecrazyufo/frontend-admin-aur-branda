@@ -379,7 +379,7 @@ const refractionFontsUrl = `https://fonts.googleapis.com/css2?family=Syne:wght@6
       Tawk_API.onChatMinimized = function() { hideTawkBuiltinBubble(); };
       Tawk_API.onMinimize = function() { hideTawkBuiltinBubble(); };
 
-      // Lazy load Tawk.to script to prevent it from blocking the initial page load speed
+      // Lazy load Tawk.to script completely on-demand (shipped only when user clicks the chat button)
       var tawkLoaded = false;
       function loadTawkScript() {
         if (tawkLoaded) return;
@@ -393,36 +393,6 @@ const refractionFontsUrl = `https://fonts.googleapis.com/css2?family=Syne:wght@6
         s1.setAttribute('crossorigin', '*');
         s0.parentNode.insertBefore(s1, s0);
       }
-
-      // Trigger lazy load on user interaction or after a 6-second idle delay
-      function initLazyTawk() {
-        // Remove listeners
-        window.removeEventListener('scroll', initLazyTawk);
-        window.removeEventListener('touchstart', initLazyTawk);
-        const chatBtn = document.getElementById('tawk-custom-chat-button');
-        if (chatBtn) {
-          chatBtn.removeEventListener('mouseenter', initLazyTawk);
-        }
-        clearTimeout(tawkTimeout);
-        
-        // Load the script
-        loadTawkScript();
-      }
-
-      // Listen for scroll, touch interaction, or hovering specifically on the chat button
-      window.addEventListener('scroll', initLazyTawk, { passive: true });
-      window.addEventListener('touchstart', initLazyTawk, { passive: true });
-
-      // Delay bind for hover on custom chat button
-      setTimeout(function() {
-        const chatBtn = document.getElementById('tawk-custom-chat-button');
-        if (chatBtn) {
-          chatBtn.addEventListener('mouseenter', initLazyTawk, { passive: true });
-        }
-      }, 500);
-
-      // Fallback timeout to load script if user is idle (extended to 6 seconds)
-      var tawkTimeout = setTimeout(initLazyTawk, 6000);
 
       // Open Tawk chat panel inline when our custom button is clicked
       window.triggerTawkOpen = function() {
