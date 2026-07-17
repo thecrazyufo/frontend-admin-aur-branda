@@ -1,8 +1,4 @@
-64-227-150-88.nip.io, api.thecrazyufo.in {
+api.thecrazyufo.in, api.prismmigration.com {
     reverse_proxy tenant-backend:8080
     encode gzip
-}
-
-datamigratepro.com, www.datamigratepro.com {
-    redir https://thecrazyufo.in{uri} 301
 }

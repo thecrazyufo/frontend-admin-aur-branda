@@ -43,10 +43,10 @@ All pages must utilize these centralized component wrappers instead of custom st
 ## 🔒 Tenant & Security Architecture
 
 ### 1. Brand & Port Schemes
-* **Admin Frontend:** Port `3000`
-* **Tenant Backend:** Port `8080`
+* **Admin Frontend:** Port `3000` (Hosted globally at `thecrazyufo.in`)
+* **Tenant Backend:** Port `8080` (Hosted at `api.thecrazyufo.in` and `api.prismmigration.com`)
 * **Storefront Sites:**
-  * `brandA` $\rightarrow$ Port `3001` (Default Site ID: `brandA`)
+  * `brandA` $\rightarrow$ Port `3001` (Production Domain: `prismmigration.com` / `www.prismmigration.com`)
   * `brandB` $\rightarrow$ Port `3002` (Default Site ID: `brandB`)
   * `brandC` $\rightarrow$ Port `3003` (Default Site ID: `brandC`)
   * `brandD` $\rightarrow$ Port `3004` (Default Site ID: `brandD`)
@@ -84,8 +84,8 @@ The live system uses a hybrid hosting model across Vercel and DigitalOcean VPS:
 ```
                   ┌──────────────────────────────────────────────┐
                   │                 Vercel                       │
-                  │   - admin.thecrazyufo.in (Admin Dashboard)   │
-                  │   - branda.thecrazyufo.in (Storefront)       │
+                  │   - thecrazyufo.in (Admin Dashboard)         │
+                  │   - prismmigration.com (Storefront)          │
                   └──────────────────────┬───────────────────────┘
                                          │
                                   Public API Calls
@@ -93,18 +93,21 @@ The live system uses a hybrid hosting model across Vercel and DigitalOcean VPS:
                                          ▼
                   ┌──────────────────────────────────────────────┐
                   │          DigitalOcean VPS (64.227.150.88)    │
-                  │   - api.thecrazyufo.in (Backend REST API)    │
+                  │   - api.thecrazyufo.in (Admin REST API)      │
+                  │   - api.prismmigration.com (Storefront API)  │
                   │   - PostgreSQL Database (Port 5432)          │
                   └──────────────────────────────────────────────┘
 ```
 
 ### 1. Frontend Hosting (Vercel)
-* **Domains:** `admin.thecrazyufo.in`, `branda.thecrazyufo.in`
+* **Domains:** 
+  * Admin Panel: `thecrazyufo.in`, `www.thecrazyufo.in`
+  * Storefront Brand A: `prismmigration.com`, `www.prismmigration.com`
 * **DNS Settings:** CNAME records are pointed to Vercel's edge network: `cname.vercel-dns.com`.
 * **Deployment Workflow:** Auto-deploys on every commit/push to the `main` branch of the GitHub repository `thecrazyufo/frontend-admin-aur-branda`.
 
 ### 2. Backend & Database Hosting (DigitalOcean VPS)
-* **Domain:** `api.thecrazyufo.in`
+* **Domains:** `api.thecrazyufo.in` and `api.prismmigration.com` (both reverse proxied to Spring Boot backend via Caddy)
 * **IP Address:** `64.227.150.88`
 * **Orchestration:** Managed via Docker Compose under the `/root/deploy_vps` directory on the VPS (composed of `db_postgres`, `software_tenant_backend`, and `software_caddy`).
 * **Deployment Workflow:**
