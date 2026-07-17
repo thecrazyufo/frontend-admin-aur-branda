@@ -117,7 +117,17 @@ The live system uses a hybrid hosting model across Vercel and DigitalOcean VPS:
   4. SSH into the VPS to load the image, stop old container conflicts, and run `docker compose up -d`.
   *This is automated using the [deploy_vps/deploy.sh](file:///Users/akashsahu.blue/Documents/Akas/software-selling-platform/deploy_vps/deploy.sh) script. It explicitly targets `linux/amd64` to prevent `exec format error` crashes on the Linux VPS.*
 
-### 3. Local Host Mapping (Mac Developer Environment)
+### 3. Detailed Application Deployment Registry
+
+| Application Component | Deployment Platform | Domain / URL | Run Command / Configuration |
+| :--- | :--- | :--- | :--- |
+| **Admin Panel Frontend** (`Tenant_Frontend_Admin/`) | **Vercel** | `https://thecrazyufo.in`<br>`https://www.thecrazyufo.in` | Next.js Serverless. Uses variable `NEXT_PUBLIC_API_URL` set to `https://api.thecrazyufo.in/api`. |
+| **Storefront (Brand A)** (`storefront-prismmigration/`) | **Vercel** | `https://prismmigration.com`<br>`https://www.prismmigration.com` | Astro SSR (Vercel Node adapter). Uses variables:<br>`PUBLIC_API_URL` = `https://api.prismmigration.com/api`<br>`PUBLIC_SITE_ID` = `brandA`. |
+| **Backend API** (`Tenant_Backend/`) | **DigitalOcean VPS** | `https://api.thecrazyufo.in/api`<br>`https://api.prismmigration.com/api` | Spring Boot (running inside Docker container `software_tenant_backend`). Runs on internal Port `8080`. |
+| **Database** | **DigitalOcean VPS** | *Internal Only* (Port `5432`) | PostgreSQL (running inside Docker container `db_postgres` with persistent volume mapping). |
+| **Reverse Proxy / SSL** | **DigitalOcean VPS** | *Main Gate* (Ports `80`, `443`) | Caddy Server (running inside Docker container `software_caddy`). Routes external domains (`api.thecrazyufo.in`, `api.prismmigration.com`) to port `8080` internally, and automatically issues and renews free SSL certificates (Let's Encrypt). |
+
+### 4. Local Host Mapping (Mac Developer Environment)
 Developers must keep their local `/etc/hosts` clean and only map `api.thecrazyufo.in` to allow backend resolution:
 ```hosts
 64.227.150.88 api.thecrazyufo.in
