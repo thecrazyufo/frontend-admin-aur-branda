@@ -43,10 +43,10 @@ All pages must utilize these centralized component wrappers instead of custom st
 ## 🔒 Tenant & Security Architecture
 
 ### 1. Brand & Port Schemes
-* **Admin Frontend:** Port `3000`
-* **Tenant Backend:** Port `8080`
+* **Admin Frontend:** Port `3000` (Hosted globally at `thecrazyufo.in`)
+* **Tenant Backend:** Port `8080` (Hosted at `api.thecrazyufo.in` and `api.prismmigration.com`)
 * **Storefront Sites:**
-  * `brandA` $\rightarrow$ Port `3001` (Default Site ID: `brandA`)
+  * `brandA` $\rightarrow$ Port `3001` (Production Domain: `prismmigration.com` / `www.prismmigration.com`)
   * `brandB` $\rightarrow$ Port `3002` (Default Site ID: `brandB`)
   * `brandC` $\rightarrow$ Port `3003` (Default Site ID: `brandC`)
   * `brandD` $\rightarrow$ Port `3004` (Default Site ID: `brandD`)
@@ -84,8 +84,8 @@ The live system uses a hybrid hosting model across Vercel and DigitalOcean VPS:
 ```
                   ┌──────────────────────────────────────────────┐
                   │                 Vercel                       │
-                  │   - admin.thecrazyufo.in (Admin Dashboard)   │
-                  │   - branda.thecrazyufo.in (Storefront)       │
+                  │   - thecrazyufo.in (Admin Dashboard)         │
+                  │   - prismmigration.com (Storefront)          │
                   └──────────────────────┬───────────────────────┘
                                          │
                                   Public API Calls
@@ -93,18 +93,21 @@ The live system uses a hybrid hosting model across Vercel and DigitalOcean VPS:
                                          ▼
                   ┌──────────────────────────────────────────────┐
                   │          DigitalOcean VPS (64.227.150.88)    │
-                  │   - api.thecrazyufo.in (Backend REST API)    │
+                  │   - api.thecrazyufo.in (Admin REST API)      │
+                  │   - api.prismmigration.com (Storefront API)  │
                   │   - PostgreSQL Database (Port 5432)          │
                   └──────────────────────────────────────────────┘
 ```
 
 ### 1. Frontend Hosting (Vercel)
-* **Domains:** `admin.thecrazyufo.in`, `branda.thecrazyufo.in`
+* **Domains:** 
+  * Admin Panel: `thecrazyufo.in`, `www.thecrazyufo.in`
+  * Storefront Brand A: `prismmigration.com`, `www.prismmigration.com`
 * **DNS Settings:** CNAME records are pointed to Vercel's edge network: `cname.vercel-dns.com`.
 * **Deployment Workflow:** Auto-deploys on every commit/push to the `main` branch of the GitHub repository `thecrazyufo/frontend-admin-aur-branda`.
 
 ### 2. Backend & Database Hosting (DigitalOcean VPS)
-* **Domain:** `api.thecrazyufo.in`
+* **Domains:** `api.thecrazyufo.in` and `api.prismmigration.com` (both reverse proxied to Spring Boot backend via Caddy)
 * **IP Address:** `64.227.150.88`
 * **Orchestration:** Managed via Docker Compose under the `/root/deploy_vps` directory on the VPS (composed of `db_postgres`, `software_tenant_backend`, and `software_caddy`).
 * **Deployment Workflow:**
@@ -114,7 +117,17 @@ The live system uses a hybrid hosting model across Vercel and DigitalOcean VPS:
   4. SSH into the VPS to load the image, stop old container conflicts, and run `docker compose up -d`.
   *This is automated using the [deploy_vps/deploy.sh](file:///Users/akashsahu.blue/Documents/Akas/software-selling-platform/deploy_vps/deploy.sh) script. It explicitly targets `linux/amd64` to prevent `exec format error` crashes on the Linux VPS.*
 
-### 3. Local Host Mapping (Mac Developer Environment)
+### 3. Detailed Application Deployment Registry
+
+| Application Component | Deployment Platform | Domain / URL | Run Command / Configuration |
+| :--- | :--- | :--- | :--- |
+| **Admin Panel Frontend** (`Tenant_Frontend_Admin/`) | **Vercel** | `https://thecrazyufo.in`<br>`https://www.thecrazyufo.in` | Next.js Serverless. Uses variable `NEXT_PUBLIC_API_URL` set to `https://api.thecrazyufo.in/api`. |
+| **Storefront (Brand A)** (`storefront-prismmigration/`) | **Vercel** | `https://prismmigration.com`<br>`https://www.prismmigration.com` | Astro SSR (Vercel Node adapter). Uses variables:<br>`PUBLIC_API_URL` = `https://api.prismmigration.com/api`<br>`PUBLIC_SITE_ID` = `brandA`. |
+| **Backend API** (`Tenant_Backend/`) | **DigitalOcean VPS** | `https://api.thecrazyufo.in/api`<br>`https://api.prismmigration.com/api` | Spring Boot (running inside Docker container `software_tenant_backend`). Runs on internal Port `8080`. |
+| **Database** | **DigitalOcean VPS** | *Internal Only* (Port `5432`) | PostgreSQL (running inside Docker container `db_postgres` with persistent volume mapping). |
+| **Reverse Proxy / SSL** | **DigitalOcean VPS** | *Main Gate* (Ports `80`, `443`) | Caddy Server (running inside Docker container `software_caddy`). Routes external domains (`api.thecrazyufo.in`, `api.prismmigration.com`) to port `8080` internally, and automatically issues and renews free SSL certificates (Let's Encrypt). |
+
+### 4. Local Host Mapping (Mac Developer Environment)
 Developers must keep their local `/etc/hosts` clean and only map `api.thecrazyufo.in` to allow backend resolution:
 ```hosts
 64.227.150.88 api.thecrazyufo.in
