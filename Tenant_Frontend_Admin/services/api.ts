@@ -116,11 +116,17 @@ function adminHeaders(correlationId: string): Record<string, string> {
 
 function getSelectedSiteId(): string {
   if (typeof window === "undefined") return "";
-  const siteId = localStorage.getItem("admin_site_id");
+  let siteId = localStorage.getItem("admin_site_id");
   if (!siteId) {
-    // Attempt to redirect to brand portal instead of falling back to a hardcoded brand
-    window.location.href = "/";
-    throw new Error("No active brand selected.");
+    const role = localStorage.getItem("admin_role");
+    if (role === "SUPER_ADMIN" || role === "OWNER") {
+      siteId = "brandA";
+      localStorage.setItem("admin_site_id", "brandA");
+    } else {
+      // Attempt to redirect to brand portal instead of falling back to a hardcoded brand
+      window.location.href = "/";
+      throw new Error("No active brand selected.");
+    }
   }
   return siteId;
 }
