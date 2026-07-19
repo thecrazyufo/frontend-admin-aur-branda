@@ -326,6 +326,10 @@ public class SiteSetting {
         private String defaultOgImage;
         private String robotsTxt;
         private String googleVerification;
+        private String bingVerification;
+        private String gaMeasurementId;      // e.g. "G-XXXXXXXXXX"
+        private String gtmContainerId;       // e.g. "GTM-XXXXXXX"
+        private String clarityProjectId;     // e.g. "xxxxxxxxxx"
     }
 
     @Data

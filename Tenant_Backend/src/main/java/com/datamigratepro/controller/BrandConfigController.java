@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import com.datamigratepro.config.UserCredentials;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/api/brands")
 public class BrandConfigController {
@@ -18,7 +21,21 @@ public class BrandConfigController {
 
     @GetMapping
     public ResponseEntity<List<BrandConfig>> getActiveBrands() {
-        return ResponseEntity.ok(brandConfigService.getAllActiveBrands());
+        List<BrandConfig> all = brandConfigService.getAllActiveBrands();
+        UserCredentials user = SecurityUtils.getCurrentUser();
+        if (user != null && user.role() != null) {
+            String role = user.role();
+            if (!"SUPER_ADMIN".equalsIgnoreCase(role) && !"OWNER".equalsIgnoreCase(role)) {
+                String assignedBrand = user.brandId();
+                if (assignedBrand != null && !"all".equalsIgnoreCase(assignedBrand)) {
+                    List<BrandConfig> filtered = all.stream()
+                            .filter(b -> b.getId() != null && b.getId().equalsIgnoreCase(assignedBrand))
+                            .collect(Collectors.toList());
+                    return ResponseEntity.ok(filtered);
+                }
+            }
+        }
+        return ResponseEntity.ok(all);
     }
 
     @PutMapping("/{id}")

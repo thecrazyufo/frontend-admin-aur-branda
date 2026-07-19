@@ -5,6 +5,7 @@ import com.datamigratepro.config.UserCredentials;
 import com.datamigratepro.entity.AdminUser;
 import com.datamigratepro.repository.AdminUserRepository;
 import com.datamigratepro.service.BrandConfigService;
+import com.datamigratepro.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,6 +30,7 @@ public class OwnerController {
 
     @GetMapping
     public ResponseEntity<Collection<UserCredentials>> getCredentials() {
+        SecurityUtils.checkRole("SUPER_ADMIN", "OWNER");
         String previousTenant = TenantContext.getCurrentTenant();
         try {
             TenantContext.setCurrentTenant("system");
@@ -48,6 +50,7 @@ public class OwnerController {
 
     @PostMapping
     public ResponseEntity<UserCredentials> saveCredentials(@RequestBody UserCredentials request) {
+        SecurityUtils.checkRole("SUPER_ADMIN", "OWNER");
         if (request.username() == null || request.username().isBlank()) {
             throw new IllegalArgumentException("Username is required");
         }
@@ -109,6 +112,7 @@ public class OwnerController {
 
     @DeleteMapping("/{username}")
     public ResponseEntity<Void> deleteCredentials(@PathVariable String username) {
+        SecurityUtils.checkRole("SUPER_ADMIN", "OWNER");
         if ("owner".equalsIgnoreCase(username)) {
             throw new IllegalArgumentException("Cannot delete the root owner account");
         }

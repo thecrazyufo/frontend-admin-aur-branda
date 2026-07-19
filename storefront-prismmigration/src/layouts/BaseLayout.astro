@@ -4,6 +4,7 @@ import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import { SettingsAPI, BrandAPI, ProductAPI } from "../services/api";
 import { ClientRouter } from "astro:transitions";
+import { generateOrganizationSchema } from "../lib/seo";
 
 // Staging branch verification commit comment
 interface Props {
@@ -88,6 +89,24 @@ const {
 const fontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/ /g, "+")}:wght@300;400;500;600;700;800;900&display=swap`;
 // Refraction Design System — three-face type stack (Syne display, DM Sans body, JetBrains Mono utility)
 const refractionFontsUrl = `https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap`;
+
+const siteOrigin = (settings?.url || Astro.site || Astro.url.origin).toString().replace(/\/$/, "");
+const orgSchema = generateOrganizationSchema({
+  name: siteName || "Prism Migration",
+  url: siteOrigin,
+  email: settings?.email,
+  phone: settings?.phone,
+  address: settings?.address,
+  description: siteDescription,
+  logo: logoUrl || `${siteOrigin}/logo-p.png`,
+  socials: [
+    settings?.socials?.twitter,
+    settings?.socials?.linkedin,
+    settings?.socials?.youtube,
+    settings?.socials?.facebook,
+    settings?.socials?.github,
+  ].filter(Boolean),
+});
 ---
 
 <!doctype html>
@@ -122,9 +141,50 @@ const refractionFontsUrl = `https://fonts.googleapis.com/css2?family=Syne:wght@6
     <meta name="twitter:image" content={ogImage} />
     {author && <meta name="author" content={author} />}
 
-    <!-- Google Verification -->
+    <!-- Verification Meta Tags -->
     {seoDefaults.googleVerification && (
       <meta name="google-site-verification" content={seoDefaults.googleVerification} />
+    )}
+    {seoDefaults.bingVerification && (
+      <meta name="msvalidate.01" content={seoDefaults.bingVerification} />
+    )}
+
+    <!-- Organization Schema -->
+    <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
+
+    <!-- Google Analytics 4 -->
+    {seoDefaults.gaMeasurementId && (
+      <>
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${seoDefaults.gaMeasurementId}`}></script>
+        <script is:inline set:html={`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '${seoDefaults.gaMeasurementId}');
+        `} />
+      </>
+    )}
+
+    <!-- Microsoft Clarity -->
+    {seoDefaults.clarityProjectId && (
+      <script is:inline set:html={`
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "${seoDefaults.clarityProjectId}");
+      `} />
+    )}
+
+    <!-- Google Tag Manager -->
+    {seoDefaults.gtmContainerId && (
+      <script is:inline set:html={`
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','${seoDefaults.gtmContainerId}');
+      `} />
     )}
 
     <!-- Favicon (dynamic from admin panel) -->

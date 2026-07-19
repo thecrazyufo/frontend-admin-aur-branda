@@ -116,17 +116,15 @@ function adminHeaders(correlationId: string): Record<string, string> {
 
 function getSelectedSiteId(): string {
   if (typeof window === "undefined") return "";
+  const sessionBrandId = localStorage.getItem("admin_brand_id");
+  const role = localStorage.getItem("admin_role");
+  if (role && role !== "SUPER_ADMIN" && role !== "OWNER" && sessionBrandId && sessionBrandId !== "all" && sessionBrandId !== "undefined") {
+    return sessionBrandId;
+  }
   let siteId = localStorage.getItem("admin_site_id");
-  if (!siteId) {
-    const role = localStorage.getItem("admin_role");
-    if (role === "SUPER_ADMIN" || role === "OWNER") {
-      siteId = "brandA";
-      localStorage.setItem("admin_site_id", "brandA");
-    } else {
-      // Attempt to redirect to brand portal instead of falling back to a hardcoded brand
-      window.location.href = "/";
-      throw new Error("No active brand selected.");
-    }
+  if (!siteId || siteId === "undefined") {
+    siteId = sessionBrandId && sessionBrandId !== "all" && sessionBrandId !== "undefined" ? sessionBrandId : "brandA";
+    localStorage.setItem("admin_site_id", siteId);
   }
   return siteId;
 }
@@ -373,6 +371,21 @@ export const AdminCategoryAPI = {
 export const AdminSettingsAPI = {
   get: () => adminGet<any>("/settings"),
   update: (settings: any) => adminPut<any>("/settings", settings),
+};
+
+export interface UrlRedirectItem {
+  id?: number;
+  sourcePath: string;
+  targetPath: string;
+  redirectType: number; // 301 | 302
+  createdAt?: string;
+  siteId?: string;
+}
+
+export const AdminRedirectAPI = {
+  getAll: () => adminGet<UrlRedirectItem[]>("/redirects"),
+  create: (data: Partial<UrlRedirectItem>) => adminPost<UrlRedirectItem>("/redirects", data),
+  delete: (id: number) => adminDelete(`/redirects/${id}`),
 };
 
 export const AdminHelpAPI = {

@@ -422,8 +422,17 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const [activeBrands, setActiveBrands] = useState<any[]>([]);
 
   useEffect(() => {
+    const session = AuthService.getSession();
     import("@/services/api").then(({ BrandAPI }) => {
-      BrandAPI.getActiveBrands().then(setActiveBrands).catch(console.error);
+      BrandAPI.getActiveBrands()
+        .then((brands) => {
+          if (session && !isSuperAdmin(session.role) && session.brandId && session.brandId !== "all") {
+            setActiveBrands(brands.filter((b: any) => b.id === session.brandId));
+          } else {
+            setActiveBrands(brands);
+          }
+        })
+        .catch(console.error);
     });
   }, []);
 
@@ -433,16 +442,28 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   });
 
   useEffect(() => {
-    if (brandIdFromUrl) {
+    const session = AuthService.getSession();
+    if (session && !isSuperAdmin(session.role) && session.brandId && session.brandId !== "all" && session.brandId !== "undefined") {
+      setSiteId(session.brandId);
+      localStorage.setItem("admin_site_id", session.brandId);
+      return;
+    }
+    if (brandIdFromUrl && brandIdFromUrl !== "undefined") {
       setSiteId(brandIdFromUrl);
       localStorage.setItem("admin_site_id", brandIdFromUrl);
     } else {
       const savedSite = localStorage.getItem("admin_site_id");
-      if (savedSite) setSiteId(savedSite);
+      if (savedSite && savedSite !== "undefined") {
+        setSiteId(savedSite);
+      } else {
+        setSiteId("brandA");
+        localStorage.setItem("admin_site_id", "brandA");
+      }
     }
   }, [brandIdFromUrl]);
 
   function handleSiteChange(id: string) {
+    if (!id || id === "undefined") return;
     setSiteId(id);
     localStorage.setItem("admin_site_id", id);
     window.location.reload();
@@ -491,21 +512,30 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     const role = session.role;
     const userBrand = session.brandId;
 
+    if (!isSuperAdmin(role)) {
+      if (brandIdFromUrl && brandIdFromUrl !== userBrand) {
+        const subPath = pathname.replace(`/${brandIdFromUrl}`, `/${userBrand}`);
+        router.replace(subPath.startsWith(`/${userBrand}`) ? subPath : `/${userBrand}`);
+        return;
+      }
+    }
+
     let allowedHrefs: string[] = [];
     if (isSuperAdmin(role)) {
       if (activeBrands.length === 0) return; // Wait for brands to load
       
+      const currentBrand = siteId && siteId !== "undefined" ? siteId : "brandA";
       allowedHrefs = [
         "/",
         "/owner",
-        `/${siteId}`,
-        `/${siteId}/seo`,
-        `/${siteId}/seo/registry`,
-        `/${siteId}/cc`,
-        `/${siteId}/brand`,
-        `/${siteId}/admin`,
-        `/${siteId}/social-proof`,
-        `/${siteId}/deployment`
+        `/${currentBrand}`,
+        `/${currentBrand}/seo`,
+        `/${currentBrand}/seo/registry`,
+        `/${currentBrand}/cc`,
+        `/${currentBrand}/brand`,
+        `/${currentBrand}/admin`,
+        `/${currentBrand}/social-proof`,
+        `/${currentBrand}/deployment`
       ];
       // Allow any active brand scope for all pages
       activeBrands.forEach(b => {
@@ -548,16 +578,20 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   }
 
   function handleBrandTabClick(targetBrandId: string) {
+    if (!targetBrandId || targetBrandId === "undefined") return;
     localStorage.setItem("admin_site_id", targetBrandId);
     setSiteId(targetBrandId);
 
-    const pathParts = pathname.split("/");
-    if (pathParts.length > 1 && activeBrands.some(b => b.id === pathParts[1])) {
-      pathParts[1] = targetBrandId;
-      router.push(pathParts.join("/"));
-    } else {
-      window.location.reload();
+    const pathParts = pathname.split("/").filter(Boolean);
+    if (pathParts.length > 0) {
+      const firstPart = pathParts[0];
+      if (activeBrands.some(b => b.id === firstPart) || firstPart === "brandA" || firstPart === "apexbyte" || firstPart === "migrationuncle" || firstPart === "brandD" || firstPart === "brandE" || firstPart === "undefined") {
+        pathParts[0] = targetBrandId;
+        router.push("/" + pathParts.join("/"));
+        return;
+      }
     }
+    router.push(`/${targetBrandId}`);
   }
 
   const isDark = theme === "dark";
@@ -586,6 +620,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   // Resolve navigation links from registry dynamically
   let navItems = [];
+  const activeBrandScope = siteId && siteId !== "undefined" ? siteId : "brandA";
   if (isSuperAdmin(userRole)) {
     navItems = [
       {
@@ -595,47 +630,47 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       },
       {
         label: "Overview",
-        href: `/${siteId}`,
+        href: `/${activeBrandScope}`,
         icon: DashboardIcon
       },
       {
         label: "Brand Manager",
-        href: `/${siteId}/brand`,
+        href: `/${activeBrandScope}/brand`,
         icon: BrandIcon
       },
       {
         label: "Product Manager",
-        href: `/${siteId}/cc`,
+        href: `/${activeBrandScope}/cc`,
         icon: ProductIcon
       },
       {
         label: "Content & SEO",
-        href: `/${siteId}/seo`,
+        href: `/${activeBrandScope}/seo`,
         icon: ContentIcon
       },
       {
         label: "Social Proof",
-        href: `/${siteId}/social-proof`,
+        href: `/${activeBrandScope}/social-proof`,
         icon: BrandIcon
       },
       {
         label: "Deployment",
-        href: `/${siteId}/deployment`,
+        href: `/${activeBrandScope}/deployment`,
         icon: ServerIcon
       },
       {
         label: "License Admin",
-        href: `/${siteId}/admin`,
+        href: `/${activeBrandScope}/admin`,
         icon: LicenseIcon
       },
       {
         label: "Discount Coupons",
-        href: `/${siteId}/admin?tab=coupons`,
+        href: `/${activeBrandScope}/admin?tab=coupons`,
         icon: CouponIcon
       },
       {
         label: "Database Backups",
-        href: `/${siteId}/backup`,
+        href: `/${activeBrandScope}/backup`,
         icon: DatabaseIcon
       }
     ];
@@ -643,7 +678,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     const allowedItems = ROLE_NAV_REGISTRY[userRole] || [];
     navItems = allowedItems.map(item => ({
       label: item.label,
-      href: `/${siteId}${item.path}`,
+      href: `/${activeBrandScope}${item.path}`,
       icon: item.icon
     }));
   }
@@ -807,28 +842,20 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
-                {/* Brand Switch Tabs (compact inline layout) */}
-                {(pathname.includes("/seo") || pathname.includes("/cc") || pathname.includes("/admin") || pathname.includes("/brand") || pathname === `/${siteId}`) && (
+                {/* Brand Switch Tabs (Super Admin only) */}
+                {isSuperAdmin(userRole) && (pathname.includes("/seo") || pathname.includes("/cc") || pathname.includes("/admin") || pathname.includes("/brand") || pathname === `/${siteId}`) && (
                   <div className="flex items-center gap-0.5 bg-zinc-100 p-0.5 rounded-md border border-zinc-200 shrink-0">
-                    {[
-                      { id: "brandA", label: "A" },
-                      { id: "apexbyte", label: "APEX" },
-                      { id: "migrationuncle", label: "UNCLE" },
-                      { id: "brandD", label: "D" },
-                      { id: "brandE", label: "E" },
-                    ].map((b) => {
+                    {activeBrands.map((b) => {
                       const isActive = siteId === b.id;
-                      const isAllowed = isSuperAdmin(userRole) || sessionBrandId === b.id;
 
                       return (
                         <button
                           key={b.id}
-                          disabled={!isAllowed}
                           onClick={() => handleBrandTabClick(b.id)}
-                          className={`px-2 min-w-[24px] h-6 flex items-center justify-center text-[10px] font-bold rounded transition-all ${isActive ? "bg-white shadow-sm text-indigo-600" : "text-zinc-500 hover:text-zinc-900"} ${isAllowed ? "cursor-pointer" : "opacity-30 cursor-not-allowed"}`}
-                          title={!isAllowed ? "Access restricted" : `Switch to Brand ${b.label}`}
+                          className={`px-2 min-w-[24px] h-6 flex items-center justify-center text-[10px] font-bold rounded transition-all cursor-pointer ${isActive ? "bg-white shadow-sm text-indigo-600" : "text-zinc-500 hover:text-zinc-900"}`}
+                          title={`Switch to ${b.name || b.id}`}
                         >
-                          {b.label}
+                          {b.name || b.id}
                         </button>
                       );
                     })}
