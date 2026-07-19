@@ -64,18 +64,6 @@ function AdminLoginForm() {
  </div>
 
  <Card className="w-full max-w-sm border-border p-6 z-10 shadow-2xl shadow-black/80 backdrop-blur-md">
- {/* Back Link */}
- <Link 
- href="/" 
- className="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-400 hover:text-indigo-300 transition-colors mb-6 decoration-none"
- >
- <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
- <line x1="19" y1="12" x2="5" y2="12"/>
- <polyline points="12 19 5 12 12 5"/>
- </svg>
- Back to Portal Home
- </Link>
-
  {/* Logo / Brand */}
  <div className="flex items-center gap-2 mb-6">
  <svg width="24" height="24" viewBox="0 0 32 32" fill="none" className="shrink-0">
@@ -88,14 +76,8 @@ function AdminLoginForm() {
  </linearGradient>
  </defs>
  </svg>
- <span className="text-xs font-bold text-muted-foreground tracking-wider uppercase">Multi-Tenant Admin Portal</span>
+ <span className="text-xs font-bold text-muted-foreground tracking-wider uppercase">Admin Portal</span>
  </div>
-
- {searchParams.get("brandId") && searchParams.get("targetRole") && (
- <div className="mb-5 bg-indigo-500/10 border border-indigo-500/20 rounded-lg p-2.5 text-center text-xs text-indigo-300">
- 🔐 Logging in to <strong className="uppercase">{String(searchParams.get("brandId")).replace("brand","Brand")}</strong> as <strong className="uppercase">{String(searchParams.get("targetRole")).replace(/_/g,"")}</strong>
- </div>
- )}
 
  <div className="mb-6">
   <h1 className="text-xl font-extrabold tracking-tight text-foreground">Admin Panel</h1>

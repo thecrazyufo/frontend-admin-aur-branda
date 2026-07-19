@@ -58,12 +58,22 @@ function OwnerPanelPageContent() {
  const filterParam = searchParams.get("filter");
  const selectedBrandFilter = filterParam;
 
- useEffect(() => {
- import("@/services/api").then(({ BrandAPI }) => {
- BrandAPI.getActiveBrands().then(setActiveBrands).catch(console.error);
- });
- loadUsers();
- }, []);
+  useEffect(() => {
+    const session = AuthService.getSession();
+    if (!session) {
+      router.replace("/admin/login");
+      return;
+    }
+    const isSuper = session.role === "SUPER_ADMIN" || session.role === "OWNER";
+    if (!isSuper) {
+      router.replace(`/${session.brandId}`);
+      return;
+    }
+    import("@/services/api").then(({ BrandAPI }) => {
+      BrandAPI.getActiveBrands().then(setActiveBrands).catch(console.error);
+    });
+    loadUsers();
+  }, [router]);
 
  // Set brandId automatically if role is SUPER_ADMIN or OWNER
  useEffect(() => {

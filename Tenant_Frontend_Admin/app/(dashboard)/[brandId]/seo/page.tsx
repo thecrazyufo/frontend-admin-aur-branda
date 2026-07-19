@@ -6,7 +6,9 @@ import { useTheme } from "@/app/(dashboard)/layout";
 import { 
   AdminProductAPI, 
   AdminBlogAPI, 
-  AdminSettingsAPI 
+  AdminSettingsAPI,
+  AdminRedirectAPI,
+  UrlRedirectItem
 } from "@/services/api";
 import { Product } from "@/types/product";
 import { AuthService } from "@/services/auth";
@@ -16,6 +18,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Badge } from "@/components/ui/Badge";
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/Table";
 import { cn } from "@/lib/utils";
 
 interface SeoField {
@@ -49,6 +52,17 @@ interface StatItem {
   label: string;
 }
 
+interface SeoDefaults {
+  titleTemplate?: string;
+  defaultOgImage?: string;
+  robotsTxt?: string;
+  googleVerification?: string;
+  bingVerification?: string;
+  gaMeasurementId?: string;
+  gtmContainerId?: string;
+  clarityProjectId?: string;
+}
+
 interface SiteSettings {
   id?: string;
   siteId: string;
@@ -61,6 +75,7 @@ interface SiteSettings {
   address: string;
   socials: Socials;
   stats: StatItem[];
+  seoDefaults?: SeoDefaults;
 }
 
 export default function SeoAndSettingsPage() {
@@ -70,8 +85,8 @@ export default function SeoAndSettingsPage() {
   const tabParam = searchParams.get("tab");
   const { theme } = useTheme();
 
-  // Primary Tab State: seo | settings
-  const [activeTab, setActiveTab] = useState<"seo" | "settings">("seo");
+  // Primary Tab State: seo | analytics | redirects | settings
+  const [activeTab, setActiveTab] = useState<"seo" | "analytics" | "redirects" | "settings">("seo");
 
   // User Role State
   const [userRole, setUserRole] = useState<string>("");
@@ -93,16 +108,23 @@ export default function SeoAndSettingsPage() {
   const [settingsSuccess, setSettingsSuccess] = useState<string | null>(null);
   const [settingsError, setSettingsError] = useState<string | null>(null);
 
+  // Redirect Manager States
+  const [redirects, setRedirects] = useState<UrlRedirectItem[]>([]);
+  const [redirectsLoading, setRedirectsLoading] = useState(false);
+  const [newSourcePath, setNewSourcePath] = useState("");
+  const [newTargetPath, setNewTargetPath] = useState("");
+  const [newRedirectType, setNewRedirectType] = useState<number>(301);
+
   // Sync tab state with search parameters
   useEffect(() => {
-    if (tabParam === "settings") {
-      setActiveTab("settings");
+    if (tabParam === "settings" || tabParam === "analytics" || tabParam === "redirects") {
+      setActiveTab(tabParam as any);
     } else {
       setActiveTab("seo");
     }
   }, [tabParam]);
 
-  function handleTabChange(tab: "seo" | "settings") {
+  function handleTabChange(tab: "seo" | "analytics" | "redirects" | "settings") {
     setActiveTab(tab);
     const url = new URL(window.location.href);
     url.searchParams.set("tab", tab);
@@ -121,8 +143,10 @@ export default function SeoAndSettingsPage() {
   useEffect(() => {
     if (activeTab === "seo") {
       loadSeo();
-    } else if (activeTab === "settings") {
+    } else if (activeTab === "settings" || activeTab === "analytics") {
       loadSettings();
+    } else if (activeTab === "redirects") {
+      loadRedirects();
     }
   }, [activeTab, brandId]);
 
@@ -260,7 +284,17 @@ export default function SeoAndSettingsPage() {
           { value: "50K+", label: "Happy Users" },
           { value: "4.9★", label: "Avg Rating" },
           { value: "99.9%", label: "Success Rate" }
-        ]
+        ],
+        seoDefaults: {
+          titleTemplate: data.seoDefaults?.titleTemplate || "{page} — {siteName}",
+          defaultOgImage: data.seoDefaults?.defaultOgImage || "",
+          robotsTxt: data.seoDefaults?.robotsTxt || "User-agent: *\nAllow: /\n\nSitemap: https://prismmigration.com/sitemap.xml",
+          googleVerification: data.seoDefaults?.googleVerification || "",
+          bingVerification: data.seoDefaults?.bingVerification || "",
+          gaMeasurementId: data.seoDefaults?.gaMeasurementId || "",
+          gtmContainerId: data.seoDefaults?.gtmContainerId || "",
+          clarityProjectId: data.seoDefaults?.clarityProjectId || "",
+        }
       };
       setSettings(formattedData);
     } catch {
@@ -282,7 +316,7 @@ export default function SeoAndSettingsPage() {
       const payload = { ...settings, siteId: brandId };
       const updated = await AdminSettingsAPI.update(payload);
       setSettings(updated);
-      setSettingsSuccess("Storefront configurations saved successfully!");
+      setSettingsSuccess("Storefront & SEO configurations saved successfully!");
       setTimeout(() => setSettingsSuccess(null), 4000);
     } catch {
       setSettingsError("Failed to save settings. Please try again.");
@@ -294,6 +328,17 @@ export default function SeoAndSettingsPage() {
   function handleFieldChange(field: keyof SiteSettings, value: any) {
     if (!settings) return;
     setSettings({ ...settings, [field]: value });
+  }
+
+  function handleSeoDefaultChange(field: keyof SeoDefaults, value: string) {
+    if (!settings) return;
+    setSettings({
+      ...settings,
+      seoDefaults: {
+        ...(settings.seoDefaults || {}),
+        [field]: value
+      }
+    });
   }
 
   function handleSocialChange(field: keyof Socials, value: string) {
@@ -309,6 +354,49 @@ export default function SeoAndSettingsPage() {
     const newStats = [...settings.stats];
     newStats[index] = { ...newStats[index], [key]: val };
     setSettings({ ...settings, stats: newStats });
+  }
+
+  // ─── Redirects Actions ──────────────────────────────────────────────────────
+  async function loadRedirects() {
+    try {
+      setRedirectsLoading(true);
+      const data = await AdminRedirectAPI.getAll();
+      setRedirects(data || []);
+    } catch {
+      triggerSeoToast("Failed to load URL redirects", "error");
+    } finally {
+      setRedirectsLoading(false);
+    }
+  }
+
+  async function handleCreateRedirect(e: FormEvent) {
+    e.preventDefault();
+    if (!newSourcePath || !newTargetPath) return;
+    try {
+      const created = await AdminRedirectAPI.create({
+        sourcePath: newSourcePath.startsWith("/") ? newSourcePath : "/" + newSourcePath,
+        targetPath: newTargetPath,
+        redirectType: newRedirectType,
+      });
+      setRedirects((prev) => [created, ...prev]);
+      setNewSourcePath("");
+      setNewTargetPath("");
+      triggerSeoToast("301/302 Redirect created successfully!", "success");
+    } catch {
+      triggerSeoToast("Failed to create redirect rule", "error");
+    }
+  }
+
+  async function handleDeleteRedirect(id?: number) {
+    if (!id) return;
+    if (!confirm("Are you sure you want to delete this redirect rule?")) return;
+    try {
+      await AdminRedirectAPI.delete(id);
+      setRedirects((prev) => prev.filter((r) => r.id !== id));
+      triggerSeoToast("Redirect rule deleted", "success");
+    } catch {
+      triggerSeoToast("Failed to delete redirect rule", "error");
+    }
   }
 
   // ─── Helpers ───
@@ -401,6 +489,30 @@ export default function SeoAndSettingsPage() {
             onClick={() => handleTabChange("seo")}
           >
             🔍 SEO Optimizer
+          </button>
+
+          <button 
+            className={cn(
+              "px-3 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer border-0 bg-transparent",
+              activeTab === "analytics"
+                ? "bg-white dark:bg-zinc-800 shadow-sm text-zinc-900 dark:text-white"
+                : "text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
+            )} 
+            onClick={() => handleTabChange("analytics")}
+          >
+            📊 Analytics & Tags
+          </button>
+
+          <button 
+            className={cn(
+              "px-3 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer border-0 bg-transparent",
+              activeTab === "redirects"
+                ? "bg-white dark:bg-zinc-800 shadow-sm text-zinc-900 dark:text-white"
+                : "text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
+            )} 
+            onClick={() => handleTabChange("redirects")}
+          >
+            🔀 Redirects Manager
           </button>
 
           {(userRole !== "SEO" && userRole !== "SEO_CW_PRODUCT_MANAGER") && (
@@ -745,6 +857,254 @@ export default function SeoAndSettingsPage() {
               })}
             </div>
           )}
+        </div>
+      )}
+
+      {/* ─── Analytics & Tags Tab Content ─── */}
+      {activeTab === "analytics" && (
+        <div className="space-y-6">
+          {settingsLoading ? (
+            <div className="flex items-center justify-center p-12 text-sm text-zinc-500">
+              <span className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mr-2" />
+              Loading Analytics & Verification configurations...
+            </div>
+          ) : settings ? (
+            <form onSubmit={handleSaveSettings} className="space-y-6">
+              {settingsSuccess && (
+                <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-sm font-medium">
+                  {settingsSuccess}
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Analytics & Tracking Scripts */}
+                <Card className="border border-zinc-200 dark:border-zinc-800 shadow-sm bg-card">
+                  <CardHeader>
+                    <CardTitle className="text-zinc-900 dark:text-white flex items-center gap-2">
+                      <span>📊 Traffic & Behavioral Tracking IDs</span>
+                    </CardTitle>
+                    <CardDescription>
+                      Inject Google Analytics 4, Tag Manager, and Microsoft Clarity tracking scripts into the storefront automatically.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-zinc-500">Google Analytics 4 Measurement ID</label>
+                      <Input
+                        type="text"
+                        value={settings.seoDefaults?.gaMeasurementId || ""}
+                        onChange={(e) => handleSeoDefaultChange("gaMeasurementId", e.target.value)}
+                        placeholder="e.g. G-XXXXXXXXXX"
+                      />
+                      <p className="text-[10px] text-zinc-400">Found in Google Analytics Admin &gt; Data Streams.</p>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-zinc-500">Google Tag Manager (GTM) Container ID</label>
+                      <Input
+                        type="text"
+                        value={settings.seoDefaults?.gtmContainerId || ""}
+                        onChange={(e) => handleSeoDefaultChange("gtmContainerId", e.target.value)}
+                        placeholder="e.g. GTM-XXXXXXX"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-zinc-500">Microsoft Clarity Project ID</label>
+                      <Input
+                        type="text"
+                        value={settings.seoDefaults?.clarityProjectId || ""}
+                        onChange={(e) => handleSeoDefaultChange("clarityProjectId", e.target.value)}
+                        placeholder="e.g. xxxxxxxxxx (for free heatmaps & recordings)"
+                      />
+                      <p className="text-[10px] text-zinc-400">Generates heatmaps & user session recordings for conversion optimization.</p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Search Console & Webmaster Verification */}
+                <Card className="border border-zinc-200 dark:border-zinc-800 shadow-sm bg-card">
+                  <CardHeader>
+                    <CardTitle className="text-zinc-900 dark:text-white flex items-center gap-2">
+                      <span>🔍 Search Engine Verification Tags</span>
+                    </CardTitle>
+                    <CardDescription>
+                      Prove domain ownership to Google Search Console and Bing Webmaster Tools.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-zinc-500">Google Search Console Verification Tag</label>
+                      <Input
+                        type="text"
+                        value={settings.seoDefaults?.googleVerification || ""}
+                        onChange={(e) => handleSeoDefaultChange("googleVerification", e.target.value)}
+                        placeholder="Meta tag content code snippet from Search Console..."
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-zinc-500">Bing Webmaster Verification Code</label>
+                      <Input
+                        type="text"
+                        value={settings.seoDefaults?.bingVerification || ""}
+                        onChange={(e) => handleSeoDefaultChange("bingVerification", e.target.value)}
+                        placeholder="msvalidate.01 meta content code..."
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-zinc-500">Default Social OpenGraph (OG) Image URL</label>
+                      <Input
+                        type="text"
+                        value={settings.seoDefaults?.defaultOgImage || ""}
+                        onChange={(e) => handleSeoDefaultChange("defaultOgImage", e.target.value)}
+                        placeholder="https://prismmigration.com/og-default.png"
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Robots.txt Editor */}
+              <Card className="border border-zinc-200 dark:border-zinc-800 shadow-sm bg-card">
+                <CardHeader>
+                  <CardTitle className="text-zinc-900 dark:text-white flex items-center gap-2">
+                    <span>🤖 Robots.txt Configuration</span>
+                  </CardTitle>
+                  <CardDescription>
+                    Control which web crawlers and search engine bots can index specific routes on your storefront.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <textarea
+                    value={settings.seoDefaults?.robotsTxt || ""}
+                    onChange={(e) => handleSeoDefaultChange("robotsTxt", e.target.value)}
+                    rows={6}
+                    className="w-full font-mono text-xs bg-zinc-950 text-emerald-400 border border-zinc-800 rounded-lg p-3 outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/25"
+                    placeholder="User-agent: *&#10;Allow: /&#10;&#10;Sitemap: https://prismmigration.com/sitemap.xml"
+                  />
+                  <p className="text-[10px] text-zinc-400">Rendered dynamically at <code>/robots.txt</code>.</p>
+                </CardContent>
+              </Card>
+
+              <div className="flex justify-end pt-2">
+                <Button type="submit" disabled={settingsSaving} className="shadow-sm">
+                  {settingsSaving ? (
+                    <span className="w-4 h-4 rounded-full border-2 border-zinc-200 border-t-transparent animate-spin" />
+                  ) : (
+                    "Save Analytics & Verification Settings"
+                  )}
+                </Button>
+              </div>
+            </form>
+          ) : (
+            <div className="text-center py-10 text-sm text-zinc-500">No settings configurations found.</div>
+          )}
+        </div>
+      )}
+
+      {/* ─── Redirects Tab Content ─── */}
+      {activeTab === "redirects" && (
+        <div className="space-y-6">
+          <Card className="border border-zinc-200 dark:border-zinc-800 shadow-sm bg-card">
+            <CardHeader>
+              <CardTitle className="text-zinc-900 dark:text-white">🔀 Add Custom URL Redirect Rule</CardTitle>
+              <CardDescription>
+                Create 301 Permanent or 302 Temporary HTTP redirects for broken or relocated paths.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleCreateRedirect} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                <div className="space-y-1.5 md:col-span-1">
+                  <label className="text-xs font-semibold text-zinc-500">Old Source Path</label>
+                  <Input
+                    type="text"
+                    value={newSourcePath}
+                    onChange={(e) => setNewSourcePath(e.target.value)}
+                    placeholder="/old-pst-converter-page"
+                    required
+                  />
+                </div>
+                <div className="space-y-1.5 md:col-span-1">
+                  <label className="text-xs font-semibold text-zinc-500">New Target Path or URL</label>
+                  <Input
+                    type="text"
+                    value={newTargetPath}
+                    onChange={(e) => setNewTargetPath(e.target.value)}
+                    placeholder="/products/pst-to-pdf-converter"
+                    required
+                  />
+                </div>
+                <div className="space-y-1.5 md:col-span-1">
+                  <label className="text-xs font-semibold text-zinc-500">Redirect Type</label>
+                  <Select
+                    value={newRedirectType.toString()}
+                    onChange={(e) => setNewRedirectType(Number(e.target.value))}
+                  >
+                    <option value="301">301 Permanent (SEO Link Juice Pass)</option>
+                    <option value="302">302 Temporary (Testing)</option>
+                  </Select>
+                </div>
+                <div className="md:col-span-1">
+                  <Button type="submit" className="w-full">
+                    + Add Redirect Rule
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+
+          {/* Redirects Table */}
+          <Card className="border border-zinc-200 dark:border-zinc-800 shadow-sm bg-card">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="text-zinc-900 dark:text-white">Active Redirect Rules ({redirects.length})</CardTitle>
+                <CardDescription>Resolved in real-time via Astro middleware before pages render.</CardDescription>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {redirectsLoading ? (
+                <div className="p-8 text-center text-xs text-zinc-500">Loading active redirect rules...</div>
+              ) : redirects.length === 0 ? (
+                <div className="p-8 text-center text-xs text-zinc-500">No redirect rules created yet.</div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Old Source Path</TableHead>
+                      <TableHead>Target Destination</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {redirects.map((r) => (
+                      <TableRow key={r.id}>
+                        <TableCell className="font-mono text-xs text-zinc-900 dark:text-zinc-100">{r.sourcePath}</TableCell>
+                        <TableCell className="font-mono text-xs text-blue-600 dark:text-blue-400">{r.targetPath}</TableCell>
+                        <TableCell>
+                          <Badge variant={r.redirectType === 301 ? "default" : "secondary"}>
+                            HTTP {r.redirectType}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleDeleteRedirect(r.id)}
+                            className="h-7 text-[11px]"
+                          >
+                            Delete
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
         </div>
       )}
 
