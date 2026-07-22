@@ -7,8 +7,6 @@ export interface PricingTier {
   cta: string;
   popular?: boolean;
   mailboxes?: string;
-  bestFor?: string;
-  description?: string;
 }
 
 export interface ProductScreenshot {
@@ -33,14 +31,6 @@ export interface SystemRequirement {
   processor: string;
   ram: string;
   disk: string;
-  macOs?: string;
-  macProcessor?: string;
-  macRam?: string;
-  macDisk?: string;
-  linuxOs?: string;
-  linuxProcessor?: string;
-  linuxRam?: string;
-  linuxDisk?: string;
   other?: string[];
 }
 
@@ -71,9 +61,6 @@ export interface Product {
   features: string[];
   platforms: string[];
   supportedFormats: string[];
-  sourceFormats?: string[];    // Input formats this tool accepts (e.g. ["pst", "ost"])
-  targetFormats?: string[];    // Output/destination formats (e.g. ["gmail", "exchange"])
-  capabilities?: Record<string, boolean>; // e.g. {supportsBatchCsv: true}
   screenshots: ProductScreenshot[];
   pricing: PricingTier[];
   systemRequirements: SystemRequirement;
@@ -85,21 +72,26 @@ export interface Product {
     title: string;
     description: string;
     keywords: string[];
-    ogImage?: string | null;
   };
   version: string;
   lastUpdated: string;
   trialDownloadUrl?: string;
-  installerUrl?: string;
-  installationSuccessUrl?: string;
-  uninstallationSuccessUrl?: string;
   enabled?: boolean;
 }
 
-export const CATEGORY_LABELS: Record<string, string> = {
+export type ProductCategory =
+  | "email-migration"
+  | "backup"
+  | "file-converter"
+  | "cloud-migration"
+  | "mailbox-recovery"
+  | "data-export";
+
+export const CATEGORY_LABELS: Record<ProductCategory, string> = {
   "email-migration": "Email Migration",
-  "file-converter": "File Converter",
-  "backup": "Email Backup",
+  backup: "Backup Tools",
+  "file-converter": "File Converters",
   "cloud-migration": "Cloud Migration",
-  "mailbox-recovery": "Mailbox Recovery"
+  "mailbox-recovery": "Mailbox Recovery",
+  "data-export": "Data Export/Import",
 };

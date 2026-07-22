@@ -3,9 +3,9 @@ export const siteConfig = {
   tagline: "Professional Software Tools for Data Migration & Management",
   description:
     "Industry-leading email migration, backup, file conversion, and cloud migration tools trusted by 1M+ users worldwide.",
-  url: "https://thecrazyufo.in",
-  ogImage: "https://thecrazyufo.in/og.png",
-  email: "support@thecrazyufo.in",
+  url: "https://datamigratepro.com",
+  ogImage: "https://datamigratepro.com/og.png",
+  email: "support@datamigratepro.com",
   phone: "+1 (800) 123-4567",
   address: "123 Tech Park, San Francisco, CA 94107",
   socials: {

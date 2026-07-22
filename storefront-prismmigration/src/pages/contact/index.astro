@@ -1,108 +1,61 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { Mail, Phone, MapPin, Clock, MessageSquare } from "lucide-react";
+import { Mail, Phone, MapPin, Clock } from "lucide-react";
 import ContactForm from "@/components/common/ContactForm";
+import { siteConfig } from "@/config/site";
 import { SettingsAPI } from "@/services/api";
-import { generateOrganizationSchema } from "@/lib/seo";
 
 const settings = await SettingsAPI.get().catch(() => null);
 
-const siteName = settings?.name || "";
-const siteDescription = settings?.description || "";
-const sitePhone = settings?.phone || "";
-const siteEmail = settings?.email || "";
-const siteAddress = settings?.address || "";
-const siteUrl = (settings?.url || "").replace(/\/$/, "");
-const siteSocials = Object.values(settings?.socials || {}).filter((v): v is string => typeof v === "string" && v.startsWith("http"));
+const siteName = settings?.name || siteConfig.name;
+const siteDescription = settings?.description || siteConfig.description;
+const sitePhone = settings?.phone || siteConfig.phone;
+const siteEmail = settings?.email || siteConfig.email;
+const siteAddress = settings?.address || siteConfig.address;
 ---
 
 <BaseLayout
   title={`Contact Us — ${siteName}`}
   description="Get in touch with our support team. We're available 24/7 to help with any questions about our software tools."
 >
-  <script type="application/ld+json"
-    set:html={JSON.stringify(generateOrganizationSchema({
-      name: siteName,
-      url: siteUrl,
-      email: siteEmail || undefined,
-      phone: sitePhone || undefined,
-      address: siteAddress || undefined,
-      description: siteDescription || undefined,
-      logo: settings?.theme?.logoUrl || undefined,
-      socials: siteSocials.length ? siteSocials : undefined,
-    }))}
-  />
-    <div class="bg-[#0B0F1A] py-20 text-center border-b border-[#334155] relative overflow-hidden">
-      <!-- Ambient refraction glow background -->
-      <div class="absolute inset-0 pointer-events-none overflow-hidden">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] blur-[90px] rounded-full" style="background: rgba(0,200,160,0.05);"></div>
-      </div>
-
-      <div class="container-custom relative z-10">
-        <span class="inline-block text-[10px] font-bold uppercase tracking-widest mb-4 px-3 py-1.5 rounded-full border" style="color: var(--signal-teal); background: rgba(0,200,160,0.08); border-color: rgba(0,200,160,0.25); font-family: var(--font-mono);">Contact</span>
-        <h1 class="text-white font-extrabold text-3xl md:text-3xl tracking-tight mb-4" style="font-family: var(--font-display);">We're Here to Help</h1>
-        <p class="text-[#E2E8F0] max-w-lg mx-auto text-xs leading-relaxed">
+  <div>
+    <div class="hero-gradient py-14 text-center">
+      <div class="container-custom">
+        <span class="inline-block text-xs font-bold uppercase tracking-widest mb-4 px-3 py-1 rounded-full text-blue-300 bg-white/10">Contact</span>
+        <h1 class="text-white font-bold mb-3 font-bold">We're Here to Help</h1>
+        <p class="text-gray-300 max-w-lg mx-auto">
           Contact our expert support team. We typically respond within 2 hours.
         </p>
       </div>
     </div>
 
-    <section class="py-20 bg-[#0B0F1A] border-t border-[#334155]">
+    <section class="section bg-gray-50">
       <div class="container-custom">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
           {/* Contact Info */}
-        <div class="space-y-6">
-
-          <!-- Contact Signature: Support Status Bar -->
-          <div class="flex flex-wrap items-center gap-3 px-4 py-2.5 rounded-lg border" style="border-color: rgba(0,200,160,0.2); background: rgba(0,200,160,0.04); font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.05em;">
-            <span class="flex items-center gap-1.5" style="color: var(--signal-teal);">
-              <span class="w-1.5 h-1.5 rounded-full animate-pulse inline-block" style="background: var(--signal-teal);"></span>
-              SUPPORT ONLINE
-            </span>
-            <span style="color: var(--circuit-line);">|</span>
-            <span style="color: var(--type-faint);">AVG RESPONSE: <span style="color: var(--type-muted);">47 MIN</span></span>
-            <span style="color: var(--circuit-line);">|</span>
-            <span style="color: var(--type-faint);">SATISFACTION: <span style="color: var(--signal-teal);">98.3%</span></span>
-          </div>
-
-          <!-- Support Team Accountability Card -->
-          <div class="flex items-center gap-4 p-4 rounded-xl border bg-[#0F1620]" style="border-color: var(--circuit-line) !important;">
-            <div class="w-12 h-12 rounded-xl border border-[#334155] bg-zinc-800/40 flex-shrink-0 flex items-center justify-center text-[var(--signal-teal)]">
-              <MessageSquare size={20} />
-            </div>
-            <div class="flex flex-col">
-              <span class="text-xs font-bold text-white">Technical Support Desk</span>
-              <span class="text-[10px] text-zinc-500 font-mono">Expert Systems Engineers</span>
-              <span class="text-[9px] text-zinc-400 font-mono mt-0.5 leading-tight">Our support engineers oversee all complex migrations and guarantee response times under 1 hour.</span>
-            </div>
-          </div>
-
-          <div>
-              <h2 class="font-bold text-white text-xl mb-6">Contact Information</h2>
+          <div class="space-y-6">
+            <div>
+              <h2 class="font-bold text-gray-900 text-xl mb-6">Contact Information</h2>
               <div class="space-y-4">
                 {[
                   { icon: "Phone", label: "Phone", value: sitePhone, href: `tel:${sitePhone}` },
                   { icon: "Mail", label: "Email", value: siteEmail, href: `mailto:${siteEmail}` },
-                  { icon: "LiveChat", label: "Live Chat", value: "Start Chatting Now", href: "#" },
                   { icon: "MapPin", label: "Address", value: siteAddress },
                   { icon: "Clock", label: "Hours", value: "Mon–Fri: 9AM–6PM PST\nWeekends: 10AM–4PM PST" },
                 ].map((item) => (
-                  <div class="flex items-start gap-4 p-4 bg-[#1E2937]/30 backdrop-blur rounded-xl border border-[#334155]">
-                    <div class="w-10 h-10 rounded-xl bg-[#6366F1]/10 flex items-center justify-center text-[#6366F1] shrink-0 border border-[#6366F1]/20">
+                  <div class="flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-100">
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
                       {item.icon === "Phone" && <Phone size={18} />}
                       {item.icon === "Mail" && <Mail size={18} />}
-                      {item.icon === "LiveChat" && <MessageSquare size={18} />}
                       {item.icon === "MapPin" && <MapPin size={18} />}
                       {item.icon === "Clock" && <Clock size={18} />}
                     </div>
                     <div>
-                      <p class="text-[10px] font-semibold text-[#94A3B8] uppercase tracking-wide mb-1">{item.label}</p>
-                      {item.icon === "LiveChat" ? (
-                        <button onclick="if (typeof window.triggerTawkOpen === 'function') { window.triggerTawkOpen(); } else { console.log('Tawk trigger helper not registered yet'); } return false;" class="text-xs text-[#6366F1] hover:text-[#4F46E5] hover:underline font-bold text-left bg-transparent border-[#334155] p-0 cursor-pointer">{item.value}</button>
-                      ) : item.href ? (
-                        <a href={item.href} class="text-xs text-[#E2E8F0] hover:text-[#6366F1] font-semibold transition-colors">{item.value}</a>
+                      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">{item.label}</p>
+                      {item.href ? (
+                        <a href={item.href} class="text-sm text-gray-700 hover:text-blue-600 font-medium">{item.value}</a>
                       ) : (
-                        <p class="text-xs text-[#E2E8F0] whitespace-pre-line leading-relaxed">{item.value}</p>
+                        <p class="text-sm text-gray-700 whitespace-pre-line leading-relaxed">{item.value}</p>
                       )}
                     </div>
                   </div>

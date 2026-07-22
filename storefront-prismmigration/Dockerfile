@@ -8,20 +8,13 @@ WORKDIR /app
 COPY package*.json ./
 
 # Step 4: Install dependencies
-RUN npm install --legacy-peer-deps
+RUN npm install
 
 # Step 5: Copy the rest of the application
 COPY . .
 
-# Step 6: Run production build
-RUN npm run build
-
-# Step 7: Expose Astro's default port
+# Step 6: Expose Astro's default port
 EXPOSE 4321
 
-# Step 8: Set environment variables for host and port
-ENV HOST=0.0.0.0
-ENV PORT=4321
-
-# Step 9: Run production standalone server
-CMD ["node", "./dist/server/entry.mjs"]
+# Step 7: Run dev command bound to all network interfaces
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "4321"]

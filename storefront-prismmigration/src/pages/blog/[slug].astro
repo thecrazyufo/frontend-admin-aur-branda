@@ -1,25 +1,19 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { BlogAPI, SettingsAPI, BrandAPI, ProductAPI } from "@/services/api";
-import { formatDate, parseMarkdownToHtml } from "@/lib/utils";
-import { generateArticleSchema, generateBreadcrumbSchema } from "@/lib/seo";
+import { BlogAPI } from "@/services/api";
+import { formatDate } from "@/lib/utils";
 import Breadcrumb from "@/components/layout/Breadcrumb";
 import { Clock, ArrowLeft } from "lucide-react";
+import { siteConfig } from "@/config/site";
 
 const { slug } = Astro.params;
 
-let settings = null;
-let brandConfig = null;
-let products = [];
 let post = null;
 
 try {
-  [settings, brandConfig, products, post] = await Promise.all([
-    SettingsAPI.get().catch(() => null),
-    BrandAPI.getCurrentBrand().catch(() => null),
-    ProductAPI.getAll().catch(() => []),
-    slug ? BlogAPI.getBySlug(slug).catch(() => null) : Promise.resolve(null)
-  ]);
+  if (slug) {
+    post = await BlogAPI.getBySlug(slug);
+  }
 } catch (e) {
   console.error("Error loading blog post:", e);
 }
@@ -27,97 +21,61 @@ try {
 if (!post) {
   return new Response("Blog Post Not Found", { status: 404 });
 }
-
-const siteUrl = (settings?.url || "").replace(/\/$/, "");
-const articleUrl = `${siteUrl}/blog/${post.slug}`;
-
-function getTechnicalBio(authorName: string): string {
-  const bios: Record<string, string> = {
-    "Alex Johnson": "12 years Windows Server admin · Written 47 migration guides",
-    "Sarah Jenkins": "Lead Migration Engineer · Former Exchange Architect",
-    "Michael Torres": "Data Security Specialist · 15 years Mail Server Administrator",
-  };
-  return bios[authorName] || "Enterprise Migration Lead · Systems Engineer";
-}
 ---
 
 <BaseLayout
-  title={`${post.seo.title} — ${settings?.name || ""}`}
+  title={`${post.seo.title} — ${siteConfig.name}`}
   description={post.seo.description}
-  ogType="article"
-  author={post.author.name}
-  settings={settings}
-  brandConfig={brandConfig}
-  products={products}
 >
-  <script type="application/ld+json"
-    set:html={JSON.stringify(generateArticleSchema({
-      title: post.seo.title,
-      description: post.seo.description,
-      authorName: post.author.name,
-      publishedAt: post.publishedAt,
-      url: articleUrl,
-      siteName: settings?.name || ""
-    }))}
-  />
-  <script type="application/ld+json"
-    set:html={JSON.stringify(generateBreadcrumbSchema(
-      [{ label: "Blog", href: "/blog" }, { label: post.title, href: `/blog/${post.slug}` }],
-      siteUrl
-    ))}
-  />
   <Breadcrumb items={[{ label: "Blog", href: "/blog" }, { label: post.title }]} />
-  <div class="bg-[#0B0F1A] min-h-screen">
-    <article class="container-custom py-20 max-w-3xl">
-      <a href="/blog" class="inline-flex items-center gap-2 text-xs text-[#6366F1] hover:underline mb-8 font-semibold">
+  <div class="bg-gray-50 min-h-screen">
+    <article class="container-custom py-12 max-w-3xl">
+      <a href="/blog" class="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 mb-8 font-medium">
         <ArrowLeft size={15} />
         Back to Blog
       </a>
 
       {/* Header */}
       <div class="mb-8">
-        {post.category === 'email-migration' && (
-          <span class="px-2.5 py-0.5 rounded text-[9px] uppercase font-bold tracking-wider inline-block mb-3" style="border: 1px solid rgba(0, 200, 160, 0.35); background: rgba(0, 200, 160, 0.08); color: var(--signal-teal); font-family: var(--font-mono);">EMAIL-MIGRATION</span>
-        )}
-        {post.category === 'backup' && (
-          <span class="px-2.5 py-0.5 rounded text-[9px] uppercase font-bold tracking-wider inline-block mb-3" style="border: 1px solid rgba(177, 159, 251, 0.35); background: rgba(177, 159, 251, 0.08); color: #B19FFB; font-family: var(--font-mono);">BACKUP-STRATEGY</span>
-        )}
-        {post.category !== 'email-migration' && post.category !== 'backup' && (
-          <span class="px-2.5 py-0.5 rounded text-[9px] uppercase font-bold tracking-wider inline-block mb-3" style="border: 1px solid rgba(245, 158, 11, 0.35); background: rgba(245, 158, 11, 0.08); color: var(--amber-alert); font-family: var(--font-mono);">{post.category.toUpperCase()}</span>
-        )}
-        <h1 class="font-extrabold text-white mb-4 text-3xl tracking-tight" style="font-family: var(--font-display);">{post.title}</h1>
-        <div class="flex flex-wrap items-center gap-4 text-xs text-[#E2E8F0]">
+        <h1 class="font-bold text-gray-900 mb-4">{post.title}</h1>
+        <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500">
           <div class="flex items-center gap-2">
-            <div class="w-8 h-8 rounded-full bg-[#6366F1]/10 border border-[#6366F1]/20 text-[#6366F1] flex items-center justify-center font-bold text-xs">
+            <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-xs">
               {post.author.name.charAt(0)}
             </div>
-            <div class="flex flex-col">
-              <div class="flex items-center flex-wrap">
-                <span class="font-semibold text-[#E2E8F0]">{post.author.name}</span>
-                <span class="text-stone-500 text-[10px] ml-2 font-mono">({post.author.role})</span>
-              </div>
-              <div class="text-[10px] text-zinc-500 font-mono mt-0.5 leading-tight" style="letter-spacing: 0.02em;">
-                {getTechnicalBio(post.author.name)}
-              </div>
+            <div>
+              <span class="font-medium text-gray-700">{post.author.name}</span>
+              <span class="text-gray-400 ml-1">— {post.author.role}</span>
             </div>
           </div>
           <span>•</span>
-          <span class="font-mono">{formatDate(post.publishedAt)}</span>
+          <span>{formatDate(post.publishedAt)}</span>
           <span>•</span>
-          <span class="flex items-center gap-1 font-mono"><Clock size={13} /> {post.readTime} min read</span>
+          <span class="flex items-center gap-1"><Clock size={13} /> {post.readTime} min read</span>
         </div>
       </div>
 
       {/* Content */}
-      <div class="bg-[#1E2937]/30 backdrop-blur border border-[#334155] rounded-xl shadow-2xl p-8">
-        <div class="prose prose-invert max-w-none">
-          <p class="text-sm text-[#E2E8F0] mb-6 font-bold leading-relaxed">{post.excerpt}</p>
-          <div class="text-stone-350 leading-relaxed text-xs space-y-4" set:html={parseMarkdownToHtml(post.content)} />
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+        <div class="prose prose-gray max-w-none">
+          <p class="text-lg text-gray-600 mb-6 font-medium leading-relaxed">{post.excerpt}</p>
+          <div class="whitespace-pre-line text-gray-600 leading-relaxed text-sm">
+            {post.content.trim().split("\n").map((line) => {
+              if (line.startsWith("## ")) return <h2 class="text-xl font-bold text-gray-900 mt-8 mb-3">{line.replace("## ", "")}</h2>;
+              if (line.startsWith("### ")) return <h3 class="text-base font-bold text-gray-900 mt-5 mb-2">{line.replace("### ", "")}</h3>;
+              if (line.startsWith("# ")) return <h1 class="text-2xl font-bold text-gray-900 mt-6 mb-4">{line.replace("# ", "")}</h1>;
+              if (line.match(/^\d+\./)) return <p class="ml-4 my-1 text-gray-600">{line}</p>;
+              if (line.startsWith("- ")) return <p class="ml-4 my-1 text-gray-600">• {line.replace("- ", "")}</p>;
+              if (line.startsWith("**")) return <p class="font-semibold text-gray-800 my-2">{line.replace(/\*\*/g, "")}</p>;
+              if (!line.trim()) return <br />;
+              return <p class="my-2 text-gray-600">{line}</p>;
+            })}
+          </div>
         </div>
       </div>
 
       <div class="mt-8">
-        <a href="/blog" class="inline-flex items-center gap-2 py-2.5 px-5 border border-[#334155] text-[#E2E8F0] hover:text-white rounded-lg transition-colors text-xs font-bold">
+        <a href="/blog" class="btn btn-outline text-sm py-2.5 px-5 inline-flex items-center gap-2">
           <ArrowLeft size={15} />
           Back to all articles
         </a>

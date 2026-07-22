@@ -1,24 +1,18 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { HelpAPI, SettingsAPI, BrandAPI, ProductAPI } from "@/services/api";
+import { HelpAPI } from "@/services/api";
 import Breadcrumb from "@/components/layout/Breadcrumb";
 import { ArrowLeft, ThumbsUp, ThumbsDown } from "lucide-react";
-import { parseMarkdownToHtml } from "@/lib/utils";
+import { siteConfig } from "@/config/site";
 
 const { slug } = Astro.params;
 
-let settings = null;
-let brandConfig = null;
-let products = [];
 let article = null;
 
 try {
-  [settings, brandConfig, products, article] = await Promise.all([
-    SettingsAPI.get().catch(() => null),
-    BrandAPI.getCurrentBrand().catch(() => null),
-    ProductAPI.getAll().catch(() => []),
-    slug ? HelpAPI.getBySlug(slug).catch(() => null) : Promise.resolve(null)
-  ]);
+  if (slug) {
+    article = await HelpAPI.getBySlug(slug);
+  }
 } catch (e) {
   console.error("Error loading help article:", e);
 }
@@ -29,79 +23,46 @@ if (!article) {
 ---
 
 <BaseLayout
-  title={`${article.title} — ${settings?.name || ""}`}
+  title={`${article.title} — ${siteConfig.name}`}
   description={article.excerpt}
-  settings={settings}
-  brandConfig={brandConfig}
-  products={products}
 >
   <Breadcrumb items={[{ label: "Help Center", href: "/help" }, { label: article.title }]} />
-  <div class="bg-[#0B0F1A] min-h-screen">
-    <article class="container-custom py-20 max-w-3xl">
-      <a href="/help" class="inline-flex items-center gap-2 text-xs text-[#6366F1] hover:underline mb-8 font-semibold">
+  <div class="bg-gray-50 min-h-screen">
+    <article class="container-custom py-12 max-w-3xl">
+      <a href="/help" class="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 mb-8 font-medium">
         <ArrowLeft size={15} />
         Back to Help Center
       </a>
-      <h1 class="font-extrabold text-white mb-2 text-3xl tracking-tight">{article.title}</h1>
-      <p class="text-[#E2E8F0] text-xs mb-8">{article.excerpt}</p>
+      <h1 class="font-bold text-gray-900 mb-2">{article.title}</h1>
+      <p class="text-gray-500 text-sm mb-8">{article.excerpt}</p>
 
-      <div class="bg-[#1E2937]/30 backdrop-blur rounded-xl border border-[#334155] shadow-2xl p-8">
-        <div class="prose prose-invert leading-relaxed text-xs text-[#E2E8F0] space-y-4" set:html={parseMarkdownToHtml(article.content || "")} />
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+        <div class="whitespace-pre-line text-gray-600 leading-relaxed text-sm">
+          {(article.content || "").trim().split("\n").map((line) => {
+            if (line.startsWith("## ")) return <h2 class="text-xl font-bold text-gray-900 mt-8 mb-3">{line.replace("## ", "")}</h2>;
+            if (line.startsWith("### ")) return <h3 class="text-base font-bold text-gray-900 mt-5 mb-2">{line.replace("### ", "")}</h3>;
+            if (line.match(/^\d+\./)) return <p class="ml-4 my-1 text-gray-600">{line}</p>;
+            if (line.startsWith("- ")) return <p class="ml-4 my-1 text-gray-600">• {line.replace("- ", "")}</p>;
+            if (!line.trim()) return <br />;
+            return <p class="my-2 text-gray-600">{line}</p>;
+          })}
+        </div>
       </div>
 
       {/* Helpful? */}
-      <div class="mt-8 bg-[#1E2937]/30 backdrop-blur rounded-xl border border-[#334155] p-6 text-center">
-        <p class="font-bold text-white mb-4 text-xs">Was this article helpful?</p>
+      <div class="mt-8 bg-white rounded-2xl border border-gray-100 p-6 text-center">
+        <p class="font-semibold text-gray-900 mb-4">Was this article helpful?</p>
         <div class="flex items-center justify-center gap-4 flex-wrap">
-          <button id="btn-helpful" class="text-xs py-2 px-5 text-emerald-500 border border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10 rounded-lg flex items-center gap-1.5 cursor-pointer transition-colors">
+          <button class="btn btn-outline text-sm py-2 px-5 text-green-600 border-green-200 hover:bg-green-50 flex items-center gap-1.5">
             <ThumbsUp size={15} />
-            Yes (<span id="count-helpful">{article.helpful || 0}</span>)
+            Yes ({article.helpful || 0})
           </button>
-          <button id="btn-nothelpful" class="text-xs py-2 px-5 text-rose-500 border border-rose-500/20 bg-rose-500/5 hover:bg-rose-500/10 rounded-lg flex items-center gap-1.5 cursor-pointer transition-colors">
+          <button class="btn btn-outline text-sm py-2 px-5 text-red-500 border-red-100 hover:bg-red-50 flex items-center gap-1.5">
             <ThumbsDown size={15} />
-            No (<span id="count-nothelpful">{article.notHelpful || 0}</span>)
+            No ({article.notHelpful || 0})
           </button>
         </div>
       </div>
     </article>
   </div>
-
-  <script is:inline define:vars={{ articleId: article.id, publicApiUrl: import.meta.env.PUBLIC_API_URL || "http://localhost:8080/api" }}>
-    const helpfulBtn = document.getElementById("btn-helpful");
-    const notHelpfulBtn = document.getElementById("btn-nothelpful");
-    const helpfulCount = document.getElementById("count-helpful");
-    const notHelpfulCount = document.getElementById("count-nothelpful");
-
-    helpfulBtn?.addEventListener("click", async () => {
-      try {
-        const res = await fetch(`${publicApiUrl}/help/${articleId}/helpful`, { method: "POST" });
-        if (res.ok) {
-          const data = await res.json();
-          if (helpfulCount) helpfulCount.textContent = data.helpful;
-          helpfulBtn.disabled = true;
-          if (notHelpfulBtn) notHelpfulBtn.disabled = true;
-          helpfulBtn.style.opacity = "0.5";
-          helpfulBtn.style.cursor = "not-allowed";
-        }
-      } catch (err) {
-        console.error("Failed to submit helpful feedback", err);
-      }
-    });
-
-    notHelpfulBtn?.addEventListener("click", async () => {
-      try {
-        const res = await fetch(`${publicApiUrl}/help/${articleId}/nothelpful`, { method: "POST" });
-        if (res.ok) {
-          const data = await res.json();
-          if (notHelpfulCount) notHelpfulCount.textContent = data.notHelpful;
-          helpfulBtn.disabled = true;
-          if (notHelpfulBtn) notHelpfulBtn.disabled = true;
-          notHelpfulBtn.style.opacity = "0.5";
-          notHelpfulBtn.style.cursor = "not-allowed";
-        }
-      } catch (err) {
-        console.error("Failed to submit not helpful feedback", err);
-      }
-    });
-  </script>
 </BaseLayout>

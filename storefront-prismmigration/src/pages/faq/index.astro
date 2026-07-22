@@ -1,37 +1,17 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { FaqAPI , SettingsAPI } from "@/services/api";
-const settings = await SettingsAPI.get().catch(() => null);
+import { FaqAPI } from "@/services/api";
 import { FAQ_CATEGORY_LABELS, type FAQCategory } from "@/types/faq";
 import { generateFAQSchema } from "@/lib/seo";
 import SectionHeader from "@/components/common/SectionHeader";
-import { parseMarkdownToHtml } from "@/lib/utils";
 import { ChevronRight } from "lucide-react";
+import { siteConfig } from "@/config/site";
 
 let faqsList = [];
 let grouped: Record<string, typeof faqsList> = {};
 
 try {
-  faqsList = await FaqAPI.getAll().catch(() => []);
-  
-  // Inject placeholder FAQs if DB has no entries (solely for preview branch visualization)
-  if (!faqsList || faqsList.length === 0) {
-    faqsList = [
-      {
-        id: "placeholder-1",
-        question: "How long does a PST to MBOX conversion typically take? [PLACEHOLDER]",
-        answer: "Conversion speeds depend on your mailbox size and system speed. On average, our engine processes 10,000 emails per minute with complete metadata integrity.",
-        category: "general"
-      },
-      {
-        id: "placeholder-2",
-        question: "Is there any limit on the file size during migration? [PLACEHOLDER]",
-        answer: "No, our enterprise engine supports massive PST/OST database files exceeding 100GB without any crash or slowdown.",
-        category: "general"
-      }
-    ];
-  }
-
+  faqsList = await FaqAPI.getAll();
   grouped = faqsList.reduce<Record<string, typeof faqsList>>((acc, faq) => {
     if (!acc[faq.category]) acc[faq.category] = [];
     acc[faq.category].push(faq);
@@ -43,16 +23,16 @@ try {
 ---
 
 <BaseLayout
-  title={`Frequently Asked Questions — ${settings?.name || ""}`}
+  title={`Frequently Asked Questions — ${siteConfig.name}`}
   description="Find answers to frequently asked questions about our software tools, licensing, payments, and technical support."
 >
   <script type="application/ld+json" set:html={JSON.stringify(generateFAQSchema(faqsList.map((f) => ({ question: f.question, answer: f.answer }))))} />
 
-  <div class="py-14 text-center" style="background: var(--ink-void); border-bottom: 1px solid var(--circuit-line);">
+  <div class="hero-gradient py-14 text-center">
     <div class="container-custom">
-      <span class="inline-block text-[10px] font-bold uppercase tracking-widest mb-4 px-3 py-1.5 rounded-full border" style="color: var(--signal-teal); background: rgba(0,200,160,0.08); border-color: rgba(0,200,160,0.25); font-family: var(--font-mono);">FAQ</span>
-      <h1 class="text-white font-bold mb-3 text-3xl tracking-tight" style="font-family: var(--font-display);">Frequently Asked Questions</h1>
-      <p class="max-w-lg mx-auto text-xs" style="color: var(--type-muted);">
+      <span class="inline-block text-xs font-bold uppercase tracking-widest mb-4 px-3 py-1 rounded-full text-blue-300 bg-white/10">FAQ</span>
+      <h1 class="text-white font-bold mb-3">Frequently Asked Questions</h1>
+      <p class="text-gray-300 max-w-lg mx-auto">
         Everything you need to know about our tools, licensing, and support.
       </p>
     </div>
@@ -63,21 +43,18 @@ try {
       <div class="mb-12">
         <SectionHeader
           eyebrow="Category"
-          title={FAQ_CATEGORY_LABELS[category as FAQCategory] || category}
+          title={FAQ_CATEGORY_LABELS[category as FAQCategory]}
           class="mb-6"
         />
         <div class="space-y-3">
           {items.map((faq) => (
-            <details class="group rounded-2xl border" open={faq.id === "placeholder-1"} style="background: var(--slate-surface); border-color: var(--circuit-line);">
+            <details class="group bg-white rounded-2xl border border-gray-100 shadow-sm">
               <summary class="flex items-center justify-between px-6 py-4 cursor-pointer list-none">
-                <span class="font-semibold text-white pr-4 text-sm" style="font-family: var(--font-body);">{faq.question}</span>
-                <ChevronRight size={18} class="text-stone-500 shrink-0 group-open:rotate-90 transition-transform" />
+                <span class="font-semibold text-gray-900 pr-4">{faq.question}</span>
+                <ChevronRight size={18} class="text-gray-400 shrink-0 group-open:rotate-90 transition-transform" />
               </summary>
               <div class="px-6 pb-5">
-                <div class="text-xs leading-relaxed" style="color: var(--type-muted);">
-                  <div class="font-mono text-[9px] font-bold uppercase tracking-wider mb-2" style="color: var(--signal-teal);">ANSWER:</div>
-                  <div class="prose-faq" set:html={parseMarkdownToHtml(faq.answer || faq.answer)} />
-                </div>
+                <p class="text-sm text-gray-600 leading-relaxed">{faq.answer}</p>
               </div>
             </details>
           ))}

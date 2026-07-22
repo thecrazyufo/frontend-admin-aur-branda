@@ -1,13 +1,12 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { ProductAPI, CategoryAPI, SettingsAPI } from "@/services/api";
+import { ProductAPI, CategoryAPI } from "@/services/api";
 import ProductCard from "@/components/common/ProductCard";
 import SectionHeader from "@/components/common/SectionHeader";
+import { siteConfig } from "@/config/site";
 
 import type { Product } from "@/types/product";
 import type { Category } from "@/services/api";
-
-const settings = await SettingsAPI.get().catch(() => null);
 
 // Get query parameters from URL
 const category = Astro.url.searchParams.get("category") || undefined;
@@ -24,73 +23,48 @@ try {
     ProductAPI.getAll(),
   ]);
   products = ps.filter(p => p.enabled !== false);
+  categoriesList = cs;
   allProducts = aps.filter(p => p.enabled !== false);
-  categoriesList = cs.map(cat => ({
-    ...cat,
-    count: allProducts.filter(p => p.category === cat.id).length
-  }));
 } catch (e) {
   console.error("Error loading products:", e);
 }
 
 const activeCategory = categoriesList.find((c) => c.id === category);
 const filteredCount = products.length;
-
-// Enable Edge Caching/ISR
-Astro.response.headers.set(
-  "Cache-Control",
-  "public, max-age=0, s-maxage=600, stale-while-revalidate=60"
-);
 ---
 
 <BaseLayout
-  title={activeCategory ? `${activeCategory.label} Tools — ${settings?.name || ""}` : `All Software Products — ${settings?.name || ""}`}
+  title={activeCategory ? `${activeCategory.label} Tools — ${siteConfig.name}` : `All Software Products — ${siteConfig.name}`}
   description={activeCategory ? activeCategory.description : "Browse our complete collection of email migration, backup, file converter, and cloud migration tools."}
-  settings={settings}
-  products={allProducts}
 >
-  <div class="min-h-screen text-white" style="background: var(--ink-void);">
-    {/* Header - Products Catalog Signature: subtle dot-grid overlay */}
-    <div class="border-b py-16 relative overflow-hidden" style="background: var(--ink-void); border-color: var(--circuit-line);">
-      <!-- Subtle Ambient Glow -->
-      <div class="absolute inset-0 pointer-events-none overflow-hidden">
-        <div class="absolute top-1/2 left-1/4 -translate-y-1/2 w-[350px] h-[150px] blur-[80px] rounded-full" style="background: rgba(0,200,160,0.07);"></div>
-      </div>
-      <!-- Dot Grid Overlay (catalog page signature) -->
-      <div class="absolute inset-0 pointer-events-none" aria-hidden="true" style="background-image: radial-gradient(circle, rgba(0,200,160,0.12) 1px, transparent 1px); background-size: 40px 40px; opacity: 0.5;"></div>
-
-      <div class="container-custom relative z-10">
-        <div class="max-w-2xl">
-          <span class="inline-block text-[10px] font-bold uppercase tracking-widest mb-2" style="color: var(--signal-teal); font-family: var(--font-mono);">Products</span>
-          <h1 class="text-3xl font-extrabold text-white tracking-tight mb-2" style="font-family: var(--font-display);">
-            {activeCategory ? activeCategory.label : "Pristine Software Collection"}
-          </h1>
-          <p class="text-xs leading-relaxed" style="color: var(--type-muted);">
-            {activeCategory ? activeCategory.description : "Find the right enterprise-grade utility for lightning-fast database and mailbox migration."}
-          </p>
-        </div>
+  <div class="min-h-screen bg-gray-50">
+    {/* Header */}
+    <div class="bg-white border-b border-gray-100 py-10">
+      <div class="container-custom">
+        <SectionHeader
+          eyebrow="Products"
+          title={activeCategory ? activeCategory.label : "All Software Tools"}
+          subtitle={activeCategory ? activeCategory.description : "Find the right tool for your data management needs."}
+        />
       </div>
     </div>
 
-    <div class="container-custom py-12">
+    <div class="container-custom py-10">
       <div class="flex flex-col lg:flex-row gap-8">
         {/* Sidebar Filters */}
         <aside class="w-full lg:w-64 shrink-0">
-          <div class="bg-[#1E2937]/30 backdrop-blur rounded-xl border border-[#334155] p-5 sticky top-20 shadow-2xl">
-            <h3 class="font-bold text-white text-xs uppercase tracking-wider mb-4 border-b border-[#334155] pb-2">Categories</h3>
+          <div class="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm sticky top-20">
+            <h3 class="font-bold text-gray-900 text-sm mb-4">Categories</h3>
             <ul class="space-y-1">
               <li>
                 <a
                   href="/products"
-                  class={`flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition-all duration-300 ${
-                    !category
-                      ? "border font-bold"
-                      : "text-[#E2E8F0] hover:text-white hover:bg-[#1E2937]/40 border border-transparent"
+                  class={`flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                    !category ? "bg-blue-50 text-blue-700 font-semibold" : "text-gray-600 hover:bg-gray-50"
                   }`}
-                  style={!category ? "background: rgba(0,200,160,0.08); color: var(--signal-teal); border-color: rgba(0,200,160,0.25);" : ""}
                 >
                   All Products
-                  <span class="text-[10px] bg-stone-800 border border-[#475569] px-1.5 py-0.5 rounded-md" style="font-family: var(--font-mono); color: var(--type-muted);">
+                  <span class="text-xs text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded-full">
                     {allProducts.length}
                   </span>
                 </a>
@@ -99,15 +73,12 @@ Astro.response.headers.set(
                 <li>
                   <a
                     href={`/products?category=${cat.id}`}
-                    class={`flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition-all duration-300 ${
-                      category === cat.id
-                        ? "border font-bold"
-                        : "text-[#E2E8F0] hover:text-white hover:bg-[#1E2937]/40 border border-transparent"
+                    class={`flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                      category === cat.id ? "bg-blue-50 text-blue-700 font-semibold" : "text-gray-600 hover:bg-gray-50"
                     }`}
-                    style={category === cat.id ? "background: rgba(0,200,160,0.08); color: var(--signal-teal); border-color: rgba(0,200,160,0.25);" : ""}
                   >
                     {cat.label}
-                    <span class="text-[10px] bg-stone-800 border border-[#475569] px-1.5 py-0.5 rounded-md" style="font-family: var(--font-mono); color: var(--type-muted);">
+                    <span class="text-xs text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded-full">
                       {cat.count}
                     </span>
                   </a>
@@ -120,8 +91,8 @@ Astro.response.headers.set(
         {/* Product Grid */}
         <div class="flex-1">
           <div class="flex items-center justify-between mb-6">
-            <p class="text-xs font-bold" style="color: var(--type-faint); font-family: var(--font-mono); letter-spacing: 0.08em;">
-              {filteredCount} UTILI{filteredCount !== 1 ? "TIES" : "TY"} RESOLVED
+            <p class="text-sm text-gray-500">
+              {filteredCount} product{filteredCount !== 1 ? "s" : ""} found
             </p>
           </div>
 
@@ -132,9 +103,9 @@ Astro.response.headers.set(
               ))}
             </div>
           ) : (
-            <div class="text-center py-20 backdrop-blur rounded-2xl border p-8" style="background: rgba(0,200,160,0.03); border-color: var(--circuit-line);">
-              <p class="text-sm" style="color: var(--type-muted);">No migration utilities matching this query were found in database index.</p>
-              <a href="/products" class="cta-pulse-wrap inline-block mt-4 font-extrabold text-xs py-2 px-4 rounded transition-colors" style="background: var(--signal-teal); color: #080C14;">Clear Filters</a>
+            <div class="text-center py-20 bg-white rounded-2xl border border-gray-100 p-8 shadow-sm">
+              <p class="text-gray-400 text-lg">No products found.</p>
+              <a href="/products" class="btn btn-primary mt-4 inline-block">Clear Filters</a>
             </div>
           )}
         </div>

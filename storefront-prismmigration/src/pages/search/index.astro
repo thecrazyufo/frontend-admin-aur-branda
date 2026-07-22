@@ -1,26 +1,21 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import SearchResultsPage from "@/components/common/SearchResultsPage";
+import { siteConfig } from "@/config/site";
 import { SettingsAPI } from "@/services/api";
 
 const settings = await SettingsAPI.get().catch(() => null);
-const siteName = settings?.name || "";
+const siteName = settings?.name || siteConfig.name;
 ---
 
 <BaseLayout
   title={`Search — ${siteName}`}
   description="Search for products, documentation, blogs, and guides."
-  noindex={true}
 >
-  <div class="min-h-screen bg-[#0B0F1A]">
-    <div class="bg-[#0B0F1A] py-16 text-center border-b border-[#334155] relative overflow-hidden">
-      <!-- Ambient refraction glow background -->
-      <div class="absolute inset-0 pointer-events-none overflow-hidden">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] bg-[#6366F1]/5 blur-[90px] rounded-full"></div>
-      </div>
-
-      <div class="container-custom relative z-10">
-        <h1 class="text-white font-extrabold text-3xl tracking-tight mb-3">Search</h1>
+  <div class="min-h-screen bg-gray-50">
+    <div class="hero-gradient py-12 text-center">
+      <div class="container-custom">
+        <h1 class="text-white font-bold mb-3 font-bold">Search</h1>
       </div>
     </div>
     <SearchResultsPage client:load />

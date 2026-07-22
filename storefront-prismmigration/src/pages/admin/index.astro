@@ -1,7 +1,4 @@
 ---
-// Redirect /admin requests to the admin-panel service
-// Use SITE_ID env var for brand-specific routing
-const siteId = import.meta.env.PUBLIC_SITE_ID || import.meta.env.SITE_ID || "";
-const adminHost = import.meta.env.PUBLIC_ADMIN_URL || `${Astro.url.protocol}//${Astro.url.hostname}:3000`;
-return Astro.redirect(`${adminHost}/admin/login?brandId=${siteId}`);
+// Redirect main site /admin requests to the admin-panel service running on port 3000
+return Astro.redirect("http://localhost:3000/admin/login?brandId=brandA");
 ---

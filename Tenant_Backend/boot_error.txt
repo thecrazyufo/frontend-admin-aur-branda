@@ -1,0 +1,1958 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------< com.datamigratepro:backend-api >-------------------
+[INFO] Building backend-api 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.4.3:run (default-cli) > test-compile @ backend-api >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ backend-api ---
+[INFO] Copying 4 resources from src/main/resources to target/classes
+[INFO] Copying 41 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ backend-api ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ backend-api ---
+[INFO] Copying 1 resource from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ backend-api ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< spring-boot:3.4.3:run (default-cli) < test-compile @ backend-api <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.4.3:run (default-cli) @ backend-api ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.3)
+
+2026-07-15 22:34:54.624 [background-preinit] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.2.Final
+2026-07-15 22:34:54.649 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] com.datamigratepro.Application - Starting Application using Java 21.0.11 with PID 39042 (/Users/akashsahu.blue/Documents/Akas/software-selling-platform/Tenant_Backend/target/classes started by akashsahu.blue in /Users/akashsahu.blue/Documents/Akas/software-selling-platform/Tenant_Backend)
+2026-07-15 22:34:54.650 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] com.datamigratepro.Application - The following 1 profile is active: "test"
+2026-07-15 22:34:54.981 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-07-15 22:34:55.033 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 47 ms. Found 25 JPA repository interfaces.
+2026-07-15 22:34:55.279 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-07-15 22:34:55.285 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-07-15 22:34:55.286 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-07-15 22:34:55.287 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.36]
+2026-07-15 22:34:55.308 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-07-15 22:34:55.309 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 640 ms
+2026-07-15 22:34:55.362 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-07-15 22:34:55.446 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:testdb user=SA
+2026-07-15 22:34:55.447 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-07-15 22:34:55.474 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.database - Set default schema name to public
+2026-07-15 22:34:55.807 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Creating database history table with name: public.DATABASECHANGELOG
+2026-07-15 22:34:55.855 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Reading from public.DATABASECHANGELOG
+2026-07-15 22:34:55.973 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.lockservice - Successfully acquired change log lock
+2026-07-15 22:34:55.973 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.command - Using deploymentId: 4135095973
+2026-07-15 22:34:55.974 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Reading from public.DATABASECHANGELOG
+2026-07-15 22:34:56.013 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/001-initial-schema.xml::001-categories::platform
+2026-07-15 22:34:56.016 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Table categories created
+2026-07-15 22:34:56.016 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/001-initial-schema.xml::001-categories::platform ran successfully in 3ms
+2026-07-15 22:34:56.019 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/001-initial-schema.xml::001-faqs::platform
+2026-07-15 22:34:56.020 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Table faqs created
+2026-07-15 22:34:56.020 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/001-initial-schema.xml::001-faqs::platform ran successfully in 1ms
+2026-07-15 22:34:56.021 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/001-initial-schema.xml::001-help-articles::platform
+2026-07-15 22:34:56.023 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Table help_articles created
+2026-07-15 22:34:56.023 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/001-initial-schema.xml::001-help-articles::platform ran successfully in 2ms
+2026-07-15 22:34:56.024 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/001-initial-schema.xml::001-inquiries::platform
+2026-07-15 22:34:56.026 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Table inquiries created
+2026-07-15 22:34:56.026 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/001-initial-schema.xml::001-inquiries::platform ran successfully in 2ms
+2026-07-15 22:34:56.027 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/001-initial-schema.xml::001-license-keys::platform
+2026-07-15 22:34:56.029 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Table license_keys created
+2026-07-15 22:34:56.029 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/001-initial-schema.xml::001-license-keys::platform ran successfully in 2ms
+2026-07-15 22:34:56.030 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/001-initial-schema.xml::001-legacy-license-activations::platform
+2026-07-15 22:34:56.033 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Table legacy_license_activations created
+2026-07-15 22:34:56.035 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Foreign key constraint added to legacy_license_activations (license_key_id)
+2026-07-15 22:34:56.035 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/001-initial-schema.xml::001-legacy-license-activations::platform ran successfully in 5ms
+2026-07-15 22:34:56.036 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/001-initial-schema.xml::001-licenses::platform
+2026-07-15 22:34:56.038 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Table licenses created
+2026-07-15 22:34:56.038 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/001-initial-schema.xml::001-licenses::platform ran successfully in 2ms
+2026-07-15 22:34:56.039 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/001-initial-schema.xml::001-activations::platform
+2026-07-15 22:34:56.040 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Table activations created
+2026-07-15 22:34:56.041 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Foreign key constraint added to activations (license_id)
+2026-07-15 22:34:56.041 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/001-initial-schema.xml::001-activations::platform ran successfully in 2ms
+2026-07-15 22:34:56.043 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/001-initial-schema.xml::001-products::platform
+2026-07-15 22:34:56.045 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Table products created
+2026-07-15 22:34:56.045 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/001-initial-schema.xml::001-products::platform ran successfully in 2ms
+2026-07-15 22:34:56.046 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/001-initial-schema.xml::001-blog-posts::platform
+2026-07-15 22:34:56.048 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Table blog_posts created
+2026-07-15 22:34:56.048 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/001-initial-schema.xml::001-blog-posts::platform ran successfully in 2ms
+2026-07-15 22:34:56.049 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/001-initial-schema.xml::001-site-settings::platform
+2026-07-15 22:34:56.051 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Table site_settings created
+2026-07-15 22:34:56.051 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/001-initial-schema.xml::001-site-settings::platform ran successfully in 2ms
+2026-07-15 22:34:56.055 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/001-initial-schema.xml::001-trial-downloads::platform
+2026-07-15 22:34:56.057 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Table trial_downloads created
+2026-07-15 22:34:56.057 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/001-initial-schema.xml::001-trial-downloads::platform ran successfully in 2ms
+2026-07-15 22:34:56.058 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/002-admin-users.xml::002-admin-users::platform
+2026-07-15 22:34:56.059 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Table admin_users created
+2026-07-15 22:34:56.060 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Index idx_admin_users_role created
+2026-07-15 22:34:56.060 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Index idx_admin_users_brand_id created
+2026-07-15 22:34:56.060 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/002-admin-users.xml::002-admin-users::platform ran successfully in 2ms
+2026-07-15 22:34:56.061 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/002-admin-users.xml::002-admin-users-seed::platform
+2026-07-15 22:34:56.062 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - New row inserted into admin_users
+2026-07-15 22:34:56.063 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - New row inserted into admin_users
+2026-07-15 22:34:56.063 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/002-admin-users.xml::002-admin-users-seed::platform ran successfully in 2ms
+2026-07-15 22:34:56.064 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/003-add-enabled-product.xml::003-add-enabled-column::platform
+2026-07-15 22:34:56.069 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns enabled(BOOLEAN) added to products
+2026-07-15 22:34:56.069 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/003-add-enabled-product.xml::003-add-enabled-column::platform ran successfully in 5ms
+2026-07-15 22:34:56.070 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/004-expand-site-settings.xml::004-site-settings-theme::platform
+2026-07-15 22:34:56.071 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns theme(JSONB) added to site_settings
+2026-07-15 22:34:56.071 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/004-expand-site-settings.xml::004-site-settings-theme::platform ran successfully in 1ms
+2026-07-15 22:34:56.072 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/004-expand-site-settings.xml::004-site-settings-navigation::platform
+2026-07-15 22:34:56.076 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns main_navigation(JSONB),footer_config(JSONB) added to site_settings
+2026-07-15 22:34:56.076 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/004-expand-site-settings.xml::004-site-settings-navigation::platform ran successfully in 4ms
+2026-07-15 22:34:56.077 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/004-expand-site-settings.xml::004-site-settings-home-page::platform
+2026-07-15 22:34:56.080 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns hero(JSONB),home_sections(JSONB) added to site_settings
+2026-07-15 22:34:56.080 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/004-expand-site-settings.xml::004-site-settings-home-page::platform ran successfully in 3ms
+2026-07-15 22:34:56.081 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/004-expand-site-settings.xml::004-site-settings-legal::platform
+2026-07-15 22:34:56.083 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns legal_pages(JSONB) added to site_settings
+2026-07-15 22:34:56.083 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/004-expand-site-settings.xml::004-site-settings-legal::platform ran successfully in 2ms
+2026-07-15 22:34:56.084 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/004-expand-site-settings.xml::004-site-settings-about::platform
+2026-07-15 22:34:56.085 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns about_page(JSONB) added to site_settings
+2026-07-15 22:34:56.085 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/004-expand-site-settings.xml::004-site-settings-about::platform ran successfully in 1ms
+2026-07-15 22:34:56.086 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/004-expand-site-settings.xml::004-site-settings-offers::platform
+2026-07-15 22:34:56.088 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns coupons(JSONB),announcement(JSONB) added to site_settings
+2026-07-15 22:34:56.089 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/004-expand-site-settings.xml::004-site-settings-offers::platform ran successfully in 2ms
+2026-07-15 22:34:56.094 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/004-expand-site-settings.xml::004-site-settings-seo-defaults::platform
+2026-07-15 22:34:56.099 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns seo_defaults(JSONB) added to site_settings
+2026-07-15 22:34:56.100 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/004-expand-site-settings.xml::004-site-settings-seo-defaults::platform ran successfully in 6ms
+2026-07-15 22:34:56.101 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/005-seo-database-indexes.xml::005-products-seo-index::platform
+2026-07-15 22:34:56.102 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Index idx_products_seo_lookup created
+2026-07-15 22:34:56.102 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/005-seo-database-indexes.xml::005-products-seo-index::platform ran successfully in 0ms
+2026-07-15 22:34:56.105 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/005-seo-database-indexes.xml::005-blog-posts-seo-index::platform
+2026-07-15 22:34:56.106 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Index idx_blog_posts_seo_lookup created
+2026-07-15 22:34:56.106 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/005-seo-database-indexes.xml::005-blog-posts-seo-index::platform ran successfully in 0ms
+2026-07-15 22:34:56.107 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/005-seo-database-indexes.xml::005-categories-seo-index::platform
+2026-07-15 22:34:56.107 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Index idx_categories_seo_lookup created
+2026-07-15 22:34:56.108 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/005-seo-database-indexes.xml::005-categories-seo-index::platform ran successfully in 1ms
+2026-07-15 22:34:56.109 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/005-seo-database-indexes.xml::005-help-articles-seo-index::platform
+2026-07-15 22:34:56.109 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Index idx_help_articles_seo_lookup created
+2026-07-15 22:34:56.110 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/005-seo-database-indexes.xml::005-help-articles-seo-index::platform ran successfully in 1ms
+2026-07-15 22:34:56.111 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/006-url-redirects.xml::006-url-redirects-table::platform
+2026-07-15 22:34:56.112 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Table url_redirects created
+2026-07-15 22:34:56.112 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Index idx_url_redirects_lookup created
+2026-07-15 22:34:56.112 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/006-url-redirects.xml::006-url-redirects-table::platform ran successfully in 1ms
+2026-07-15 22:34:56.114 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/007-brand-configs.xml::007-brand-configs::system
+2026-07-15 22:34:56.115 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Table brand_configs created
+2026-07-15 22:34:56.117 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - New row inserted into brand_configs
+2026-07-15 22:34:56.117 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - New row inserted into brand_configs
+2026-07-15 22:34:56.118 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - New row inserted into brand_configs
+2026-07-15 22:34:56.118 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - New row inserted into brand_configs
+2026-07-15 22:34:56.118 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - New row inserted into brand_configs
+2026-07-15 22:34:56.119 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/007-brand-configs.xml::007-brand-configs::system ran successfully in 5ms
+2026-07-15 22:34:56.120 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/008-brand-dev-port.xml::008-brand-dev-port::system
+2026-07-15 22:34:56.121 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns dev_port(VARCHAR(255)) added to brand_configs
+2026-07-15 22:34:56.121 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Data updated in brand_configs
+2026-07-15 22:34:56.122 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Data updated in brand_configs
+2026-07-15 22:34:56.122 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Data updated in brand_configs
+2026-07-15 22:34:56.123 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Data updated in brand_configs
+2026-07-15 22:34:56.123 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Data updated in brand_configs
+2026-07-15 22:34:56.123 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/008-brand-dev-port.xml::008-brand-dev-port::system ran successfully in 3ms
+2026-07-15 22:34:56.124 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/009-brand-templates.xml::009-brand-templates::system
+2026-07-15 22:34:56.126 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns layout_template(VARCHAR(255)) added to brand_configs
+2026-07-15 22:34:56.126 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Data updated in brand_configs
+2026-07-15 22:34:56.127 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Data updated in brand_configs
+2026-07-15 22:34:56.127 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Data updated in brand_configs
+2026-07-15 22:34:56.128 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Data updated in brand_configs
+2026-07-15 22:34:56.128 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Data updated in brand_configs
+2026-07-15 22:34:56.128 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/009-brand-templates.xml::009-brand-templates::system ran successfully in 3ms
+2026-07-15 22:34:56.129 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/010-brand-logo.xml::010-brand-logo::antigravity
+2026-07-15 22:34:56.130 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns logo_url(VARCHAR(512)) added to brand_configs
+2026-07-15 22:34:56.130 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/010-brand-logo.xml::010-brand-logo::antigravity ran successfully in 1ms
+2026-07-15 22:34:56.131 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/011-blog-posts-column-fix.xml::011-blog-posts-column-fix::system
+2026-07-15 22:34:56.131 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Column blog_posts.image_url renamed to cover_image
+2026-07-15 22:34:56.132 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Column blog_posts.reading_time renamed to read_time
+2026-07-15 22:34:56.132 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/011-blog-posts-column-fix.xml::011-blog-posts-column-fix::system ran successfully in 1ms
+2026-07-15 22:34:56.133 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/012-license-activations-table.xml::012-license-activations-table::system
+2026-07-15 22:34:56.134 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Table license_activations created
+2026-07-15 22:34:56.135 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Unique constraint added to license_activations(license_id,machine_id)
+2026-07-15 22:34:56.135 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/012-license-activations-table.xml::012-license-activations-table::system ran successfully in 2ms
+2026-07-15 22:34:56.136 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/013-orders-table.xml::013-orders-table::system
+2026-07-15 22:34:56.137 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Table orders created
+2026-07-15 22:34:56.137 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/013-orders-table.xml::013-orders-table::system ran successfully in 1ms
+2026-07-15 22:34:56.138 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/014-products-column-fix.xml::014-products-column-fix::system
+2026-07-15 22:34:56.138 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Column products.pricing_tiers renamed to pricing
+2026-07-15 22:34:56.139 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns related_product_ids(JSONB) added to products
+2026-07-15 22:34:56.139 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/014-products-column-fix.xml::014-products-column-fix::system ran successfully in 1ms
+2026-07-15 22:34:56.141 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/015-social-proof.xml::015-social-proof-tables::antigravity
+2026-07-15 22:34:56.141 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Table client_logos created
+2026-07-15 22:34:56.142 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Index idx_client_logos_site_id created
+2026-07-15 22:34:56.143 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Table testimonials created
+2026-07-15 22:34:56.143 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Index idx_testimonials_site_id created
+2026-07-15 22:34:56.143 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/015-social-proof.xml::015-social-proof-tables::antigravity ran successfully in 2ms
+2026-07-15 22:34:56.144 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/016-product-license-comparison.xml::016-product-license-comparison::system
+2026-07-15 22:34:56.145 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns license_comparison(jsonb) added to products
+2026-07-15 22:34:56.145 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/016-product-license-comparison.xml::016-product-license-comparison::system ran successfully in 1ms
+2026-07-15 22:34:56.146 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/017-format-compatibility.xml::017-create-format-compatibility::system
+2026-07-15 22:34:56.147 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Table format_compatibility created
+2026-07-15 22:34:56.147 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Index idx_fc_source_format created
+2026-07-15 22:34:56.148 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Index idx_fc_target_format created
+2026-07-15 22:34:56.148 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/017-format-compatibility.xml::017-create-format-compatibility::system ran successfully in 2ms
+2026-07-15 22:34:56.148 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/017-format-compatibility.xml::017-add-product-format-columns::system
+2026-07-15 22:34:56.150 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns source_formats(jsonb) added to products
+2026-07-15 22:34:56.151 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns target_formats(jsonb) added to products
+2026-07-15 22:34:56.151 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/017-format-compatibility.xml::017-add-product-format-columns::system ran successfully in 3ms
+2026-07-15 22:34:56.152 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/018-update-brand-a-name.xml::018-update-brand-a-name::system
+2026-07-15 22:34:56.152 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Data updated in brand_configs
+2026-07-15 22:34:56.153 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Data updated in admin_users
+2026-07-15 22:34:56.153 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/018-update-brand-a-name.xml::018-update-brand-a-name::system ran successfully in 1ms
+2026-07-15 22:34:56.153 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/019-product-capabilities.xml::019-product-capabilities::system
+2026-07-15 22:34:56.155 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns capabilities(jsonb) added to products
+2026-07-15 22:34:56.155 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/019-product-capabilities.xml::019-product-capabilities::system ran successfully in 2ms
+2026-07-15 22:34:56.156 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/020-global-registry.xml::020-create-source-formats::platform
+2026-07-15 22:34:56.157 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Table source_formats created
+2026-07-15 22:34:56.157 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Unique constraint added to source_formats(format_key, site_id)
+2026-07-15 22:34:56.157 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Index idx_sf_site_id created
+2026-07-15 22:34:56.157 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/020-global-registry.xml::020-create-source-formats::platform ran successfully in 1ms
+2026-07-15 22:34:56.158 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/020-global-registry.xml::020-create-target-formats::platform
+2026-07-15 22:34:56.159 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Table target_formats created
+2026-07-15 22:34:56.159 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Unique constraint added to target_formats(format_key, site_id)
+2026-07-15 22:34:56.160 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Index idx_tf_site_id created
+2026-07-15 22:34:56.160 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/020-global-registry.xml::020-create-target-formats::platform ran successfully in 2ms
+2026-07-15 22:34:56.161 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/020-global-registry.xml::020-create-supported-clients::platform
+2026-07-15 22:34:56.162 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Table supported_clients created
+2026-07-15 22:34:56.163 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Unique constraint added to supported_clients(client_key, site_id)
+2026-07-15 22:34:56.163 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Index idx_sc_site_id created
+2026-07-15 22:34:56.163 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/020-global-registry.xml::020-create-supported-clients::platform ran successfully in 2ms
+2026-07-15 22:34:56.164 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/020-global-registry.xml::020-create-key-features::platform
+2026-07-15 22:34:56.165 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Table key_features created
+2026-07-15 22:34:56.165 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Unique constraint added to key_features(feature_key, site_id)
+2026-07-15 22:34:56.165 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Index idx_kf_site_id created
+2026-07-15 22:34:56.166 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/020-global-registry.xml::020-create-key-features::platform ran successfully in 2ms
+2026-07-15 22:34:56.166 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/021-add-registry-multi-account.xml::021-add-supports-multiple-accounts-source::platform
+2026-07-15 22:34:56.167 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns supports_multiple_accounts(BOOLEAN) added to source_formats
+2026-07-15 22:34:56.167 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/021-add-registry-multi-account.xml::021-add-supports-multiple-accounts-source::platform ran successfully in 1ms
+2026-07-15 22:34:56.168 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/021-add-registry-multi-account.xml::021-add-supports-multiple-accounts-target::platform
+2026-07-15 22:34:56.169 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns supports_multiple_accounts(BOOLEAN) added to target_formats
+2026-07-15 22:34:56.169 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/021-add-registry-multi-account.xml::021-add-supports-multiple-accounts-target::platform ran successfully in 1ms
+2026-07-15 22:34:56.169 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/022-site-settings-careers.xml::022-site-settings-careers::platform
+2026-07-15 22:34:56.170 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns careers_page(JSONB) added to site_settings
+2026-07-15 22:34:56.170 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/022-site-settings-careers.xml::022-site-settings-careers::platform ran successfully in 1ms
+2026-07-15 22:34:56.171 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/023-career-positions.xml::023-career-positions::platform
+2026-07-15 22:34:56.172 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Table career_positions created
+2026-07-15 22:34:56.172 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/023-career-positions.xml::023-career-positions::platform ran successfully in 1ms
+2026-07-15 22:34:56.172 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/024-site-settings-clients.xml::024-site-settings-clients::platform
+2026-07-15 22:34:56.173 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns clients_page(jsonb) added to site_settings
+2026-07-15 22:34:56.175 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns description(text),case_study(text) added to client_logos
+2026-07-15 22:34:56.175 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/024-site-settings-clients.xml::024-site-settings-clients::platform ran successfully in 3ms
+2026-07-15 22:34:56.175 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/025-product-install-urls.xml::025-product-install-urls::platform
+2026-07-15 22:34:56.177 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns installation_success_url(VARCHAR(255)),uninstallation_success_url(VARCHAR(255)) added to products
+2026-07-15 22:34:56.177 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/025-product-install-urls.xml::025-product-install-urls::platform ran successfully in 2ms
+2026-07-15 22:34:56.178 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/026-link-faqs-guides-to-products.xml::026-link-faqs-guides-to-products::platform
+2026-07-15 22:34:56.179 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns product_id(VARCHAR(255)) added to faqs
+2026-07-15 22:34:56.180 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns product_id(VARCHAR(255)) added to help_articles
+2026-07-15 22:34:56.180 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/026-link-faqs-guides-to-products.xml::026-link-faqs-guides-to-products::platform ran successfully in 2ms
+2026-07-15 22:34:56.180 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/027-faq-guide-multiple-products.xml::027-faq-guide-multiple-products::platform
+2026-07-15 22:34:56.181 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns product_ids(JSONB) added to faqs
+2026-07-15 22:34:56.182 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns product_ids(JSONB) added to help_articles
+2026-07-15 22:34:56.182 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/027-faq-guide-multiple-products.xml::027-faq-guide-multiple-products::platform ran successfully in 2ms
+2026-07-15 22:34:56.182 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/028-category-multiple-products.xml::028-category-multiple-products::platform
+2026-07-15 22:34:56.184 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns product_ids(JSONB) added to categories
+2026-07-15 22:34:56.184 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/028-category-multiple-products.xml::028-category-multiple-products::platform ran successfully in 2ms
+2026-07-15 22:34:56.184 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/029-social-proof-product-ids.xml::029-testimonials-product-ids::platform
+2026-07-15 22:34:56.185 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns product_ids(JSONB) added to testimonials
+2026-07-15 22:34:56.185 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/029-social-proof-product-ids.xml::029-testimonials-product-ids::platform ran successfully in 1ms
+2026-07-15 22:34:56.186 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/029-social-proof-product-ids.xml::029b-client-logos-product-ids::platform
+2026-07-15 22:34:56.186 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns product_ids(JSONB) added to client_logos
+2026-07-15 22:34:56.186 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/029-social-proof-product-ids.xml::029b-client-logos-product-ids::platform ran successfully in 0ms
+2026-07-15 22:34:56.187 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/030-blog-product-ids.xml::030-blog-posts-product-ids::platform
+2026-07-15 22:34:56.188 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns product_ids(JSONB) added to blog_posts
+2026-07-15 22:34:56.188 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/030-blog-product-ids.xml::030-blog-posts-product-ids::platform ran successfully in 1ms
+2026-07-15 22:34:56.189 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/031-trial-downloads-product-id.xml::031-trial-downloads-product-id::platform
+2026-07-15 22:34:56.190 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns product_id(VARCHAR(50)) added to trial_downloads
+2026-07-15 22:34:56.194 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Custom SQL executed
+2026-07-15 22:34:56.194 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/031-trial-downloads-product-id.xml::031-trial-downloads-product-id::platform ran successfully in 5ms
+2026-07-15 22:34:56.195 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/032-migrationuncle-brand.xml::032-migrationuncle-brand::system
+2026-07-15 22:34:56.196 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - New row inserted into brand_configs
+2026-07-15 22:34:56.196 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/032-migrationuncle-brand.xml::032-migrationuncle-brand::system ran successfully in 1ms
+2026-07-15 22:34:56.196 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/033-apexbyte-brand.xml::033-apexbyte-brand::system
+2026-07-15 22:34:56.197 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - New row inserted into brand_configs
+2026-07-15 22:34:56.197 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/033-apexbyte-brand.xml::033-apexbyte-brand::system ran successfully in 1ms
+2026-07-15 22:34:56.198 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/034-remove-old-brands.xml::034-remove-old-brands::system
+2026-07-15 22:34:56.198 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Data deleted from admin_users
+2026-07-15 22:34:56.198 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Data deleted from admin_users
+2026-07-15 22:34:56.199 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Data deleted from brand_configs
+2026-07-15 22:34:56.199 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Data deleted from brand_configs
+2026-07-15 22:34:56.199 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/034-remove-old-brands.xml::034-remove-old-brands::system ran successfully in 1ms
+2026-07-15 22:34:56.200 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/035-product-installer-url.xml::035-product-installer-url::platform
+2026-07-15 22:34:56.201 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns installer_url(VARCHAR(512)) added to products
+2026-07-15 22:34:56.201 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/035-product-installer-url.xml::035-product-installer-url::platform ran successfully in 1ms
+2026-07-15 22:34:56.201 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/036-create-coupons-table.xml::036-create-coupons-table::antigravity
+2026-07-15 22:34:56.202 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Table coupons created
+2026-07-15 22:34:56.203 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Unique constraint added to coupons(code, site_id)
+2026-07-15 22:34:56.203 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/036-create-coupons-table.xml::036-create-coupons-table::antigravity ran successfully in 2ms
+2026-07-15 22:34:56.204 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/037-billing-compliance-fields.xml::037-billing-compliance-fields::antigravity
+2026-07-15 22:34:56.211 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns billing_name(VARCHAR(150)),billing_company(VARCHAR(150)),billing_address(VARCHAR(255)),billing_city(VARCHAR(100)),billing_state(VARCHAR(100)),billing_zip(VARCHAR(20)),billing_country(VARCHAR(100)),tax_id(VARCHAR(50)),tax_amount(DOUBLE),tax_rate(DOUBLE) added to orders
+2026-07-15 22:34:56.211 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/037-billing-compliance-fields.xml::037-billing-compliance-fields::antigravity ran successfully in 7ms
+2026-07-15 22:34:56.211 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/038-add-offline-column.xml::038-add-offline-column::platform
+2026-07-15 22:34:56.212 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Columns is_offline_capable(BOOLEAN) added to license_keys
+2026-07-15 22:34:56.212 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/038-add-offline-column.xml::038-add-offline-column::platform ran successfully in 1ms
+2026-07-15 22:34:56.213 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Running Changeset: db/changelog/039-populate-brand-a-legal-pages.xml::039-populate-brand-a-legal-pages::platform
+2026-07-15 22:34:56.217 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - Custom SQL executed
+2026-07-15 22:34:56.217 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.changelog - ChangeSet db/changelog/039-populate-brand-a-legal-pages.xml::039-populate-brand-a-legal-pages::platform ran successfully in 4ms
+2026-07-15 22:34:56.220 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.util - UPDATE SUMMARY
+2026-07-15 22:34:56.220 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.util - Run:                         66
+2026-07-15 22:34:56.220 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.util - Previously run:               0
+2026-07-15 22:34:56.220 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.util - Filtered out:                 0
+2026-07-15 22:34:56.220 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.util - -------------------------------
+2026-07-15 22:34:56.220 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.util - Total change sets:           66
+2026-07-15 22:34:56.221 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.util - Update summary generated
+2026-07-15 22:34:56.222 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.command - Update command completed successfully.
+2026-07-15 22:34:56.222 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.ui - Liquibase: Update has been successful. Rows affected: 89
+2026-07-15 22:34:56.222 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.lockservice - Successfully released change log lock
+2026-07-15 22:34:56.222 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] liquibase.command - Command execution complete
+2026-07-15 22:34:56.256 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-07-15 22:34:56.276 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.8.Final
+2026-07-15 22:34:56.287 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-07-15 22:34:56.387 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-07-15 22:34:56.403 [main] WARN  [Trace: N/A] [Tenant: N/A] [User: N/A] org.hibernate.dialect.Dialect - HHH000511: The 2.3.232 version for [org.hibernate.dialect.PostgreSQLDialect] is no longer supported, hence certain features may not work properly. The minimum supported version is 12.0.0. Check the community dialects project for available legacy versions.
+2026-07-15 22:34:56.406 [main] WARN  [Trace: N/A] [Tenant: N/A] [User: N/A] org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-07-15 22:34:56.410 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-07-15 22:34:57.175 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: 
+    alter table if exists license_activations 
+       drop constraint if exists UKcol42u3wtspgxju8yovsvejak
+Hibernate: 
+    alter table if exists license_activations 
+       add constraint UKcol42u3wtspgxju8yovsvejak unique (license_id, machine_id)
+Hibernate: 
+    alter table if exists legacy_license_activations 
+       add constraint FK5c44olnpay2thijw0f9p7sfpa 
+       foreign key (license_key_id) 
+       references license_keys
+Hibernate: 
+    alter table if exists license_activations 
+       add constraint FKd2dhejsthi67qmqdmjkrln85n 
+       foreign key (license_id) 
+       references licenses
+2026-07-15 22:34:57.198 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+🔄 [BrandConfigService] Refreshing cache. Tenant: null
+Hibernate: 
+    select
+        bc1_0.id,
+        bc1_0.is_active,
+        bc1_0.admin_domain,
+        bc1_0.dev_port,
+        bc1_0.domain,
+        bc1_0.features,
+        bc1_0.layout_template,
+        bc1_0.logo_url,
+        bc1_0.name,
+        bc1_0.theme_colors 
+    from
+        brand_configs bc1_0
+🔄 [BrandConfigService] DB returned 5 brands.
+  - Brand: brandA (active=true)
+  - Brand: brandD (active=true)
+  - Brand: brandE (active=true)
+  - Brand: migrationuncle (active=true)
+  - Brand: apexbyte (active=true)
+2026-07-15 22:34:57.472 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-07-15 22:34:58.031 [main] WARN  [Trace: N/A] [Tenant: N/A] [User: N/A] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-07-15 22:34:58.044 [main] WARN  [Trace: N/A] [Tenant: N/A] [User: N/A] o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: 63637307-1df4-405c-b8ef-0f3e3e1fcf60
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-07-15 22:34:58.049 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-07-15 22:34:58.349 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-07-15 22:34:58.360 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-07-15 22:34:58.364 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] com.datamigratepro.Application - Started Application in 3.927 seconds (process running for 4.059)
+Hibernate: 
+    select
+        au1_0.username,
+        au1_0.brand_id,
+        au1_0.email,
+        au1_0.full_name,
+        au1_0.password,
+        au1_0.role 
+    from
+        admin_users au1_0 
+    where
+        au1_0.username=?
+Hibernate: 
+    select
+        au1_0.username,
+        au1_0.brand_id,
+        au1_0.email,
+        au1_0.full_name,
+        au1_0.password,
+        au1_0.role 
+    from
+        admin_users au1_0 
+    where
+        au1_0.username=?
+Hibernate: 
+    update
+        admin_users 
+    set
+        brand_id=?,
+        email=?,
+        full_name=?,
+        password=?,
+        role=? 
+    where
+        username=?
+Hibernate: 
+    select
+        count(*) 
+    from
+        admin_users au1_0 
+    where
+        au1_0.username=?
+Hibernate: 
+    select
+        count(*) 
+    from
+        admin_users au1_0 
+    where
+        au1_0.username=?
+Hibernate: 
+    select
+        au1_0.username,
+        au1_0.brand_id,
+        au1_0.email,
+        au1_0.full_name,
+        au1_0.password,
+        au1_0.role 
+    from
+        admin_users au1_0 
+    where
+        au1_0.username=?
+Hibernate: 
+    insert 
+    into
+        admin_users
+        (brand_id, email, full_name, password, role, username) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        count(*) 
+    from
+        admin_users au1_0 
+    where
+        au1_0.username=?
+Hibernate: 
+    select
+        au1_0.username,
+        au1_0.brand_id,
+        au1_0.email,
+        au1_0.full_name,
+        au1_0.password,
+        au1_0.role 
+    from
+        admin_users au1_0 
+    where
+        au1_0.username=?
+Hibernate: 
+    insert 
+    into
+        admin_users
+        (brand_id, email, full_name, password, role, username) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        count(*) 
+    from
+        admin_users au1_0 
+    where
+        au1_0.username=?
+Hibernate: 
+    select
+        au1_0.username,
+        au1_0.brand_id,
+        au1_0.email,
+        au1_0.full_name,
+        au1_0.password,
+        au1_0.role 
+    from
+        admin_users au1_0 
+    where
+        au1_0.username=?
+Hibernate: 
+    insert 
+    into
+        admin_users
+        (brand_id, email, full_name, password, role, username) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        count(*) 
+    from
+        admin_users au1_0 
+    where
+        au1_0.username=?
+Hibernate: 
+    select
+        au1_0.username,
+        au1_0.brand_id,
+        au1_0.email,
+        au1_0.full_name,
+        au1_0.password,
+        au1_0.role 
+    from
+        admin_users au1_0 
+    where
+        au1_0.username=?
+Hibernate: 
+    insert 
+    into
+        admin_users
+        (brand_id, email, full_name, password, role, username) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        count(*) 
+    from
+        admin_users au1_0 
+    where
+        au1_0.username=?
+Hibernate: 
+    select
+        au1_0.username,
+        au1_0.brand_id,
+        au1_0.email,
+        au1_0.full_name,
+        au1_0.password,
+        au1_0.role 
+    from
+        admin_users au1_0 
+    where
+        au1_0.username=?
+Hibernate: 
+    insert 
+    into
+        admin_users
+        (brand_id, email, full_name, password, role, username) 
+    values
+        (?, ?, ?, ?, ?, ?)
+👤 Checked and seeded missing administrator credentials in system database!
+Hibernate: 
+    select
+        count(*) 
+    from
+        site_settings ss1_0 
+    where
+        ss1_0.site_id = ?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.color,
+        c1_0.count,
+        c1_0.description,
+        c1_0.icon,
+        c1_0.name,
+        c1_0.product_ids,
+        c1_0.site_id,
+        c1_0.slug 
+    from
+        categories c1_0 
+    where
+        c1_0.site_id = ?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.answer,
+        f1_0.category,
+        f1_0.product_id,
+        f1_0.product_ids,
+        f1_0.question,
+        f1_0.site_id 
+    from
+        faqs f1_0 
+    where
+        f1_0.site_id = ?
+Hibernate: 
+    select
+        p1_0.id,
+        p1_0.badge,
+        p1_0.capabilities,
+        p1_0.category,
+        p1_0.description,
+        p1_0.downloads,
+        p1_0.enabled,
+        p1_0.faqs,
+        p1_0.features,
+        p1_0.how_it_works,
+        p1_0.installation_success_url,
+        p1_0.installer_url,
+        p1_0.last_updated,
+        p1_0.license_comparison,
+        p1_0.name,
+        p1_0.platforms,
+        p1_0.pricing,
+        p1_0.rating,
+        p1_0.related_product_ids,
+        p1_0.review_count,
+        p1_0.reviews,
+        p1_0.screenshots,
+        p1_0.seo,
+        p1_0.short_description,
+        p1_0.site_id,
+        p1_0.slug,
+        p1_0.source_formats,
+        p1_0.supported_formats,
+        p1_0.system_requirements,
+        p1_0.tags,
+        p1_0.target_formats,
+        p1_0.trial_download_url,
+        p1_0.uninstallation_success_url,
+        p1_0.version 
+    from
+        products p1_0 
+    where
+        p1_0.site_id = ?
+Hibernate: 
+    select
+        bp1_0.id,
+        bp1_0.author,
+        bp1_0.category,
+        bp1_0.content,
+        bp1_0.cover_image,
+        bp1_0.excerpt,
+        bp1_0.product_ids,
+        bp1_0.published_at,
+        bp1_0.read_time,
+        bp1_0.seo,
+        bp1_0.site_id,
+        bp1_0.slug,
+        bp1_0.tags,
+        bp1_0.title 
+    from
+        blog_posts bp1_0 
+    where
+        bp1_0.site_id = ?
+Hibernate: 
+    select
+        ha1_0.id,
+        ha1_0.category,
+        ha1_0.content,
+        ha1_0.excerpt,
+        ha1_0.helpful,
+        ha1_0.not_helpful,
+        ha1_0.product_id,
+        ha1_0.product_ids,
+        ha1_0.published_at,
+        ha1_0.site_id,
+        ha1_0.slug,
+        ha1_0.tags,
+        ha1_0.title 
+    from
+        help_articles ha1_0 
+    where
+        ha1_0.site_id = ?
+Hibernate: 
+    select
+        cp1_0.id,
+        cp1_0.description,
+        cp1_0.location,
+        cp1_0.meta_description,
+        cp1_0.meta_keywords,
+        cp1_0.meta_title,
+        cp1_0.requirements,
+        cp1_0.site_id,
+        cp1_0.status,
+        cp1_0.title,
+        cp1_0.type 
+    from
+        career_positions cp1_0 
+    where
+        cp1_0.site_id = ?
+Hibernate: 
+    select
+        cl1_0.id,
+        cl1_0.case_study,
+        cl1_0.company_name,
+        cl1_0.created_at,
+        cl1_0.description,
+        cl1_0.display_order,
+        cl1_0.logo_url,
+        cl1_0.product_ids,
+        cl1_0.site_id,
+        cl1_0.updated_at 
+    from
+        client_logos cl1_0
+Hibernate: 
+    select
+        t1_0.id,
+        t1_0.author_name,
+        t1_0.author_title,
+        t1_0.avatar_url,
+        t1_0.company,
+        t1_0.content,
+        t1_0.created_at,
+        t1_0.is_featured,
+        t1_0.product_ids,
+        t1_0.rating,
+        t1_0.site_id,
+        t1_0.updated_at 
+    from
+        testimonials t1_0
+Hibernate: 
+    select
+        lk1_0.id,
+        lk1_0.activation_key,
+        lk1_0.created_at,
+        lk1_0.customer_email,
+        lk1_0.expires_at,
+        lk1_0.is_offline_capable,
+        lk1_0.max_devices,
+        lk1_0.order_id,
+        lk1_0.pricing_tier_name,
+        lk1_0.product_id,
+        lk1_0.site_id,
+        lk1_0.status 
+    from
+        license_keys lk1_0 
+    where
+        lk1_0.site_id = ?
+Hibernate: 
+    select
+        l1_0.id,
+        l1_0.created_at,
+        l1_0.expires_at,
+        l1_0.license_key,
+        l1_0.license_type,
+        l1_0.max_activations,
+        l1_0.site_id,
+        l1_0.status 
+    from
+        licenses l1_0 
+    where
+        l1_0.site_id = ?
+Hibernate: 
+    select
+        ss1_0.id,
+        ss1_0.about_page,
+        ss1_0.address,
+        ss1_0.announcement,
+        ss1_0.careers_page,
+        ss1_0.clients_page,
+        ss1_0.coupons,
+        ss1_0.description,
+        ss1_0.email,
+        ss1_0.footer_config,
+        ss1_0.hero,
+        ss1_0.home_sections,
+        ss1_0.legal_pages,
+        ss1_0.main_navigation,
+        ss1_0.name,
+        ss1_0.phone,
+        ss1_0.pricing_comparison,
+        ss1_0.pricing_faqs,
+        ss1_0.seo_defaults,
+        ss1_0.site_id,
+        ss1_0.socials,
+        ss1_0.stats,
+        ss1_0.tagline,
+        ss1_0.team_members,
+        ss1_0.theme,
+        ss1_0.trust_badges,
+        ss1_0.url 
+    from
+        site_settings ss1_0 
+    where
+        ss1_0.site_id = ?
+Hibernate: 
+    select
+        ur1_0.id,
+        ur1_0.created_at,
+        ur1_0.redirect_type,
+        ur1_0.site_id,
+        ur1_0.source_path,
+        ur1_0.target_path 
+    from
+        url_redirects ur1_0 
+    where
+        ur1_0.site_id = ?
+Hibernate: 
+    select
+        sf1_0.id,
+        sf1_0.description,
+        sf1_0.icon,
+        sf1_0.format_key,
+        sf1_0.name,
+        sf1_0.site_id,
+        sf1_0.supports_multiple_accounts 
+    from
+        source_formats sf1_0 
+    where
+        sf1_0.site_id = ?
+Hibernate: 
+    select
+        tf1_0.id,
+        tf1_0.description,
+        tf1_0.icon,
+        tf1_0.format_key,
+        tf1_0.name,
+        tf1_0.site_id,
+        tf1_0.supports_multiple_accounts 
+    from
+        target_formats tf1_0 
+    where
+        tf1_0.site_id = ?
+Hibernate: 
+    select
+        sc1_0.id,
+        sc1_0.description,
+        sc1_0.icon,
+        sc1_0.client_key,
+        sc1_0.name,
+        sc1_0.site_id 
+    from
+        supported_clients sc1_0 
+    where
+        sc1_0.site_id = ?
+Hibernate: 
+    select
+        kf1_0.id,
+        kf1_0.description,
+        kf1_0.feature_key,
+        kf1_0.name,
+        kf1_0.site_id 
+    from
+        key_features kf1_0 
+    where
+        kf1_0.site_id = ?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.color,
+        c1_0.count,
+        c1_0.description,
+        c1_0.icon,
+        c1_0.name,
+        c1_0.product_ids,
+        c1_0.site_id,
+        c1_0.slug 
+    from
+        categories c1_0 
+    where
+        c1_0.id=? 
+        and c1_0.site_id = ?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.color,
+        c1_0.count,
+        c1_0.description,
+        c1_0.icon,
+        c1_0.name,
+        c1_0.product_ids,
+        c1_0.site_id,
+        c1_0.slug 
+    from
+        categories c1_0 
+    where
+        c1_0.id=? 
+        and c1_0.site_id = ?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.color,
+        c1_0.count,
+        c1_0.description,
+        c1_0.icon,
+        c1_0.name,
+        c1_0.product_ids,
+        c1_0.site_id,
+        c1_0.slug 
+    from
+        categories c1_0 
+    where
+        c1_0.id=? 
+        and c1_0.site_id = ?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.color,
+        c1_0.count,
+        c1_0.description,
+        c1_0.icon,
+        c1_0.name,
+        c1_0.product_ids,
+        c1_0.site_id,
+        c1_0.slug 
+    from
+        categories c1_0 
+    where
+        c1_0.id=? 
+        and c1_0.site_id = ?
+Hibernate: 
+    insert 
+    into
+        categories
+        (color, count, description, icon, name, product_ids, site_id, slug, id) 
+    values
+        (?, ?, ?, ?, ?, cast(? as jsonb), ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        categories
+        (color, count, description, icon, name, product_ids, site_id, slug, id) 
+    values
+        (?, ?, ?, ?, ?, cast(? as jsonb), ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        categories
+        (color, count, description, icon, name, product_ids, site_id, slug, id) 
+    values
+        (?, ?, ?, ?, ?, cast(? as jsonb), ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        categories
+        (color, count, description, icon, name, product_ids, site_id, slug, id) 
+    values
+        (?, ?, ?, ?, ?, cast(? as jsonb), ?, ?, ?)
+Hibernate: 
+    select
+        p1_0.id,
+        p1_0.badge,
+        p1_0.capabilities,
+        p1_0.category,
+        p1_0.description,
+        p1_0.downloads,
+        p1_0.enabled,
+        p1_0.faqs,
+        p1_0.features,
+        p1_0.how_it_works,
+        p1_0.installation_success_url,
+        p1_0.installer_url,
+        p1_0.last_updated,
+        p1_0.license_comparison,
+        p1_0.name,
+        p1_0.platforms,
+        p1_0.pricing,
+        p1_0.rating,
+        p1_0.related_product_ids,
+        p1_0.review_count,
+        p1_0.reviews,
+        p1_0.screenshots,
+        p1_0.seo,
+        p1_0.short_description,
+        p1_0.site_id,
+        p1_0.slug,
+        p1_0.source_formats,
+        p1_0.supported_formats,
+        p1_0.system_requirements,
+        p1_0.tags,
+        p1_0.target_formats,
+        p1_0.trial_download_url,
+        p1_0.uninstallation_success_url,
+        p1_0.version 
+    from
+        products p1_0 
+    where
+        p1_0.id=? 
+        and p1_0.site_id = ?
+Hibernate: 
+    select
+        p1_0.id,
+        p1_0.badge,
+        p1_0.capabilities,
+        p1_0.category,
+        p1_0.description,
+        p1_0.downloads,
+        p1_0.enabled,
+        p1_0.faqs,
+        p1_0.features,
+        p1_0.how_it_works,
+        p1_0.installation_success_url,
+        p1_0.installer_url,
+        p1_0.last_updated,
+        p1_0.license_comparison,
+        p1_0.name,
+        p1_0.platforms,
+        p1_0.pricing,
+        p1_0.rating,
+        p1_0.related_product_ids,
+        p1_0.review_count,
+        p1_0.reviews,
+        p1_0.screenshots,
+        p1_0.seo,
+        p1_0.short_description,
+        p1_0.site_id,
+        p1_0.slug,
+        p1_0.source_formats,
+        p1_0.supported_formats,
+        p1_0.system_requirements,
+        p1_0.tags,
+        p1_0.target_formats,
+        p1_0.trial_download_url,
+        p1_0.uninstallation_success_url,
+        p1_0.version 
+    from
+        products p1_0 
+    where
+        p1_0.id=? 
+        and p1_0.site_id = ?
+Hibernate: 
+    select
+        p1_0.id,
+        p1_0.badge,
+        p1_0.capabilities,
+        p1_0.category,
+        p1_0.description,
+        p1_0.downloads,
+        p1_0.enabled,
+        p1_0.faqs,
+        p1_0.features,
+        p1_0.how_it_works,
+        p1_0.installation_success_url,
+        p1_0.installer_url,
+        p1_0.last_updated,
+        p1_0.license_comparison,
+        p1_0.name,
+        p1_0.platforms,
+        p1_0.pricing,
+        p1_0.rating,
+        p1_0.related_product_ids,
+        p1_0.review_count,
+        p1_0.reviews,
+        p1_0.screenshots,
+        p1_0.seo,
+        p1_0.short_description,
+        p1_0.site_id,
+        p1_0.slug,
+        p1_0.source_formats,
+        p1_0.supported_formats,
+        p1_0.system_requirements,
+        p1_0.tags,
+        p1_0.target_formats,
+        p1_0.trial_download_url,
+        p1_0.uninstallation_success_url,
+        p1_0.version 
+    from
+        products p1_0 
+    where
+        p1_0.id=? 
+        and p1_0.site_id = ?
+Hibernate: 
+    select
+        p1_0.id,
+        p1_0.badge,
+        p1_0.capabilities,
+        p1_0.category,
+        p1_0.description,
+        p1_0.downloads,
+        p1_0.enabled,
+        p1_0.faqs,
+        p1_0.features,
+        p1_0.how_it_works,
+        p1_0.installation_success_url,
+        p1_0.installer_url,
+        p1_0.last_updated,
+        p1_0.license_comparison,
+        p1_0.name,
+        p1_0.platforms,
+        p1_0.pricing,
+        p1_0.rating,
+        p1_0.related_product_ids,
+        p1_0.review_count,
+        p1_0.reviews,
+        p1_0.screenshots,
+        p1_0.seo,
+        p1_0.short_description,
+        p1_0.site_id,
+        p1_0.slug,
+        p1_0.source_formats,
+        p1_0.supported_formats,
+        p1_0.system_requirements,
+        p1_0.tags,
+        p1_0.target_formats,
+        p1_0.trial_download_url,
+        p1_0.uninstallation_success_url,
+        p1_0.version 
+    from
+        products p1_0 
+    where
+        p1_0.id=? 
+        and p1_0.site_id = ?
+Hibernate: 
+    select
+        p1_0.id,
+        p1_0.badge,
+        p1_0.capabilities,
+        p1_0.category,
+        p1_0.description,
+        p1_0.downloads,
+        p1_0.enabled,
+        p1_0.faqs,
+        p1_0.features,
+        p1_0.how_it_works,
+        p1_0.installation_success_url,
+        p1_0.installer_url,
+        p1_0.last_updated,
+        p1_0.license_comparison,
+        p1_0.name,
+        p1_0.platforms,
+        p1_0.pricing,
+        p1_0.rating,
+        p1_0.related_product_ids,
+        p1_0.review_count,
+        p1_0.reviews,
+        p1_0.screenshots,
+        p1_0.seo,
+        p1_0.short_description,
+        p1_0.site_id,
+        p1_0.slug,
+        p1_0.source_formats,
+        p1_0.supported_formats,
+        p1_0.system_requirements,
+        p1_0.tags,
+        p1_0.target_formats,
+        p1_0.trial_download_url,
+        p1_0.uninstallation_success_url,
+        p1_0.version 
+    from
+        products p1_0 
+    where
+        p1_0.id=? 
+        and p1_0.site_id = ?
+Hibernate: 
+    select
+        p1_0.id,
+        p1_0.badge,
+        p1_0.capabilities,
+        p1_0.category,
+        p1_0.description,
+        p1_0.downloads,
+        p1_0.enabled,
+        p1_0.faqs,
+        p1_0.features,
+        p1_0.how_it_works,
+        p1_0.installation_success_url,
+        p1_0.installer_url,
+        p1_0.last_updated,
+        p1_0.license_comparison,
+        p1_0.name,
+        p1_0.platforms,
+        p1_0.pricing,
+        p1_0.rating,
+        p1_0.related_product_ids,
+        p1_0.review_count,
+        p1_0.reviews,
+        p1_0.screenshots,
+        p1_0.seo,
+        p1_0.short_description,
+        p1_0.site_id,
+        p1_0.slug,
+        p1_0.source_formats,
+        p1_0.supported_formats,
+        p1_0.system_requirements,
+        p1_0.tags,
+        p1_0.target_formats,
+        p1_0.trial_download_url,
+        p1_0.uninstallation_success_url,
+        p1_0.version 
+    from
+        products p1_0 
+    where
+        p1_0.id=? 
+        and p1_0.site_id = ?
+Hibernate: 
+    insert 
+    into
+        products
+        (badge, capabilities, category, description, downloads, enabled, faqs, features, how_it_works, installation_success_url, installer_url, last_updated, license_comparison, name, platforms, pricing, rating, related_product_ids, review_count, reviews, screenshots, seo, short_description, site_id, slug, source_formats, supported_formats, system_requirements, tags, target_formats, trial_download_url, uninstallation_success_url, version, id) 
+    values
+        (?, cast(? as jsonb), ?, ?, ?, ?, cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), ?, ?, ?, cast(? as jsonb), ?, cast(? as jsonb), cast(? as jsonb), ?, cast(? as jsonb), ?, cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), ?, ?, ?, cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        products
+        (badge, capabilities, category, description, downloads, enabled, faqs, features, how_it_works, installation_success_url, installer_url, last_updated, license_comparison, name, platforms, pricing, rating, related_product_ids, review_count, reviews, screenshots, seo, short_description, site_id, slug, source_formats, supported_formats, system_requirements, tags, target_formats, trial_download_url, uninstallation_success_url, version, id) 
+    values
+        (?, cast(? as jsonb), ?, ?, ?, ?, cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), ?, ?, ?, cast(? as jsonb), ?, cast(? as jsonb), cast(? as jsonb), ?, cast(? as jsonb), ?, cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), ?, ?, ?, cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        products
+        (badge, capabilities, category, description, downloads, enabled, faqs, features, how_it_works, installation_success_url, installer_url, last_updated, license_comparison, name, platforms, pricing, rating, related_product_ids, review_count, reviews, screenshots, seo, short_description, site_id, slug, source_formats, supported_formats, system_requirements, tags, target_formats, trial_download_url, uninstallation_success_url, version, id) 
+    values
+        (?, cast(? as jsonb), ?, ?, ?, ?, cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), ?, ?, ?, cast(? as jsonb), ?, cast(? as jsonb), cast(? as jsonb), ?, cast(? as jsonb), ?, cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), ?, ?, ?, cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        products
+        (badge, capabilities, category, description, downloads, enabled, faqs, features, how_it_works, installation_success_url, installer_url, last_updated, license_comparison, name, platforms, pricing, rating, related_product_ids, review_count, reviews, screenshots, seo, short_description, site_id, slug, source_formats, supported_formats, system_requirements, tags, target_formats, trial_download_url, uninstallation_success_url, version, id) 
+    values
+        (?, cast(? as jsonb), ?, ?, ?, ?, cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), ?, ?, ?, cast(? as jsonb), ?, cast(? as jsonb), cast(? as jsonb), ?, cast(? as jsonb), ?, cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), ?, ?, ?, cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        products
+        (badge, capabilities, category, description, downloads, enabled, faqs, features, how_it_works, installation_success_url, installer_url, last_updated, license_comparison, name, platforms, pricing, rating, related_product_ids, review_count, reviews, screenshots, seo, short_description, site_id, slug, source_formats, supported_formats, system_requirements, tags, target_formats, trial_download_url, uninstallation_success_url, version, id) 
+    values
+        (?, cast(? as jsonb), ?, ?, ?, ?, cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), ?, ?, ?, cast(? as jsonb), ?, cast(? as jsonb), cast(? as jsonb), ?, cast(? as jsonb), ?, cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), ?, ?, ?, cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        products
+        (badge, capabilities, category, description, downloads, enabled, faqs, features, how_it_works, installation_success_url, installer_url, last_updated, license_comparison, name, platforms, pricing, rating, related_product_ids, review_count, reviews, screenshots, seo, short_description, site_id, slug, source_formats, supported_formats, system_requirements, tags, target_formats, trial_download_url, uninstallation_success_url, version, id) 
+    values
+        (?, cast(? as jsonb), ?, ?, ?, ?, cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), ?, ?, ?, cast(? as jsonb), ?, cast(? as jsonb), cast(? as jsonb), ?, cast(? as jsonb), ?, cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), ?, ?, ?, cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), ?, ?, ?, ?)
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.answer,
+        f1_0.category,
+        f1_0.product_id,
+        f1_0.product_ids,
+        f1_0.question,
+        f1_0.site_id 
+    from
+        faqs f1_0 
+    where
+        f1_0.id=? 
+        and f1_0.site_id = ?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.answer,
+        f1_0.category,
+        f1_0.product_id,
+        f1_0.product_ids,
+        f1_0.question,
+        f1_0.site_id 
+    from
+        faqs f1_0 
+    where
+        f1_0.id=? 
+        and f1_0.site_id = ?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.answer,
+        f1_0.category,
+        f1_0.product_id,
+        f1_0.product_ids,
+        f1_0.question,
+        f1_0.site_id 
+    from
+        faqs f1_0 
+    where
+        f1_0.id=? 
+        and f1_0.site_id = ?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.answer,
+        f1_0.category,
+        f1_0.product_id,
+        f1_0.product_ids,
+        f1_0.question,
+        f1_0.site_id 
+    from
+        faqs f1_0 
+    where
+        f1_0.id=? 
+        and f1_0.site_id = ?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.answer,
+        f1_0.category,
+        f1_0.product_id,
+        f1_0.product_ids,
+        f1_0.question,
+        f1_0.site_id 
+    from
+        faqs f1_0 
+    where
+        f1_0.id=? 
+        and f1_0.site_id = ?
+Hibernate: 
+    insert 
+    into
+        faqs
+        (answer, category, product_id, product_ids, question, site_id, id) 
+    values
+        (?, ?, ?, cast(? as jsonb), ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        faqs
+        (answer, category, product_id, product_ids, question, site_id, id) 
+    values
+        (?, ?, ?, cast(? as jsonb), ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        faqs
+        (answer, category, product_id, product_ids, question, site_id, id) 
+    values
+        (?, ?, ?, cast(? as jsonb), ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        faqs
+        (answer, category, product_id, product_ids, question, site_id, id) 
+    values
+        (?, ?, ?, cast(? as jsonb), ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        faqs
+        (answer, category, product_id, product_ids, question, site_id, id) 
+    values
+        (?, ?, ?, cast(? as jsonb), ?, ?, ?)
+Hibernate: 
+    select
+        ha1_0.id,
+        ha1_0.category,
+        ha1_0.content,
+        ha1_0.excerpt,
+        ha1_0.helpful,
+        ha1_0.not_helpful,
+        ha1_0.product_id,
+        ha1_0.product_ids,
+        ha1_0.published_at,
+        ha1_0.site_id,
+        ha1_0.slug,
+        ha1_0.tags,
+        ha1_0.title 
+    from
+        help_articles ha1_0 
+    where
+        ha1_0.id=? 
+        and ha1_0.site_id = ?
+Hibernate: 
+    select
+        ha1_0.id,
+        ha1_0.category,
+        ha1_0.content,
+        ha1_0.excerpt,
+        ha1_0.helpful,
+        ha1_0.not_helpful,
+        ha1_0.product_id,
+        ha1_0.product_ids,
+        ha1_0.published_at,
+        ha1_0.site_id,
+        ha1_0.slug,
+        ha1_0.tags,
+        ha1_0.title 
+    from
+        help_articles ha1_0 
+    where
+        ha1_0.id=? 
+        and ha1_0.site_id = ?
+Hibernate: 
+    select
+        ha1_0.id,
+        ha1_0.category,
+        ha1_0.content,
+        ha1_0.excerpt,
+        ha1_0.helpful,
+        ha1_0.not_helpful,
+        ha1_0.product_id,
+        ha1_0.product_ids,
+        ha1_0.published_at,
+        ha1_0.site_id,
+        ha1_0.slug,
+        ha1_0.tags,
+        ha1_0.title 
+    from
+        help_articles ha1_0 
+    where
+        ha1_0.id=? 
+        and ha1_0.site_id = ?
+Hibernate: 
+    select
+        ha1_0.id,
+        ha1_0.category,
+        ha1_0.content,
+        ha1_0.excerpt,
+        ha1_0.helpful,
+        ha1_0.not_helpful,
+        ha1_0.product_id,
+        ha1_0.product_ids,
+        ha1_0.published_at,
+        ha1_0.site_id,
+        ha1_0.slug,
+        ha1_0.tags,
+        ha1_0.title 
+    from
+        help_articles ha1_0 
+    where
+        ha1_0.id=? 
+        and ha1_0.site_id = ?
+Hibernate: 
+    select
+        ha1_0.id,
+        ha1_0.category,
+        ha1_0.content,
+        ha1_0.excerpt,
+        ha1_0.helpful,
+        ha1_0.not_helpful,
+        ha1_0.product_id,
+        ha1_0.product_ids,
+        ha1_0.published_at,
+        ha1_0.site_id,
+        ha1_0.slug,
+        ha1_0.tags,
+        ha1_0.title 
+    from
+        help_articles ha1_0 
+    where
+        ha1_0.id=? 
+        and ha1_0.site_id = ?
+Hibernate: 
+    insert 
+    into
+        help_articles
+        (category, content, excerpt, helpful, not_helpful, product_id, product_ids, published_at, site_id, slug, tags, title, id) 
+    values
+        (?, ?, ?, ?, ?, ?, cast(? as jsonb), ?, ?, ?, cast(? as jsonb), ?, ?)
+Hibernate: 
+    insert 
+    into
+        help_articles
+        (category, content, excerpt, helpful, not_helpful, product_id, product_ids, published_at, site_id, slug, tags, title, id) 
+    values
+        (?, ?, ?, ?, ?, ?, cast(? as jsonb), ?, ?, ?, cast(? as jsonb), ?, ?)
+Hibernate: 
+    insert 
+    into
+        help_articles
+        (category, content, excerpt, helpful, not_helpful, product_id, product_ids, published_at, site_id, slug, tags, title, id) 
+    values
+        (?, ?, ?, ?, ?, ?, cast(? as jsonb), ?, ?, ?, cast(? as jsonb), ?, ?)
+Hibernate: 
+    insert 
+    into
+        help_articles
+        (category, content, excerpt, helpful, not_helpful, product_id, product_ids, published_at, site_id, slug, tags, title, id) 
+    values
+        (?, ?, ?, ?, ?, ?, cast(? as jsonb), ?, ?, ?, cast(? as jsonb), ?, ?)
+Hibernate: 
+    insert 
+    into
+        help_articles
+        (category, content, excerpt, helpful, not_helpful, product_id, product_ids, published_at, site_id, slug, tags, title, id) 
+    values
+        (?, ?, ?, ?, ?, ?, cast(? as jsonb), ?, ?, ?, cast(? as jsonb), ?, ?)
+Hibernate: 
+    select
+        sf1_0.id,
+        sf1_0.description,
+        sf1_0.icon,
+        sf1_0.format_key,
+        sf1_0.name,
+        sf1_0.site_id,
+        sf1_0.supports_multiple_accounts 
+    from
+        source_formats sf1_0 
+    where
+        sf1_0.id=? 
+        and sf1_0.site_id = ?
+Hibernate: 
+    select
+        sf1_0.id,
+        sf1_0.description,
+        sf1_0.icon,
+        sf1_0.format_key,
+        sf1_0.name,
+        sf1_0.site_id,
+        sf1_0.supports_multiple_accounts 
+    from
+        source_formats sf1_0 
+    where
+        sf1_0.id=? 
+        and sf1_0.site_id = ?
+Hibernate: 
+    insert 
+    into
+        source_formats
+        (description, icon, format_key, name, site_id, supports_multiple_accounts, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        source_formats
+        (description, icon, format_key, name, site_id, supports_multiple_accounts, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        tf1_0.id,
+        tf1_0.description,
+        tf1_0.icon,
+        tf1_0.format_key,
+        tf1_0.name,
+        tf1_0.site_id,
+        tf1_0.supports_multiple_accounts 
+    from
+        target_formats tf1_0 
+    where
+        tf1_0.id=? 
+        and tf1_0.site_id = ?
+Hibernate: 
+    select
+        tf1_0.id,
+        tf1_0.description,
+        tf1_0.icon,
+        tf1_0.format_key,
+        tf1_0.name,
+        tf1_0.site_id,
+        tf1_0.supports_multiple_accounts 
+    from
+        target_formats tf1_0 
+    where
+        tf1_0.id=? 
+        and tf1_0.site_id = ?
+Hibernate: 
+    insert 
+    into
+        target_formats
+        (description, icon, format_key, name, site_id, supports_multiple_accounts, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        target_formats
+        (description, icon, format_key, name, site_id, supports_multiple_accounts, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        sc1_0.id,
+        sc1_0.description,
+        sc1_0.icon,
+        sc1_0.client_key,
+        sc1_0.name,
+        sc1_0.site_id 
+    from
+        supported_clients sc1_0 
+    where
+        sc1_0.id=? 
+        and sc1_0.site_id = ?
+Hibernate: 
+    insert 
+    into
+        supported_clients
+        (description, icon, client_key, name, site_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        kf1_0.id,
+        kf1_0.description,
+        kf1_0.feature_key,
+        kf1_0.name,
+        kf1_0.site_id 
+    from
+        key_features kf1_0 
+    where
+        kf1_0.id=? 
+        and kf1_0.site_id = ?
+Hibernate: 
+    insert 
+    into
+        key_features
+        (description, feature_key, name, site_id, id) 
+    values
+        (?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        cp1_0.id,
+        cp1_0.description,
+        cp1_0.location,
+        cp1_0.meta_description,
+        cp1_0.meta_keywords,
+        cp1_0.meta_title,
+        cp1_0.requirements,
+        cp1_0.site_id,
+        cp1_0.status,
+        cp1_0.title,
+        cp1_0.type 
+    from
+        career_positions cp1_0 
+    where
+        cp1_0.id=? 
+        and cp1_0.site_id = ?
+Hibernate: 
+    select
+        cp1_0.id,
+        cp1_0.description,
+        cp1_0.location,
+        cp1_0.meta_description,
+        cp1_0.meta_keywords,
+        cp1_0.meta_title,
+        cp1_0.requirements,
+        cp1_0.site_id,
+        cp1_0.status,
+        cp1_0.title,
+        cp1_0.type 
+    from
+        career_positions cp1_0 
+    where
+        cp1_0.id=? 
+        and cp1_0.site_id = ?
+Hibernate: 
+    select
+        cp1_0.id,
+        cp1_0.description,
+        cp1_0.location,
+        cp1_0.meta_description,
+        cp1_0.meta_keywords,
+        cp1_0.meta_title,
+        cp1_0.requirements,
+        cp1_0.site_id,
+        cp1_0.status,
+        cp1_0.title,
+        cp1_0.type 
+    from
+        career_positions cp1_0 
+    where
+        cp1_0.id=? 
+        and cp1_0.site_id = ?
+Hibernate: 
+    insert 
+    into
+        career_positions
+        (description, location, meta_description, meta_keywords, meta_title, requirements, site_id, status, title, type, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        career_positions
+        (description, location, meta_description, meta_keywords, meta_title, requirements, site_id, status, title, type, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        career_positions
+        (description, location, meta_description, meta_keywords, meta_title, requirements, site_id, status, title, type, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        cl1_0.id,
+        cl1_0.case_study,
+        cl1_0.company_name,
+        cl1_0.created_at,
+        cl1_0.description,
+        cl1_0.display_order,
+        cl1_0.logo_url,
+        cl1_0.product_ids,
+        cl1_0.site_id,
+        cl1_0.updated_at 
+    from
+        client_logos cl1_0 
+    where
+        cl1_0.id=?
+Hibernate: 
+    select
+        cl1_0.id,
+        cl1_0.case_study,
+        cl1_0.company_name,
+        cl1_0.created_at,
+        cl1_0.description,
+        cl1_0.display_order,
+        cl1_0.logo_url,
+        cl1_0.product_ids,
+        cl1_0.site_id,
+        cl1_0.updated_at 
+    from
+        client_logos cl1_0 
+    where
+        cl1_0.id=?
+Hibernate: 
+    insert 
+    into
+        client_logos
+        (case_study, company_name, created_at, description, display_order, logo_url, product_ids, site_id, updated_at, id) 
+    values
+        (?, ?, ?, ?, ?, ?, cast(? as jsonb), ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        client_logos
+        (case_study, company_name, created_at, description, display_order, logo_url, product_ids, site_id, updated_at, id) 
+    values
+        (?, ?, ?, ?, ?, ?, cast(? as jsonb), ?, ?, ?)
+Hibernate: 
+    select
+        ss1_0.id,
+        ss1_0.about_page,
+        ss1_0.address,
+        ss1_0.announcement,
+        ss1_0.careers_page,
+        ss1_0.clients_page,
+        ss1_0.coupons,
+        ss1_0.description,
+        ss1_0.email,
+        ss1_0.footer_config,
+        ss1_0.hero,
+        ss1_0.home_sections,
+        ss1_0.legal_pages,
+        ss1_0.main_navigation,
+        ss1_0.name,
+        ss1_0.phone,
+        ss1_0.pricing_comparison,
+        ss1_0.pricing_faqs,
+        ss1_0.seo_defaults,
+        ss1_0.site_id,
+        ss1_0.socials,
+        ss1_0.stats,
+        ss1_0.tagline,
+        ss1_0.team_members,
+        ss1_0.theme,
+        ss1_0.trust_badges,
+        ss1_0.url 
+    from
+        site_settings ss1_0 
+    where
+        ss1_0.id=? 
+        and ss1_0.site_id = ?
+Hibernate: 
+    insert 
+    into
+        site_settings
+        (about_page, address, announcement, careers_page, clients_page, coupons, description, email, footer_config, hero, home_sections, legal_pages, main_navigation, name, phone, pricing_comparison, pricing_faqs, seo_defaults, site_id, socials, stats, tagline, team_members, theme, trust_badges, url, id) 
+    values
+        (cast(? as jsonb), ?, cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), ?, ?, cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), ?, ?, cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), ?, cast(? as jsonb), cast(? as jsonb), ?, cast(? as jsonb), cast(? as jsonb), cast(? as jsonb), ?, ?)
+🌱 Database apexbyte successfully seeded with catalog!
+Hibernate: 
+    insert 
+    into
+        licenses
+        (created_at, expires_at, license_key, license_type, max_activations, site_id, status) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        license_activations
+        (activated_at, ip_address, last_checked_at, license_id, machine_id, machine_name, os_name) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        licenses
+        (created_at, expires_at, license_key, license_type, max_activations, site_id, status) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        license_activations
+        (activated_at, ip_address, last_checked_at, license_id, machine_id, machine_name, os_name) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        license_activations
+        (activated_at, ip_address, last_checked_at, license_id, machine_id, machine_name, os_name) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        licenses
+        (created_at, expires_at, license_key, license_type, max_activations, site_id, status) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        licenses
+        (created_at, expires_at, license_key, license_type, max_activations, site_id, status) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        licenses
+        (created_at, expires_at, license_key, license_type, max_activations, site_id, status) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        licenses
+        (created_at, expires_at, license_key, license_type, max_activations, site_id, status) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        licenses
+        (created_at, expires_at, license_key, license_type, max_activations, site_id, status) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        licenses
+        (created_at, expires_at, license_key, license_type, max_activations, site_id, status) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+🔑 Seeded initial valid licenses for apexbyte!
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.color,
+        c1_0.count,
+        c1_0.description,
+        c1_0.icon,
+        c1_0.name,
+        c1_0.product_ids,
+        c1_0.site_id,
+        c1_0.slug 
+    from
+        categories c1_0 
+    where
+        c1_0.site_id = ? 
+        and c1_0.site_id=?
+2026-07-15 22:34:59.104 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] o.s.b.a.l.ConditionEvaluationReportLogger - 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-07-15 22:34:59.110 [main] ERROR [Trace: N/A] [Tenant: N/A] [User: N/A] o.s.boot.SpringApplication - Application run failed
+org.springframework.dao.InvalidDataAccessApiUsageException: Could not deserialize string to java type: java.util.List<java.lang.String>
+	at org.springframework.orm.jpa.EntityManagerFactoryUtils.convertJpaAccessExceptionIfPossible(EntityManagerFactoryUtils.java:371)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.translateExceptionIfPossible(HibernateJpaDialect.java:246)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.translateExceptionIfPossible(AbstractEntityManagerFactoryBean.java:560)
+	at org.springframework.dao.support.ChainedPersistenceExceptionTranslator.translateExceptionIfPossible(ChainedPersistenceExceptionTranslator.java:61)
+	at org.springframework.dao.support.DataAccessUtils.translateIfNecessary(DataAccessUtils.java:343)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:160)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:136)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:223)
+	at jdk.proxy2/jdk.proxy2.$Proxy163.findBySiteId(Unknown Source)
+	at com.datamigratepro.seeder.DevDatabaseSeeder.syncCategoryProductMappings(DevDatabaseSeeder.java:2281)
+	at com.datamigratepro.seeder.DevDatabaseSeeder.run(DevDatabaseSeeder.java:218)
+	at org.springframework.boot.SpringApplication.lambda$callRunner$5(SpringApplication.java:788)
+	at org.springframework.util.function.ThrowingConsumer$1.acceptWithException(ThrowingConsumer.java:82)
+	at org.springframework.util.function.ThrowingConsumer.accept(ThrowingConsumer.java:60)
+	at org.springframework.util.function.ThrowingConsumer$1.accept(ThrowingConsumer.java:86)
+	at org.springframework.boot.SpringApplication.callRunner(SpringApplication.java:796)
+	at org.springframework.boot.SpringApplication.callRunner(SpringApplication.java:787)
+	at org.springframework.boot.SpringApplication.lambda$callRunners$3(SpringApplication.java:772)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.SortedOps$SizedRefSortingSink.end(SortedOps.java:357)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:510)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at org.springframework.boot.SpringApplication.callRunners(SpringApplication.java:772)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:325)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1361)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1350)
+	at com.datamigratepro.Application.main(Application.java:9)
+Caused by: java.lang.IllegalArgumentException: Could not deserialize string to java type: java.util.List<java.lang.String>
+	at org.hibernate.type.format.jackson.JacksonJsonFormatMapper.fromString(JacksonJsonFormatMapper.java:40)
+	at org.hibernate.type.format.AbstractJsonFormatMapper.fromString(AbstractJsonFormatMapper.java:26)
+	at org.hibernate.type.descriptor.jdbc.JsonJdbcType.fromString(JsonJdbcType.java:86)
+	at org.hibernate.type.descriptor.jdbc.JsonJdbcType$2.doExtract(JsonJdbcType.java:140)
+	at org.hibernate.type.descriptor.jdbc.BasicExtractor.extract(BasicExtractor.java:44)
+	at org.hibernate.sql.results.jdbc.internal.JdbcValuesResultSetImpl.getCurrentRowValue(JdbcValuesResultSetImpl.java:387)
+	at org.hibernate.sql.results.internal.RowProcessingStateStandardImpl.getJdbcValue(RowProcessingStateStandardImpl.java:152)
+	at org.hibernate.sql.results.graph.basic.BasicResultAssembler.extractRawValue(BasicResultAssembler.java:54)
+	at org.hibernate.sql.results.graph.basic.BasicResultAssembler.assemble(BasicResultAssembler.java:60)
+	at org.hibernate.sql.results.graph.entity.internal.EntityInitializerImpl.extractConcreteTypeStateValues(EntityInitializerImpl.java:1607)
+	at org.hibernate.sql.results.graph.entity.internal.EntityInitializerImpl.initializeEntityInstance(EntityInitializerImpl.java:1333)
+	at org.hibernate.sql.results.graph.entity.internal.EntityInitializerImpl.initializeInstance(EntityInitializerImpl.java:1312)
+	at org.hibernate.sql.results.graph.entity.internal.EntityInitializerImpl.initializeInstance(EntityInitializerImpl.java:97)
+	at org.hibernate.sql.results.internal.StandardRowReader.coordinateInitializers(StandardRowReader.java:244)
+	at org.hibernate.sql.results.internal.StandardRowReader.readRow(StandardRowReader.java:141)
+	at org.hibernate.sql.results.spi.ListResultsConsumer.read(ListResultsConsumer.java:249)
+	at org.hibernate.sql.results.spi.ListResultsConsumer.consume(ListResultsConsumer.java:201)
+	at org.hibernate.sql.results.spi.ListResultsConsumer.consume(ListResultsConsumer.java:35)
+	at org.hibernate.sql.exec.internal.JdbcSelectExecutorStandardImpl.doExecuteQuery(JdbcSelectExecutorStandardImpl.java:224)
+	at org.hibernate.sql.exec.internal.JdbcSelectExecutorStandardImpl.executeQuery(JdbcSelectExecutorStandardImpl.java:102)
+	at org.hibernate.sql.exec.spi.JdbcSelectExecutor.executeQuery(JdbcSelectExecutor.java:91)
+	at org.hibernate.sql.exec.spi.JdbcSelectExecutor.list(JdbcSelectExecutor.java:165)
+	at org.hibernate.query.sqm.internal.ConcreteSqmSelectQueryPlan.lambda$new$1(ConcreteSqmSelectQueryPlan.java:152)
+	at org.hibernate.query.sqm.internal.ConcreteSqmSelectQueryPlan.withCacheableSqmInterpretation(ConcreteSqmSelectQueryPlan.java:442)
+	at org.hibernate.query.sqm.internal.ConcreteSqmSelectQueryPlan.performList(ConcreteSqmSelectQueryPlan.java:362)
+	at org.hibernate.query.sqm.internal.QuerySqmImpl.doList(QuerySqmImpl.java:380)
+	at org.hibernate.query.spi.AbstractSelectionQuery.list(AbstractSelectionQuery.java:143)
+	at org.hibernate.query.Query.getResultList(Query.java:120)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.orm.jpa.SharedEntityManagerCreator$DeferredQueryInvocationHandler.invoke(SharedEntityManagerCreator.java:419)
+	at jdk.proxy2/jdk.proxy2.$Proxy190.getResultList(Unknown Source)
+	at org.springframework.data.jpa.repository.query.JpaQueryExecution$CollectionExecution.doExecute(JpaQueryExecution.java:130)
+	at org.springframework.data.jpa.repository.query.JpaQueryExecution.execute(JpaQueryExecution.java:93)
+	at org.springframework.data.jpa.repository.query.AbstractJpaQuery.doExecute(AbstractJpaQuery.java:152)
+	at org.springframework.data.jpa.repository.query.AbstractJpaQuery.execute(AbstractJpaQuery.java:140)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:170)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:158)
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:170)
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:149)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:69)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:380)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
+	... 27 common frames omitted
+Caused by: com.fasterxml.jackson.databind.exc.MismatchedInputException: Cannot construct instance of `java.util.ArrayList` (although at least one Creator exists): no String-argument constructor/factory method to deserialize from String value ('[]')
+ at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 1, column: 1]
+	at com.fasterxml.jackson.databind.exc.MismatchedInputException.from(MismatchedInputException.java:63)
+	at com.fasterxml.jackson.databind.DeserializationContext.reportInputMismatch(DeserializationContext.java:1754)
+	at com.fasterxml.jackson.databind.DeserializationContext.handleMissingInstantiator(DeserializationContext.java:1379)
+	at com.fasterxml.jackson.databind.deser.std.StdDeserializer._deserializeFromString(StdDeserializer.java:311)
+	at com.fasterxml.jackson.databind.deser.std.StringCollectionDeserializer.handleNonArray(StringCollectionDeserializer.java:286)
+	at com.fasterxml.jackson.databind.deser.std.StringCollectionDeserializer.deserialize(StringCollectionDeserializer.java:194)
+	at com.fasterxml.jackson.databind.deser.std.StringCollectionDeserializer.deserialize(StringCollectionDeserializer.java:184)
+	at com.fasterxml.jackson.databind.deser.std.StringCollectionDeserializer.deserialize(StringCollectionDeserializer.java:27)
+	at com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:342)
+	at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:4917)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3860)
+	at org.hibernate.type.format.jackson.JacksonJsonFormatMapper.fromString(JacksonJsonFormatMapper.java:37)
+	... 73 common frames omitted
+2026-07-15 22:34:59.113 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2026-07-15 22:34:59.116 [tomcat-shutdown] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2026-07-15 22:34:59.119 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-07-15 22:34:59.120 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-07-15 22:34:59.120 [main] INFO  [Trace: N/A] [Tenant: N/A] [User: N/A] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  5.506 s
+[INFO] Finished at: 2026-07-15T22:34:59+05:30
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:3.4.3:run (default-cli) on project backend-api: Process terminated with exit code: 1 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

@@ -1,11 +1,11 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { BlogAPI , SettingsAPI } from "@/services/api";
-const settings = await SettingsAPI.get().catch(() => null);
+import { BlogAPI } from "@/services/api";
 import { BLOG_CATEGORY_LABELS } from "@/types/blog";
 import { formatDate } from "@/lib/utils";
 import SectionHeader from "@/components/common/SectionHeader";
 import { Clock, ArrowRight } from "lucide-react";
+import { siteConfig } from "@/config/site";
 
 let blogPostsList = [];
 let featured = null;
@@ -20,79 +20,55 @@ try {
 } catch (e) {
   console.error("Error loading blog posts:", e);
 }
-
-function getTechnicalBio(authorName: string): string {
-  const bios: Record<string, string> = {
-    "Alex Johnson": "12 years Windows Server admin · Written 47 migration guides",
-    "Sarah Jenkins": "Lead Migration Engineer · Former Enterprise Exchange Architect",
-    "Michael Torres": "Data Security Specialist · 15 years Unix/Mail Server Administrator",
-  };
-  return bios[authorName] || "Enterprise Migration Lead · Systems Engineer";
-}
 ---
 
 <BaseLayout
-  title={`Blog — Email Migration Guides & Tips | ${settings?.name || ""}`}
+  title={`Blog — Email Migration Guides & Tips | ${siteConfig.name}`}
   description="Expert guides, tutorials, and tips on email migration, backup, data recovery, and file conversion."
 >
-  <div class="min-h-screen bg-[#0B0F1A]">
+  <div class="min-h-screen bg-gray-50">
     {/* Header */}
-    <div class="bg-[#0B0F1A] py-20 text-center border-b border-[#334155] relative overflow-hidden">
-      <!-- Ambient refraction glow background -->
-      <div class="absolute inset-0 pointer-events-none overflow-hidden">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] bg-[#6366F1]/5 blur-[90px] rounded-full"></div>
-      </div>
-
-      <div class="container-custom relative z-10">
-        <span class="inline-block text-[10px] font-bold uppercase tracking-widest mb-4 px-3 py-1.5 rounded-full border" style="color: var(--signal-teal); background: rgba(0,200,160,0.08); border-color: rgba(0,200,160,0.25); font-family: var(--font-mono);">Blog</span>
-        <h1 class="text-white font-extrabold text-3xl md:text-3xl tracking-tight mb-4" style="font-family: var(--font-display);">Expert Guides & Tutorials</h1>
-        <p class="text-[#E2E8F0] max-w-xl mx-auto text-xs leading-relaxed" style="color: var(--type-muted);">
+    <div class="hero-gradient py-14 text-center">
+      <div class="container-custom">
+        <span class="inline-block text-xs font-bold uppercase tracking-widest mb-4 px-3 py-1 rounded-full text-blue-300 bg-white/10">Blog</span>
+        <h1 class="text-white font-bold mb-3">Expert Guides & Tutorials</h1>
+        <p class="text-gray-300 max-w-xl mx-auto">
           Learn email migration, backup strategies, and data management from our team of experts.
         </p>
       </div>
     </div>
 
-    <!-- Category style helper in Astro frontmatter is not required since we inline mappings directly -->
-    <div class="container-custom py-20">
+    <div class="container-custom py-12">
       {/* Featured Post */}
       {featured && (
-        <div class="mb-16">
+        <div class="mb-12">
           <a
             href={`/blog/${featured.slug}`}
-            class="group bg-[#1E2937]/30 backdrop-blur rounded-2xl border border-[#334155] overflow-hidden grid grid-cols-1 lg:grid-cols-2 block hover:border-[#6366F1]/30 transition-all duration-300"
+            class="group bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden grid grid-cols-1 lg:grid-cols-2 card-hover block"
           >
-            <div class="bg-[#0B0F1A] border-r border-[#334155] min-h-56 flex items-center justify-center p-12">
-              <span class="text-stone-800 text-3xl font-black">{featured.title.charAt(0)}</span>
+            <div class="bg-gradient-to-br from-blue-500 to-blue-700 min-h-56 flex items-center justify-center p-12">
+              <span class="text-white/20 text-8xl font-black">{featured.title.charAt(0)}</span>
             </div>
             <div class="p-8 flex flex-col justify-center">
-              {featured.category === 'email-migration' && (
-                <span class="px-2.5 py-0.5 rounded text-[9px] uppercase font-bold tracking-wider inline-block self-start mb-3" style="border: 1px solid rgba(0, 200, 160, 0.35); background: rgba(0, 200, 160, 0.08); color: var(--signal-teal); font-family: var(--font-mono);">EMAIL-MIGRATION</span>
-              )}
-              {featured.category === 'backup' && (
-                <span class="px-2.5 py-0.5 rounded text-[9px] uppercase font-bold tracking-wider inline-block self-start mb-3" style="border: 1px solid rgba(177, 159, 251, 0.35); background: rgba(177, 159, 251, 0.08); color: #B19FFB; font-family: var(--font-mono);">BACKUP-STRATEGY</span>
-              )}
-              {featured.category !== 'email-migration' && featured.category !== 'backup' && (
-                <span class="px-2.5 py-0.5 rounded text-[9px] uppercase font-bold tracking-wider inline-block self-start mb-3" style="border: 1px solid rgba(245, 158, 11, 0.35); background: rgba(245, 158, 11, 0.08); color: var(--amber-alert); font-family: var(--font-mono);">{featured.category.toUpperCase()}</span>
-              )}
-              <h2 class="font-bold text-white text-xl mb-3 group-hover:text-[#6366F1] transition-colors text-sm" style="font-family: var(--font-body);">{featured.title}</h2>
-              <p class="text-xs text-[#E2E8F0] mb-5 line-clamp-3 leading-relaxed">{featured.excerpt}</p>
-              <div class="flex items-center justify-between text-xs text-[#94A3B8]">
+              <span class="badge badge-blue mb-3 inline-block self-start">{BLOG_CATEGORY_LABELS[featured.category]}</span>
+              <h2 class="font-bold text-gray-900 text-xl mb-3 group-hover:text-blue-600 transition-colors">{featured.title}</h2>
+              <p class="text-gray-500 text-sm mb-5 line-clamp-3">{featured.excerpt}</p>
+              <div class="flex items-center justify-between text-xs text-gray-400">
                 <div class="flex items-center gap-3">
-                  <div class="w-8 h-8 rounded-full bg-[#6366F1]/10 border border-[#6366F1]/20 text-[#6366F1] flex items-center justify-center font-bold text-xs">
+                  <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-xs">
                     {featured.author.name.charAt(0)}
                   </div>
                   <div>
-                    <p class="font-semibold text-[#E2E8F0]">{featured.author.name}</p>
-                    <p class="text-[9px] text-zinc-550 dark:text-zinc-500 font-mono mt-0.5 leading-tight">{getTechnicalBio(featured.author.name)}</p>
-                    <p class="text-[9px] text-stone-500 font-mono mt-1">{formatDate(featured.publishedAt)}</p>
+                    <p class="font-medium text-gray-700">{featured.author.name}</p>
+                    <p>{formatDate(featured.publishedAt)}</p>
                   </div>
                 </div>
-                <div class="flex items-center gap-1 font-mono text-[10px]">
+                <div class="flex items-center gap-1">
                   <Clock size={12} />
                   {featured.readTime} min read
                 </div>
               </div>
-              <div class="flex items-center gap-1 mt-5 text-[#6366F1] font-bold text-xs group-hover:gap-2 transition-all">
+              <div class="flex items-center gap-1 mt-5 text-blue-600 font-semibold text-sm group-hover:gap-2 transition-all">
                 Read Article <ArrowRight size={14} />
               </div>
             </div>
@@ -101,38 +77,30 @@ function getTechnicalBio(authorName: string): string {
       )}
 
       {/* All Posts Grid */}
-      <SectionHeader eyebrow="All Articles" title="Latest Posts" class="mb-12" />
+      <SectionHeader eyebrow="All Articles" title="Latest Posts" class="mb-8" />
       
       {rest.length > 0 ? (
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {rest.map((post) => (
-            <a href={`/blog/${post.slug}`} class="group bg-[#1E2937]/30 backdrop-blur rounded-xl border border-[#334155] overflow-hidden block hover:border-[#6366F1]/30 transition-all duration-300">
-              <div class="bg-[#0B0F1A] border-b border-[#334155] h-40 flex items-center justify-center">
-                <span class="text-stone-800 text-3xl font-black">{post.title.charAt(0)}</span>
+            <a href={`/blog/${post.slug}`} class="group bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden card-hover block">
+              <div class="bg-gradient-to-br from-gray-100 to-gray-200 h-40 flex items-center justify-center">
+                <span class="text-gray-300 text-6xl font-black">{post.title.charAt(0)}</span>
               </div>
               <div class="p-5">
-                {post.category === 'email-migration' && (
-                  <span class="px-2.5 py-0.5 rounded text-[9px] uppercase font-bold tracking-wider inline-block mb-2" style="border: 1px solid rgba(0, 200, 160, 0.35); background: rgba(0, 200, 160, 0.08); color: var(--signal-teal); font-family: var(--font-mono);">EMAIL-MIGRATION</span>
-                )}
-                {post.category === 'backup' && (
-                  <span class="px-2.5 py-0.5 rounded text-[9px] uppercase font-bold tracking-wider inline-block mb-2" style="border: 1px solid rgba(177, 159, 251, 0.35); background: rgba(177, 159, 251, 0.08); color: #B19FFB; font-family: var(--font-mono);">BACKUP-STRATEGY</span>
-                )}
-                {post.category !== 'email-migration' && post.category !== 'backup' && (
-                  <span class="px-2.5 py-0.5 rounded text-[9px] uppercase font-bold tracking-wider inline-block mb-2" style="border: 1px solid rgba(245, 158, 11, 0.35); background: rgba(245, 158, 11, 0.08); color: var(--amber-alert); font-family: var(--font-mono);">{post.category.toUpperCase()}</span>
-                )}
-                <h3 class="font-bold text-white mb-2 group-hover:text-[#6366F1] transition-colors line-clamp-2 text-sm">{post.title}</h3>
-                <p class="text-xs text-[#E2E8F0] line-clamp-2 mb-4 leading-relaxed">{post.excerpt}</p>
-                <div class="flex items-center justify-between text-[11px] text-[#94A3B8]">
-                  <span class="font-mono">{formatDate(post.publishedAt)}</span>
-                  <span class="flex items-center gap-1 font-mono"><Clock size={11} /> {post.readTime} min</span>
+                <span class="badge badge-blue mb-2 inline-block">{BLOG_CATEGORY_LABELS[post.category]}</span>
+                <h3 class="font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">{post.title}</h3>
+                <p class="text-sm text-gray-500 line-clamp-2 mb-4">{post.excerpt}</p>
+                <div class="flex items-center justify-between text-xs text-gray-400">
+                  <span>{formatDate(post.publishedAt)}</span>
+                  <span class="flex items-center gap-1"><Clock size={11} /> {post.readTime} min</span>
                 </div>
               </div>
             </a>
           ))}
         </div>
       ) : (
-        <div class="text-center py-20 bg-[#1E2937]/30 backdrop-blur rounded-xl border border-[#334155] p-8 shadow-2xl">
-          <p class="text-stone-500 text-lg">No articles found.</p>
+        <div class="text-center py-20 bg-white rounded-2xl border border-gray-100 p-8 shadow-sm">
+          <p class="text-gray-400 text-lg">No articles found.</p>
         </div>
       )}
     </div>

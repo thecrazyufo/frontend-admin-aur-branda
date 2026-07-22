@@ -1,411 +1,225 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { ProductAPI, SettingsAPI, BrandAPI } from "@/services/api";
+import { ProductAPI } from "@/services/api";
 import { Star, Download, ShoppingCart, Check, Monitor, ChevronRight } from "lucide-react";
 import { generateProductSchema, generateBreadcrumbSchema, generateFAQSchema } from "@/lib/seo";
-import { parseMarkdownToHtml } from "@/lib/utils";
 import PricingCard from "@/components/common/PricingCard";
 import ProductCard from "@/components/common/ProductCard";
 import SectionHeader from "@/components/common/SectionHeader";
 import Breadcrumb from "@/components/layout/Breadcrumb";
-import PrismMigrationHeroVisual from "@/components/common/PrismMigrationHeroVisual";
+import { siteConfig } from "@/config/site";
+
 import type { Product } from "@/types/product";
 
 const { slug } = Astro.params;
 
-let settings = null;
-let brandConfig = null;
 let product: Product | null = null;
-let products: Product[] = [];
 let relatedProducts: Product[] = [];
 
 try {
-  // Phase 1: Fetch core configurations and target product details in parallel
-  [settings, brandConfig, product] = await Promise.all([
-    SettingsAPI.get().catch(() => null),
-    BrandAPI.getCurrentBrand().catch(() => null),
-    slug ? ProductAPI.getBySlug(slug).catch(() => null) : Promise.resolve(null)
-  ]);
-
-  // Phase 2: Fetch related products and catalog (for navbar) in parallel using product details
-  if (product) {
-    [relatedProducts, products] = await Promise.all([
-      ProductAPI.getRelated(product.id).catch(() => []),
-      ProductAPI.getAll().catch(() => [])
-    ]);
+  if (slug) {
+    product = await ProductAPI.getBySlug(slug);
+    if (product) {
+      relatedProducts = await ProductAPI.getRelated(product.id);
+    }
   }
 } catch (e) {
-  console.error("Error loading product page data:", e);
+  console.error("Error fetching product detail:", e);
 }
 
 if (!product || product.enabled === false) {
   return new Response("Product Not Found", { status: 404 });
 }
 
-const siteUrl = (settings?.url || "").replace(/\/$/, "");
-const productUrl = `${siteUrl}/products/${product.slug}`;
+const productUrl = `${siteConfig.url}/products/${product.slug}`;
 const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
-
-// Enable Edge Caching/ISR
-Astro.response.headers.set(
-  "Cache-Control",
-  "public, max-age=0, s-maxage=600, stale-while-revalidate=60"
-);
 ---
 
 <BaseLayout
-  title={`${product.seo?.title || product.name} — ${settings?.name || ""}`}
+  title={`${product.seo?.title || product.name} — ${siteConfig.name}`}
   description={product.seo?.description || product.shortDescription}
-  ogType="product"
-  settings={settings}
-  brandConfig={brandConfig}
-  products={products}
 >
-  <script type="application/ld+json" set:html={JSON.stringify(generateProductSchema({ name: product.name, description: product.description, image: product.thumbnailUrl || undefined, price: lowestPaidPrice?.price || 0, rating: product.rating || 0, reviewCount: product.reviewCount || 0, url: productUrl }))} />
-  <script type="application/ld+json" set:html={JSON.stringify(generateBreadcrumbSchema([{ label: "Home", href: "/" }, { label: "Products", href: "/products" }, { label: product.name, href: `/products/${product.slug}` }], siteUrl))} />
-  {product.faqs && product.faqs.length > 0 && (
-    <script type="application/ld+json" set:html={JSON.stringify(generateFAQSchema(product.faqs))} />
-  )}
+  <script type="application/ld+json" set:html={JSON.stringify(generateProductSchema({ name: product.name, description: product.description, price: lowestPaidPrice?.price || 0, rating: product.rating || 0, reviewCount: product.reviewCount || 0, url: productUrl }))} />
+  <script type="application/ld+json" set:html={JSON.stringify(generateBreadcrumbSchema([{ label: "Home", href: "/" }, { label: "Products", href: "/products" }, { label: product.name, href: `/products/${product.slug}` }]))} />
+  <script type="application/ld+json" set:html={JSON.stringify(generateFAQSchema(product.faqs || []))} />
 
   <Breadcrumb items={[{ label: "Products", href: "/products" }, { label: product.name }]} />
 
   {/* Product Hero */}
-  <section class="bg-[#0B0F1A] py-16 tech-grid relative overflow-hidden">
-    <!-- Ambient refraction glow background -->
-    <div class="absolute inset-0 pointer-events-none overflow-hidden">
-      <div class="absolute top-1/2 left-1/4 -translate-y-1/2 w-[350px] h-[150px] bg-[#6366F1]/5 blur-[90px] rounded-full"></div>
-    </div>
-
-    <div class="container-custom relative z-10">
+  <section class="bg-white border-b border-gray-100 py-12">
+    <div class="container-custom">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <div>
           {product.badge && (
-            <span class="bg-[#6366F1]/10 text-[#6366F1] border border-[#6366F1]/25 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider rounded mb-4 inline-block">
+            <span class="badge badge-blue mb-4 inline-block">
               {product.badge === "bestseller" ? "🏆 Best Seller" : product.badge === "popular" ? "🔥 Popular" : product.badge === "new" ? "✨ New" : "🔄 Updated"}
             </span>
           )}
-          <h1 class="font-extrabold text-white text-3xl tracking-tight mb-4" style="font-family: var(--font-display);">{product.name}</h1>
-          <p class="text-base text-[#E5E5E5] mb-6">{product.shortDescription}</p>
+          <h1 class="font-bold text-gray-900 mb-4">{product.name}</h1>
+          <p class="text-lg text-gray-600 mb-6">{product.shortDescription}</p>
 
           {/* Rating */}
-          <div class="flex items-center gap-3 mb-6 text-xs text-[#94A3B8] font-medium">
-            <div class="flex text-[#6366F1]">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex text-amber-400">
               {Array.from({ length: 5 }).map((_, i) => (
-                <Star size={14} fill={i < Math.floor(product.rating || 0) ? "currentColor" : "none"} strokeWidth={1.5} />
+                <Star size={18} fill={i < Math.floor(product.rating || 0) ? "currentColor" : "none"} strokeWidth={1.5} />
               ))}
             </div>
-            <span class="font-bold text-white">{product.rating || 0}</span>
-            <span>({(product.reviewCount || 0).toLocaleString()} reviews)</span>
-            <span class="text-stone-700">•</span>
-            <span style="color: var(--signal-teal);">{product.downloads || "0"} downloads</span>
+            <span class="font-semibold text-gray-900">{product.rating || 0}</span>
+            <span class="text-gray-400">({(product.reviewCount || 0).toLocaleString()} reviews)</span>
+            <span class="text-gray-300">•</span>
+            <span class="text-blue-600 font-medium">{product.downloads || "0"} downloads</span>
           </div>
 
           {/* Top Features */}
           <ul class="space-y-2 mb-8">
             {(product.features || []).slice(0, 5).map((f) => (
-              <li class="flex items-center gap-2 text-xs text-[#E2E8F0]">
-                <Check size={14} class="text-[var(--signal-teal)] shrink-0" />
+              <li class="flex items-center gap-2 text-sm text-gray-600">
+                <Check size={15} class="text-green-500 shrink-0" />
                 {f}
               </li>
             ))}
           </ul>
 
-          <!-- Starting Price Display Box (High contrast visual anchor) -->
-          <div class="mb-6 flex items-baseline gap-2 bg-[#0F1620]/40 border border-[#1C2B3A] p-4 rounded-xl max-w-sm">
-            <div class="flex flex-col">
-              <span class="text-[9px] uppercase font-mono tracking-widest text-[#8FA4BF]">Starting License Price</span>
-              <div class="flex items-baseline gap-1.5 mt-1">
-                <span class="text-3xl font-black font-mono text-[var(--amber-alert)]">${lowestPaidPrice?.price || "0"}</span>
-                <span class="text-[10px] font-mono text-[#8FA4BF] uppercase tracking-wider">/ lifetime key</span>
-              </div>
-            </div>
-          </div>
-
           {/* CTAs */}
           <div class="flex flex-wrap gap-3">
-            <a href={`/checkout?product=${product.slug}&tier=${encodeURIComponent(lowestPaidPrice?.name || "Standard")}`} class="cta-pulse-wrap font-extrabold text-sm py-3 px-6 rounded flex items-center gap-2 transition-all duration-300 transform active:scale-95" style="background: var(--signal-teal); color: #080C14; box-shadow: 0 0 15px rgba(0,200,160,0.25);">
-              <ShoppingCart size={16} />
+            <a href={product.trialDownloadUrl || `/download?product=${product.slug}`} class="btn btn-accent text-base py-3 px-7 flex items-center gap-2">
+              <ShoppingCart size={18} />
               Buy Now — ${lowestPaidPrice?.price}
             </a>
-            <a href={`/download?product=${product.slug}`} class="cta-pulse-wrap text-sm py-3 px-6 rounded flex items-center gap-2 transition-all duration-300 font-bold" style="border: 1px solid rgba(0,200,160,0.3); background: rgba(0,200,160,0.06); color: var(--signal-teal);">
-              <Download size={16} />
+            <a href={product.trialDownloadUrl || "#"} class="btn btn-outline text-base py-3 px-6 flex items-center gap-2">
+              <Download size={18} />
               Free Trial
             </a>
           </div>
 
           {/* Platforms */}
-          <div class="flex items-center gap-2 mt-6 flex-wrap">
-            <Monitor size={14} class="text-stone-500" />
+          <div class="flex items-center gap-2 mt-5 flex-wrap">
+            <Monitor size={14} class="text-gray-400" />
             {(product.platforms || []).map((p) => (
-              <span class="text-[9px] font-bold uppercase tracking-wider text-[#E2E8F0] bg-stone-850 border border-[#334155] px-2 py-0.5 rounded">{p}</span>
+              <span class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">{p}</span>
             ))}
           </div>
         </div>
 
-        {/* Product Prism Migration Visual Refraction Animation */}
-        <PrismMigrationHeroVisual client:load sourceFormats={product.sourceFormats || []} targetFormats={product.targetFormats || []} />
+        {/* Product Visual */}
+        <div class="relative">
+          <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-12 flex items-center justify-center min-h-72">
+            <div class="text-center">
+              <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mx-auto mb-4 shadow-xl">
+                <Download size={40} class="text-white" />
+              </div>
+              <p class="font-bold text-gray-900 text-lg">{product.name}</p>
+              <p class="text-sm text-gray-500 mt-1">v{product.version}</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Monospace Spec Bar (product detail page signature element) -->
-  <div class="border-y" style="border-color: var(--circuit-line); background: var(--slate-surface);">
-    <div class="container-custom max-w-4xl">
-      <div class="flex flex-wrap items-center gap-x-6 gap-y-2 py-3 overflow-x-auto" style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--type-faint); letter-spacing: 0.06em; text-transform: uppercase;" aria-label="Product technical specifications">
-        {product.version && <span>VERSION&nbsp;<span style="color: var(--type-muted);">{product.version}</span></span>}
-        <span style="color: var(--circuit-line);">|</span>
-        {(product.platforms || []).length > 0 && <span>PLATFORMS&nbsp;<span style="color: var(--type-muted);">{(product.platforms || []).join(', ')}</span></span>}
-        <span style="color: var(--circuit-line);">|</span>
-        {(product.sourceFormats || []).length > 0 && <span>FORMAT IN&nbsp;<span style="color: var(--signal-teal);">{(product.sourceFormats || []).join(', ')}</span></span>}
-        <span style="color: var(--circuit-line);">|</span>
-        {(product.targetFormats || []).length > 0 && <span>FORMAT OUT&nbsp;<span style="color: var(--signal-teal);">{(product.targetFormats || []).join(', ')}</span></span>}
-        <span style="color: var(--circuit-line);">|</span>
-        <span>INTEGRITY&nbsp;<span style="color: var(--signal-teal);">BYTE-PERFECT</span></span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Prism Section Divider -->
-  <hr class="prism-divider" style="margin: 0;" />
-
-  {/* Description / Markdown Overview */}
+  {/* Description / HTML Overview Section */}
   {product.description && (
-    <section class="bg-[#0B0F1A] py-16 tech-grid" id="overview">
+    <section class="section bg-white border-b border-gray-100" id="overview">
       <div class="container-custom max-w-4xl">
-        <div class="prose prose-invert max-w-none text-[#E5E5E5] leading-relaxed space-y-4 animate-fade-in">
-          <h2 class="font-bold text-white text-xl mb-6">Product Overview</h2>
-          <div set:html={parseMarkdownToHtml(product.description)} />
+        <div class="prose max-w-none text-gray-700 leading-relaxed space-y-4">
+          <h2 class="font-bold text-gray-900 text-2xl mb-6">Product Overview</h2>
+          <div set:html={product.description} />
         </div>
       </div>
     </section>
   )}
 
-  <!-- Section Divider -->
-  <div class="h-px bg-gradient-to-r from-transparent via-[#6366F1]/15 to-transparent"></div>
-
   {/* Features Section */}
-  <section class="bg-[#0B0F1A] py-16 tech-grid" id="features">
+  <section class="section bg-gray-50" id="features">
     <div class="container-custom">
-      <div class="text-center mb-10">
-        <span class="text-[10px] tracking-wider uppercase font-bold block" style="color: var(--signal-teal); font-family: var(--font-mono);">Engine Details</span>
-        <h2 class="text-xl font-bold text-[#E2E8F0] mt-1">Everything You Need</h2>
-      </div>
-
+      <SectionHeader eyebrow="Features" title="Everything You Need" subtitle="Powerful features designed for professionals." class="mb-10" />
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         {(product.features || []).map((feature) => (
-          <div class="flex items-start gap-3 bg-[#1E2937]/30 backdrop-blur rounded-xl p-4 border border-[#334155] shadow-2xl">
-            <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5" style="background: rgba(0,200,160,0.08); border: 1px solid rgba(0,200,160,0.2);">
-              <Check size={14} class="text-[var(--signal-teal)]" />
+          <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-gray-100">
+            <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0 mt-0.5">
+              <Check size={14} class="text-blue-600" />
             </div>
-            <span class="text-sm text-[#E2E8F0]">{feature}</span>
+            <span class="text-sm text-gray-700">{feature}</span>
           </div>
         ))}
       </div>
     </div>
   </section>
 
-  <!-- Section Divider -->
-  <div class="h-px bg-gradient-to-r from-transparent via-[#6366F1]/15 to-transparent"></div>
-
   {/* How It Works */}
-  <section class="bg-[#0B0F1A] py-16 tech-grid" id="how-it-works">
+  <section class="section bg-white" id="how-it-works">
     <div class="container-custom">
-      <div class="text-center mb-12">
-        <span class="text-[10px] tracking-wider text-[#6366F1] uppercase font-bold block">Operation</span>
-        <h2 class="text-xl font-bold text-[#E2E8F0] mt-1">How It Works</h2>
-      </div>
-
+      <SectionHeader eyebrow="Process" title="How It Works" subtitle="Get started in 4 simple steps." centered class="mb-12" />
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {(product.howItWorks || []).map((step) => (
           <div class="text-center">
-            <div class="w-12 h-12 rounded-xl bg-[#1E2937] border border-[#334155] text-[#6366F1] flex items-center justify-center mx-auto mb-4 text-sm font-extrabold shadow-[0_0_15px_rgba(99, 102, 241,0.15)]">
+            <div class="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center mx-auto mb-4 text-xl font-bold shadow-lg">
               {step.step}
             </div>
-            <h3 class="font-bold text-white text-sm mb-2">{step.title}</h3>
-            <p class="text-xs text-[#94A3B8]">{step.description}</p>
+            <h3 class="font-bold text-gray-900 mb-2">{step.title}</h3>
+            <p class="text-sm text-gray-500">{step.description}</p>
           </div>
         ))}
       </div>
     </div>
   </section>
 
-  <!-- Section Divider -->
-  <div class="h-px bg-gradient-to-r from-transparent via-[#6366F1]/15 to-transparent"></div>
-
   {/* Pricing */}
-  <section class="bg-[#0B0F1A] py-16 tech-grid" id="pricing">
+  <section class="section bg-gray-50" id="pricing">
     <div class="container-custom">
-      <div class="text-center mb-12">
-        <span class="text-[10px] tracking-wider text-[#6366F1] uppercase font-bold block">Pricing</span>
-        <h2 class="text-xl font-bold text-[#E2E8F0] mt-1">Choose Your Plan</h2>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto items-stretch">
+      <SectionHeader eyebrow="Pricing" title="Choose Your Plan" subtitle="One-time payment. No subscriptions. Free trial available." centered class="mb-12" />
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto items-start">
         {(product.pricing || []).map((tier) => (
           <PricingCard tier={tier} productSlug={product.slug} />
         ))}
       </div>
-
-      {/* License Comparison Matrix */}
-      {product.licenseComparison && product.licenseComparison.length > 0 && (
-        <div class="mt-20 max-w-5xl mx-auto">
-          <div class="text-center mb-8">
-            <h2 class="text-lg font-bold text-white">Compare Licenses</h2>
-          </div>
-
-          <div class="bg-[#1E2937]/10 backdrop-blur rounded-xl border border-[#334155] overflow-hidden shadow-2xl">
-            <div class="overflow-x-auto">
-              <table class="w-full text-left border-collapse">
-                <thead>
-                  <tr class="bg-[#0B0F1A]/40 border-b border-[#334155] text-xs uppercase tracking-wider text-[#94A3B8]">
-                    <th class="p-4 font-semibold w-1/3">Feature</th>
-                    <th class="p-4 font-semibold text-center">Trial</th>
-                    <th class="p-4 font-semibold text-center text-[#6366F1] bg-[#6366F1]/5">Personal</th>
-                    <th class="p-4 font-semibold text-center">Enterprise</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-stone-900/60 text-xs">
-                  {product.licenseComparison.map((row) => (
-                    <tr class="hover:bg-[#1E2937]/10 transition-colors">
-                      <td class="p-4 font-medium text-white">{row.feature}</td>
-                      <td class="p-4 text-center text-[#E2E8F0]">
-                        {row.trial.toLowerCase() === "yes" ? (
-                          <Check size={16} class="text-[#6366F1] mx-auto" />
-                        ) : row.trial.toLowerCase() === "no" ? (
-                          <span class="text-stone-700 font-bold">—</span>
-                        ) : (
-                          <span class="font-medium">{row.trial}</span>
-                        )}
-                      </td>
-                      <td class="p-4 text-center bg-[#6366F1]/5 text-[#6366F1] font-semibold">
-                        {row.personal.toLowerCase() === "yes" ? (
-                          <Check size={16} class="text-[#6366F1] mx-auto" />
-                        ) : row.personal.toLowerCase() === "no" ? (
-                          <span class="text-stone-700 font-bold">—</span>
-                        ) : (
-                          <span class="font-medium">{row.personal}</span>
-                        )}
-                      </td>
-                      <td class="p-4 text-center text-[#E2E8F0]">
-                        {row.enterprise.toLowerCase() === "yes" ? (
-                          <Check size={16} class="text-emerald-500 mx-auto" />
-                        ) : row.enterprise.toLowerCase() === "no" ? (
-                          <span class="text-stone-700 font-bold">—</span>
-                        ) : (
-                          <span class="font-medium">{row.enterprise}</span>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   </section>
 
-  <!-- Section Divider -->
-  <div class="h-px bg-gradient-to-r from-transparent via-[#6366F1]/15 to-transparent"></div>
-
   {/* Supported Formats */}
-  <section class="bg-[#0B0F1A] py-16 tech-grid">
+  <section class="section bg-white">
     <div class="container-custom">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
         <div>
-          <div class="mb-6">
-            <span class="text-[9px] tracking-wider text-[#6366F1] uppercase font-bold block">Compatibility</span>
-            <h2 class="text-lg font-bold text-white mt-0.5">Supported Formats</h2>
-          </div>
-
+          <SectionHeader eyebrow="Compatibility" title="Supported Formats" class="mb-6" />
           <div class="flex flex-wrap gap-2">
-            {(() => {
-              const formats = (product.supportedFormats && product.supportedFormats.length > 0)
-                ? product.supportedFormats
-                : [...new Set([...(product.sourceFormats || []), ...(product.targetFormats || [])])].map(f => f.toUpperCase());
-              return formats;
-            })().map((fmt) => (
-              <span class="px-3 py-1.5 bg-[#1E2937] border border-[#334155] text-[#E2E8F0] text-xs rounded-lg font-mono font-medium">
+            {(product.supportedFormats || []).map((fmt) => (
+              <span class="px-3 py-1.5 bg-gray-100 text-gray-700 text-sm rounded-lg font-mono font-medium">
                 {fmt}
               </span>
             ))}
           </div>
         </div>
         <div>
-          <div class="mb-6">
-            <span class="text-[9px] tracking-wider text-[#6366F1] uppercase font-bold block">Requirements</span>
-            <h2 class="text-lg font-bold text-white mt-0.5">System Requirements</h2>
-          </div>
-
-          <div class="space-y-4">
-            {/* Windows */}
-            {(product.systemRequirements?.os || product.systemRequirements?.processor) && (
-              <div class="bg-[#1E2937]/30 backdrop-blur rounded-xl border border-[#334155] p-5 space-y-3 shadow-2xl">
-                <span class="text-[10px] font-bold text-[#6366F1] uppercase tracking-wider block border-b border-[#334155]/50 pb-1.5">Windows</span>
-                <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">OS</span><span class="text-[#E2E8F0]">{product.systemRequirements?.os || "N/A"}</span></div>
-                <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">Processor</span><span class="text-[#E2E8F0]">{product.systemRequirements?.processor || "N/A"}</span></div>
-                <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">RAM</span><span class="text-[#E2E8F0]">{product.systemRequirements?.ram || "N/A"}</span></div>
-                <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">Disk</span><span class="text-[#E2E8F0]">{product.systemRequirements?.disk || "N/A"}</span></div>
-              </div>
-            )}
-
-            {/* macOS */}
-            {(product.systemRequirements?.macOs || product.systemRequirements?.macProcessor) && (
-              <div class="bg-[#1E2937]/30 backdrop-blur rounded-xl border border-[#334155] p-5 space-y-3 shadow-2xl">
-                <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider block border-b border-[#334155]/50 pb-1.5">macOS</span>
-                <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">OS</span><span class="text-[#E2E8F0]">{product.systemRequirements?.macOs || "N/A"}</span></div>
-                <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">Processor</span><span class="text-[#E2E8F0]">{product.systemRequirements?.macProcessor || "N/A"}</span></div>
-                <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">RAM</span><span class="text-[#E2E8F0]">{product.systemRequirements?.macRam || "N/A"}</span></div>
-                <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">Disk</span><span class="text-[#E2E8F0]">{product.systemRequirements?.macDisk || "N/A"}</span></div>
-              </div>
-            )}
-
-            {/* Linux */}
-            {(product.systemRequirements?.linuxOs || product.systemRequirements?.linuxProcessor) && (
-              <div class="bg-[#1E2937]/30 backdrop-blur rounded-xl border border-[#334155] p-5 space-y-3 shadow-2xl">
-                <span class="text-[10px] font-bold text-orange-400 uppercase tracking-wider block border-b border-[#334155]/50 pb-1.5">Linux</span>
-                <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">OS</span><span class="text-[#E2E8F0]">{product.systemRequirements?.linuxOs || "N/A"}</span></div>
-                <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">Processor</span><span class="text-[#E2E8F0]">{product.systemRequirements?.linuxProcessor || "N/A"}</span></div>
-                <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">RAM</span><span class="text-[#E2E8F0]">{product.systemRequirements?.linuxRam || "N/A"}</span></div>
-                <div class="flex gap-3 text-xs"><span class="font-semibold text-[#94A3B8] w-24 shrink-0 pt-0.5">Disk</span><span class="text-[#E2E8F0]">{product.systemRequirements?.linuxDisk || "N/A"}</span></div>
-              </div>
-            )}
-
-            {product.systemRequirements?.other && product.systemRequirements.other.length > 0 && (
-              <div class="bg-[#1E2937]/30 backdrop-blur rounded-xl border border-[#334155] p-5 space-y-2 shadow-2xl">
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block border-b border-[#334155]/50 pb-1.5">Other Requirements</span>
-                {product.systemRequirements.other.map((req) => (
-                  <div class="flex gap-3 text-xs"><span class="text-[#E2E8F0]">{req}</span></div>
-                ))}
-              </div>
-            )}
+          <SectionHeader eyebrow="Requirements" title="System Requirements" class="mb-6" />
+          <div class="bg-gray-50 rounded-2xl p-6 space-y-3">
+            <div class="flex gap-3"><span class="text-xs font-semibold text-gray-500 w-24 shrink-0 pt-0.5">OS</span><span class="text-sm text-gray-700">{product.systemRequirements?.os || "N/A"}</span></div>
+            <div class="flex gap-3"><span class="text-xs font-semibold text-gray-500 w-24 shrink-0 pt-0.5">Processor</span><span class="text-sm text-gray-700">{product.systemRequirements?.processor || "N/A"}</span></div>
+            <div class="flex gap-3"><span class="text-xs font-semibold text-gray-500 w-24 shrink-0 pt-0.5">RAM</span><span class="text-sm text-gray-700">{product.systemRequirements?.ram || "N/A"}</span></div>
+            <div class="flex gap-3"><span class="text-xs font-semibold text-gray-500 w-24 shrink-0 pt-0.5">Disk</span><span class="text-sm text-gray-700">{product.systemRequirements?.disk || "N/A"}</span></div>
+            {product.systemRequirements?.other?.map((req) => (
+              <div class="flex gap-3"><span class="text-xs font-semibold text-gray-500 w-24 shrink-0 pt-0.5">Other</span><span class="text-sm text-gray-700">{req}</span></div>
+            ))}
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Section Divider -->
-  <div class="h-px bg-gradient-to-r from-transparent via-[#6366F1]/15 to-transparent"></div>
-
   {/* FAQ */}
-  <section class="bg-[#0B0F1A] py-16 tech-grid" id="faq">
+  <section class="section bg-gray-50" id="faq">
     <div class="container-custom max-w-3xl">
-      <div class="text-center mb-10">
-        <span class="text-[10px] tracking-wider text-[#6366F1] uppercase font-bold block">FAQ</span>
-        <h2 class="text-xl font-bold text-[#E2E8F0] mt-1">Frequently Asked Questions</h2>
-      </div>
-
+      <SectionHeader eyebrow="FAQ" title="Frequently Asked Questions" centered class="mb-10" />
       <div class="space-y-4">
         {(product.faqs || []).map((faq) => (
-          <details class="group bg-[#1E2937]/30 backdrop-blur rounded-xl border border-[#334155] shadow-2xl overflow-hidden hover:border-[#6366F1]/30 transition-colors">
+          <details class="group bg-white rounded-2xl border border-gray-100 shadow-sm">
             <summary class="flex items-center justify-between px-6 py-4 cursor-pointer list-none">
-              <span class="font-semibold text-white pr-4 text-sm">{faq.question}</span>
-              <ChevronRight size={18} class="text-stone-500 shrink-0 group-open:rotate-90 transition-transform" />
+              <span class="font-semibold text-gray-900 pr-4">{faq.question}</span>
+              <ChevronRight size={18} class="text-gray-400 shrink-0 group-open:rotate-90 transition-transform" />
             </summary>
             <div class="px-6 pb-5">
-              <div class="text-xs text-[#E5E5E5] leading-relaxed" set:html={parseMarkdownToHtml(faq.answer || "")} />
+              <p class="text-sm text-gray-600 leading-relaxed">{faq.answer}</p>
             </div>
           </details>
         ))}
@@ -413,32 +227,25 @@ Astro.response.headers.set(
     </div>
   </section>
 
-  <!-- Section Divider -->
-  <div class="h-px bg-gradient-to-r from-transparent via-[#6366F1]/15 to-transparent"></div>
-
   {/* Reviews */}
-  <section class="bg-[#0B0F1A] py-16 tech-grid" id="reviews">
+  <section class="section bg-white" id="reviews">
     <div class="container-custom">
-      <div class="mb-10">
-        <span class="text-[10px] tracking-wider text-[#6366F1] uppercase font-bold block">Reviews</span>
-        <h2 class="text-xl font-bold text-[#E2E8F0] mt-1">Customer Reviews ({(product.reviewCount || 0).toLocaleString()})</h2>
-      </div>
-
+      <SectionHeader eyebrow="Reviews" title={`Customer Reviews (${(product.reviewCount || 0).toLocaleString()})`} class="mb-10" />
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {(product.reviews || []).map((review) => (
-          <div class="bg-[#1E2937]/30 backdrop-blur rounded-xl border border-[#334155] p-6 shadow-2xl hover:border-[#6366F1]/30 transition-all duration-300">
-            <div class="flex text-[#6366F1] mb-3">
-              {Array.from({ length: review.rating || 0 }).map((_) => <Star size={12} fill="currentColor" />)}
+          <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+            <div class="flex text-amber-400 mb-3">
+              {Array.from({ length: review.rating || 0 }).map((_) => <Star size={14} fill="currentColor" />)}
             </div>
-            <p class="text-xs text-[#E5E5E5] italic mb-4 leading-relaxed">&ldquo;{review.content}&rdquo;</p>
+            <p class="text-sm text-gray-600 italic mb-4">&ldquo;{review.content}&rdquo;</p>
             <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-full bg-stone-850 border border-[#334155] flex items-center justify-center text-[#6366F1] font-bold text-xs">
+              <div class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white font-bold text-sm">
                 {review.author?.charAt(0) || "U"}
               </div>
               <div>
-                <p class="text-xs font-bold text-white">{review.author}</p>
+                <p class="text-sm font-semibold text-gray-900">{review.author}</p>
                 {(review.role || review.company) && (
-                  <p class="text-[10px] text-stone-500 mt-0.5">{review.role}{review.role && review.company ? " · " : ""}{review.company}</p>
+                  <p class="text-xs text-gray-400">{review.role}{review.role && review.company ? " · " : ""}{review.company}</p>
                 )}
               </div>
             </div>
@@ -448,18 +255,11 @@ Astro.response.headers.set(
     </div>
   </section>
 
-  <!-- Section Divider -->
-  <div class="h-px bg-gradient-to-r from-transparent via-[#6366F1]/15 to-transparent"></div>
-
   {/* Related Products */}
   {relatedProducts.length > 0 && (
-    <section class="bg-[#0B0F1A] py-16 tech-grid">
+    <section class="section bg-gray-50">
       <div class="container-custom">
-        <div class="mb-10">
-          <span class="text-[10px] tracking-wider text-[#6366F1] uppercase font-bold block">Explore</span>
-          <h2 class="text-xl font-bold text-[#E2E8F0] mt-1">Related Products</h2>
-        </div>
-
+        <SectionHeader eyebrow="You May Also Like" title="Related Products" class="mb-10" />
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {relatedProducts.map((p) => <ProductCard product={p} />)}
         </div>

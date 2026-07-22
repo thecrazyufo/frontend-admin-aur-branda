@@ -1,5 +1,5 @@
 {
-  "name": "storefront-core",
+  "name": "branda-storefront",
   "type": "module",
   "version": "0.1.0",
   "private": true,
@@ -17,9 +17,7 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@astrojs/node": "^10.0.0",
     "@astrojs/react": "^5.0.6",
-    "@astrojs/vercel": "^10.0.8",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.16",

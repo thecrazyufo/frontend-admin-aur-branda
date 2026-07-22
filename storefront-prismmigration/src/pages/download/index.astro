@@ -2,10 +2,11 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { ProductAPI, SettingsAPI } from "@/services/api";
 import SectionHeader from "@/components/common/SectionHeader";
-import { Download, Monitor, CheckCircle, RefreshCw, X } from "lucide-react";
+import { Download, Monitor, CheckCircle } from "lucide-react";
+import { siteConfig } from "@/config/site";
 
 const settings = await SettingsAPI.get().catch(() => null);
-const siteName = settings?.name || "";
+const siteName = settings?.name || siteConfig.name;
 
 let productsList = [];
 
@@ -14,36 +15,24 @@ try {
 } catch (e) {
   console.error("Error loading products for downloads:", e);
 }
-
-// Check for auto-download parameters
-const url = new URL(Astro.request.url);
-const targetSlug = url.searchParams.get("product");
-const autoProduct = targetSlug ? productsList.find(p => p.slug === targetSlug) : null;
 ---
 
 <BaseLayout
   title={`Download Center — Free Trial Downloads | ${siteName}`}
   description={`Download free trials of all ${siteName} tools. No credit card required. Try before you buy.`}
-  noindex={true}
 >
   <div>
-    {/* Hero */}
-    <section class="bg-[var(--canvas)] py-20 text-center border-b border-[var(--circuit-line)] relative overflow-hidden">
-      <!-- Ambient refraction glow background -->
-      <div class="absolute inset-0 pointer-events-none overflow-hidden">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[150px] bg-[var(--brand-primary)]/5 blur-[90px] rounded-full"></div>
-      </div>
-
-      <div class="container-custom relative z-10">
-        <span class="inline-block text-[10px] font-bold uppercase tracking-widest mb-4 px-3 py-1.5 rounded-full text-[var(--brand-primary)] bg-[var(--brand-primary)]/10 border border-[var(--brand-primary)]/20">Download Center</span>
-        <h1 class="text-white font-extrabold text-3xl md:text-3xl tracking-tight mb-4">Download Free Trials</h1>
-        <p class="text-[#E2E8F0] max-w-xl mx-auto leading-relaxed text-xs">
+    <section class="hero-gradient py-16 text-center">
+      <div class="container-custom">
+        <span class="inline-block text-xs font-bold uppercase tracking-widest mb-4 px-3 py-1 rounded-full text-blue-300 bg-white/10">Download Center</span>
+        <h1 class="text-white font-bold mb-4 font-bold">Download Free Trials</h1>
+        <p class="text-gray-300 max-w-xl mx-auto leading-relaxed">
           Try any tool free. No credit card required. Migrate/convert up to 50 items in trial mode to verify it works for you.
         </p>
-        <div class="flex items-center justify-center gap-6 mt-6 text-[11px] text-[#94A3B8] font-mono flex-wrap">
+        <div class="flex items-center justify-center gap-6 mt-6 text-sm text-gray-400 flex-wrap">
           {["No Credit Card", "Instant Download", "100% Safe & Secure", "Windows Compatible"].map((t) => (
             <div class="flex items-center gap-1.5">
-              <CheckCircle size={13} class="text-[var(--brand-primary)]" />
+              <CheckCircle size={13} class="text-green-400" />
               {t}
             </div>
           ))}
@@ -51,77 +40,20 @@ const autoProduct = targetSlug ? productsList.find(p => p.slug === targetSlug) :
       </div>
     </section>
 
-    {/* Auto Download Modal overlay */}
-    {autoProduct && (
-      <div id="download-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div class="bg-[var(--slate-surface)] rounded-2xl p-8 max-w-md w-full shadow-2xl relative border border-[var(--circuit-line)] text-center animate-in fade-in zoom-in duration-200">
-          <button 
-            onclick="document.getElementById('download-overlay').style.display='none'"
-            class="absolute top-4 right-4 text-stone-500 hover:text-white p-2 hover:bg-stone-850 rounded-full cursor-pointer transition-colors"
-            aria-label="Close modal"
-          >
-            <X size={18} />
-          </button>
-          
-          <div>
-            <div class="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center mx-auto mb-4 text-emerald-500">
-              <CheckCircle size={32} />
-            </div>
-            
-            <h2 class="text-xl font-bold text-white mb-2">Starting Your Download...</h2>
-            <p class="text-xs text-[#E2E8F0] mb-6">
-              Downloading the setup package for <strong class="text-white">{autoProduct.name}</strong>.
-            </p>
-            
-            <div class="bg-[var(--ink-void)] rounded-xl p-4 text-xs text-[#94A3B8] text-left space-y-2 mb-6 border border-[var(--circuit-line)]">
-              <p class="font-semibold text-white">Next Steps:</p>
-              <ol class="list-decimal list-inside space-y-1">
-                <li>Open the downloaded installer file.</li>
-                <li>Follow the instructions on the screen to install.</li>
-                <li>Run the application in free trial mode or enter your license key to activate the full version.</li>
-              </ol>
-            </div>
-
-            <a 
-              id="manual-download-link"
-              href={autoProduct.installerUrl || autoProduct.trialDownloadUrl || `https://downloads.thecrazyufo.in/installers/${autoProduct.slug}-trial.exe`} 
-              class="inline-block w-full text-center text-black text-xs font-bold py-2.5 px-6 rounded-lg transition-all duration-300 shadow-[0_0_12px_rgba(0,200,160,0.2)] hover:shadow-[0_0_20px_rgba(0,200,160,0.4)]"
-              style="background: var(--signal-teal);"
-            >
-              Click here if download doesn't start
-            </a>
-          </div>
-        </div>
-
-        <script is:inline define:vars={{ downloadUrl: autoProduct.installerUrl || autoProduct.trialDownloadUrl || `https://downloads.thecrazyufo.in/installers/${autoProduct.slug}-trial.exe` }}>
-          window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-              const link = document.createElement("a");
-              link.href = downloadUrl;
-              link.download = "";
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-            }, 600); // smooth user experience delay
-          });
-        </script>
-      </div>
-    )}
-
-    <section class="py-20 bg-[var(--canvas)] border-t border-[var(--circuit-line)]">
+    <section class="section bg-gray-50">
       <div class="container-custom">
-        <SectionHeader eyebrow="Downloads" title="All Available Tools" class="text-center mb-12" />
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <SectionHeader eyebrow="Downloads" title="All Available Tools" class="mb-10" />
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
           {productsList.map((product) => (
-            <div class="bg-[var(--slate-surface)]/30 backdrop-blur border border-[var(--circuit-line)] hover:border-[var(--brand-primary)]/30 rounded-xl p-6 flex items-start justify-between gap-6 shadow-2xl transition-all duration-300">
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex items-start justify-between gap-6 card-hover">
               <div class="flex items-start gap-4 flex-1">
-                <div class="w-12 h-12 rounded-xl bg-[var(--ink-void)] border border-[var(--circuit-line)] flex items-center justify-center shadow-md shrink-0">
-                  <Download size={20} class="text-[var(--brand-primary)]" />
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-md shrink-0">
+                  <Download size={20} class="text-white" />
                 </div>
                 <div>
-                  <h3 class="font-bold text-white mb-1 text-sm">{product.name}</h3>
-                  <p class="text-xs text-[#E2E8F0] mb-3 line-clamp-2 leading-relaxed">{product.shortDescription}</p>
-                  <div class="flex items-center gap-3 text-[10px] text-[#94A3B8] font-mono flex-wrap">
+                  <h3 class="font-bold text-gray-900 mb-1">{product.name}</h3>
+                  <p class="text-sm text-gray-500 mb-3 line-clamp-2 leading-relaxed">{product.shortDescription}</p>
+                  <div class="flex items-center gap-3 text-xs text-gray-400 flex-wrap">
                     <span class="flex items-center gap-1"><Monitor size={11} /> Windows</span>
                     <span>v{product.version}</span>
                     <span>{product.downloads} downloads</span>
@@ -130,15 +62,13 @@ const autoProduct = targetSlug ? productsList.find(p => p.slug === targetSlug) :
               </div>
               <div class="flex flex-col gap-2 shrink-0">
                 <a
-                  href={product.installerUrl || product.trialDownloadUrl || `https://downloads.thecrazyufo.in/installers/${product.slug}-trial.exe`}
-                  download
-                  class="text-black py-2 px-4 rounded-lg text-xs font-bold transition-all duration-300 flex items-center justify-center gap-1 shadow-[0_0_12px_rgba(0,200,160,0.2)] hover:shadow-[0_0_20px_rgba(0,200,160,0.4)]"
-                  style="background: var(--signal-teal);"
+                  href={product.trialDownloadUrl || `/download?product=${product.slug}`}
+                  class="btn btn-primary text-sm py-2 px-4 whitespace-nowrap flex items-center gap-1"
                 >
                   <Download size={14} />
                   Download
                 </a>
-                <a href={`/products/${product.slug}`} class="text-xs text-center text-[var(--brand-primary)] hover:underline">
+                <a href={`/products/${product.slug}`} class="text-xs text-center text-blue-500 hover:text-blue-700">
                   Learn more →
                 </a>
               </div>

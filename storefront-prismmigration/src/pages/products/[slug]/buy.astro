@@ -1,9 +1,9 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { ProductAPI , SettingsAPI } from "@/services/api";
-const settings = await SettingsAPI.get().catch(() => null);
+import { ProductAPI } from "@/services/api";
 import { Check, ShieldCheck, Lock, CreditCard, HelpCircle } from "lucide-react";
 import { generateProductSchema, generateBreadcrumbSchema } from "@/lib/seo";
+import { siteConfig } from "@/config/site";
 
 const { slug } = Astro.params;
 
@@ -21,8 +21,7 @@ if (!product || product.enabled === false) {
   return new Response("Product Not Found", { status: 404 });
 }
 
-const siteUrl = (settings?.url || "").replace(/\/$/, "");
-const productUrl = `${siteUrl}/products/${product.slug}`;
+const productUrl = `${siteConfig.url}/products/${product.slug}`;
 const lowestPaidPrice = product.pricing?.find((p) => p.price > 0);
 const pricingList = (product.pricing && product.pricing.length > 0 ? product.pricing : [
   { name: "Standard License", price: 49.00, originalPrice: 99.00, period: "lifetime", features: ["1 Mailbox migration", "Free 1-year updates", "24/7 technical support"], cta: "" }
@@ -30,17 +29,17 @@ const pricingList = (product.pricing && product.pricing.length > 0 ? product.pri
 ---
 
 <BaseLayout
-  title={`Buy ${product.name} Securely — ${settings?.name || ""}`}
+  title={`Buy ${product.name} Securely — ${siteConfig.name}`}
   description={`Secure checkout for ${product.name}. Choose from Standard, Business, or or Enterprise licensing plans. Instant key delivery and a 30-day money-back guarantee.`}
 >
-  <script is:inline type="application/ld+json" set:html={JSON.stringify(generateProductSchema({ name: product.name, description: product.description, image: product.thumbnailUrl || undefined, price: lowestPaidPrice?.price || 49.00, rating: product.rating || 0, reviewCount: product.reviewCount || 0, url: productUrl }))} />
-  <script is:inline type="application/ld+json" set:html={JSON.stringify(generateBreadcrumbSchema([{ label: "Home", href: "/" }, { label: "Products", href: "/products" }, { label: product.name, href: `/products/${product.slug}` }, { label: "Buy", href: `/products/${product.slug}/buy` }], siteUrl))} />
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(generateProductSchema({ name: product.name, description: product.description, price: lowestPaidPrice?.price || 49.00, rating: product.rating || 0, reviewCount: product.reviewCount || 0, url: productUrl }))} />
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(generateBreadcrumbSchema([{ label: "Home", href: "/" }, { label: "Products", href: "/products" }, { label: product.name, href: `/products/${product.slug}` }, { label: "Buy", href: `/products/${product.slug}/buy` }]))} />
 
   {/* Hero Banner */}
   <section class="hero-gradient py-12 text-white">
     <div class="container-custom text-center">
-      <h1 class="text-3xl md:text-3xl font-bold mb-4">Secure Checkout</h1>
-      <p class="text-[#E2E8F0] max-w-xl mx-auto">Get instant activation keys for {product.name} immediately after completing your order.</p>
+      <h1 class="text-3xl md:text-4xl font-bold mb-4">Secure Checkout</h1>
+      <p class="text-gray-300 max-w-xl mx-auto">Get instant activation keys for {product.name} immediately after completing your order.</p>
       
       {/* Checkout Stepper */}
       <div class="flex items-center justify-center gap-4 mt-8 max-w-lg mx-auto">
@@ -48,46 +47,46 @@ const pricingList = (product.pricing && product.pricing.length > 0 ? product.pri
           <span class="w-7 h-7 rounded-full border border-amber-400 flex items-center justify-center text-sm font-bold bg-amber-400 text-navy-950">1</span>
           Select License
         </div>
-        <div class="h-px bg-stone-800 flex-1"></div>
+        <div class="h-px bg-gray-600 flex-1"></div>
         <div class="flex items-center gap-2 text-gray-400">
-          <span class="w-7 h-7 rounded-full border border-[#334155] flex items-center justify-center text-sm font-bold">2</span>
+          <span class="w-7 h-7 rounded-full border border-gray-600 flex items-center justify-center text-sm font-bold">2</span>
           Pay Securely
         </div>
-        <div class="h-px bg-stone-800 flex-1"></div>
+        <div class="h-px bg-gray-600 flex-1"></div>
         <div class="flex items-center gap-2 text-gray-400">
-          <span class="w-7 h-7 rounded-full border border-[#334155] flex items-center justify-center text-sm font-bold">3</span>
+          <span class="w-7 h-7 rounded-full border border-gray-600 flex items-center justify-center text-sm font-bold">3</span>
           Activate Tool
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section bg-[#0B0F1A]">
+  <section class="section bg-gray-50">
     <div class="container-custom">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         {/* Pricing Selection */}
         <div class="lg:col-span-2 space-y-6">
-          <h2 class="text-xl font-bold text-white mb-2">Choose Your Licensing Plan</h2>
+          <h2 class="text-xl font-bold text-gray-900 mb-2">Choose Your Licensing Plan</h2>
           
           {pricingList.map((tier) => (
-            <div class={`bg-[#1E2937]/30 backdrop-blur rounded-2xl border p-6 transition-all relative ${tier.popular ? "border-[#6366F1] shadow-[0_0_30px_rgba(99, 102, 241,0.15)] bg-[#1E2937]/50" : "border-[#334155] shadow-sm"}`}>
+            <div class={`bg-white rounded-2xl border-2 p-6 transition-all relative ${tier.popular ? "border-blue-500 shadow-md" : "border-gray-100 shadow-sm"}`}>
               {tier.popular && (
-                <span class="absolute -top-3 right-6 bg-[#6366F1] text-stone-950 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow">
+                <span class="absolute -top-3 right-6 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow">
                   Most Popular
                 </span>
               )}
               
               <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div class="flex-1">
-                  <h3 class="text-lg font-bold text-white">{tier.name}</h3>
+                  <h3 class="text-lg font-bold text-gray-900">{tier.name}</h3>
                   {tier.mailboxes && (
-                    <span class="text-xs bg-[#0B0F1A] border border-[#334155] text-[#94A3B8] px-2 py-0.5 rounded-full font-medium mt-1 inline-block">
+                    <span class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-medium mt-1 inline-block">
                       {tier.mailboxes}
                     </span>
                   )}
                   <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-4">
                     {((tier.features || []) as string[]).map((feat: string) => (
-                      <li class="flex items-center gap-2 text-sm text-[#E2E8F0]">
+                      <li class="flex items-center gap-2 text-sm text-gray-600">
                         <Check size={14} className="text-green-500 shrink-0" />
                         {feat}
                       </li>
@@ -98,15 +97,15 @@ const pricingList = (product.pricing && product.pricing.length > 0 ? product.pri
                 <div class="text-left md:text-right shrink-0">
                   <div class="flex items-baseline gap-2 md:justify-end">
                     {tier.originalPrice && tier.originalPrice > tier.price && (
-                      <span class="text-sm text-stone-500 line-through">${tier.originalPrice}</span>
+                      <span class="text-sm text-gray-400 line-through">${tier.originalPrice}</span>
                     )}
-                    <span class="text-3xl font-extrabold text-white">${tier.price}</span>
+                    <span class="text-3xl font-extrabold text-gray-900">${tier.price}</span>
                   </div>
-                  <p class="text-xs text-stone-500 mt-0.5 capitalize font-mono">One-time payment / {tier.period}</p>
+                  <p class="text-xs text-gray-500 mt-0.5 capitalize">One-time payment / {tier.period}</p>
                   
                   <a 
-                    href={tier.cta || `/checkout?product=${product.slug}&tier=${encodeURIComponent(tier.name)}`}
-                    class={`btn w-full md:w-auto mt-4 py-2 px-6 flex items-center justify-center gap-2 ${tier.popular ? "btn-primary" : "btn-outline"}`}
+                    href={tier.cta || `http://localhost:8080/api/license/activate?productId=${product.id}&tier=${encodeURIComponent(tier.name)}`}
+                    class={`btn w-full md:w-auto mt-4 py-2 px-6 flex items-center justify-center gap-2 ${tier.popular ? "btn-accent" : "btn-outline"}`}
                   >
                     Buy License Key
                   </a>
@@ -115,137 +114,15 @@ const pricingList = (product.pricing && product.pricing.length > 0 ? product.pri
             </div>
           ))}
 
-          {/* Detailed License Comparison Table */}
-          <div class="bg-[#1E2937]/20 border border-[#334155] rounded-2xl p-6 mt-8 relative overflow-hidden">
-            <h3 class="text-base font-bold text-white mb-4">Detailed License Comparison</h3>
-            <div class="overflow-x-auto custom-scrollbar">
-              <table class="w-full text-left border-collapse min-w-[500px]">
-                <thead>
-                  <tr class="border-b border-[#334155] text-[10px] font-mono uppercase tracking-wider text-zinc-400 bg-[#1E2937]/45">
-                    <th class="py-3 px-4">Core Capabilities</th>
-                    {pricingList.map((tier) => (
-                      <th class="py-3 px-4 text-center">{tier.name}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody class="text-xs text-[#E2E8F0] divide-y divide-[#334155]/40 font-mono">
-                  {/* Row 1: Target Audience */}
-                  <tr>
-                    <td class="py-3 px-4 font-sans font-semibold text-white">Target Audience</td>
-                    {pricingList.map((tier) => (
-                      <td class="py-3 px-4 text-center font-bold">
-                        {tier.name.toLowerCase().includes("enterprise") || tier.name.toLowerCase().includes("corporate") ? (
-                          <span class="text-indigo-400">Enterprise / IT Admins</span>
-                        ) : tier.name.toLowerCase().includes("business") || tier.name.toLowerCase().includes("pro") ? (
-                          <span class="text-amber-400">Businesses / SMEs</span>
-                        ) : (
-                          <span class="text-zinc-400">Personal Use</span>
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-
-                  {/* Row 2: Mailbox Limits */}
-                  <tr>
-                    <td class="py-3 px-4 font-sans font-semibold text-white">Mailbox Migrations</td>
-                    {pricingList.map((tier) => (
-                      <td class="py-3 px-4 text-center font-bold">
-                        {tier.name.toLowerCase().includes("enterprise") ? (
-                          <span class="text-emerald-400">Unlimited / Site-wide</span>
-                        ) : tier.name.toLowerCase().includes("business") ? (
-                          <span class="text-[#E2E8F0]">Up to 10 Mailboxes</span>
-                        ) : (
-                          <span class="text-[#E2E8F0]">1 Mailbox</span>
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-
-                  {/* Row 3: Support Tier */}
-                  <tr>
-                    <td class="py-3 px-4 font-sans font-semibold text-white">Technical Support</td>
-                    {pricingList.map((tier) => (
-                      <td class="py-3 px-4 text-center">
-                        {tier.name.toLowerCase().includes("enterprise") ? (
-                          <span>24/7 Priority + Phone</span>
-                        ) : tier.name.toLowerCase().includes("business") ? (
-                          <span>24/7 Priority Email</span>
-                        ) : (
-                          <span>Standard Email (24h SLA)</span>
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-
-                  {/* Row 4: Multi-Account */}
-                  <tr>
-                    <td class="py-3 px-4 font-sans font-semibold text-white">Multi-Account Batch Runs</td>
-                    {pricingList.map((tier) => (
-                      <td class="py-3 px-4 text-center font-bold">
-                        {tier.name.toLowerCase().includes("enterprise") || tier.name.toLowerCase().includes("business") ? (
-                          <span class="text-emerald-500">✓ Supported</span>
-                        ) : (
-                          <span class="text-stone-600">✗ Not Supported</span>
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-
-                  {/* Row 5: Admin Impersonation */}
-                  <tr>
-                    <td class="py-3 px-4 font-sans font-semibold text-white">Domain Impersonation (OAuth)</td>
-                    {pricingList.map((tier) => (
-                      <td class="py-3 px-4 text-center font-bold">
-                        {tier.name.toLowerCase().includes("enterprise") ? (
-                          <span class="text-emerald-500">✓ Supported</span>
-                        ) : (
-                          <span class="text-stone-600">✗ Not Supported</span>
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-
-                  {/* Row 6: CSV Import */}
-                  <tr>
-                    <td class="py-3 px-4 font-sans font-semibold text-white">CSV Migration List Import</td>
-                    {pricingList.map((tier) => (
-                      <td class="py-3 px-4 text-center font-bold">
-                        {tier.name.toLowerCase().includes("enterprise") || tier.name.toLowerCase().includes("business") ? (
-                          <span class="text-emerald-500">✓ Supported</span>
-                        ) : (
-                          <span class="text-stone-600">✗ Not Supported</span>
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-
-                  {/* Row 7: Free Updates */}
-                  <tr>
-                    <td class="py-3 px-4 font-sans font-semibold text-white">Free Updates Validity</td>
-                    {pricingList.map((tier) => (
-                      <td class="py-3 px-4 text-center">
-                        {tier.name.toLowerCase().includes("enterprise") || tier.name.toLowerCase().includes("business") ? (
-                          <span>Lifetime Free</span>
-                        ) : (
-                          <span>1-Year Free Updates</span>
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
           {/* Secure Purchase Info Card */}
-          <div class="bg-[#6366F1]/5 border border-[#6366F1]/20 rounded-2xl p-6">
+          <div class="bg-blue-50/50 border border-blue-100 rounded-2xl p-6">
             <div class="flex items-start gap-4">
-              <div class="w-10 h-10 rounded-xl bg-[#6366F1]/10 flex items-center justify-center text-[#6366F1] shrink-0 border border-[#6366F1]/20">
-                <ShieldCheck size={20} />
+              <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
+                <ShieldCheck size={20} className="text-blue-600" />
               </div>
               <div>
-                <h4 class="font-bold text-white mb-1">100% Risk-Free Guarantee</h4>
-                <p class="text-sm text-[#E2E8F0] leading-relaxed">
+                <h4 class="font-bold text-gray-900 mb-1">100% Risk-Free Guarantee</h4>
+                <p class="text-sm text-gray-600 leading-relaxed">
                   Every order is protected by our 30-day money-back guarantee. If you encounter any issue that our support team cannot resolve, we will issue a full refund immediately. No questions asked.
                 </p>
               </div>
@@ -256,59 +133,59 @@ const pricingList = (product.pricing && product.pricing.length > 0 ? product.pri
         {/* Sidebar Info */}
         <div class="space-y-6">
           {/* Order Summary & Security */}
-          <div class="bg-[#1E2937]/30 backdrop-blur rounded-2xl border border-[#334155] p-6 shadow-sm">
-            <h3 class="font-bold text-white mb-4 pb-4 border-b border-[#334155]">Order Security</h3>
+          <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+            <h3 class="font-bold text-gray-900 mb-4 pb-4 border-b border-gray-100">Order Security</h3>
             
             <ul class="space-y-4">
               <li class="flex items-start gap-3">
-                <Lock size={16} className="text-emerald-500 mt-0.5 shrink-0" />
+                <Lock size={16} className="text-green-600 mt-0.5 shrink-0" />
                 <div>
-                  <p class="text-sm font-semibold text-white">256-Bit SSL Encryption</p>
-                  <p class="text-xs text-[#94A3B8]">Your connection is fully secure.</p>
+                  <p class="text-sm font-semibold text-gray-900">256-Bit SSL Encryption</p>
+                  <p class="text-xs text-gray-500">Your connection is fully secure.</p>
                 </div>
               </li>
               <li class="flex items-start gap-3">
-                <CreditCard size={16} className="text-[#6366F1] mt-0.5 shrink-0" />
+                <CreditCard size={16} className="text-blue-600 mt-0.5 shrink-0" />
                 <div>
-                  <p class="text-sm font-semibold text-white">Instant Key Delivery</p>
-                  <p class="text-xs text-[#94A3B8]">License keys sent automatically via email.</p>
+                  <p class="text-sm font-semibold text-gray-900">Instant Key Delivery</p>
+                  <p class="text-xs text-gray-500">License keys sent automatically via email.</p>
                 </div>
               </li>
             </ul>
 
-            <div class="mt-6 pt-6 border-t border-[#334155] flex justify-center gap-3">
-              <div class="w-10 h-6 bg-[#0B0F1A] rounded flex items-center justify-center font-bold text-[9px] text-stone-500 border border-[#334155]">VISA</div>
-              <div class="w-10 h-6 bg-[#0B0F1A] rounded flex items-center justify-center font-bold text-[9px] text-stone-500 border border-[#334155]">MC</div>
-              <div class="w-10 h-6 bg-[#0B0F1A] rounded flex items-center justify-center font-bold text-[9px] text-stone-500 border border-[#334155]">DISC</div>
-              <div class="w-10 h-6 bg-[#0B0F1A] rounded flex items-center justify-center font-bold text-[9px] text-stone-500 border border-[#334155]">AMEX</div>
+            <div class="mt-6 pt-6 border-t border-gray-100 flex justify-center gap-3">
+              <div class="w-10 h-6 bg-gray-100 rounded flex items-center justify-center font-bold text-[9px] text-gray-400">VISA</div>
+              <div class="w-10 h-6 bg-gray-100 rounded flex items-center justify-center font-bold text-[9px] text-gray-400">MC</div>
+              <div class="w-10 h-6 bg-gray-100 rounded flex items-center justify-center font-bold text-[9px] text-gray-400">DISC</div>
+              <div class="w-10 h-6 bg-gray-100 rounded flex items-center justify-center font-bold text-[9px] text-gray-400">AMEX</div>
             </div>
           </div>
 
           {/* Testimonial */}
           {product.reviews && product.reviews.length > 0 && (
-            <div class="bg-[#1E2937]/30 backdrop-blur rounded-2xl border border-[#334155] p-6 shadow-sm">
-              <h3 class="font-bold text-white mb-4 pb-4 border-b border-[#334155]">User Testimonial</h3>
+            <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+              <h3 class="font-bold text-gray-900 mb-4 pb-4 border-b border-gray-100">User Testimonial</h3>
               <div class="flex text-amber-400 text-sm mb-2">{"★".repeat(product.reviews[0].rating)}</div>
-              <p class="text-sm text-[#E2E8F0] italic mb-4">"{product.reviews[0].content}"</p>
-              <p class="text-xs font-semibold text-white">{product.reviews[0].author}</p>
+              <p class="text-sm text-gray-600 italic mb-4">"{product.reviews[0].content}"</p>
+              <p class="text-xs font-semibold text-gray-900">{product.reviews[0].author}</p>
               {product.reviews[0].role && (
-                <p class="text-[10px] text-stone-500 font-mono mt-0.5">{product.reviews[0].role}, {product.reviews[0].company}</p>
+                <p class="text-[10px] text-gray-400">{product.reviews[0].role}, {product.reviews[0].company}</p>
               )}
             </div>
           )}
 
           {/* Quick FAQ */}
-          <div class="bg-[#1E2937]/30 backdrop-blur rounded-2xl border border-[#334155] p-6 shadow-sm">
-            <h3 class="font-bold text-white mb-4 pb-4 border-b border-[#334155]">Licensing FAQ</h3>
+          <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+            <h3 class="font-bold text-gray-900 mb-4 pb-4 border-b border-gray-100">Licensing FAQ</h3>
             
             <div class="space-y-4">
               <div>
-                <p class="text-sm font-semibold text-white flex items-center gap-1.5"><HelpCircle size={14} className="text-stone-500" /> Is it a one-time payment?</p>
-                <p class="text-xs text-[#94A3B8] mt-1">Yes, all licenses are lifetime valid. You pay once and can use the software version forever.</p>
+                <p class="text-sm font-semibold text-gray-900 flex items-center gap-1.5"><HelpCircle size={14} className="text-gray-400" /> Is it a one-time payment?</p>
+                <p class="text-xs text-gray-500 mt-1">Yes, all licenses are lifetime valid. You pay once and can use the software version forever.</p>
               </div>
               <div>
-                <p class="text-sm font-semibold text-white flex items-center gap-1.5"><HelpCircle size={14} className="text-stone-500" /> How many PCs can I activate?</p>
-                <p class="text-xs text-[#94A3B8] mt-1">The Standard License covers 1 PC. Business and Enterprise licenses cover multiple machines as detailed in their specs.</p>
+                <p class="text-sm font-semibold text-gray-900 flex items-center gap-1.5"><HelpCircle size={14} className="text-gray-400" /> How many PCs can I activate?</p>
+                <p class="text-xs text-gray-500 mt-1">The Standard License covers 1 PC. Business and Enterprise licenses cover multiple machines as detailed in their specs.</p>
               </div>
             </div>
           </div>

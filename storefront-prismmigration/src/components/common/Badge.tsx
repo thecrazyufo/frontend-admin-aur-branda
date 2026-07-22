@@ -14,7 +14,7 @@ const variantMap: Record<BadgeVariant, string> = {
   amber: "badge-amber",
   red: "badge-red",
   purple: "badge-purple",
-  gray: "badge-gray",
+  gray: "bg-gray-100 text-gray-600",
 };
 
 export default function Badge({ children, variant = "blue", className }: BadgeProps) {

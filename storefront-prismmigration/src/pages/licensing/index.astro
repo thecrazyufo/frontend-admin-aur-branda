@@ -1,6 +1,4 @@
 ---
-// Redirect /licensing requests to the admin-panel licensing console
-const siteId = import.meta.env.PUBLIC_SITE_ID || import.meta.env.SITE_ID || "";
-const adminHost = import.meta.env.PUBLIC_ADMIN_URL || `${Astro.url.protocol}//${Astro.url.hostname}:3000`;
-return Astro.redirect(`${adminHost}/admin/login?brandId=${siteId}&targetRole=LICENSE_ADMIN`);
+// Redirect main site /licensing requests to the admin-panel licensing console running on port 3000
+return Astro.redirect("http://localhost:3000/admin/login?brandId=brandA&targetRole=LICENSE_ADMIN");
 ---
